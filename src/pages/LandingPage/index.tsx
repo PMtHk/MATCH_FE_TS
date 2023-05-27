@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import Navbar from 'components/landing/Navbar';
-import Footer from 'components/landing/Footer';
-import Body from 'components/landing/Body';
+import Header from 'pages/LandingPage/Header';
+import Footer from 'components/Footer';
+import Content from 'pages/LandingPage/Content';
 
 const Landing = () => {
   const [position, setPostion] = useState(0);
@@ -21,8 +21,8 @@ const Landing = () => {
 
   return (
     <>
-      <Navbar isTop={isTop} />
-      <Body />
+      <Header isTop={isTop} />
+      <Content />
       <Footer />
     </>
   );
