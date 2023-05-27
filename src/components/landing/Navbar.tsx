@@ -47,7 +47,7 @@ const MenuTypo = styled(Typography)(() => ({
   fontWeight: 600,
 }));
 
-function Navbar() {
+const Navbar = () => {
   return (
     <LNavbar isTop={false}>
       <Container maxWidth="lg">
@@ -72,6 +72,6 @@ function Navbar() {
       </Container>
     </LNavbar>
   );
-}
+};
 
 export default Navbar;
