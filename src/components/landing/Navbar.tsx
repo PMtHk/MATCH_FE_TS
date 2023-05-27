@@ -8,21 +8,20 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
 
 // mui styled components
 import { styled } from '@mui/system';
 
-type LNavbarProps = {
+type NavbarProps = {
   isTop: boolean;
 };
 
-const LNavbar = styled(AppBar)<LNavbarProps>(({ isTop }) => ({
+const LNavbar = styled(AppBar)<NavbarProps>(({ isTop }) => ({
   position: 'fixed',
   height: 60,
   backgroundColor: '#ffffff',
   justifyContent: 'center',
-  boxShadow: isTop ? 'none' : '0px 0px 10px 0px rgba(0,0,0,0.1)',
+  boxShadow: isTop ? 'none' : '0px 0px 10px 0px rgba(0,0,0,0.3)',
 }));
 
 const MenuWrapper = styled(Box)(() => ({
@@ -47,9 +46,9 @@ const MenuTypo = styled(Typography)(() => ({
   fontWeight: 600,
 }));
 
-const Navbar = () => {
+const Navbar = ({ isTop }: NavbarProps) => {
   return (
-    <LNavbar isTop={false}>
+    <LNavbar isTop={isTop}>
       <Container maxWidth="lg">
         <Toolbar>
           <MenuWrapper>
