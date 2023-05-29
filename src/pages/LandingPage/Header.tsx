@@ -16,7 +16,7 @@ type NavbarProps = {
   isTop: boolean;
 };
 
-const LNavbar = styled(AppBar)<NavbarProps>(({ isTop }) => ({
+const Navbar = styled(AppBar)<NavbarProps>(({ isTop }) => ({
   position: 'fixed',
   height: 60,
   backgroundColor: '#ffffff',
@@ -44,11 +44,14 @@ const MenuTypo = styled(Typography)(() => ({
   color: '#686d72',
   fontSize: 14,
   fontWeight: 600,
+  '&:hover': {
+    borderBottom: '3px solid #686d72',
+  },
 }));
 
-const Navbar = ({ isTop }: NavbarProps) => {
+const Header = ({ isTop }: NavbarProps) => {
   return (
-    <LNavbar isTop={isTop}>
+    <Navbar isTop={isTop}>
       <Container maxWidth="lg">
         <Toolbar>
           <MenuWrapper>
@@ -69,8 +72,8 @@ const Navbar = ({ isTop }: NavbarProps) => {
           </MenuWrapper>
         </Toolbar>
       </Container>
-    </LNavbar>
+    </Navbar>
   );
 };
 
-export default Navbar;
+export default Header;
