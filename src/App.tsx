@@ -2,14 +2,14 @@ import React from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import LandingPage from 'pages/LandingPage';
-import SignInPage from 'pages/SignInPage';
+import LoginPage from 'pages/LoginPage';
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/signin" element={<SignInPage />} />
+        <Route path="/signin" element={<LoginPage />} />
       </Routes>
     </BrowserRouter>
   );

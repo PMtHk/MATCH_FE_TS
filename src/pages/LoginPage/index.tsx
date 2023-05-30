@@ -106,7 +106,7 @@ const CopyRight = styled(Typography)(() => ({
   fontWeight: 500,
 }));
 
-const SignIn = () => {
+const Login = () => {
   return (
     <Wrapper maxWidth="sm">
       <LogoTitle variant="h1">MatchGG</LogoTitle>
@@ -114,7 +114,9 @@ const SignIn = () => {
         <Typo>
           이미 <i>MatchGG</i> 의 회원이라면
         </Typo>
-        <KakaoLoginBtn>
+        <KakaoLoginBtn
+          href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI_LOGIN}&response_type=code`}
+        >
           <img
             src="https://d18ghgbbpc0qi2.cloudfront.net/assets/kakao_login_symbol.png"
             alt="kakao_login_symbol"
@@ -135,4 +137,4 @@ const SignIn = () => {
   );
 };
 
-export default SignIn;
+export default Login;
