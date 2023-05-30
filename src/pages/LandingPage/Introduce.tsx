@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 // mui
 import Box from '@mui/material/Box';
@@ -15,6 +15,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { styled } from '@mui/system';
 
 import { SectionId, refType } from './Content';
+import GameSupport from './GameSupport';
 
 const Wrapper = styled(Box)(() => ({
   width: '100%',
@@ -24,16 +25,10 @@ const Wrapper = styled(Box)(() => ({
 const ContentWrapper = styled(Box)(() => ({
   width: '100%',
   height: '100vh',
+  padding: '300px 0 0',
   display: 'flex',
   flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-}));
-
-const Title = styled(Box)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
+  justifyContent: 'flex-start',
   alignItems: 'center',
 }));
 
@@ -49,7 +44,11 @@ const TitleTypo = styled(Typography)(({ theme }) => ({
   },
 }));
 
-const LookAroundBtn = styled(Button)(({ theme }) => ({
+const LookAround = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minWidth: '300px',
   color: '#5e6064',
   fontSize: 20,
   [theme.breakpoints.up('md')]: {
@@ -59,10 +58,7 @@ const LookAroundBtn = styled(Button)(({ theme }) => ({
     fontSize: 40,
   },
   fontWeight: 600,
-  '&:hover': {
-    borderRadius: 0,
-    transform: 'translateY(-5px)',
-  },
+  '&:hover': {},
 }));
 
 type ArrowDownBtnProps = {
@@ -99,7 +95,18 @@ type IntroduceProps = {
 };
 
 const Introduce = ({ addSectionRef, moveToSection }: IntroduceProps) => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
+
+  // 둘러보기 영역 hover 상태 -> 지원게임 목록을 보여주기
+  const [isHovered, setIsHovered] = React.useState(false);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
 
   return (
     <Wrapper
@@ -109,20 +116,22 @@ const Introduce = ({ addSectionRef, moveToSection }: IntroduceProps) => {
     >
       <Container maxWidth="lg">
         <ContentWrapper>
-          <Title>
-            <TitleTypo align="center">
-              게임 듀오찾기는
-              <br />
-              <i>MatchGG </i>
-              에서 쉽고 빠르게
-            </TitleTypo>
-            <LookAroundBtn onClick={() => navigate('/lol')}>
-              둘러보러 가기
-            </LookAroundBtn>
-            <ArrowDownBtn onClick={() => moveToSection('description')}>
-              <KeyboardArrowDownIcon />
-            </ArrowDownBtn>
-          </Title>
+          <TitleTypo align="center">
+            게임 듀오찾기는
+            <br />
+            <i>MatchGG </i>
+            에서 쉽고 빠르게
+          </TitleTypo>
+          <LookAround
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
+          >
+            {!isHovered && '둘러보러 가기'}
+            {isHovered && <GameSupport />}
+          </LookAround>
+          <ArrowDownBtn onClick={() => moveToSection('description')}>
+            <KeyboardArrowDownIcon />
+          </ArrowDownBtn>
         </ContentWrapper>
       </Container>
     </Wrapper>
