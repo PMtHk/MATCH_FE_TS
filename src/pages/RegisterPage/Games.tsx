@@ -1,17 +1,15 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // mui
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 
-// mui styled components
-import { styled } from '@mui/material/styles';
-
+import { RootState } from 'store';
 import GameInput from './GameInput';
-
 import { gameList } from './Games.data';
 
 const Wrapper = styled(Box)(() => ({
@@ -61,6 +59,22 @@ const NextButton = styled(Button)(() => ({
 }));
 
 const Games = () => {
+  const navigate = useNavigate();
+
+  const params = new URL(document.URL).searchParams;
+  const code = params.get('code');
+
+  const { games } = useSelector((state: RootState) => state.register);
+  const atLeastOne =
+    Object.values(games).filter((item) => item !== '').length > 0;
+
+  const hanldeNextBtn = () => {
+    navigate({
+      pathname: '/kakao/register/favgame',
+      search: `?code=${code}`,
+    });
+  };
+
   return (
     <>
       <Wrapper>
@@ -70,7 +84,9 @@ const Games = () => {
           return <GameInput item={item} key={item.id} />;
         })}
       </Wrapper>
-      <NextButton>다음</NextButton>
+      <NextButton disabled={!atLeastOne} onClick={hanldeNextBtn}>
+        다음
+      </NextButton>
     </>
   );
 };
