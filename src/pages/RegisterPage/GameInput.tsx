@@ -27,8 +27,20 @@ const GameWrapper = styled(Box)(() => ({
   justifyContent: 'flex-start',
 })) as typeof Box;
 
+const ImgWrapper = styled(Box)(({ theme }) => ({
+  width: '40px',
+  height: '40px',
+  margin: '0 10px 0 0',
+  [theme.breakpoints.up('md')]: {
+    width: '60px',
+    height: '60px',
+  },
+}));
+
 const InputNickname = styled(TextField)(() => ({
-  margin: '0 0 0 20px',
+  margin: '0 0 0 10px',
+  maxWidth: '400px',
+  fontSize: '8px',
 })) as typeof TextField;
 
 type GameInputProps = {
@@ -56,7 +68,6 @@ const GameInput = ({ item }: GameInputProps) => {
         item.id,
         dispatch,
       );
-
       setNickname(exactNickname);
       setWarning(false);
     } catch (e) {
@@ -68,10 +79,10 @@ const GameInput = ({ item }: GameInputProps) => {
 
   const endAdornment: () => ReactNode = () => {
     if (isPending) {
-      return <CircularProgress color="inherit" size={20} />;
+      return <CircularProgress color="inherit" size={20} sx={{ mr: 1 }} />;
     }
     if (games[item.id] === nickname && nickname !== '') {
-      return <CheckIcon color="primary" />;
+      return <CheckIcon color="primary" sx={{ mr: 1 }} />;
     }
     return (
       <Button onClick={verifyNickname} disabled={nickname.length < 3}>
@@ -82,12 +93,14 @@ const GameInput = ({ item }: GameInputProps) => {
 
   return (
     <GameWrapper key={item.id}>
-      <img
-        src={item.image_url}
-        alt={item.name_kor}
-        width="60px"
-        height="60px"
-      />
+      <ImgWrapper>
+        <img
+          src={item.image_url}
+          alt={item.name_kor}
+          width="100%"
+          height="100%"
+        />
+      </ImgWrapper>
       <InputNickname
         id={item.id}
         disabled={!item.available}
@@ -99,7 +112,7 @@ const GameInput = ({ item }: GameInputProps) => {
         focused={games[item.id] === nickname && nickname !== ''}
         value={nickname}
         InputProps={{
-          endAdornment: item.available && endAdornment(),
+          endAdornment: item.available && nickname !== '' && endAdornment(),
         }}
       />
     </GameWrapper>
