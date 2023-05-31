@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type representative = '' | 'lol' | 'pubg';
+export type representative = '' | 'lol' | 'pubg';
 
 type state = {
   representative: representative;

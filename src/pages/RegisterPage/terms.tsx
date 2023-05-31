@@ -99,7 +99,7 @@ const Terms = () => {
 
   const hanldeNextBtn = () => {
     navigate({
-      pathname: 'games',
+      pathname: '/kakao/register/games',
       search: `?code=${code}`,
     });
   };

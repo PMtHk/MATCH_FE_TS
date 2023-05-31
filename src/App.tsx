@@ -12,6 +12,7 @@ const LoginRedirect = lazy(() => import('pages/LoginPage/redirect'));
 const Register = lazy(() => import('pages/RegisterPage/index'));
 const Terms = lazy(() => import('pages/RegisterPage/Terms'));
 const Games = lazy(() => import('pages/RegisterPage/Games'));
+const SetFavoriteGame = lazy(() => import('pages/RegisterPage/SetFavGame'));
 
 const App = () => {
   return (
@@ -23,7 +24,7 @@ const App = () => {
         <Route path="/kakao/register/*" element={<Register />}>
           <Route path="" element={<Terms />} />
           <Route path="games" element={<Games />} />
-          <Route path="representative" element={<>representative</>} />
+          <Route path="favgame" element={<SetFavoriteGame />} />
         </Route>
       </Routes>
     </Suspense>

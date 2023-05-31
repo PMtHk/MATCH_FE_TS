@@ -68,7 +68,7 @@ const Games = () => {
   const atLeastOne =
     Object.values(games).filter((item) => item !== '').length > 0;
 
-  const hanldeNextBtn = () => {
+  const handleNextBtn = () => {
     navigate({
       pathname: '/kakao/register/favgame',
       search: `?code=${code}`,
@@ -84,7 +84,7 @@ const Games = () => {
           return <GameInput item={item} key={item.id} />;
         })}
       </Wrapper>
-      <NextButton disabled={!atLeastOne} onClick={hanldeNextBtn}>
+      <NextButton disabled={!atLeastOne} onClick={handleNextBtn}>
         다음
       </NextButton>
     </>
