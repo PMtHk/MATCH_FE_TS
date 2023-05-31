@@ -2,12 +2,8 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 // mui
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-
-import Divider from 'components/Divider';
 
 // mui styled components
 import { styled } from '@mui/material/styles';

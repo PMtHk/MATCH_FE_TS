@@ -41,7 +41,7 @@ const registerSlice = createSlice({
     SET_GAMES_WITH_ID: (state, action: SET_GAMES_WITH_ID_ACTION) => {
       state.games[action.payload.id] = action.payload.value;
     },
-    DELETE_REGISTER: (state, _action) => {
+    DELETE_REGISTER: (state, _) => {
       state.representative = '';
       state.games = {
         lol: '',
