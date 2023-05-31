@@ -65,7 +65,7 @@ const Header = ({ isTop }: NavbarProps) => {
               <Link href="/" underline="none">
                 <MenuTypo>GitHub</MenuTypo>
               </Link> */}
-              <Link href="/signin" underline="none">
+              <Link href="/Login" underline="none">
                 <MenuTypo>SignIn / SignUp</MenuTypo>
               </Link>
             </Stack>
