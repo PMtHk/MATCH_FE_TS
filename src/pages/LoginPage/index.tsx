@@ -20,7 +20,7 @@ const Wrapper = styled(Container)(({ theme }) => ({
   padding: '40px 0 10px',
   [theme.breakpoints.up('md')]: {
     margin: '100px auto',
-    height: '80vh',
+    height: 'calc(100vh - 200px)',
     minHeight: '560px',
     border: '1px solid #dddddd',
     borderRadius: '8px',
@@ -128,7 +128,9 @@ const Login = () => {
         <Typo>
           아직 <i>MatchGG</i> 의 회원이 아니라면
         </Typo>
-        <RegisterBtn>
+        <RegisterBtn
+          href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI_REGISTER}&response_type=code`}
+        >
           <i>MatchGG</i> 회원가입
         </RegisterBtn>
       </ButtonWrapper>

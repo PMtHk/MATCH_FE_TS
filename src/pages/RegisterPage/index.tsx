@@ -1,0 +1,49 @@
+import React from 'react';
+import { Outlet } from 'react-router-dom';
+
+// mui
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Container from '@mui/material/Container';
+import Typography from '@mui/material/Typography';
+
+import Divider from 'components/Divider';
+
+// mui styled components
+import { styled } from '@mui/material/styles';
+
+const Wrapper = styled(Container)(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  height: '100vh',
+  padding: '10px 0 10px',
+  [theme.breakpoints.up('sm')]: {
+    margin: '25px auto',
+    height: 'calc(100vh - 50px)',
+    minHeight: '560px',
+    border: '1px solid #dddddd',
+    borderRadius: '8px',
+  },
+}));
+
+const LogoTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '32px',
+  fontStyle: 'italic',
+  fontWeight: 700,
+  [theme.breakpoints.up('sm')]: {
+    fontSize: '44px',
+  },
+}));
+
+const Register = () => {
+  return (
+    <Wrapper maxWidth="sm">
+      <LogoTitle>MatchGG</LogoTitle>
+      <Outlet />
+    </Wrapper>
+  );
+};
+
+export default Register;
