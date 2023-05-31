@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode';
 
 import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
+import { registerActions } from 'store/register-slice';
 
 /*
  * 카카오 로그인
@@ -91,4 +92,30 @@ export const getUserGameInfo = async (
   dispatch(userActions.SET_GAMES({ games }));
 
   return null;
+};
+
+/*
+ * 사용자 게임별 닉네임 등록 여부 확인
+ *
+ * @param {string} nickname - 사용자가 입력한 닉네임
+ * @param {'lol' | 'pubg'} game - 게임 id
+ * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
+ */
+
+export const verifyingNickname = async (
+  nickname: string,
+  game: 'lol' | 'pubg',
+  dispatch: ReturnType<typeof useDispatch>,
+) => {
+  dispatch(registerActions.SET_GAMES_WITH_ID({ id: game, value: '' }));
+
+  const { data: exactNickname } = await defaultAxios.get(
+    `/api/${game}/user/exist/${nickname}`,
+  );
+
+  dispatch(
+    registerActions.SET_GAMES_WITH_ID({ id: game, value: exactNickname }),
+  );
+
+  return exactNickname;
 };
