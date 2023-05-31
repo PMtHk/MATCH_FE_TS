@@ -42,7 +42,7 @@ const Text = styled(Typography)(({ theme }) => ({
   fontWeight: 600,
 }));
 
-const GameList = styled(Box)(({ theme }) => ({
+const GameList = styled(Box)(() => ({
   marginTop: '50px',
   display: 'flex',
   flexDirection: 'row',
@@ -59,6 +59,7 @@ const GameSupport = () => {
       <GameList>
         <Button onClick={() => navigate('/lol')}>
           <GameIcon
+            id="lol"
             item="leagueoflegends"
             size={{ width: '100px', height: '100px' }}
           />
