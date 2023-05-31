@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
-import { kakaoLogin } from 'apis/api/user';
+import { login } from 'apis/api/user';
 
 import Linear from 'components/loading/Linear';
 
@@ -14,7 +14,7 @@ const Redirect = () => {
   const code = params.get('code');
 
   if (code) {
-    kakaoLogin(code, navigate, dispatch);
+    login(code, navigate, dispatch);
   }
 
   return (

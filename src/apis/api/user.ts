@@ -3,12 +3,13 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
+import store from 'store/index';
 import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
 import { registerActions } from 'store/register-slice';
 
 /*
- * 카카오 로그인
+ * 로그인
  *
  * @param {string} code - 카카오 인가코드
  * @param {ReturnType<typeof useNavigate>} navigate - react-router-dom의 useNavigate
@@ -26,7 +27,7 @@ import { registerActions } from 'store/register-slice';
  * 이후, accessToken decode 해 사용자 정보를 조회하고, 이를 리덕스에 저장한다.
  */
 
-export const kakaoLogin = async (
+export const login = async (
   code: string,
   navigate: ReturnType<typeof useNavigate>,
   dispatch: ReturnType<typeof useDispatch>,
@@ -118,4 +119,55 @@ export const verifyingNickname = async (
   );
 
   return exactNickname;
+};
+
+/*
+ * 회원가입
+ *
+ * @param {string} code - 카카오 인가코드
+ * @param {ReturnType<typeof useNavigate>} navigate - react-router-dom의 useNavigate
+ * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
+ * @returns {void}
+ *
+ * 인자로 넘겨받은 code (카카오 인가코드) 로 카카오 액세스 토큰을 발급받고,
+ * 발급받은 토큰과 회원가입시 사용자가 작성한 내용으로 백엔드에 로그인 요청을 보낸다.
+ *
+ * 백엔드에서 이미 가입한 사용자, 새로 가입하는 사용자를 구분하여 처리한다.
+ *
+ * 이후, register-slice를 비우고, 로그인 페이지로 이동시킨다.
+ */
+
+export const signup = async (
+  code: string,
+  navigate: ReturnType<typeof useNavigate>,
+  dispatch: ReturnType<typeof useDispatch>,
+) => {
+  const { representative, games } = store.getState().register;
+
+  // 인가코드로 카카오 액세스 토큰 발급
+  const {
+    data: { access_token: kakaoAccessToken },
+  } = await kakaoAxios.get('/oauth/token', {
+    params: {
+      redirect_uri: process.env.REACT_APP_REDIRECT_URI_REGISTER,
+      code,
+    },
+  });
+
+  // 백엔드에 회원가입 요청
+  await defaultAxios.post('/api/user/signup', {
+    oauth2AcessToken: kakaoAccessToken,
+    representative: representative.toUpperCase(),
+    lol: games.lol,
+    pubg: games.pubg,
+    overwatch: '',
+    lostark: '',
+    maplestory: '',
+  });
+
+  // register-slice 내용 삭제
+  dispatch(registerActions.DELETE_REGISTER({}));
+
+  // login 페이지로 이동
+  navigate('/lol');
 };

@@ -7,6 +7,7 @@ import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { RootState } from 'store';
 import {
@@ -14,6 +15,7 @@ import {
   registerActions,
 } from 'store/register-slice';
 import GameIcon from 'components/GameIcon';
+import { signup } from 'apis/api/user';
 import { GAME, gameList } from './Games.data';
 
 const Wrapper = styled(Box)(() => ({
@@ -83,14 +85,26 @@ const NextButton = styled(Button)(() => ({
   },
 })) as typeof Button;
 
+const PendingMessage = styled(Typography)(() => ({
+  position: 'absolute',
+  bottom: '150px',
+  fontSize: '18px',
+  fontWeight: 600,
+}));
+
 const SetFavGame = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const params = new URL(document.URL).searchParams;
+  const code = params.get('code');
 
   const { games, representative } = useSelector(
     (state: RootState) => state.register,
   );
 
   const [warning, setWarning] = React.useState(false);
+  const [isPending, setIsPending] = React.useState(false);
 
   const setRepresentative = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (event.target instanceof Element) {
@@ -113,8 +127,12 @@ const SetFavGame = () => {
     height: '100%',
   };
 
-  const handleNextBtn = () => {
-    return null;
+  const handleNextBtn = async () => {
+    setIsPending(true);
+    if (code) {
+      await signup(code, navigate, dispatch);
+      setIsPending(false);
+    }
   };
 
   return (
@@ -154,7 +172,19 @@ const SetFavGame = () => {
           })}
         </GameWrapper>
       </Wrapper>
-      <NextButton disabled={representative === ''} onClick={handleNextBtn}>
+      {isPending && (
+        <PendingMessage textAlign="center">
+          <CircularProgress color="inherit" />
+          <br />
+          <br />
+          사용자 게임 별 전적을 조회하는 중입니다.
+          <br />곧 회원가입이 완료됩니다.
+        </PendingMessage>
+      )}
+      <NextButton
+        disabled={representative === '' || isPending}
+        onClick={handleNextBtn}
+      >
         다음
       </NextButton>
     </>
