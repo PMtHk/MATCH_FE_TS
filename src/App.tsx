@@ -1,17 +1,22 @@
-import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import React, { Suspense, lazy } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
-import LandingPage from 'pages/LandingPage';
-import LoginPage from 'pages/LoginPage';
+import Linear from 'components/loading/Linear';
+
+// lazy loading
+const LandingPage = lazy(() => import('pages/LandingPage'));
+const LoginPage = lazy(() => import('pages/LoginPage'));
+const LoginRedirect = lazy(() => import('pages/LoginPage/redirect'));
 
 const App = () => {
   return (
-    <BrowserRouter>
+    <Suspense fallback={<Linear height="100vh" text="MatchGG 불러오는 중" />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/kakao/login" element={<LoginRedirect />} />
       </Routes>
-    </BrowserRouter>
+    </Suspense>
   );
 };
 

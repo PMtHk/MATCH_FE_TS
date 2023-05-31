@@ -20,7 +20,6 @@ type SET_USER_ACTION = {
     oauth2Id: string;
     profile_imageUrl: string;
     representative: representative;
-    isLogin: boolean;
   };
 };
 

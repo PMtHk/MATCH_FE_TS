@@ -1,7 +1,5 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-
-import { RootState } from 'store';
+import store from 'store/index';
 
 const axiosInstance = (url: string) => {
   const instance = axios.create({ baseURL: url });
@@ -9,12 +7,12 @@ const axiosInstance = (url: string) => {
 };
 
 const axiosInstanceWithAuth = (url: string) => {
-  const { accessToken } = useSelector((state: RootState) => state.token);
+  const { accessToken } = store.getState().token;
   const refreshToken = localStorage.getItem('matchGG_refreshToken');
   const instance = axios.create({
     baseURL: url,
     headers: {
-      Authorization: `Bearer ${accessToken}`,
+      // Authorization: `Bearer ${accessToken}`,
       'Refresh-Token': refreshToken,
     },
   });
@@ -44,6 +42,4 @@ export const authAxios = axiosInstanceWithAuth(
   process.env.REACT_APP_API_BASE_URL as string,
 );
 
-export const kakaoAxios = axiosKakaoInstance(
-  'https://kauth.kakao.com/oauth/token',
-);
+export const kakaoAxios = axiosKakaoInstance('https://kauth.kakao.com');
