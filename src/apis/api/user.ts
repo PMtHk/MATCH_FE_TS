@@ -79,6 +79,7 @@ export const login = async (
  * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
  * @returns {void}
  *
+ * authAxios 이용
  * 백엔드에서 사용자의 게임별 닉네임 정보를 조회하고
  * 이들을 리덕스에 저장한다.
  */
@@ -156,7 +157,7 @@ export const signup = async (
 
   // 백엔드에 회원가입 요청
   await defaultAxios.post('/api/user/signup', {
-    oauth2AcessToken: kakaoAccessToken,
+    oauth2AccessToken: kakaoAccessToken,
     representative: representative.toUpperCase(),
     lol: games.lol,
     pubg: games.pubg,

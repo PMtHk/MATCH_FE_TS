@@ -12,7 +12,7 @@ const axiosInstanceWithAuth = (url: string) => {
   const instance = axios.create({
     baseURL: url,
     headers: {
-      // Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
       'Refresh-Token': refreshToken,
     },
   });
