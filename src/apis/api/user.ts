@@ -8,6 +8,16 @@ import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
 import { registerActions } from 'store/register-slice';
 
+interface IAccessTokenPayload {
+  sub: string;
+  oAuth2Id: string;
+  nickname: string;
+  imageUrl: string;
+  representative: 'LOL' | 'PUBG';
+  iat: number;
+  exp: number;
+}
+
 /**
  * 로그인
  *
@@ -52,15 +62,16 @@ export const login = async (
   dispatch(tokenActions.SET_TOKEN({ accessToken }));
   localStorage.setItem('matchGG_refreshToken', refreshToken);
 
-  const jwtPayload: any = jwtDecode(accessToken);
-  // 회원가입 기능 개발 이후 토큰 페이로드 값 확인 후 타입 작성
+  const jwtPayload: IAccessTokenPayload = await jwtDecode<IAccessTokenPayload>(
+    accessToken,
+  );
   const { nickname, oAuth2Id, imageUrl, representative } = jwtPayload;
   dispatch(
     userActions.SET_USER({
       nickname,
       oauth2Id: oAuth2Id,
       profile_imageUrl: imageUrl,
-      representative,
+      representative: representative.toLowerCase() as 'lol' | 'pubg',
     }),
   );
 
@@ -68,12 +79,11 @@ export const login = async (
   await getUserGameInfo(dispatch);
 
   // 사용자 지정 선호게임 페이지로 이동
-  navigate(`/${representative || 'lol'}`);
-
-  return null;
+  const redirectToRepresentative = store.getState().user.representative;
+  navigate(`/${redirectToRepresentative || 'lol'}`);
 };
 
-/*
+/**
  * 사용자 게임 닉네임 정보 조회
 
  * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
@@ -92,11 +102,9 @@ export const getUserGameInfo = async (
   const { lol, pubg } = response.data;
   const games = { lol, pubg };
   dispatch(userActions.SET_GAMES({ games }));
-
-  return null;
 };
 
-/*
+/**
  * 사용자 게임별 닉네임 등록 여부 확인
  *
  * @param {string} nickname - 사용자가 입력한 닉네임
