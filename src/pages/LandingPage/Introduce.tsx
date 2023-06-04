@@ -3,7 +3,6 @@ import React from 'react';
 
 // mui
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
@@ -14,13 +13,13 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 // mui styled components
 import { styled } from '@mui/system';
 
-import { SectionId, refType } from './Content';
+import { SectionId } from './Content';
 import GameSupport from './GameSupport';
 
 const Wrapper = styled(Box)(() => ({
   width: '100%',
   background: 'linear-gradient(#ffffff, #3c393956)',
-}));
+})) as typeof Box;
 
 const ContentWrapper = styled(Box)(() => ({
   width: '100%',
@@ -30,7 +29,7 @@ const ContentWrapper = styled(Box)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   alignItems: 'center',
-}));
+})) as typeof Box;
 
 const TitleTypo = styled(Typography)(({ theme }) => ({
   fontSize: 28,
@@ -42,7 +41,7 @@ const TitleTypo = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('lg')]: {
     fontSize: 60,
   },
-}));
+})) as typeof Typography;
 
 const LookAround = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -59,12 +58,12 @@ const LookAround = styled(Box)(({ theme }) => ({
   },
   fontWeight: 600,
   '&:hover': {},
-}));
+})) as typeof Box;
 
-type ArrowDownBtnProps = {
+interface ArrowDownBtnProps {
   children: React.ReactNode;
   onClick: () => void;
-};
+}
 
 const ArrowDownBtn = styled(IconButton)<ArrowDownBtnProps>(() => ({
   position: 'absolute',
@@ -89,12 +88,12 @@ const ArrowDownBtn = styled(IconButton)<ArrowDownBtnProps>(() => ({
   },
 }));
 
-type IntroduceProps = {
+interface IIntroduceProps {
   addSectionRef: (id: SectionId, elem: HTMLElement) => void;
   moveToSection: (id: SectionId) => void;
-};
+}
 
-const Introduce = ({ addSectionRef, moveToSection }: IntroduceProps) => {
+const Introduce = ({ addSectionRef, moveToSection }: IIntroduceProps) => {
   // const navigate = useNavigate();
 
   // 둘러보기 영역 hover 상태 -> 지원게임 목록을 보여주기

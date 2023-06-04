@@ -8,8 +8,18 @@ import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
 import { registerActions } from 'store/register-slice';
 
-/*
- * 로그인
+interface IAccessTokenPayload {
+  sub: string;
+  oAuth2Id: string;
+  nickname: string;
+  imageUrl: string;
+  representative: 'LOL' | 'PUBG';
+  iat: number;
+  exp: number;
+}
+
+/**
+ * 로그인 (카카오 연동)
  *
  * @param {string} code - 카카오 인가코드
  * @param {ReturnType<typeof useNavigate>} navigate - react-router-dom의 useNavigate
@@ -25,6 +35,7 @@ import { registerActions } from 'store/register-slice';
  * accessToken과 refreshToken을 각각 리덕스와 로컬 스토리지에 저장한다.
  *
  * 이후, accessToken decode 해 사용자 정보를 조회하고, 이를 리덕스에 저장한다.
+ * 마지막으로 사용자 지정 선호게임으로 navigate 한다.
  */
 
 export const login = async (
@@ -52,15 +63,16 @@ export const login = async (
   dispatch(tokenActions.SET_TOKEN({ accessToken }));
   localStorage.setItem('matchGG_refreshToken', refreshToken);
 
-  const jwtPayload: any = jwtDecode(accessToken);
-  // 회원가입 기능 개발 이후 토큰 페이로드 값 확인 후 타입 작성
+  const jwtPayload: IAccessTokenPayload = await jwtDecode<IAccessTokenPayload>(
+    accessToken,
+  );
   const { nickname, oAuth2Id, imageUrl, representative } = jwtPayload;
   dispatch(
     userActions.SET_USER({
       nickname,
       oauth2Id: oAuth2Id,
       profile_imageUrl: imageUrl,
-      representative,
+      representative: representative.toLowerCase() as 'lol' | 'pubg',
     }),
   );
 
@@ -68,17 +80,17 @@ export const login = async (
   await getUserGameInfo(dispatch);
 
   // 사용자 지정 선호게임 페이지로 이동
-  navigate(`/${representative || 'lol'}`);
-
-  return null;
+  const redirectToRepresentative = store.getState().user.representative;
+  navigate(`/${redirectToRepresentative || 'lol'}`);
 };
 
-/*
+/**
  * 사용자 게임 닉네임 정보 조회
 
  * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
  * @returns {void}
  *
+ * authAxios 이용
  * 백엔드에서 사용자의 게임별 닉네임 정보를 조회하고
  * 이들을 리덕스에 저장한다.
  */
@@ -91,16 +103,18 @@ export const getUserGameInfo = async (
   const { lol, pubg } = response.data;
   const games = { lol, pubg };
   dispatch(userActions.SET_GAMES({ games }));
-
-  return null;
 };
 
-/*
+/**
  * 사용자 게임별 닉네임 등록 여부 확인
  *
  * @param {string} nickname - 사용자가 입력한 닉네임
  * @param {'lol' | 'pubg'} game - 게임 id
  * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
+ * @returns {string} - 백엔드에서 조회한 사용자의 닉네임 (정확한 닉네임)
+ *
+ * 사용자가 입력한 닉네임을 백엔드에 보내서, 해당 닉네임이 이미 게임사에 등록되어 있는지 확인한다.
+ * 이후, 정확한 닉네임을 등록할 수 있도록 입력값을 수정한다.
  */
 
 export const verifyingNickname = async (
@@ -121,7 +135,7 @@ export const verifyingNickname = async (
   return exactNickname;
 };
 
-/*
+/**
  * 회원가입
  *
  * @param {string} code - 카카오 인가코드
@@ -156,7 +170,7 @@ export const signup = async (
 
   // 백엔드에 회원가입 요청
   await defaultAxios.post('/api/user/signup', {
-    oauth2AcessToken: kakaoAccessToken,
+    oauth2AccessToken: kakaoAccessToken,
     representative: representative.toUpperCase(),
     lol: games.lol,
     pubg: games.pubg,

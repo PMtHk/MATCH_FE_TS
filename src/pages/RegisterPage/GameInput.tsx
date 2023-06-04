@@ -35,7 +35,7 @@ const ImgWrapper = styled(Box)(({ theme }) => ({
     width: '60px',
     height: '60px',
   },
-}));
+})) as typeof Box;
 
 const InputNickname = styled(TextField)(() => ({
   margin: '0 0 0 10px',
@@ -43,9 +43,9 @@ const InputNickname = styled(TextField)(() => ({
   fontSize: '8px',
 })) as typeof TextField;
 
-type GameInputProps = {
+interface GameInputProps {
   item: GAME;
-};
+}
 
 const GameInput = ({ item }: GameInputProps) => {
   const { games } = useSelector((state: RootState) => state.register);

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosHeaders, AxiosInstance } from 'axios';
 import store from 'store/index';
 
 const axiosInstance = (url: string) => {
@@ -7,15 +7,30 @@ const axiosInstance = (url: string) => {
 };
 
 const axiosInstanceWithAuth = (url: string) => {
-  const { accessToken } = store.getState().token;
-  const refreshToken = localStorage.getItem('matchGG_refreshToken');
   const instance = axios.create({
     baseURL: url,
-    headers: {
-      // Authorization: `Bearer ${accessToken}`,
-      'Refresh-Token': refreshToken,
-    },
   });
+  interceptors(instance);
+  return instance;
+};
+
+// authAxios 요청 시점에 토큰을 헤더에 추가하기 위한 인터셉터
+export const interceptors = (instance: AxiosInstance) => {
+  instance.interceptors.request.use(
+    (config) => {
+      const { accessToken } = store.getState().token;
+      const refreshToken = localStorage.getItem('matchGG_refreshToken');
+
+      (config.headers as AxiosHeaders).set(
+        'Authorization',
+        `Bearer ${accessToken}`,
+      );
+      (config.headers as AxiosHeaders).set('Refresh-Token', refreshToken);
+
+      return config;
+    },
+    (error) => Promise.reject(error.response),
+  );
   return instance;
 };
 
@@ -29,7 +44,7 @@ const axiosKakaoInstance = (url: string) => {
       grant_type: 'authorization_code',
       client_id: process.env.REACT_APP_REST_API_KEY,
       // redirect_uri  - login or register
-      // code - 인가코드 넣어야 함
+      // code - 카카오 인가코드
     },
   });
   return instance;
@@ -38,6 +53,7 @@ const axiosKakaoInstance = (url: string) => {
 export const defaultAxios = axiosInstance(
   process.env.REACT_APP_API_BASE_URL as string,
 );
+
 export const authAxios = axiosInstanceWithAuth(
   process.env.REACT_APP_API_BASE_URL as string,
 );

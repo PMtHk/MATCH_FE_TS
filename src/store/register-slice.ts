@@ -1,29 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-export type representative = '' | 'lol' | 'pubg';
+export type representative = 'lol' | 'pubg';
 
-type state = {
-  representative: representative;
+interface IState {
+  representative: representative | '';
   games: {
     lol: string;
     pubg: string;
   };
-};
+}
 
-type SET_REPRESENTATIVE_ACTION = {
+interface ISet_Representative {
   payload: {
     representative: representative;
   };
-};
+}
 
-type SET_GAMES_WITH_ID_ACTION = {
+interface ISet_Games_With_Id {
   payload: {
-    id: 'lol' | 'pubg';
+    id: representative;
     value: string;
   };
-};
+}
 
-const initialState: state = {
+const initialState: IState = {
   representative: '',
   games: {
     lol: '',
@@ -35,10 +35,10 @@ const registerSlice = createSlice({
   name: 'register',
   initialState,
   reducers: {
-    SET_REPRESENTATIVE: (state, action: SET_REPRESENTATIVE_ACTION) => {
+    SET_REPRESENTATIVE: (state, action: ISet_Representative) => {
       state.representative = action.payload.representative;
     },
-    SET_GAMES_WITH_ID: (state, action: SET_GAMES_WITH_ID_ACTION) => {
+    SET_GAMES_WITH_ID: (state, action: ISet_Games_With_Id) => {
       state.games[action.payload.id] = action.payload.value;
     },
     DELETE_REGISTER: (state, _) => {

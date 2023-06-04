@@ -4,9 +4,9 @@ import React from 'react';
 import Grid from '@mui/material/Grid';
 import MuiDivider from '@mui/material/Divider';
 
-type DividerProps = {
+interface DividerProps {
   children: React.ReactNode;
-};
+}
 
 const Divider = ({ children }: DividerProps) => {
   return (

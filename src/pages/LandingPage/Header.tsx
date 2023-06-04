@@ -12,9 +12,9 @@ import Stack from '@mui/material/Stack';
 // mui styled components
 import { styled } from '@mui/system';
 
-type NavbarProps = {
+interface NavbarProps {
   isTop: boolean;
-};
+}
 
 const Navbar = styled(AppBar)<NavbarProps>(({ isTop }) => ({
   position: 'fixed',
@@ -29,7 +29,7 @@ const MenuWrapper = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'space-between',
-}));
+})) as typeof Box;
 
 const LogoTypo = styled(Typography)(() => ({
   flexGrow: 1,
@@ -38,7 +38,7 @@ const LogoTypo = styled(Typography)(() => ({
   fontWeight: 700,
   fontStyle: 'italic',
   textDecoration: 'none',
-}));
+})) as typeof Typography;
 
 const MenuTypo = styled(Typography)(() => ({
   color: '#686d72',
@@ -47,7 +47,7 @@ const MenuTypo = styled(Typography)(() => ({
   '&:hover': {
     borderBottom: '3px solid #686d72',
   },
-}));
+})) as typeof Typography;
 
 const Header = ({ isTop }: NavbarProps) => {
   return (
@@ -65,7 +65,7 @@ const Header = ({ isTop }: NavbarProps) => {
               <Link href="/" underline="none">
                 <MenuTypo>GitHub</MenuTypo>
               </Link> */}
-              <Link href="/Login" underline="none">
+              <Link href="/login" underline="none">
                 <MenuTypo>SignIn / SignUp</MenuTypo>
               </Link>
             </Stack>
