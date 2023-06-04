@@ -1,13 +1,13 @@
 import React from 'react';
 
-type GameIconProps = {
+interface GameIconProps {
   item: string;
   size: {
     width: string;
     height: string;
   };
   id: 'lol' | 'pubg';
-};
+}
 
 const GameIcon = ({ item, size, id }: GameIconProps) => {
   return (

@@ -9,9 +9,9 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import { Container } from '@mui/material';
 
-type CircularWrapperProps = {
+interface CircularWrapperProps {
   height: string;
-};
+}
 
 const CircularWrapper = styled(Box)(({ height }: CircularWrapperProps) => ({
   width: '100%',
@@ -27,12 +27,12 @@ const Text = styled(Typography)(() => ({
   color: '#2f3134',
   fontSize: 20,
   fontWeight: 700,
-}));
+})) as typeof Typography;
 
-type CircularProps = {
+interface CircularProps {
   text: string;
   height: string;
-};
+}
 
 const Circular = ({ text, height }: CircularProps) => {
   return (

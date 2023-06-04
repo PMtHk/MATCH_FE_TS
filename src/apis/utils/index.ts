@@ -1,4 +1,4 @@
-import axios, { AxiosHeaders, AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosHeaders, AxiosInstance } from 'axios';
 import store from 'store/index';
 
 const axiosInstance = (url: string) => {
@@ -14,6 +14,7 @@ const axiosInstanceWithAuth = (url: string) => {
   return instance;
 };
 
+// authAxios 요청 시점에 토큰을 헤더에 추가하기 위한 인터셉터
 export const interceptors = (instance: AxiosInstance) => {
   instance.interceptors.request.use(
     (config) => {

@@ -9,9 +9,9 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import { Container } from '@mui/material';
 
-type LinearWrapperProps = {
+interface LinearWrapperProps {
   height: string;
-};
+}
 
 const LinearWrapper = styled(Box)(({ height }: LinearWrapperProps) => ({
   width: '100%',
@@ -27,12 +27,12 @@ const Text = styled(Typography)(() => ({
   color: '#2f3134',
   fontSize: 20,
   fontWeight: 700,
-}));
+})) as typeof Typography;
 
-type LinearProps = {
+interface LinearProps {
   text: string;
   height: string;
-};
+}
 
 const Linear = ({ text, height }: LinearProps) => {
   return (

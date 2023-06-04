@@ -1,16 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type state = {
+interface IState {
   accessToken: string;
-};
+}
 
-type SET_TOKEN_ACTION = {
+interface ISet_Token {
   payload: {
     accessToken: string;
   };
-};
+}
 
-const initialState: state = {
+const initialState: IState = {
   accessToken: '',
 };
 
@@ -18,7 +18,7 @@ const tokenSlice = createSlice({
   name: 'token',
   initialState,
   reducers: {
-    SET_TOKEN: (state, action: SET_TOKEN_ACTION) => {
+    SET_TOKEN: (state, action: ISet_Token) => {
       state.accessToken = action.payload.accessToken;
     },
     DELETE_TOKEN: (state, _action) => {

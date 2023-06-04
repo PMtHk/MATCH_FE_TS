@@ -19,7 +19,7 @@ interface IAccessTokenPayload {
 }
 
 /**
- * 로그인
+ * 로그인 (카카오 연동)
  *
  * @param {string} code - 카카오 인가코드
  * @param {ReturnType<typeof useNavigate>} navigate - react-router-dom의 useNavigate
@@ -35,6 +35,7 @@ interface IAccessTokenPayload {
  * accessToken과 refreshToken을 각각 리덕스와 로컬 스토리지에 저장한다.
  *
  * 이후, accessToken decode 해 사용자 정보를 조회하고, 이를 리덕스에 저장한다.
+ * 마지막으로 사용자 지정 선호게임으로 navigate 한다.
  */
 
 export const login = async (
@@ -110,6 +111,10 @@ export const getUserGameInfo = async (
  * @param {string} nickname - 사용자가 입력한 닉네임
  * @param {'lol' | 'pubg'} game - 게임 id
  * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
+ * @returns {string} - 백엔드에서 조회한 사용자의 닉네임 (정확한 닉네임)
+ *
+ * 사용자가 입력한 닉네임을 백엔드에 보내서, 해당 닉네임이 이미 게임사에 등록되어 있는지 확인한다.
+ * 이후, 정확한 닉네임을 등록할 수 있도록 입력값을 수정한다.
  */
 
 export const verifyingNickname = async (
@@ -130,7 +135,7 @@ export const verifyingNickname = async (
   return exactNickname;
 };
 
-/*
+/**
  * 회원가입
  *
  * @param {string} code - 카카오 인가코드

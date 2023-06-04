@@ -8,12 +8,12 @@ import Typography from '@mui/material/Typography';
 // mui styled components
 import { styled } from '@mui/system';
 
-import { SectionId, refType } from './Content';
+import { SectionId } from './Content';
 
 const Wrapper = styled(Box)(() => ({
   width: '100%',
   backgroundColor: '#d5d5d6',
-}));
+})) as typeof Box;
 
 const ContentWrapper = styled(Box)(() => ({
   width: '100%',
@@ -23,7 +23,7 @@ const ContentWrapper = styled(Box)(() => ({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-}));
+})) as typeof Box;
 
 const TitleTypo = styled(Typography)(({ theme }) => ({
   fontSize: 18,
@@ -35,12 +35,12 @@ const TitleTypo = styled(Typography)(({ theme }) => ({
   },
   fontWeight: 700,
   margin: '20px 0 50px',
-}));
+})) as typeof Typography;
 
-type DescriptionProps = {
+interface DescriptionProps {
   addSectionRef: (id: SectionId, elem: HTMLElement) => void;
   moveToSection: (id: SectionId) => void;
-};
+}
 
 const Description = ({ addSectionRef, moveToSection }: DescriptionProps) => {
   return (
