@@ -8,7 +8,7 @@ import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
 import { registerActions } from 'store/register-slice';
 
-/*
+/**
  * 로그인
  *
  * @param {string} code - 카카오 인가코드
