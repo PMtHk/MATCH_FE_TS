@@ -90,7 +90,7 @@ const PendingMessage = styled(Typography)(() => ({
   bottom: '150px',
   fontSize: '18px',
   fontWeight: 600,
-}));
+})) as typeof Typography;
 
 const SetFavGame = () => {
   const dispatch = useDispatch();
@@ -130,8 +130,17 @@ const SetFavGame = () => {
   const handleNextBtn = async () => {
     setIsPending(true);
     if (code) {
-      await signup(code, navigate, dispatch);
-      setIsPending(false);
+      try {
+        await signup(code, navigate, dispatch);
+        setIsPending(false);
+      } catch (error: any) {
+        setIsPending(false);
+        if (error?.response?.status === 400 && error?.response?.data?.message) {
+          // 이미 존재하는 회원인 경우 에러 핸들링
+        } else {
+          // 그 외의 에러 핸들링
+        }
+      }
     }
   };
 
