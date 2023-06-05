@@ -22,7 +22,7 @@ const Wrapper = styled(Container)(({ theme }) => ({
     border: '1px solid #dddddd',
     borderRadius: '8px',
   },
-}));
+})) as typeof Container;
 
 const LogoTitle = styled(Typography)(({ theme }) => ({
   fontSize: '32px',
@@ -31,7 +31,7 @@ const LogoTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     fontSize: '44px',
   },
-}));
+})) as typeof Typography;
 
 const Register = () => {
   return (

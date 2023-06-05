@@ -21,7 +21,7 @@ const LinearWrapper = styled(Box)(({ height }: LinearWrapperProps) => ({
   alignItems: 'center',
   justifyContent: 'center',
   gap: '32px',
-}));
+})) as typeof Box;
 
 const Text = styled(Typography)(() => ({
   color: '#2f3134',

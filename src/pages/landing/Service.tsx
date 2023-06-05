@@ -11,7 +11,7 @@ import { styled } from '@mui/system';
 const Wrapper = styled(Box)(() => ({
   width: '100%',
   backgroundColor: '#ffffff',
-}));
+})) as typeof Box;
 
 const ContentWrapper = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -21,7 +21,7 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     flexDirection: 'row',
   },
-}));
+})) as typeof Box;
 
 const ColumnBox = styled(Box)(({ theme }) => ({
   width: '100%',
@@ -34,7 +34,7 @@ const ColumnBox = styled(Box)(({ theme }) => ({
     width: '50%',
     padding: '15px 10px',
   },
-}));
+})) as typeof Box;
 
 const ColumnTitle = styled(Typography)(({ theme }) => ({
   fontSize: 20,
@@ -47,7 +47,7 @@ const ColumnTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     fontSize: 28,
   },
-}));
+})) as typeof Typography;
 
 const ColumnDescription = styled(Typography)(({ theme }) => ({
   fontSize: 16,
@@ -59,7 +59,7 @@ const ColumnDescription = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     fontSize: 22,
   },
-}));
+})) as typeof Typography;
 
 const Service = () => {
   return (

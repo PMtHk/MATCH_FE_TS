@@ -13,20 +13,20 @@ const FooterWrapper = styled(Box)(() => ({
   width: '100%',
   padding: '50px 0px 100px',
   backgroundColor: '#3d3939',
-}));
+})) as typeof Box;
 
 const FooterContents = styled(Box)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-}));
+})) as typeof Box;
 
 const FooterLogo = styled(Typography)(() => ({
   fontSize: 36,
   fontStyle: 'italic',
   fontWeight: 700,
   color: '#dddddd',
-}));
+})) as typeof Typography;
 
 const LinkList = styled(Box)(() => ({
   display: 'flex',
@@ -34,7 +34,7 @@ const LinkList = styled(Box)(() => ({
   alignItems: 'center',
   px: 4,
   mb: 2,
-}));
+})) as typeof Box;
 
 const Footer = () => {
   return (
