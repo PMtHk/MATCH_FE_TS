@@ -4,15 +4,15 @@ import { Route, Routes } from 'react-router-dom';
 import Linear from 'components/loading/Linear';
 
 // lazy loading
-const LandingPage = lazy(() => import('pages/LandingPage'));
+const LandingPage = lazy(() => import('pages/landing'));
 
-const LoginPage = lazy(() => import('pages/LoginPage'));
-const LoginRedirect = lazy(() => import('pages/LoginPage/redirect'));
+const LoginPage = lazy(() => import('pages/login'));
+const LoginRedirect = lazy(() => import('pages/login/redirect'));
 
-const Register = lazy(() => import('pages/RegisterPage/index'));
-const Terms = lazy(() => import('pages/RegisterPage/Terms'));
-const Games = lazy(() => import('pages/RegisterPage/Games'));
-const SetFavoriteGame = lazy(() => import('pages/RegisterPage/SetFavGame'));
+const Register = lazy(() => import('pages/register/index'));
+const Terms = lazy(() => import('pages/register/Terms'));
+const Games = lazy(() => import('pages/register/Games'));
+const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
 
 const App = () => {
   return (
