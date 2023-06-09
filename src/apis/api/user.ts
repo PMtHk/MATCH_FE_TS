@@ -232,7 +232,6 @@ export const signup = async (
 
     navigate('/login');
   } catch (error: any) {
-    console.log(error);
     if (
       error.response.status === 400 &&
       error.response.data.message === '이미 존재하는 회원입니다.'
