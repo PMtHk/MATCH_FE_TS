@@ -127,20 +127,10 @@ const SetFavGame = () => {
     height: '100%',
   };
 
-  const handleNextBtn = async () => {
+  const handleNextBtn = () => {
     setIsPending(true);
     if (code) {
-      try {
-        await signup(code, navigate, dispatch);
-        setIsPending(false);
-      } catch (error: any) {
-        setIsPending(false);
-        if (error?.response?.status === 400 && error?.response?.data?.message) {
-          // 이미 존재하는 회원인 경우 에러 핸들링
-        } else {
-          // 그 외의 에러 핸들링
-        }
-      }
+      signup(code, navigate, dispatch);
     }
   };
 

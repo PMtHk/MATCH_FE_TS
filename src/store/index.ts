@@ -5,11 +5,13 @@ import { persistReducer } from 'redux-persist';
 import userSlice from './user-slice';
 import tokenSlice from './token-slice';
 import registerSlice from './register-slice';
+import snackbarSlice from './snackbar-slice';
 
 const reducers = combineReducers({
   user: userSlice.reducer,
   token: tokenSlice.reducer,
   register: registerSlice.reducer,
+  snackbar: snackbarSlice.reducer,
 });
 
 const persistConfig = {

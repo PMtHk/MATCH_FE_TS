@@ -7,6 +7,8 @@ import store from 'store/index';
 import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
 import { registerActions } from 'store/register-slice';
+import { snackbarActions } from 'store/snackbar-slice';
+import { AxiosError } from 'axios';
 
 interface IAccessTokenPayload {
   sub: string;
@@ -35,7 +37,6 @@ interface IAccessTokenPayload {
  * accessToken과 refreshToken을 각각 리덕스와 로컬 스토리지에 저장한다.
  *
  * 이후, accessToken decode 해 사용자 정보를 조회하고, 이를 리덕스에 저장한다.
- * 마지막으로 사용자 지정 선호게임으로 navigate 한다.
  */
 
 export const login = async (
@@ -44,44 +45,72 @@ export const login = async (
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
   // 인가코드로 카카오 액세스 토큰 발급
-  const {
-    data: { access_token: kakaoAccessToken },
-  } = await kakaoAxios.get('/oauth/token', {
-    params: {
-      redirect_uri: process.env.REACT_APP_REDIRECT_URI_LOGIN,
-      code,
-    },
-  });
+  try {
+    const {
+      data: { access_token: kakaoAccessToken },
+    } = await kakaoAxios.get('/oauth/token', {
+      params: {
+        redirect_uri: process.env.REACT_APP_REDIRECT_URI_LOGIN,
+        code,
+      },
+    });
 
-  // 액세스 토큰을 담아서 백엔드로 로그인 요청
-  const response = await defaultAxios.post('/api/user/signin', {
-    oauth2AccessToken: kakaoAccessToken,
-  });
+    // 액세스 토큰을 담아서 백엔드로 로그인 요청
+    const response = await defaultAxios.post('/api/user/signin', {
+      oauth2AccessToken: kakaoAccessToken,
+    });
 
-  // 요청의 결과로 받은 액세스 및 리프레시 토큰을 각각 리덕스와 로컬 스토리지에 저장
-  const { accessToken, refreshToken } = response.data;
-  dispatch(tokenActions.SET_TOKEN({ accessToken }));
-  localStorage.setItem('matchGG_refreshToken', refreshToken);
+    // 요청의 결과로 받은 액세스 및 리프레시 토큰을 각각 리덕스와 로컬 스토리지에 저장
+    const { accessToken, refreshToken } = response.data;
+    dispatch(tokenActions.SET_TOKEN({ accessToken }));
+    localStorage.setItem('matchGG_refreshToken', refreshToken);
 
-  const jwtPayload: IAccessTokenPayload = await jwtDecode<IAccessTokenPayload>(
-    accessToken,
-  );
-  const { nickname, oAuth2Id, imageUrl, representative } = jwtPayload;
-  dispatch(
-    userActions.SET_USER({
-      nickname,
-      oauth2Id: oAuth2Id,
-      profile_imageUrl: imageUrl,
-      representative: representative.toLowerCase() as 'lol' | 'pubg',
-    }),
-  );
+    const jwtPayload: IAccessTokenPayload =
+      jwtDecode<IAccessTokenPayload>(accessToken);
+    const { nickname, oAuth2Id, imageUrl, representative } = jwtPayload;
 
-  // 사용자 게임 닉네임 정보 조회 후 리덕스에 저장
-  await getUserGameInfo(dispatch);
+    dispatch(
+      userActions.SET_USER({
+        nickname,
+        oauth2Id: oAuth2Id,
+        profile_imageUrl: imageUrl,
+        representative: representative.toLowerCase() as 'lol' | 'pubg',
+      }),
+    );
 
-  // 사용자 지정 선호게임 페이지로 이동
-  const redirectToRepresentative = store.getState().user.representative;
-  navigate(`/${redirectToRepresentative || 'lol'}`);
+    // 사용자 게임 닉네임 정보 조회 후 리덕스에 저장
+    await getUserGameInfo(dispatch);
+
+    // snackbar 열기
+    dispatch(
+      snackbarActions.OPEN_SNACKBAR({
+        message: '로그인에 성공했습니다.',
+        severity: 'success',
+      }),
+    );
+
+    // 사용자 지정 선호게임 페이지로 이동
+    const redirectToRepresentative = store.getState().user.representative;
+    navigate(`/${redirectToRepresentative || 'lol'}`);
+  } catch (error: any) {
+    // 회원이 아닌 경우
+    if (error?.response?.status === 404) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '일치하는 회원정보가 없습니다.\n회원가입을 진행해주세요.',
+          severity: 'error',
+        }),
+      );
+      navigate('/register');
+    } else {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '로그인에 실패했습니다.',
+          severity: 'error',
+        }),
+      );
+    }
+  }
 };
 
 /**
@@ -122,17 +151,27 @@ export const verifyingNickname = async (
   game: 'lol' | 'pubg',
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
-  dispatch(registerActions.SET_GAMES_WITH_ID({ id: game, value: '' }));
+  try {
+    dispatch(registerActions.SET_GAMES_WITH_ID({ id: game, value: '' }));
 
-  const { data: exactNickname } = await defaultAxios.get(
-    `/api/${game}/user/exist/${nickname}`,
-  );
+    const { data: exactNickname } = await defaultAxios.get(
+      `/api/${game}/user/exist/${nickname}`,
+    );
 
-  dispatch(
-    registerActions.SET_GAMES_WITH_ID({ id: game, value: exactNickname }),
-  );
+    dispatch(
+      registerActions.SET_GAMES_WITH_ID({ id: game, value: exactNickname }),
+    );
 
-  return exactNickname;
+    return exactNickname;
+  } catch (error: any) {
+    dispatch(
+      snackbarActions.OPEN_SNACKBAR({
+        message: '닉네임을 확인할 수 없습니다.',
+        severity: 'error',
+      }),
+    );
+    return nickname;
+  }
 };
 
 /**
@@ -156,32 +195,62 @@ export const signup = async (
   navigate: ReturnType<typeof useNavigate>,
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
-  const { representative, games } = store.getState().register;
+  try {
+    const { representative, games } = store.getState().register;
 
-  // 인가코드로 카카오 액세스 토큰 발급
-  const {
-    data: { access_token: kakaoAccessToken },
-  } = await kakaoAxios.get('/oauth/token', {
-    params: {
-      redirect_uri: process.env.REACT_APP_REDIRECT_URI_REGISTER,
-      code,
-    },
-  });
+    // 인가코드로 카카오 액세스 토큰 발급
+    const {
+      data: { access_token: kakaoAccessToken },
+    } = await kakaoAxios.get('/oauth/token', {
+      params: {
+        redirect_uri: process.env.REACT_APP_REDIRECT_URI_REGISTER,
+        code,
+      },
+    });
 
-  // 백엔드에 회원가입 요청
-  await defaultAxios.post('/api/user/signup', {
-    oauth2AccessToken: kakaoAccessToken,
-    representative: representative.toUpperCase(),
-    lol: games.lol,
-    pubg: games.pubg,
-    overwatch: '',
-    lostark: '',
-    maplestory: '',
-  });
+    // 백엔드에 회원가입 요청
+    await defaultAxios.post('/api/user/signup', {
+      oauth2AccessToken: kakaoAccessToken,
+      representative: representative.toUpperCase(),
+      lol: games.lol,
+      pubg: games.pubg,
+      overwatch: '',
+      lostark: '',
+      maplestory: '',
+    });
 
-  // register-slice 내용 삭제
-  dispatch(registerActions.DELETE_REGISTER({}));
+    // register-slice 내용 삭제
+    dispatch(registerActions.DELETE_REGISTER({}));
 
-  // login 페이지로 이동
-  navigate('/lol');
+    // 회원가입 성공
+    dispatch(
+      snackbarActions.OPEN_SNACKBAR({
+        message: '회원가입에 성공했습니다. 로그인 해주세요.',
+        severity: 'success',
+      }),
+    );
+
+    navigate('/login');
+  } catch (error: any) {
+    console.log(error);
+    if (
+      error.response.status === 400 &&
+      error.response.data.message === '이미 존재하는 회원입니다.'
+    ) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '이미 존재하는 회원입니다.',
+          severity: 'error',
+        }),
+      );
+    } else {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '회원가입에 실패했습니다.',
+          severity: 'error',
+        }),
+      );
+    }
+    navigate('/login');
+  }
 };
