@@ -90,7 +90,7 @@ const PendingMessage = styled(Typography)(() => ({
   bottom: '150px',
   fontSize: '18px',
   fontWeight: 600,
-}));
+})) as typeof Typography;
 
 const SetFavGame = () => {
   const dispatch = useDispatch();
@@ -127,11 +127,10 @@ const SetFavGame = () => {
     height: '100%',
   };
 
-  const handleNextBtn = async () => {
+  const handleNextBtn = () => {
     setIsPending(true);
     if (code) {
-      await signup(code, navigate, dispatch);
-      setIsPending(false);
+      signup(code, navigate, dispatch);
     }
   };
 

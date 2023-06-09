@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { login } from 'apis/api/user';
 
 import Linear from 'components/loading/Linear';
+import { snackbarActions } from 'store/snackbar-slice';
 
 const Redirect = () => {
   const navigate = useNavigate();

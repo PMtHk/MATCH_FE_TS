@@ -25,7 +25,7 @@ const Wrapper = styled(Container)(({ theme }) => ({
     border: '1px solid #dddddd',
     borderRadius: '8px',
   },
-}));
+})) as typeof Container;
 
 const LogoTitle = styled(Typography)(({ theme }) => ({
   fontSize: '32px',
@@ -34,7 +34,7 @@ const LogoTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     fontSize: '44px',
   },
-}));
+})) as typeof Typography;
 
 const ButtonWrapper = styled(Box)(() => ({
   display: 'flex',
@@ -42,7 +42,7 @@ const ButtonWrapper = styled(Box)(() => ({
   alignItems: 'center',
   justifyContent: 'center',
   gap: 20,
-}));
+})) as typeof Box;
 
 const Typo = styled(Typography)(({ theme }) => ({
   fontSize: '18px',
@@ -53,7 +53,7 @@ const Typo = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('md')]: {
     fontSize: '26px',
   },
-}));
+})) as typeof Typography;
 
 const KakaoLoginBtn = styled(Button)(({ theme }) => ({
   width: '300px',
@@ -77,7 +77,7 @@ const KakaoLoginBtn = styled(Button)(({ theme }) => ({
   '&: hover': {
     backgroundColor: '#e3cd07',
   },
-}));
+})) as typeof Button;
 
 const RegisterBtn = styled(Button)(({ theme }) => ({
   width: '300px',
@@ -99,12 +99,12 @@ const RegisterBtn = styled(Button)(({ theme }) => ({
     width: '380px',
     height: '48px',
   },
-}));
+})) as typeof Button;
 
 const CopyRight = styled(Typography)(() => ({
   fontSize: '16px',
   fontWeight: 500,
-}));
+})) as typeof Typography;
 
 const Login = () => {
   return (

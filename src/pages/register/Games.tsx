@@ -21,7 +21,7 @@ const Wrapper = styled(Box)(() => ({
   justifyContent: 'flex-start',
   overflowY: 'auto',
   height: '100%',
-}));
+})) as typeof Box;
 
 const Title = styled(Typography)(({ theme }) => ({
   fontSize: '18px',
@@ -29,7 +29,7 @@ const Title = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     fontSize: '22px',
   },
-}));
+})) as typeof Typography;
 
 const SubTitle = styled(Typography)(({ theme }) => ({
   fontSize: '14px',
@@ -39,7 +39,7 @@ const SubTitle = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     fontSize: '16px',
   },
-}));
+})) as typeof Typography;
 
 const NextButton = styled(Button)(() => ({
   position: 'relative',
@@ -56,7 +56,7 @@ const NextButton = styled(Button)(() => ({
   '&.Mui-disabled': {
     backgroundColor: '#d1d4db',
   },
-}));
+})) as typeof Button;
 
 const Games = () => {
   const navigate = useNavigate();

@@ -28,7 +28,7 @@ const Wrapper = styled(Box)(({ theme }) => ({
   },
   fontWeight: 600,
   '&:hover': {},
-}));
+})) as typeof Box;
 
 const Text = styled(Typography)(({ theme }) => ({
   color: '#5e6064',
@@ -40,7 +40,7 @@ const Text = styled(Typography)(({ theme }) => ({
     fontSize: 40,
   },
   fontWeight: 600,
-}));
+})) as typeof Typography;
 
 const GameList = styled(Box)(() => ({
   marginTop: '50px',
@@ -48,7 +48,7 @@ const GameList = styled(Box)(() => ({
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
-}));
+})) as typeof Box;
 
 const GameSupport = () => {
   const navigate = useNavigate();

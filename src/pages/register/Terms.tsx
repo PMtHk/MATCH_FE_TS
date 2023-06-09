@@ -25,7 +25,7 @@ const Wrapper = styled(Box)(() => ({
   justifyContent: 'flex-start',
   overflowY: 'auto',
   height: '100%',
-}));
+})) as typeof Box;
 
 const FormControlLabelTypo = styled(Typography)(({ theme }) => ({
   fontSize: '18px',
@@ -33,11 +33,11 @@ const FormControlLabelTypo = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     fontSize: '22px',
   },
-}));
+})) as typeof Typography;
 
 const InnerWrapper = styled(Box)(() => ({
   margin: '15px 15px 20px 0',
-}));
+})) as typeof Box;
 
 const Description = styled(Typography)(({ theme }) => ({
   margin: '0  20px  0 20px',
@@ -47,7 +47,7 @@ const Description = styled(Typography)(({ theme }) => ({
   [theme.breakpoints.up('sm')]: {
     fontSize: '16px',
   },
-}));
+})) as typeof Typography;
 
 const Contents = styled(Box)(() => ({
   margin: '0  0  0 20px',
@@ -58,7 +58,7 @@ const Contents = styled(Box)(() => ({
   overflowY: 'scroll',
   border: '1px solid #dddddd',
   borderRadius: '8px',
-}));
+})) as typeof Box;
 
 const NextButton = styled(Button)(() => ({
   position: 'relative',
@@ -76,7 +76,7 @@ const NextButton = styled(Button)(() => ({
   '&.Mui-disabled': {
     backgroundColor: '#d1d4db',
   },
-}));
+})) as typeof Button;
 
 const Terms = () => {
   const navigate = useNavigate();
