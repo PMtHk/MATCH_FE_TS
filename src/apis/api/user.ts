@@ -73,7 +73,7 @@ export const login = async (
       userActions.SET_USER({
         nickname,
         oauth2Id: oAuth2Id,
-        profile_imageUrl: imageUrl,
+        profileImage: imageUrl,
         representative: representative.toLowerCase() as 'lol' | 'pubg',
       }),
     );

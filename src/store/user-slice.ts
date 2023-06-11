@@ -5,7 +5,7 @@ type representative = 'lol' | 'pubg';
 interface IState {
   nickname: string;
   oauth2Id: string;
-  profile_imageUrl: string;
+  profileImage: string;
   representative: representative | '';
   games: {
     lol: string;
@@ -18,7 +18,7 @@ interface ISet_User {
   payload: {
     nickname: string;
     oauth2Id: string;
-    profile_imageUrl: string;
+    profileImage: string;
     representative: representative;
   };
 }
@@ -48,7 +48,7 @@ interface ISet_Games_With_Id {
 const initialState: IState = {
   nickname: '', // 카카오톡 닉네임
   oauth2Id: '', // kakao oauth id
-  profile_imageUrl: '', // 카카오톡 프로필 이미지
+  profileImage: '', // 카카오톡 프로필 이미지
   representative: '', // 대표게임
   games: {
     lol: '', // 롤 소환사명
@@ -64,7 +64,7 @@ const userSlice = createSlice({
     SET_USER: (state, action: ISet_User) => {
       state.nickname = action.payload.nickname;
       state.oauth2Id = action.payload.oauth2Id;
-      state.profile_imageUrl = action.payload.profile_imageUrl;
+      state.profileImage = action.payload.profileImage;
       state.representative = action.payload.representative;
       state.isLogin = true;
     },
@@ -80,7 +80,7 @@ const userSlice = createSlice({
     DELETE_USER: (state, _action) => {
       state.nickname = '';
       state.oauth2Id = '';
-      state.profile_imageUrl = '';
+      state.profileImage = '';
       state.representative = '';
       state.games = {
         lol: '',
