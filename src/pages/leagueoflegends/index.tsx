@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, Route, Routes } from 'react-router-dom';
 
-import Header from '../../components/header';
+import Main from './main';
 
 const LeagueOfLegends = () => {
   const location = useLocation();
@@ -10,15 +10,7 @@ const LeagueOfLegends = () => {
   return (
     <>
       <Routes location={background || location}>
-        <Route
-          path="/*"
-          element={
-            <>
-              <Header game="lol" />
-              aa aa
-            </>
-          }
-        />
+        <Route path="/*" element={<Main />} />
         <Route path=":id" element={<div>a</div>} />
       </Routes>
       {background && (

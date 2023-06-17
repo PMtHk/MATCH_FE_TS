@@ -8,14 +8,15 @@ import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-import { AxiosError } from 'axios';
+
+import { GAME_ID } from 'assets/Games.data';
 
 interface IAccessTokenPayload {
   sub: string;
   oAuth2Id: string;
   nickname: string;
   imageUrl: string;
-  representative: 'LOL' | 'PUBG';
+  representative: 'LOL' | 'PUBG' | 'VALORANT';
   iat: number;
   exp: number;
 }
@@ -138,7 +139,7 @@ export const getUserGameInfo = async (
  * 사용자 게임별 닉네임 등록 여부 확인
  *
  * @param {string} nickname - 사용자가 입력한 닉네임
- * @param {'lol' | 'pubg'} game - 게임 id
+ * @param {GAME_ID} game - 게임 id
  * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
  * @returns {string} - 백엔드에서 조회한 사용자의 닉네임 (정확한 닉네임)
  *
@@ -148,7 +149,7 @@ export const getUserGameInfo = async (
 
 export const verifyingNickname = async (
   nickname: string,
-  game: 'lol' | 'pubg',
+  game: GAME_ID,
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
   try {

@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 
 import { RootState } from 'store';
 import GameInput from './GameInput';
-import { gameList } from './Games.data';
+import { gameList } from '../../assets/Games.data';
 
 const Wrapper = styled(Box)(() => ({
   width: '100%',

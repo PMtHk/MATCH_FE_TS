@@ -16,7 +16,7 @@ import { RootState } from 'store';
 // import types
 import { Typography } from '@mui/material';
 import { verifyingNickname } from 'apis/api/user';
-import { GAME } from './Games.data';
+import { GAME } from '../../assets/Games.data';
 
 const GameWrapper = styled(Box)(() => ({
   width: '100%',

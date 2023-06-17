@@ -23,14 +23,15 @@ import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
 
 import GameIcon from 'components/GameIcon';
+import { GAME_ID } from 'assets/Games.data';
 import UserMenu from './UserMenu';
 import GameMenu from './GameMenu';
 
 interface HeaderProps {
-  game: 'lol' | 'pubg';
+  currentGame: GAME_ID;
 }
 
-const Header = ({ game }: HeaderProps) => {
+const Header = ({ currentGame }: HeaderProps) => {
   const navigate = useNavigate();
 
   const { isLogin } = useSelector((state: RootState) => state.user);
@@ -102,7 +103,7 @@ const Header = ({ game }: HeaderProps) => {
           </MVMenu>
           {/* 위는 모바일 뷰를 위한 슬라이더 아래는 웹뷰 */}
           <MatchGGLogo>MatchGG</MatchGGLogo>
-          <GameMenu currentGame={game} />
+          <GameMenu currentGame={currentGame} />
           {isLogin && <UserMenu />}
           {!isLogin && (
             <LoginBtnWrapper

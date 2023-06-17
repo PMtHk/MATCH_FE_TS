@@ -13,10 +13,11 @@ import MuiMenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
 // gameList
-import { gameList, GAME } from 'pages/register/Games.data';
+import GameIcon from 'components/GameIcon';
+import { gameList, GAME, GAME_ID } from '../../assets/Games.data';
 
 interface GameMenuProps {
-  currentGame: 'lol' | 'pubg';
+  currentGame: GAME_ID;
 }
 
 const GameMenu = ({ currentGame }: GameMenuProps) => {
@@ -51,25 +52,30 @@ const GameMenu = ({ currentGame }: GameMenuProps) => {
         open={isGameMenuOpen}
         onClose={closeUserMenu}
         PaperProps={{
-          style: {
-            width: '140px',
-          },
+          style: { width: '160px' },
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'left',
         }}
       >
         {gameList.map((aGame, _) => {
-          if (aGame.id !== currentGame) {
-            return (
-              <MuiMenuItem
-                key={aGame.id}
-                onClick={() => {
-                  navigate(`/${aGame.id}`);
-                }}
-              >
-                {aGame.name_kor}
-              </MuiMenuItem>
-            );
-          }
-          return null;
+          return (
+            <MuiMenuItem
+              key={aGame.id}
+              onClick={() => {
+                navigate(`/${aGame.id}`);
+              }}
+              sx={{ gap: '10px' }}
+            >
+              <GameIcon
+                id={aGame.id}
+                item={aGame.name.toLowerCase().split(' ').join('')}
+                size={{ width: '20px', height: '20px' }}
+              />
+              {aGame.name_kor}
+            </MuiMenuItem>
+          );
         })}
       </MuiMenu>
       <TextMenuBtn>파티찾기</TextMenuBtn>
