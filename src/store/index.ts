@@ -6,12 +6,14 @@ import userSlice from './user-slice';
 import tokenSlice from './token-slice';
 import registerSlice from './register-slice';
 import snackbarSlice from './snackbar-slice';
+import cardSlice from './card-slice';
 
 const reducers = combineReducers({
   user: userSlice.reducer,
   token: tokenSlice.reducer,
   register: registerSlice.reducer,
   snackbar: snackbarSlice.reducer,
+  card: cardSlice.reducer,
 });
 
 const persistConfig = {

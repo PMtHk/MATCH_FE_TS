@@ -47,7 +47,7 @@ const GameTypo = styled(MuiTypography)(({ theme }) => ({
   textAlign: 'center',
   fontStyle: 'italic',
   fontWeight: '600',
-  margin: '0 20px 40px 20px',
+  margin: '0 20px 20px 20px',
   [theme.breakpoints.up('sm')]: {
     fontSize: 48,
   },

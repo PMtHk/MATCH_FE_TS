@@ -9,6 +9,24 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import { Container } from '@mui/material';
 
+interface CircularProps {
+  text: string;
+  height: string;
+}
+
+const Circular = ({ text, height }: CircularProps) => {
+  return (
+    <Container maxWidth="sm">
+      <CircularWrapper height={height}>
+        <CircularProgress color="inherit" />
+        <Text>{text}</Text>
+      </CircularWrapper>
+    </Container>
+  );
+};
+
+export default Circular;
+
 interface CircularWrapperProps {
   height: string;
 }
@@ -28,21 +46,3 @@ const Text = styled(Typography)(() => ({
   fontSize: 20,
   fontWeight: 700,
 })) as typeof Typography;
-
-interface CircularProps {
-  text: string;
-  height: string;
-}
-
-const Circular = ({ text, height }: CircularProps) => {
-  return (
-    <Container maxWidth="sm">
-      <CircularWrapper height={height}>
-        <CircularProgress color="inherit" />
-        <Text>{text}</Text>
-      </CircularWrapper>
-    </Container>
-  );
-};
-
-export default Circular;

@@ -12,7 +12,7 @@ import MuiMenuItem from '@mui/material/MenuItem';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 
-import { positionList, queueTypeList, tierList } from './CardFilter.data';
+import { positionList, queueTypeList, tierList } from './data';
 
 interface CardFilterProps {
   filterProps: {
@@ -55,7 +55,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           <MuiSelect id="tier-type-select" value={tier} onChange={handleTier}>
             {tierList.map((item, index) => {
               if (queueType === 'DUO_RANK') {
-                if (index > 3) {
+                if (index > 3 || index === 0) {
                   return (
                     <MuiMenuItem key={item.value} value={item.value}>
                       {item.label}
@@ -79,6 +79,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           value={lane}
           onChange={handleLane}
           disabled={queueType === 'ARAM'}
+          exclusive
         >
           {positionList.map((item, _) => {
             return (
