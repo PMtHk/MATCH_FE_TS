@@ -7,22 +7,94 @@ export const queueTypeList = [
 ];
 
 export const tierList = [
-  { value: 'ALL', label: '모든 티어', color: '#000000', acronym: 'ALL' },
-  { value: 'CHALLENGER', label: '챌린저', color: '#F4C875', acronym: 'C' },
+  {
+    value: 'ALL',
+    label: '모든 티어',
+    color: '#000000',
+    acronym: 'ALL',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/unranked.png',
+  },
+  {
+    value: 'CHALLENGER',
+    label: '챌린저',
+    color: '#F4C875',
+    acronym: 'C',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/challenger.png',
+  },
   {
     value: 'GRANDMASTER',
     label: '그랜드마스터',
     color: '#CD4545',
     acronym: 'GM',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/grandmaster.png',
   },
-  { value: 'MASTER', label: '마스터', color: '#9A4E80', acronym: 'M' },
-  { value: 'DIAMOND', label: '다이아몬드', color: '#576BCE', acronym: 'D' },
-  { value: 'PLATINUM', label: '플래티넘', color: '#4E9996', acronym: 'P' },
-  { value: 'GOLD', label: '골드', color: '#CD8837', acronym: 'G' },
-  { value: 'SILVER', label: '실버', color: '#80989D', acronym: 'S' },
-  { value: 'BRONZE', label: '브론즈', color: '#8C513A', acronym: 'B' },
-  { value: 'IRON', label: '아이언', color: '#51484A', acronym: 'I' },
-  { value: 'UNRANKED', label: '언랭크드', color: '#000000', acronym: 'U' },
+  {
+    value: 'MASTER',
+    label: '마스터',
+    color: '#9A4E80',
+    acronym: 'M',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/master.png',
+  },
+  {
+    value: 'DIAMOND',
+    label: '다이아몬드',
+    color: '#576BCE',
+    acronym: 'D',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/diamond.png',
+  },
+  {
+    value: 'PLATINUM',
+    label: '플래티넘',
+    color: '#4E9996',
+    acronym: 'P',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/platinum.png',
+  },
+  {
+    value: 'GOLD',
+    label: '골드',
+    color: '#CD8837',
+    acronym: 'G',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/gold.png',
+  },
+  {
+    value: 'SILVER',
+    label: '실버',
+    color: '#80989D',
+    acronym: 'S',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/silver.png',
+  },
+  {
+    value: 'BRONZE',
+    label: '브론즈',
+    color: '#8C513A',
+    acronym: 'B',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/bronze.png',
+  },
+  {
+    value: 'IRON',
+    label: '아이언',
+    color: '#51484A',
+    acronym: 'I',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/iron.png',
+  },
+  {
+    value: 'UNRANKED',
+    label: '언랭크드',
+    color: '#000000',
+    acronym: 'U',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/unranked.png',
+  },
 ];
 
 export type positionValue =

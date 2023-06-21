@@ -5,12 +5,16 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiDivider from '@mui/material/Divider';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 
 // mui icons
 import CheckIcon from '@mui/icons-material/Check';
+import MicIcon from '@mui/icons-material/Mic';
 
 import CardContainer from 'components/CardContainer';
 import Timer, { EXPIRE_TYPE } from 'components/Timer';
+
 import { positionList, positionValue, queueTypeList, tierList } from './data';
 
 interface CardProps {
@@ -33,7 +37,7 @@ interface CardProps {
       leaguePoints: number;
       wins: number;
       losses: number;
-      mostChampions: [];
+      mostChampion: string[];
       mostLane: string;
     };
     chatRoomId: string;
@@ -54,6 +58,28 @@ const Card = ({ item }: CardProps) => {
   const queueType = queueTypeList.find(
     (aQueueType) => aQueueType.value === item.type,
   );
+
+  // author info
+  const mostLane = positionList.find(
+    (aPosition) => aPosition.value === item.author.mostLane,
+  );
+
+  const authorTier = tierList.find((aTier) => aTier.value === item.author.tier);
+
+  const authorRank = (item: { author: { rank: string } }) => {
+    switch (item.author.rank) {
+      case 'I':
+        return 1;
+      case 'II':
+        return 2;
+      case 'III':
+        return 3;
+      case 'IV':
+        return 4;
+      default:
+        return 4;
+    }
+  };
 
   const maxMember = queueType?.maxMember || 5;
   const currentMember = item.memberList.length;
@@ -120,6 +146,72 @@ const Card = ({ item }: CardProps) => {
         </CardCenterWrapper>
         {/* ------------------------------------------------------ */}
         <MuiDivider sx={{ my: 1 }} />
+        <AuthorInfoWrapper>
+          <AuthorSection>
+            <SectionName>작성자</SectionName>
+            <SectionContent>
+              <SectionTypo>{item.author.summonerName}</SectionTypo>
+              {item.voice === 'Y' && (
+                <MicIcon
+                  fontSize="small"
+                  sx={{
+                    border: '1px solid black',
+                    borderRadius: '50%',
+                    margin: '0 0 0 4px',
+                  }}
+                />
+              )}
+            </SectionContent>
+          </AuthorSection>
+          <AuthorSection>
+            <SectionName>주 포지션</SectionName>
+            <SectionContent>
+              <img
+                src={mostLane?.imageUrl}
+                alt={mostLane?.value}
+                width="24px"
+                height="24px"
+              />
+              <SectionTypo>{mostLane?.label}</SectionTypo>
+            </SectionContent>
+          </AuthorSection>
+          <AuthorSection>
+            <SectionName>티어</SectionName>
+            <SectionContent>
+              <img
+                src={authorTier?.imageUrl}
+                alt={mostLane?.value}
+                width="28px"
+                height="20px"
+              />
+              <SectionTypo sx={{ color: authorTier?.color }}>
+                {authorTier?.acronym}
+                {authorRank(item)}-{item.author.leaguePoints}LP
+              </SectionTypo>
+            </SectionContent>
+          </AuthorSection>
+          <AuthorSection>
+            <SectionName>모스트 챔피언</SectionName>
+            <SectionContent>
+              <ImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
+                {item.author.mostChampion.map((aChampion, index) => {
+                  return (
+                    <ImageListItem
+                      key={aChampion}
+                      sx={{ width: '32px', height: '32px' }}
+                    >
+                      <img
+                        src={`http://ddragon.leagueoflegends.com/cdn/11.16.1/img/champion/${aChampion}.png`}
+                        alt={aChampion}
+                        loading="lazy"
+                      />
+                    </ImageListItem>
+                  );
+                })}
+              </ImageList>
+            </SectionContent>
+          </AuthorSection>
+        </AuthorInfoWrapper>
       </CardContainer>
     </div>
   );
@@ -139,6 +231,7 @@ const CardTitle = styled(MuiBox)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
+  margin: '0 0 0 4px',
 })) as typeof MuiBox;
 
 const TopInfo = styled(MuiBox)(() => ({
@@ -185,7 +278,7 @@ const RecruitStatusWrapper = styled(MuiBox)(() => ({
   height: '100%',
   display: 'flex',
   alignItems: 'center',
-  padding: '0 0 0 40px',
+  padding: '0 0 0 44px',
   justifyContent: 'space-between',
 })) as typeof MuiBox;
 
@@ -213,3 +306,39 @@ const Check = styled(CheckIcon)(() => ({
 }));
 
 const TimerWrapper = styled(MuiBox)(() => ({})) as typeof MuiBox;
+
+const AuthorInfoWrapper = styled(MuiBox)(() => ({
+  width: '100%',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  flexWrap: 'wrap',
+})) as typeof MuiBox;
+
+const AuthorSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+})) as typeof MuiBox;
+
+const SectionName = styled(MuiTypography)(() => ({
+  minWidth: '160px',
+  fontSize: '12px',
+  fontWeight: '700',
+  color: '#999999',
+  margin: '0 0 4px 0',
+})) as typeof MuiTypography;
+
+const SectionContent = styled(MuiBox)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  gap: '4px',
+})) as typeof MuiBox;
+
+const SectionTypo = styled(MuiTypography)(() => ({
+  fontSize: '14px',
+  fontWeight: '500',
+  color: '#000000',
+})) as typeof MuiTypography;

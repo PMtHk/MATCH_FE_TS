@@ -80,6 +80,11 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           onChange={handleLane}
           disabled={queueType === 'ARAM'}
           exclusive
+          sx={{
+            '& > *': {
+              padding: '0',
+            },
+          }}
         >
           {positionList.map((item, _) => {
             return (

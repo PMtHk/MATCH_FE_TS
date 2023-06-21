@@ -22,7 +22,7 @@ const CardContainer = ({ children }: CardProps) => {
 export default CardContainer;
 
 const CardLayout = styled(MuiCard)(() => ({
-  width: '376px',
+  width: '360px',
   borderRadius: '8px',
   boxShadow: 'none',
   border: '1px solid #dddddd',
