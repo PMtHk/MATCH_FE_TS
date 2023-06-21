@@ -38,7 +38,7 @@ const CardListFetcher = ({
     };
 
     fetchCards();
-  }, [lane, queueType, tier, resetBoundary]);
+  }, [lane, queueType, tier]);
 
   return <div>{children}</div>;
 };

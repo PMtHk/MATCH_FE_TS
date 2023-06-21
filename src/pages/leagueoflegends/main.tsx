@@ -1,5 +1,5 @@
 /* eslint-disable react/button-has-type */
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 // mui
@@ -9,6 +9,7 @@ import { SelectChangeEvent } from '@mui/material/Select';
 
 import ErrorFallback from 'components/errorFallback/ErrorFallback';
 import Circular from 'components/loading/Circular';
+import { Outlet } from 'react-router-dom';
 import CardFilter from './CardFilter';
 import CardListContainer from './CardListContainer';
 import CardListFetcher from './CardListFetcher';
@@ -58,18 +59,17 @@ const Main = () => {
   };
 
   return (
-    <Layout currentGame="lol">
-      <CardFilter filterProps={filterProps} />
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <React.Suspense
-          fallback={<Circular text="불러오는 중..." height="100%" />}
-        >
+    <>
+      <Layout currentGame="lol">
+        <CardFilter filterProps={filterProps} />
+        <ErrorBoundary FallbackComponent={ErrorFallback}>
           <CardListFetcher fetcherProps={fetcherProps}>
             <CardListContainer />
           </CardListFetcher>
-        </React.Suspense>
-      </ErrorBoundary>
-    </Layout>
+        </ErrorBoundary>
+      </Layout>
+      <Outlet />
+    </>
   );
 };
 
