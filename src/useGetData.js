@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { defaultAxios } from 'apis/utils';
 
 const promiseWrapper = (promise) => {
@@ -31,7 +30,7 @@ const promiseWrapper = (promise) => {
   };
 };
 
-function useGetData(url, config) {
+export function fetchCardList(url, config, deps) {
   const [resource, setResource] = useState(null);
 
   useEffect(() => {
@@ -43,9 +42,7 @@ function useGetData(url, config) {
     };
 
     getData();
-  }, [url]);
+  }, deps);
 
   return resource;
 }
-
-export default useGetData;

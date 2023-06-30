@@ -1,5 +1,5 @@
 /* eslint-disable react/button-has-type */
-import React, { Suspense } from 'react';
+import React, { Suspense, useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 // mui
