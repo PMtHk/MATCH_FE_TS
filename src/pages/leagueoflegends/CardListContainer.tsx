@@ -15,18 +15,19 @@ const CardListContainer = () => {
 
   return (
     <CardsWrapper>
-      {cards.map((aCard: any, _) => {
-        return (
-          <Link
-            key={aCard.id}
-            to={`${aCard.id}`}
-            state={{ background: location }}
-            style={{ textDecoration: 'none', background: 'fixed' }}
-          >
-            <Card item={aCard} key={aCard.id} />
-          </Link>
-        );
-      })}
+      {cards &&
+        cards.map((aCard: any, _) => {
+          return (
+            <Link
+              key={aCard.id}
+              to={`${aCard.id}`}
+              state={{ background: location }}
+              style={{ textDecoration: 'none', background: 'fixed' }}
+            >
+              <Card item={aCard} key={aCard.id} />
+            </Link>
+          );
+        })}
     </CardsWrapper>
   );
 };

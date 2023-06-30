@@ -63,7 +63,11 @@ const Main = () => {
       <Layout currentGame="lol">
         <CardFilter filterProps={filterProps} />
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-          <Suspense fallback={<p>test suspense</p>}>
+          <Suspense
+            fallback={
+              <Circular text="게시글을 불러오는 중입니다." height="500px" />
+            }
+          >
             <CardListFetcher fetcherProps={fetcherProps}>
               <CardListContainer />
             </CardListFetcher>
