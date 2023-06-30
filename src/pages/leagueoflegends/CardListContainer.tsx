@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // mui
@@ -9,12 +10,22 @@ import { RootState } from 'store';
 import Card from './Card';
 
 const CardListContainer = () => {
+  const location = useLocation();
   const { cards } = useSelector((state: RootState) => state.card);
 
   return (
     <CardsWrapper>
       {cards.map((aCard: any, _) => {
-        return <Card item={aCard} key={aCard.id} />;
+        return (
+          <Link
+            key={aCard.id}
+            to={`${aCard.id}`}
+            state={{ background: location }}
+            style={{ textDecoration: 'none', background: 'fixed' }}
+          >
+            <Card item={aCard} key={aCard.id} />
+          </Link>
+        );
       })}
     </CardsWrapper>
   );

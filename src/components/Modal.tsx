@@ -38,8 +38,9 @@ const ModalContainer = styled(MuiBox)(() => ({
 
 const ModalWrapper = styled(MuiBox)(() => ({
   backgroundColor: '#eeeeee',
-  borderRadius: '8px',
+  borderRadius: '4px',
   minHeight: '600px',
+  minWidth: '400px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',

@@ -25,6 +25,9 @@ const cardSlice = createSlice({
     SET_CURRENT_CARD: (state, action) => {
       state.currentCard = action.payload;
     },
+    DELETE_CURRENT_CARD: (state) => {
+      state.currentCard = {};
+    },
   },
 });
 

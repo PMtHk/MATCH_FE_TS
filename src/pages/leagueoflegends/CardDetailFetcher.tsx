@@ -1,43 +1,27 @@
 import React from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useErrorBoundary } from 'react-error-boundary';
 
-import { defaultAxios } from 'apis/utils';
+import { useGetData } from 'useGetData';
 import { cardActions } from 'store/card-slice';
+import CardDetailContainer from './CardDetailContainer';
 
-interface CardDetailFetcherProps {
-  children: React.ReactNode;
-}
+// interface CardDetailFetcherProps {
+//   children: React.ReactNode;
+// }
 
-const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
+const CardDetailFetcher = () => {
   const dispatch = useDispatch();
-  const location = useLocation();
-
-  const { showBoundary, resetBoundary } = useErrorBoundary();
-  const currentGame = location.pathname.split('/')[1].toLowerCase();
 
   const params = useParams();
   const { id: cardId } = params;
 
-  React.useEffect(() => {
-    const fetchCardDetail = async () => {
-      resetBoundary();
+  if (cardId) {
+    const response: any = useGetData(`/api/lol/boards/${cardId}`);
+  }
 
-      await defaultAxios
-        .get(`/api/${currentGame}/boards/${cardId}`)
-        .then((response) => {
-          dispatch(cardActions.SET_CURRENT_CARD(response.data));
-        })
-        .catch((error) => {
-          showBoundary(error);
-        });
-    };
-
-    fetchCardDetail();
-  }, []);
-
-  return <div>{children}</div>;
+  return <CardDetailContainer />;
 };
 
 export default CardDetailFetcher;

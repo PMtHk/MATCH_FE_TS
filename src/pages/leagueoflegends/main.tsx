@@ -63,9 +63,11 @@ const Main = () => {
       <Layout currentGame="lol">
         <CardFilter filterProps={filterProps} />
         <ErrorBoundary FallbackComponent={ErrorFallback}>
-          <CardListFetcher fetcherProps={fetcherProps}>
-            <CardListContainer />
-          </CardListFetcher>
+          <Suspense fallback={<p>test suspense</p>}>
+            <CardListFetcher fetcherProps={fetcherProps}>
+              <CardListContainer />
+            </CardListFetcher>
+          </Suspense>
         </ErrorBoundary>
       </Layout>
       <Outlet />

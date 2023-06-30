@@ -13,7 +13,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import MicIcon from '@mui/icons-material/Mic';
 
 import CardContainer from 'components/CardContainer';
-import Timer, { EXPIRE_TYPE } from 'components/Timer';
+import Timer, { EXPIRE_TYPE } from 'components/CountDownTimer';
 
 import { positionList, positionValue, queueTypeList, tierList } from './data';
 
@@ -66,6 +66,9 @@ const Card = ({ item }: CardProps) => {
 
   const authorTier = tierList.find((aTier) => aTier.value === item.author.tier);
 
+  const totalPlayed = item.author.wins + item.author.losses;
+  const winRate = Math.round((item.author.wins / totalPlayed) * 100);
+
   const authorRank = (item: { author: { rank: string } }) => {
     switch (item.author.rank) {
       case 'I':
@@ -96,13 +99,15 @@ const Card = ({ item }: CardProps) => {
     >
       <CardContainer>
         <CardTitleWrapper>
-          <img
-            src={position?.imageUrl || ''}
-            alt="ranked_emblem"
-            loading="lazy"
-            height="40px"
-            width="40px"
-          />
+          <ImgMixBlendMode>
+            <img
+              src={position?.imageUrl || ''}
+              alt="ranked_emblem"
+              loading="lazy"
+              height="40px"
+              width="40px"
+            />
+          </ImgMixBlendMode>
           <CardTitle>
             <TopInfo>
               <TopInfoTypo>#{queueType?.label || '모든큐'}</TopInfoTypo>
@@ -150,7 +155,7 @@ const Card = ({ item }: CardProps) => {
           <AuthorSection>
             <SectionName>작성자</SectionName>
             <SectionContent>
-              <SectionTypo>{item.author.summonerName}</SectionTypo>
+              <Author>{item.author.summonerName}</Author>
               {item.voice === 'Y' && (
                 <MicIcon
                   fontSize="small"
@@ -166,28 +171,43 @@ const Card = ({ item }: CardProps) => {
           <AuthorSection>
             <SectionName>주 포지션</SectionName>
             <SectionContent>
-              <img
-                src={mostLane?.imageUrl}
-                alt={mostLane?.value}
-                width="24px"
-                height="24px"
-              />
+              <ImgMixBlendMode>
+                <img
+                  src={mostLane?.imageUrl}
+                  alt={mostLane?.value}
+                  width="24px"
+                  height="24px"
+                />
+              </ImgMixBlendMode>
               <SectionTypo>{mostLane?.label}</SectionTypo>
             </SectionContent>
           </AuthorSection>
           <AuthorSection>
             <SectionName>티어</SectionName>
             <SectionContent>
-              <img
-                src={authorTier?.imageUrl}
-                alt={mostLane?.value}
-                width="28px"
-                height="20px"
-              />
-              <SectionTypo sx={{ color: authorTier?.color }}>
-                {authorTier?.acronym}
-                {authorRank(item)}-{item.author.leaguePoints}LP
-              </SectionTypo>
+              <RankEmblemWrapper>
+                <img
+                  src={authorTier?.imageUrl}
+                  alt={mostLane?.value}
+                  width="28px"
+                  height="20px"
+                />
+              </RankEmblemWrapper>
+              <TierWinRateWrapper>
+                <SectionTypo sx={{ color: authorTier?.color }}>
+                  {authorTier?.acronym}
+                  {authorRank(item)}-{item.author.leaguePoints}LP
+                </SectionTypo>
+                <MatchPlayed>
+                  {item.author?.wins}승 {item.author?.losses}패
+                  <WinRate
+                    component="span"
+                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                  >
+                    ({winRate}%)
+                  </WinRate>
+                </MatchPlayed>
+              </TierWinRateWrapper>
             </SectionContent>
           </AuthorSection>
           <AuthorSection>
@@ -198,10 +218,14 @@ const Card = ({ item }: CardProps) => {
                   return (
                     <ImageListItem
                       key={aChampion}
-                      sx={{ width: '32px', height: '32px' }}
+                      sx={{
+                        width: '36px',
+                        height: '44px',
+                        gap: 1,
+                      }}
                     >
                       <img
-                        src={`http://ddragon.leagueoflegends.com/cdn/11.16.1/img/champion/${aChampion}.png`}
+                        src={`https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/${aChampion.toLowerCase()}.jpg`}
                         alt={aChampion}
                         loading="lazy"
                       />
@@ -225,6 +249,12 @@ const CardTitleWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-start',
+})) as typeof MuiBox;
+
+const ImgMixBlendMode = styled(MuiBox)(() => ({
+  '& > img': {
+    mixBlendMode: 'exclusion',
+  },
 })) as typeof MuiBox;
 
 const CardTitle = styled(MuiBox)(() => ({
@@ -337,8 +367,46 @@ const SectionContent = styled(MuiBox)(() => ({
   gap: '4px',
 })) as typeof MuiBox;
 
+const Author = styled(MuiTypography)(() => ({
+  fontSize: '16px',
+  fontWeight: '600',
+  color: '#000000',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})) as typeof MuiTypography;
+
 const SectionTypo = styled(MuiTypography)(() => ({
   fontSize: '14px',
   fontWeight: '500',
   color: '#000000',
+})) as typeof MuiTypography;
+
+const RankEmblemWrapper = styled(MuiBox)(() => ({
+  backgroundColor: '#eeeeee',
+  borderRadius: '50%',
+  width: '44px',
+  height: '44px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
+
+const TierWinRateWrapper = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'center',
+  padding: '0 0 0 4px',
+})) as typeof MuiBox;
+
+const MatchPlayed = styled(MuiTypography)(() => ({
+  fontSize: '12px',
+  fontWeight: '500',
+  color: '#000000',
+})) as typeof MuiTypography;
+
+const WinRate = styled(MuiTypography)(() => ({
+  fontSize: '12px',
+  fontWeight: '600',
+  padding: '0 0 0 2px',
 })) as typeof MuiTypography;

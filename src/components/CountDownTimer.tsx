@@ -30,7 +30,7 @@ interface TimerProps {
   expire: EXPIRE_TYPE;
 }
 
-const Timer = ({ created, expire }: TimerProps) => {
+const CountDownTimer = ({ created, expire }: TimerProps) => {
   const year = parseInt(created.substring(0, 4), 10);
   const month = parseInt(created.substring(5, 7), 10);
   const day = parseInt(created.substring(8, 10), 10);
@@ -56,4 +56,4 @@ const Timer = ({ created, expire }: TimerProps) => {
   return <CountDown date={Date.now() + remainingTime} renderer={renderer} />;
 };
 
-export default Timer;
+export default CountDownTimer;
