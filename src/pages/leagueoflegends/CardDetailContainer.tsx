@@ -13,12 +13,12 @@ import Close from '@mui/icons-material/Close';
 import { RootState } from 'store';
 
 import Timer from 'components/CountDownTimer';
+import Circular from 'components/loading/Circular';
 import { positionList, queueTypeList, tierList } from './data';
 
 const CardDetailContainer = () => {
   const navigate = useNavigate();
   const { currentCard } = useSelector((state: RootState) => state.card);
-  console.log(currentCard);
 
   const tier = tierList.find((tier) => tier.value === currentCard?.tier);
   const queueType = queueTypeList.find(
@@ -33,51 +33,56 @@ const CardDetailContainer = () => {
 
   const createdDate = `${currentCard?.created}`;
 
-  return (
-    <>
-      <ModalHeader>
-        <Title>{currentCard?.name} 님의 파티</Title>
-        <MuiIconButton
-          size="small"
-          onClick={() => navigate('/lol')}
-          sx={{ p: 0, m: 0 }}
-        >
-          <Close />
-        </MuiIconButton>
-      </ModalHeader>
-      <ModalContent>
-        <CardInfo>
-          <InfoWrapper>
-            <SectionWrapper>
-              <SectionName>모집 내용</SectionName>
-              <SectionContent>{currentCard.content}</SectionContent>
-            </SectionWrapper>
-            <SectionWrapper>
-              <SectionName>마감일시</SectionName>
+  if (currentCard) {
+    return (
+      <>
+        <ModalHeader>
+          <Title>{currentCard?.name} 님의 파티</Title>
+          <MuiIconButton
+            size="small"
+            onClick={() => navigate('/lol')}
+            sx={{ p: 0, m: 0 }}
+          >
+            <Close />
+          </MuiIconButton>
+        </ModalHeader>
+        <ModalContent>
+          <CardInfo>
+            <InfoWrapper>
+              <SectionWrapper>
+                <SectionName>모집 내용</SectionName>
+                <SectionContent>{currentCard?.content}</SectionContent>
+              </SectionWrapper>
+              <SectionWrapper>
+                <SectionName>마감일시</SectionName>
 
-              <div>
-                <Timer
-                  expire={currentCard.expire}
-                  created={currentCard.created || '2000-01-01 00:00:00'}
-                />
-              </div>
-            </SectionWrapper>
-          </InfoWrapper>
-          <HashTagWrapper>
-            <HashTag color={tier?.color}>#{tier?.label}</HashTag>
-            <HashTag>#{queueType?.label}</HashTag>
-            <HashTag>#{position?.label}구함</HashTag>
-            <HashTag>{currentCard?.voice ? '#음성채팅가능' : ''}</HashTag>
-          </HashTagWrapper>
-          <MemberListWrapper>
-            <MemeberListTitle>
-              참여자 목록 ( {currentMember} / {totalMember} )
-            </MemeberListTitle>
-          </MemberListWrapper>
-        </CardInfo>
-      </ModalContent>
-    </>
-  );
+                <div>
+                  {currentCard?.expire && currentCard?.created && (
+                    <Timer
+                      expire={currentCard?.expire}
+                      created={currentCard?.created || '2000-01-01 00:00:00'}
+                    />
+                  )}
+                </div>
+              </SectionWrapper>
+            </InfoWrapper>
+            <HashTagWrapper>
+              <HashTag color={tier?.color}>#{tier?.label}</HashTag>
+              <HashTag>#{queueType?.label}</HashTag>
+              <HashTag>#{position?.label}구함</HashTag>
+              <HashTag>{currentCard?.voice ? '#음성채팅가능' : ''}</HashTag>
+            </HashTagWrapper>
+            <MemberListWrapper>
+              <MemeberListTitle>
+                참여자 목록 ( {currentMember} / {totalMember} )
+              </MemeberListTitle>
+            </MemberListWrapper>
+          </CardInfo>
+        </ModalContent>
+      </>
+    );
+  }
+  return <Circular text="게시글을 불러오는 중입니다." height="500px" />;
 };
 
 export default CardDetailContainer;

@@ -1,27 +1,39 @@
+import { useEffect, useState } from 'react';
 import { defaultAxios } from 'apis/utils';
-import { useDispatch } from 'react-redux';
 
-import { useNavigate } from 'react-router-dom';
-
+import { promiseWrapper } from 'apis/utils/promiseWrapper';
 import { cardActions } from 'store/card-slice';
 
-/**
- * 게시글 상세보기
- * @param { number } cardId 롤 게시글 넘버
- * @param { ReturnType<typeof useDispatch>} dispatch - react-redux의 useDisaptch
- */
+// 카드 리스트 가져오기 (게시글 목록 가져오기)
+export function fetchCardList(url: string, config: any, deps: any[]) {
+  const [resource, setResource] = useState(null);
 
-export const fetchCardDetail = async (
-  cardId: number,
-  dispatch: ReturnType<typeof useDispatch>,
-) => {
-  // 기존 카드 정보 지우기
-  dispatch(cardActions.DELETE_CURRENT_CARD());
+  useEffect(() => {
+    const getData = async () => {
+      const promise = defaultAxios
+        .get(url, config)
+        .then((response) => response.data);
+      setResource(promiseWrapper(promise));
+    };
 
-  // 새 카드 정보 불러오기
-  await defaultAxios.get(`/api/lol/boards/${cardId}`).then((response) => {
-    dispatch(cardActions.SET_CURRENT_CARD(response.data));
-  });
+    getData();
+  }, deps);
 
-  return null;
-};
+  return resource;
+}
+
+// 카드 디테일 가져오기 (카드 상세보기 가져오기)
+export function fetchCardDetail(url: string) {
+  const [resource, setResource] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const promise = defaultAxios.get(url).then((response) => response.data);
+      setResource(promiseWrapper(promise));
+    };
+
+    getData();
+  }, []);
+
+  return resource;
+}

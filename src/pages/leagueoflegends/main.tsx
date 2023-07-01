@@ -1,18 +1,17 @@
 /* eslint-disable react/button-has-type */
-import React, { Suspense, useEffect } from 'react';
+import React, { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Outlet } from 'react-router-dom';
 
 // mui
-import { styled } from '@mui/system';
-import Layout from 'components/Layout';
 import { SelectChangeEvent } from '@mui/material/Select';
 
+import Layout from 'components/Layout';
 import ErrorFallback from 'components/errorFallback/ErrorFallback';
 import Circular from 'components/loading/Circular';
-import { Outlet } from 'react-router-dom';
 import CardFilter from './CardFilter';
-import CardListContainer from './CardListContainer';
 import CardListFetcher from './CardListFetcher';
+import CardListContainer from './CardListContainer';
 
 const Main = () => {
   const [queueType, setQueueType] = React.useState('ALL');

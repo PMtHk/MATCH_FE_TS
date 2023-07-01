@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { cardActions } from 'store/card-slice';
-import { fetchCardList } from 'useGetData';
+import { fetchCardList } from 'apis/api/leagueoflegends';
 
 interface CardListFetcherProps {
   fetcherProps: {

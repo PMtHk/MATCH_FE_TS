@@ -1,22 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useErrorBoundary } from 'react-error-boundary';
 
 import { cardActions } from 'store/card-slice';
-import CardDetailContainer from './CardDetailContainer';
+import { fetchCardDetail } from 'apis/api/leagueoflegends';
 
-// interface CardDetailFetcherProps {
-//   children: React.ReactNode;
-// }
+interface CardDetailFetcherProps {
+  children: React.ReactNode;
+}
 
-const CardDetailFetcher = () => {
+const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
   const dispatch = useDispatch();
-
   const params = useParams();
+
   const { id: cardId } = params;
 
-  return <CardDetailContainer />;
+  const cardDetail: any = fetchCardDetail(`/api/lol/boards/${cardId}`);
+
+  useEffect(() => {
+    dispatch(cardActions.SET_CURRENT_CARD(cardDetail));
+  }, [cardDetail, dispatch]);
+
+  return <div>{children}</div>;
 };
 
 export default CardDetailFetcher;

@@ -3,6 +3,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 
 import Modal from 'components/Modal';
 import ErrorFallback from 'components/errorFallback/ErrorFallback';
+import Circular from 'components/loading/Circular';
 import CardDetailFetcher from './CardDetailFetcher';
 import CardDetailContainer from './CardDetailContainer';
 
@@ -10,8 +11,14 @@ const CardDetail = () => {
   return (
     <Modal>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <Suspense fallback={<p>loading...1,2,3,4,5,6</p>}>
-          <CardDetailFetcher />
+        <Suspense
+          fallback={
+            <Circular text="게시글을 불러오는 중입니다." height="560px" />
+          }
+        >
+          <CardDetailFetcher>
+            <CardDetailContainer />
+          </CardDetailFetcher>
         </Suspense>
       </ErrorBoundary>
     </Modal>
