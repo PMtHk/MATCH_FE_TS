@@ -13,7 +13,7 @@ const CardDetail = () => {
       <ErrorBoundary FallbackComponent={ErrorFallback}>
         <Suspense
           fallback={
-            <Circular text="게시글을 불러오는 중입니다." height="560px" />
+            <Circular text="게시글을 불러오는 중입니다." height="568px" />
           }
         >
           <CardDetailFetcher>

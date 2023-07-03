@@ -143,3 +143,14 @@ export const positionList: Position[] = [
     imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/SUP.png',
   },
 ];
+
+export const expiredTimeList = [
+  { value: 'FIFTEEN_M', label: '15분', time: 15 * 60 * 1000 },
+  { value: 'THIRTY_M', label: '30분', time: 30 * 60 * 1000 },
+  { value: 'ONE_H', label: '1시간', time: 60 * 60 * 1000 },
+  { value: 'TWO_H', label: '2시간', time: 2 * 60 * 60 * 1000 },
+  { value: 'THREE_H', label: '3시간', time: 3 * 60 * 60 * 1000 },
+  { value: 'SIX_H', label: '6시간', time: 6 * 60 * 60 * 1000 },
+  { value: 'TWELVE_H', label: '12시간', time: 12 * 60 * 60 * 1000 },
+  { value: 'TWENTY_FOUR_H', label: '24시간', time: 24 * 60 * 60 * 1000 },
+];

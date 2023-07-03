@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // mui
@@ -12,8 +12,16 @@ interface ModalProps {
 const Modal = ({ children }: ModalProps) => {
   const navigate = useNavigate();
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   return (
-    <ModalContainer onClick={() => navigate(-1)}>
+    <ModalContainer onClick={(e) => e.stopPropagation()}>
       <ModalWrapper onClick={(e) => e.stopPropagation()}>
         {children}
       </ModalWrapper>
@@ -37,7 +45,7 @@ const ModalContainer = styled(MuiBox)(() => ({
 })) as typeof MuiBox;
 
 const ModalWrapper = styled(MuiBox)(() => ({
-  backgroundColor: '#eeeeee',
+  backgroundColor: '#fafafa',
   borderRadius: '4px',
   minHeight: '600px',
   minWidth: '400px',

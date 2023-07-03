@@ -12,6 +12,7 @@ import MuiMenuItem from '@mui/material/MenuItem';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 
+import CreateCardButton from 'components/CreateCardButton';
 import { positionList, queueTypeList, tierList } from './data';
 
 interface CardFilterProps {
@@ -98,6 +99,17 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
             );
           })}
         </ToggleButtonGroup>
+      </GridItem>
+      <GridItem
+        item
+        md={0.5}
+        lg={2.5}
+        sx={{
+          display: { xs: 'none', md: 'flex' },
+        }}
+      />
+      <GridItem item xs={12} md={1.5}>
+        <CreateCardButton />
       </GridItem>
     </GridContainer>
   );

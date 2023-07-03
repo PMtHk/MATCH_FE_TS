@@ -9,7 +9,7 @@ interface IState {
 const initialState: IState = {
   cards: [],
   currentPageNum: 0,
-  currentCard: {},
+  currentCard: null,
 };
 
 const cardSlice = createSlice({

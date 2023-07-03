@@ -135,9 +135,12 @@ const Card = ({ item }: CardProps) => {
                       // eslint-disable-next-line react/no-array-index-key
                       key={index}
                       sx={{
-                        color: index < currentMember ? 'white' : '#d9d9d9',
+                        color:
+                          index < currentMember
+                            ? 'primary.contrastText'
+                            : '#d9d9d9',
                         backgroundColor:
-                          index < currentMember ? '#5383e8' : '#d9d9d9',
+                          index < currentMember ? 'primary.light' : '#d9d9d9',
                       }}
                     />
                   );

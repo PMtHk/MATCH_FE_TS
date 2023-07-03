@@ -16,7 +16,7 @@ const CardListContainer = () => {
   return (
     <CardsWrapper>
       {cards &&
-        cards.map((aCard: any, _) => {
+        cards.map((aCard: any) => {
           return (
             <Link
               key={aCard.id}

@@ -1,4 +1,4 @@
-import React, { lazy } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -12,26 +12,21 @@ import { Alert } from '@mui/material';
 import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 
+// firebase
+import app from 'firebase';
+
 // lazy loading
-// const LandingPage = lazy(() => import('pages/landing'));
+const LandingPage = lazy(() => import('pages/landing'));
 
-// const LoginPage = lazy(() => import('pages/login'));
-// const LoginRedirect = lazy(() => import('pages/login/redirect'));
+const LoginPage = lazy(() => import('pages/login'));
+const LoginRedirect = lazy(() => import('pages/login/redirect'));
 
-// const Register = lazy(() => import('pages/register/index'));
-// const Terms = lazy(() => import('pages/register/Terms'));
-// const Games = lazy(() => import('pages/register/Games'));
-// const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
+const Register = lazy(() => import('pages/register/index'));
+const Terms = lazy(() => import('pages/register/Terms'));
+const Games = lazy(() => import('pages/register/Games'));
+const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
 
-// const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
-import LandingPage from 'pages/landing';
-import LoginPage from 'pages/login';
-import LoginRedirect from 'pages/login/redirect';
-import Register from 'pages/register/index';
-import Terms from 'pages/register/Terms';
-import Games from 'pages/register/Games';
-import SetFavoriteGame from 'pages/register/SetFavGame';
-import LeagueOfLegends from 'pages/leagueoflegends';
+const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -51,7 +46,7 @@ const App = () => {
   };
 
   return (
-    <>
+    <Suspense fallback={<Linear height="100vh" text="MatchGG 불러오는 중" />}>
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
@@ -76,7 +71,7 @@ const App = () => {
           {MESSAGE}
         </Alert>
       </Snackbar>
-    </>
+    </Suspense>
   );
 };
 
