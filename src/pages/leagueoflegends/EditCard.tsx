@@ -44,7 +44,6 @@ const CreateCard = () => {
   );
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
-
   const { currentCard } = useSelector((state: RootState) => state.card);
 
   // 기존 등록된 registeredNickname 사용 여부 state
@@ -180,6 +179,20 @@ const CreateCard = () => {
       navigate(`/lol/${cardId}`, { replace: true });
     }
   };
+
+  if (oauth2Id !== currentCard?.oauth2Id) {
+    return (
+      <Modal>
+        <ErrorFallback>
+          <ErrorTitle>비정상적인 접근입니다.</ErrorTitle>
+          <ErrorContent>해당 게시글에 대한 권한이 없습니다. </ErrorContent>
+          <MuiButton onClick={() => navigate(`/lol/${cardId}`)}>
+            돌아가기
+          </MuiButton>
+        </ErrorFallback>
+      </Modal>
+    );
+  }
 
   return (
     <Modal>
@@ -518,3 +531,24 @@ const PostButton = styled(MuiButton)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.dark,
   },
 })) as typeof MuiButton;
+
+const ErrorFallback = styled(MuiBox)(() => ({
+  width: '100%',
+  height: '268px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '12px',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
+
+const ErrorTitle = styled(MuiTypography)(() => ({
+  fontSize: '18px',
+  fontWeight: 500,
+})) as typeof MuiTypography;
+
+const ErrorContent = styled(MuiTypography)(() => ({
+  fontSize: '14px',
+  fontWeight: 400,
+  color: '#4d4d4d',
+})) as typeof MuiTypography;

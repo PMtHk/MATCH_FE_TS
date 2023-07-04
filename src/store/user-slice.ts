@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type representative = 'lol' | 'pubg';
+type representative = 'lol' | 'pubg' | 'overwatch';
 
 interface IState {
   nickname: string;
@@ -10,6 +10,7 @@ interface IState {
   games: {
     lol: string;
     pubg: string;
+    overwatch: string;
   };
   isLogin: boolean;
 }
@@ -34,13 +35,14 @@ interface ISet_Games {
     games: {
       lol: string;
       pubg: string;
+      overwatch: string;
     };
   };
 }
 
 interface ISet_Games_With_Id {
   payload: {
-    id: 'lol' | 'pubg';
+    id: 'lol' | 'pubg' | 'overwatch';
     value: string;
   };
 }
@@ -53,6 +55,7 @@ const initialState: IState = {
   games: {
     lol: '', // 롤 소환사명
     pubg: '', // 배틀그라운드 유저네임
+    overwatch: '', // 오버워치 닉네임 + 배틀태그?
   },
   isLogin: false,
 };
@@ -85,6 +88,7 @@ const userSlice = createSlice({
       state.games = {
         lol: '',
         pubg: '',
+        overwatch: '',
       };
       state.isLogin = false;
     },

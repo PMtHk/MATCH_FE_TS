@@ -28,7 +28,7 @@ import UserMenu from './UserMenu';
 import GameMenu from './GameMenu';
 
 interface HeaderProps {
-  currentGame: GAME_ID;
+  currentGame: GAME_ID | null;
 }
 
 const Header = ({ currentGame }: HeaderProps) => {

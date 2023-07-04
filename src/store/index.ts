@@ -7,6 +7,7 @@ import tokenSlice from './token-slice';
 import registerSlice from './register-slice';
 import snackbarSlice from './snackbar-slice';
 import cardSlice from './card-slice';
+import mypageSlice from './mypage-slice';
 
 const reducers = combineReducers({
   user: userSlice.reducer,
@@ -14,6 +15,7 @@ const reducers = combineReducers({
   register: registerSlice.reducer,
   snackbar: snackbarSlice.reducer,
   card: cardSlice.reducer,
+  mypage: mypageSlice.reducer,
 });
 
 const persistConfig = {

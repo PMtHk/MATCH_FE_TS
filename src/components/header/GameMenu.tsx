@@ -1,31 +1,34 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
-
 import MuiMenu from '@mui/material/Menu';
 import MuiMenuItem from '@mui/material/MenuItem';
-
-// mui-icons
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
-// gameList
 import GameIcon from 'components/GameIcon';
+import { RootState } from 'store';
 import { gameList, GAME, GAME_ID } from '../../assets/Games.data';
 
 interface GameMenuProps {
-  currentGame: GAME_ID;
+  currentGame: GAME_ID | null;
 }
 
 const GameMenu = ({ currentGame }: GameMenuProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { representative } = useSelector((state: RootState) => state.user);
 
-  const gameInfo: GAME = gameList.find(
-    (game) => game.id === currentGame,
-  ) as GAME;
+  let gameInfo: GAME;
+  if (currentGame) {
+    gameInfo = gameList.find((game) => game.id === currentGame) as GAME;
+  } else {
+    gameInfo = gameList.find((game) => game.id === representative) as GAME;
+  }
 
   const [gameMenuAnchor, setGameMenuAnchor] =
     React.useState<null | HTMLElement>(null);
@@ -40,12 +43,15 @@ const GameMenu = ({ currentGame }: GameMenuProps) => {
     setGameMenuAnchor(null);
   };
 
+  const isMyPage = location.pathname === '/mypage';
+
   return (
     <GameMenuContainer>
       <GameMenuBtn id="game_menu" onClick={openGameMenu}>
-        {gameInfo.name_kor}
+        {isMyPage ? '지원하는 게임 목록' : gameInfo.name_kor}
         <KeyboardArrowDown />
       </GameMenuBtn>
+
       <MuiMenu
         id="game_menu"
         anchorEl={gameMenuAnchor}
@@ -78,8 +84,8 @@ const GameMenu = ({ currentGame }: GameMenuProps) => {
           );
         })}
       </MuiMenu>
-      <TextMenuBtn>파티찾기</TextMenuBtn>
-      <TextMenuBtn>자유게시판</TextMenuBtn>
+      {/* <TextMenuBtn>파티찾기</TextMenuBtn>
+      <TextMenuBtn>자유게시판</TextMenuBtn> */}
     </GameMenuContainer>
   );
 };

@@ -26,6 +26,7 @@ const Terms = lazy(() => import('pages/register/Terms'));
 const Games = lazy(() => import('pages/register/Games'));
 const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
 
+const MyPage = lazy(() => import('pages/mypage'));
 const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
 
 const App = () => {
@@ -56,6 +57,7 @@ const App = () => {
           <Route path="games" element={<Games />} />
           <Route path="favgame" element={<SetFavoriteGame />} />
         </Route>
+        <Route path="/mypage" element={<MyPage />} />
         <Route path="/lol/*" element={<LeagueOfLegends />} />
       </Routes>
       <Snackbar

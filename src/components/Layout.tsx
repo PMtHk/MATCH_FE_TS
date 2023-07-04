@@ -13,7 +13,7 @@ import { gameList, GAME_ID, GAME } from '../assets/Games.data';
 
 interface LayoutProps {
   children: React.ReactNode;
-  currentGame: GAME_ID;
+  currentGame: GAME_ID | null;
 }
 
 const Layout = ({ children, currentGame }: LayoutProps) => {
@@ -25,7 +25,7 @@ const Layout = ({ children, currentGame }: LayoutProps) => {
     <LayoutContainer>
       <Header currentGame={currentGame} />
       <ContentWrapper maxWidth="lg">
-        <GameTypo>{gameInfo.name}</GameTypo>
+        {gameInfo && <GameTypo>{gameInfo.name}</GameTypo>}
         {children}
       </ContentWrapper>
       <Footer />

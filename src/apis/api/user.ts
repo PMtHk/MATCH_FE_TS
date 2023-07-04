@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { defaultAxios, authAxios, kakaoAxios } from 'apis/utils';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -10,13 +11,14 @@ import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 
 import { GAME_ID } from 'assets/Games.data';
+import { promiseWrapper } from 'apis/utils/promiseWrapper';
 
 interface IAccessTokenPayload {
   sub: string;
   oAuth2Id: string;
   nickname: string;
   imageUrl: string;
-  representative: 'LOL' | 'PUBG' | 'VALORANT';
+  representative: 'LOL' | 'PUBG' | 'VALORANT' | 'OVERWATCH';
   iat: number;
   exp: number;
 }
@@ -130,8 +132,8 @@ export const getUserGameInfo = async (
 ) => {
   const response = await authAxios.get('/api/user/info');
 
-  const { lol, pubg } = response.data;
-  const games = { lol, pubg };
+  const { lol, pubg, overwatch } = response.data;
+  const games = { lol, pubg, overwatch };
   dispatch(userActions.SET_GAMES({ games }));
 };
 
@@ -253,4 +255,25 @@ export const signup = async (
     }
     navigate('/login');
   }
+};
+
+/**
+ * 마이페이지 - 사용자 정보 조회
+ * @param {string} url - 요청 url
+ * @returns {Resource} - 요청 결과 -> 객체
+ */
+
+export const getUserInfo = (url: string) => {
+  const [resource, setResource] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const promise = authAxios.get(url).then((response) => response.data);
+      setResource(promiseWrapper(promise));
+    };
+
+    getData();
+  }, []);
+
+  return resource;
 };
