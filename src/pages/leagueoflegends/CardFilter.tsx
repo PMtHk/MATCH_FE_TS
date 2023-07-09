@@ -12,7 +12,7 @@ import MuiMenuItem from '@mui/material/MenuItem';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import ToggleButton from '@mui/material/ToggleButton';
 
-import CreateCardButton from 'components/CreateCardButton';
+import CreateCardButton from 'components/card-actions/CreateCardBtn';
 import { positionList, queueTypeList, tierList } from './data';
 
 interface CardFilterProps {

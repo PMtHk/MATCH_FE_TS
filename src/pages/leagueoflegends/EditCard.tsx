@@ -30,6 +30,7 @@ import Modal from 'components/Modal';
 import { RootState } from 'store';
 import { authAxios, defaultAxios } from 'apis/utils';
 import { cardActions } from 'store/card-slice';
+import { get, child, ref, getDatabase, update } from 'firebase/database';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -154,7 +155,7 @@ const CreateCard = () => {
     if (isChanged) {
       if (
         window.confirm(
-          '현재 창을 나가면 입력한 정보가 사라지게 됩니다.\n정말 나가시껬습니까?',
+          '현재 창을 나가면 수정한 정보가 사라지게 됩니다.\n정말 나가시껬습니까?',
         )
       ) {
         closeModal();
@@ -177,6 +178,38 @@ const CreateCard = () => {
       }
     } else {
       navigate(`/lol/${cardId}`, { replace: true });
+    }
+  };
+
+  const updateCard = async () => {
+    if (currentCard.chatRoomId) {
+      setIsPosting(true);
+
+      await authAxios
+        .put(`/api/lol/board/${cardId}`, { ...userInput })
+        .then(async (response) => {
+          // firebase update
+          const chatRoomRef = ref(getDatabase(), 'chatRooms');
+          await get(child(chatRoomRef, currentCard.chatRoomId))
+            .then(async (datasnapshot) => {
+              const prevMemberList = [];
+              prevMemberList.push(...datasnapshot.val().memberList);
+              const master = prevMemberList[0];
+              const modifiedMemberList = [
+                { nickname: userInput.name, oauth2Id: master.oauth2Id },
+              ].concat(...prevMemberList.slice(1));
+              await update(ref(getDatabase(), `chatRooms/${cardId}`), {
+                memberList: modifiedMemberList,
+                createdBy: userInput.name,
+              });
+            })
+            .then(() => {
+              // 파이어베이스 수정 완료
+              alert('수정이 완료되었습니다.');
+              navigate('/lol', { replace: true });
+              window.location.reload();
+            });
+        });
     }
   };
 
@@ -374,7 +407,7 @@ const CreateCard = () => {
             뒤로가기
           </CancelButton>
           <PostButton
-            onClick={backToDetailPage}
+            onClick={updateCard}
             disabled={isPosting}
             variant="contained"
             startIcon={<Edit />}

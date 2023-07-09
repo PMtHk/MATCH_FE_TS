@@ -2,9 +2,6 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-// redux
-import { RootState } from 'store';
-
 // mui
 import { styled } from '@mui/system';
 import MuiAppBar from '@mui/material/AppBar';
@@ -15,12 +12,12 @@ import MuiButton from '@mui/material/Button';
 import MuiSwipeableDrawer from '@mui/material/SwipeableDrawer';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
-
-// mui-icons
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import LoginIcon from '@mui/icons-material/Login';
 import LogoutIcon from '@mui/icons-material/Logout';
+
+import { RootState } from 'store';
 
 import GameIcon from 'components/GameIcon';
 import { GAME_ID } from 'assets/Games.data';
@@ -34,7 +31,9 @@ interface HeaderProps {
 const Header = ({ currentGame }: HeaderProps) => {
   const navigate = useNavigate();
 
-  const { isLogin } = useSelector((state: RootState) => state.user);
+  const { isLogin, representative } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   const [isMobileViewMenuOpen, setIsMobileViewMenuOpen] = React.useState(false);
 
@@ -102,13 +101,22 @@ const Header = ({ currentGame }: HeaderProps) => {
             </MvMenuContainer>
           </MVMenu>
           {/* 위는 모바일 뷰를 위한 슬라이더 아래는 웹뷰 */}
-          <MatchGGLogo>MatchGG</MatchGGLogo>
+          <MuiButton
+            type="submit"
+            onClick={() => navigate(`/${representative.toLowerCase()}`)}
+            sx={{ textTransform: 'none' }}
+          >
+            <MatchGGLogo>MatchGG</MatchGGLogo>
+          </MuiButton>
           <GameMenu currentGame={currentGame} />
           {isLogin && <UserMenu />}
           {!isLogin && (
             <LoginBtnWrapper
               onClick={() => {
                 navigate('/login');
+              }}
+              sx={{
+                textDecoration: 'none',
               }}
             >
               <LoginIcon sx={{ color: '#f3f3f3' }} />

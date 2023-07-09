@@ -37,3 +37,25 @@ export function fetchCardDetail(url: string) {
 
   return resource;
 }
+
+export const getExactSummonerName = async (summonerName: string) => {
+  const response = await defaultAxios.get(
+    `/api/lol/user/exist/${summonerName}`,
+  );
+
+  if (response.status === 200) {
+    return response.data;
+  }
+
+  return null;
+};
+
+export const loadSummonerInfoInDB = async (summonerName: string) => {
+  const response = await defaultAxios.get(`/api/lol/user/${summonerName}`);
+
+  if (response.status === 200) {
+    return 'success';
+  }
+
+  return null;
+};

@@ -5,7 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { styled } from '@mui/system';
 import MuiButton from '@mui/material/Button';
 
-const CreateCardButton = () => {
+const CreateCardBtn = () => {
   const location = useLocation();
   return (
     <Link to="new" state={{ background: location }}>
@@ -14,7 +14,7 @@ const CreateCardButton = () => {
   );
 };
 
-export default CreateCardButton;
+export default CreateCardBtn;
 
 const Button = styled(MuiButton)(({ theme }) => ({
   height: '40px',

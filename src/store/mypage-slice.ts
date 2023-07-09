@@ -51,6 +51,21 @@ const mypageSlice = createSlice({
       state.matchCount = action.payload.matchCount;
       state.created = action.payload.created;
     },
+    RESET_MYPAGE: (state, _) => {
+      state.id = 0;
+      state.oauth2Id = '';
+      state.nickname = '';
+      state.email = '';
+      state.imageUrl = '';
+      state.representative = '';
+      state.lol = '';
+      state.pubg = '';
+      state.overwatch = '';
+      state.likeCount = 0;
+      state.dislikeCount = 0;
+      state.matchCount = 0;
+      state.created = '';
+    },
   },
 });
 

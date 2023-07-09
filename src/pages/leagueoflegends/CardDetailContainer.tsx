@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -7,27 +8,31 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
-import MuiImageList from '@mui/material/ImageList';
-import MuiImageListItem from '@mui/material/ImageListItem';
-
 import Close from '@mui/icons-material/Close';
+import MuiStack from '@mui/material/Stack';
 
 import { RootState } from 'store';
-
 import Timer from 'components/CountDownTimer';
-
 import { cardActions } from 'store/card-slice';
-import { Button } from '@mui/material';
+import EditCardBtn from 'components/card-actions/EditCardBtn';
+import LeaveBtn from 'components/card-actions/LeaveBtn';
+import JoinBtn from 'components/card-actions/JoinBtn';
+import DeleteCardBtn from 'components/card-actions/DeleteCardBtn';
+import ChatRoom from 'components/chat/ChatRoom';
 import { positionList, queueTypeList, tierList } from './data';
-
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
 
 const CardDetailContainer = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { oauth2Id } = useSelector((state: RootState) => state.user);
+
+  // redux
+  const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
+  const { joinedChatRoomsId } = useSelector(
+    (state: RootState) => state.chatroom,
+  );
 
   const tier = tierList.find((tier) => tier.value === currentCard?.tier);
   const queueType = queueTypeList.find(
@@ -94,8 +99,23 @@ const CardDetailContainer = () => {
                 {Array(totalMember - currentMember).fill(<EmptySlot />)}
               </MemberList>
             </MemberListWrapper>
-            <Button onClick={() => navigate('edit')}>test</Button>
+            {isLogin &&
+              (joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
+                oauth2Id === currentCard.oauth2Id ? (
+                  <MuiStack direction="row" spacing={2} mt={1}>
+                    <DeleteCardBtn />
+                    <EditCardBtn />
+                  </MuiStack>
+                ) : (
+                  <LeaveBtn />
+                )
+              ) : (
+                <JoinBtn />
+              ))}
           </CardInfo>
+          <MuiBox sx={{ ml: 2 }}>
+            <ChatRoom />
+          </MuiBox>
         </ModalContent>
       </>
     );
@@ -186,89 +206,3 @@ const MemberList = styled(MuiBox)(() => ({
   minHeight: 440,
   overflow: 'auto',
 })) as typeof MuiBox;
-
-const Member = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  width: '520px',
-  height: '80px',
-  border: '1px solid #cccccc',
-  borderRadius: '8px',
-  padding: '8px',
-  margin: '0 0 4px 0',
-})) as typeof MuiBox;
-
-const SectionInMember = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-})) as typeof MuiBox;
-
-const SectionTitleInMember = styled(MuiTypography)(() => ({
-  color: '#878888',
-  fontSize: '12px',
-  fontWeight: '700',
-})) as typeof MuiTypography;
-
-const Nickname = styled(MuiTypography)(() => ({
-  fontSize: '16px',
-  fontWeight: '700',
-})) as typeof MuiTypography;
-
-const MostLaneInfo = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  '& > img': {
-    mixBlendMode: 'exclusion',
-  },
-})) as typeof MuiBox;
-
-const MostLanteTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
-  margin: '0 0 0 4px',
-})) as typeof MuiTypography;
-
-const FlexRow = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-})) as typeof MuiBox;
-
-const RankEmblemWrapper = styled(MuiBox)(() => ({
-  backgroundColor: '#e3e0e0',
-  borderRadius: '50%',
-  width: '44px',
-  height: '44px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  margin: '0 4px 0 0',
-})) as typeof MuiBox;
-
-const TierWinRateWrapper = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  justifyContent: 'center',
-  padding: '0 0 0 4px',
-})) as typeof MuiBox;
-
-const TierTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
-  color: '#000000',
-})) as typeof MuiTypography;
-
-const MatchPlayed = styled(MuiTypography)(() => ({
-  fontSize: '12px',
-  fontWeight: '500',
-  color: '#000000',
-})) as typeof MuiTypography;
-
-const WinRate = styled(MuiTypography)(() => ({
-  fontSize: '12px',
-  fontWeight: '600',
-  padding: '0 0 0 2px',
-})) as typeof MuiTypography;

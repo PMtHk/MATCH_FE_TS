@@ -1,7 +1,7 @@
 import React from 'react';
 
 // mui
-import { styled } from '@mui/system';
+import styled from '@emotion/styled';
 import MuiCard from '@mui/material/Card';
 import MuiCardContent from '@mui/material/CardContent';
 import MuiBox from '@mui/material/Box';

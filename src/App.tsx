@@ -13,7 +13,7 @@ import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 
 // firebase
-import app from 'firebase';
+import './firebase';
 
 // lazy loading
 const LandingPage = lazy(() => import('pages/landing'));

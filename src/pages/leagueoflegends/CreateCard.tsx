@@ -1,8 +1,16 @@
 /* eslint-disable no-alert */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { child, getDatabase, push, ref, set, update } from 'firebase/database';
+import {
+  child,
+  getDatabase,
+  push,
+  ref,
+  set,
+  update,
+  serverTimestamp,
+} from 'firebase/database';
 
 import { RootState } from 'store';
 
@@ -31,8 +39,13 @@ import Edit from '@mui/icons-material/Edit';
 
 import Modal from 'components/Modal';
 
-import { authAxios, defaultAxios } from 'apis/utils';
+import { authAxios } from 'apis/utils';
 import { CustomSwitch } from 'components/Swtich';
+import {
+  getExactSummonerName,
+  loadSummonerInfoInDB,
+} from 'apis/api/leagueoflegends';
+import { chatroomActions } from 'store/chatroom-slice';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -44,6 +57,7 @@ const CreateCard = () => {
   );
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
+  const { notiToken } = useSelector((state: RootState) => state.notification);
 
   // 기존 등록된 registeredNickname 사용 여부 state
   const [useRegisteredNickname, setUseRegisteredNickname] =
@@ -162,33 +176,31 @@ const CreateCard = () => {
   };
 
   // 사용자가 새로 입력한 닉네임 유효성 검증
-  const certificateNewNickname = async () => {
-    setIsLoading(true);
+  const certifyNewNickname = async () => {
+    try {
+      setIsLoading(true);
 
-    await defaultAxios
-      .get(`/api/lol/user/exist/${userInput.name}`)
-      .then(async (response) => {
-        if (response.status === 200) {
-          const exactNickname = response.data; // 요청에 대한 결과로 띄어쓰기 등을 포함한 정확한 닉네임 받아옴.
-          setUserInput({ ...userInput, name: exactNickname });
+      const exactSummonerName = await getExactSummonerName(userInput.name);
 
-          await defaultAxios.get(`/api/lol/user/${exactNickname}`).then(() => {
-            setIsChanged(true);
-            setIsLoading(false);
-            setIsNewNicknameCertified(true);
-          });
-        } else {
-          setIsLoading(false);
-          setIsNewNicknameCertified(false);
+      if (exactSummonerName) {
+        setUserInput({ ...userInput, name: exactSummonerName });
+
+        const response = await loadSummonerInfoInDB(exactSummonerName);
+
+        if (response) {
           setIsChanged(true);
+          setIsLoading(false);
+          setIsNewNicknameCertified(true);
         }
-      })
-      .catch((error) => {
-        // 에러처리 - 추후 수정
-        console.log(error);
+      } else {
         setIsLoading(false);
+        setIsNewNicknameCertified(false);
         setIsChanged(true);
-      });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setIsChanged(true);
+    }
   };
 
   const closeModal = () => {
@@ -222,25 +234,28 @@ const CreateCard = () => {
     }
   };
 
-  // 채팅방 생성 함수
-  const createChatroom = async (boardId: number, totalUser: number) => {
+  const createChatroomInFirebaseDB = async (
+    boardId: string,
+    totalUser: number,
+  ) => {
     const chatroomRef = ref(getDatabase(), 'chatRooms');
-    const { key: chatRoomId } = push(chatroomRef);
-    // 서버로 보낼 데이터
+    const { key } = push(chatroomRef);
+
+    // 서버로 전송할 data
     const chatRoomInfo = {
       boardId,
-      chatRoomId,
+      chatRoomId: key,
       totalUser,
     };
+
     await authAxios
       .post('/api/chat/lol', chatRoomInfo)
-      .then(async (response: any) => {
+      .then(async (response) => {
         if (response.status === 200) {
-          // 파이어베이스의 Realtime DB에 저장될 객체
-          const newChatroom = {
+          const newChatRoom: any = {
             game: 'lol',
             isDeleted: false,
-            chatRoomId,
+            key,
             roomId: boardId,
             createdBy: userInput.name,
             maxMember: totalUser,
@@ -248,27 +263,52 @@ const CreateCard = () => {
               {
                 nickname: userInput.name,
                 oauth2Id,
-                // notiToken: isNotificationPermissioned ? notiToken : '',
+                notiToken: notiToken || '',
               },
             ],
             timestamp: new Date().toString(),
             content: userInput.content,
           };
-          // Ref에 접근해서 데이터 update
-          await update(child(chatroomRef, chatRoomId as string), newChatroom)
-            // redux에 채팅방 id 저장
-            .then((_response) => {
-              // dispatch(chatRoomActions.ADD_JOINED_CHATROOM(chatRoomId));
-              closeModal();
-            })
-            .catch((error) => console.log(error));
+
+          if (key) {
+            await update(child(chatroomRef, key), newChatRoom);
+            const lastReadRef = ref(getDatabase(), 'lastRead');
+            await set(
+              child(lastReadRef, `${oauth2Id}/${key}`),
+              serverTimestamp(),
+            )
+              .then(() => {
+                dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
+                closeModal();
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+          }
         }
       })
       .then(() => {
         navigate('/lol', { replace: true });
         window.location.reload();
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
+  const createCard = async () => {
+    setIsPosting(true);
+
+    await authAxios
+      .post('/api/lol/board', {
+        ...userInput,
+      })
+      .then((response) => {
+        const boardId = response.data;
+        const maxMember = userInput.type === 'DUO_RANK' ? 2 : 5;
+        createChatroomInFirebaseDB(boardId, maxMember);
+        setIsPosting(false);
+      });
   };
 
   return (
@@ -318,7 +358,7 @@ const CreateCard = () => {
               ) : (
                 <MuiButton
                   sx={{ whiteSpace: 'nowrap' }}
-                  onClick={certificateNewNickname}
+                  onClick={certifyNewNickname}
                   disabled={isPosting ? true : useRegisteredNickname}
                 >
                   {isNewNicknameCertified ? '인증완료' : '인증하기'}
@@ -476,7 +516,7 @@ const CreateCard = () => {
             뒤로가기
           </CancelButton>
           <PostButton
-            onClick={confirmBeforeClosingModal}
+            onClick={createCard}
             disabled={isPosting}
             variant="contained"
             startIcon={<Edit />}
