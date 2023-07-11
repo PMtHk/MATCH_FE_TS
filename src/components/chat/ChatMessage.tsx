@@ -46,7 +46,7 @@ const ChatMessage = ({ messageInfo, msgBySameSender }: ChatMessageProps) => {
         <MessageContent
           sx={{
             mt: !msgBySameSender ? 1 : 0.25,
-            ml: isMessageMine(messageInfo, oauth2Id) ? 1 : 2,
+            ml: isMessageMine(messageInfo, oauth2Id) ? '0px' : '4px',
             backgroundColor: isMessageMine(messageInfo, oauth2Id)
               ? 'white'
               : '#e2e2e2',
@@ -81,12 +81,11 @@ const MessagePositionDecider = styled(MuiBox)(() => ({
 })) as typeof MuiBox;
 
 const MessageContent = styled(MuiBox)(() => ({
-  p: 1,
+  width: 'fit-content',
+  padding: '4px 8px 4px 8px',
   display: 'flex',
   flexDirection: 'row',
-  wordBreak: 'break-all',
-  width: 'fit-content',
-  maxWidth: '70%',
+  maxWidth: '280px',
   borderRadius: '4px',
   boxShadow: '0 0 1px 1px #ececec',
 })) as typeof MuiBox;
@@ -94,7 +93,7 @@ const MessageContent = styled(MuiBox)(() => ({
 const DateWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   alignItems: 'flex-end',
-  pl: 1,
+  padding: '0 4px 0 4px',
 })) as typeof MuiBox;
 
 const DateTypo = styled(MuiTypography)(() => ({

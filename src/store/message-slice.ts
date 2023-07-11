@@ -1,7 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export type Message = {
+  content: string;
+  timestamp: number;
+  type: string;
+  user: {
+    nickname: string;
+    oauth2Id: string;
+  };
+};
+
 interface IState {
-  messages: { [key: string]: string[] };
+  messages: { [key: string]: Message[] };
 }
 
 const initialMessagesState: IState = {

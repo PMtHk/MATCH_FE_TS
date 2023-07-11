@@ -8,7 +8,6 @@ import {
   update,
   set,
   push,
-  serverTimestamp,
   DatabaseReference,
 } from 'firebase/database';
 

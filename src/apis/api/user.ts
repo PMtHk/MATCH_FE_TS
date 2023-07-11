@@ -12,6 +12,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 
 import { GAME_ID } from 'assets/Games.data';
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
+import { chatroomActions } from 'store/chatroom-slice';
 
 interface IAccessTokenPayload {
   sub: string;
@@ -241,6 +242,40 @@ export const getUserInfo = (url: string) => {
   useEffect(() => {
     const getData = async () => {
       const promise = authAxios.get(url).then((response) => response.data);
+      setResource(promiseWrapper(promise));
+    };
+
+    getData();
+  }, []);
+
+  return resource;
+};
+
+/**
+ * 사용자의 채팅방 목록 가져오기
+ * @returns {void}
+ *
+ * 사용자의 채팅방 목록을 가져와서 리덕스에 저장한다.
+ */
+
+type ChatRoom = {
+  id: number;
+  chatRoomId: string;
+  nickname: string;
+  oauth2Id: string;
+};
+
+export const getUserChatRooms = () => {
+  const [resource, setResource] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const promise = authAxios.get('/api/chat/rooms').then((response) => {
+        const list = response.data.chatRoomList.map((chatRoom: ChatRoom) => {
+          return chatRoom.chatRoomId;
+        });
+        return list;
+      });
       setResource(promiseWrapper(promise));
     };
 

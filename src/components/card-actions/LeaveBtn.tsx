@@ -7,7 +7,6 @@ import {
   getDatabase,
   push,
   ref,
-  serverTimestamp,
   set,
   update,
 } from 'firebase/database';
@@ -47,7 +46,7 @@ const LeaveBtn = () => {
 
   const leaveParty = async () => {
     try {
-      const chatRoomRef = ref(getDatabase(), 'chatRooms');
+      const chatRoomsRef = ref(getDatabase(), 'chatRooms');
       const messagesRef = ref(getDatabase(), 'messages');
 
       const response = await authAxios.delete(
@@ -58,7 +57,7 @@ const LeaveBtn = () => {
         await removeMemberFromFirebaseDB(
           targetMember,
           chatRoomId,
-          chatRoomRef,
+          chatRoomsRef,
           messagesRef,
           dispatch,
         );

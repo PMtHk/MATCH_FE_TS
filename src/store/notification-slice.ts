@@ -2,15 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface IState {
   notiToken: string;
-  isBadgeShow: boolean;
-  lastReadTimestamp: number;
+  badgeNum: number;
   timestamps: { [key: string]: number };
 }
 
 const initialState: IState = {
   notiToken: '',
-  isBadgeShow: false,
-  lastReadTimestamp: 9999999999999,
+  badgeNum: 0,
   timestamps: {},
 };
 
@@ -23,20 +21,11 @@ const notificationSlice = createSlice({
       state.notiToken = action.payload;
     },
     // 토큰 삭제
-    DELETE_NOTITOKEN: (state, _) => {
+    DELETE_NOTITOKEN: (state) => {
       state.notiToken = '';
     },
-    // 알림 아이콘 출력
-    SET_BADGE_SHOW_TRUE: (state, _) => {
-      state.isBadgeShow = true;
-    },
-    // 알림 아이콘 제거
-    SET_BADGE_SHOW_FALSE: (state, _) => {
-      state.isBadgeShow = false;
-    },
-    // 최근 chatRoom의 마지막 활동 timestamp
-    SET_LAST_READ_TIMESTAMP: (state, action) => {
-      state.lastReadTimestamp = action.payload;
+    SET_BADGE_NUM: (state, action) => {
+      state.badgeNum = action.payload;
     },
     // 각 채팅방 별 마지막 활동 timestamp
     SET_TIMESTAMPS: (state, action) => {

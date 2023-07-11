@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   ref,
   child,
@@ -7,9 +7,10 @@ import {
   update,
   set,
   push,
-  serverTimestamp,
   DatabaseReference,
 } from 'firebase/database';
+import { notificationActions } from 'store/notification-slice';
+import { RootState } from '../../store';
 
 import { chatroomActions } from '../../store/chatroom-slice';
 
@@ -44,11 +45,11 @@ export const addMemberToFirebaseDB = async (
   chatRoomId: string,
   oauth2Id: string,
   nickname: string,
-  chatRoomRef: DatabaseReference,
+  chatRoomsRef: DatabaseReference,
   messagesRef: DatabaseReference,
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
-  const dataSnapshot = await get(child(chatRoomRef, chatRoomId));
+  const dataSnapshot = await get(child(chatRoomsRef, chatRoomId));
 
   const prevMemberList = [];
   prevMemberList.push(...dataSnapshot.val().memberList);
@@ -61,10 +62,10 @@ export const addMemberToFirebaseDB = async (
 
   const lastReadRef = ref(getDatabase(), 'lastRead');
 
-  await set(child(lastReadRef, `${oauth2Id}/${chatRoomId}`), serverTimestamp());
+  await set(child(lastReadRef, `${oauth2Id}/${chatRoomId}`), Date.now());
   await set(push(child(messagesRef, chatRoomId)), {
     type: 'system',
-    timestamp: serverTimestamp(),
+    timestamp: Date.now(),
     user: {
       nickname,
       oauth2Id,
@@ -78,12 +79,12 @@ export const addMemberToFirebaseDB = async (
 export const removeMemberFromFirebaseDB = async (
   targetMember: Member,
   chatRoomId: string,
-  chatRoomRef: DatabaseReference,
+  chatRoomsRef: DatabaseReference,
   messagesRef: DatabaseReference,
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
   const dataSnapshot = await get(
-    child(chatRoomRef, `${chatRoomId}/memberList`),
+    child(chatRoomsRef, `${chatRoomId}/memberList`),
   );
 
   const prevMemberList = [...dataSnapshot.val()];
@@ -97,7 +98,7 @@ export const removeMemberFromFirebaseDB = async (
 
   await set(push(child(messagesRef, chatRoomId)), {
     type: 'system',
-    timestamp: serverTimestamp(),
+    timestamp: Date.now(),
     user: {
       nickname: targetMember.nickname,
       oauth2Id: targetMember.oauth2Id,
@@ -110,14 +111,14 @@ export const removeMemberFromFirebaseDB = async (
 
 export const getIsDeleted = async (
   chatRoomId: string,
-  chatRoomRef: DatabaseReference,
+  chatRoomsRef: DatabaseReference,
 ) => {
-  const dataSnapshot = await get(child(chatRoomRef, chatRoomId));
+  const dataSnapshot = await get(child(chatRoomsRef, chatRoomId));
 
   return dataSnapshot.val().isDeleted;
 };
 
-export const updateLastRead = async (
+export const updateALastRead = async (
   oauth2Id: string,
   chatRoomId: string,
   timeStamp: number,
@@ -125,5 +126,50 @@ export const updateLastRead = async (
   const lastReadRef = ref(getDatabase(), 'lastRead');
 
   await set(child(lastReadRef, `${oauth2Id}/${chatRoomId}`), timeStamp);
+  return null;
+};
+
+export const updateLastReads = async (
+  oauth2Id: string,
+  joinedChatRoomsId: string[],
+) => {
+  const lastReadRef = ref(getDatabase(), 'lastRead');
+
+  joinedChatRoomsId.forEach(async (chatRoomId) => {
+    await set(child(lastReadRef, `${oauth2Id}/${chatRoomId}`), Date.now());
+  });
+
+  return null;
+};
+
+export const getAChatRoomInfo = async (
+  chatRoomId: string,
+  chatRoomsRef: DatabaseReference,
+) => {
+  const dataSnapshot = await get(child(chatRoomsRef, chatRoomId));
+
+  return dataSnapshot.val();
+};
+
+export const getAllLastReads = async (
+  oauth2Id: string,
+  chatRoomList: string[],
+  dispatch: ReturnType<typeof useDispatch>,
+) => {
+  const lastReadRef = ref(getDatabase(), 'lastRead');
+
+  chatRoomList.map(async (chatRoomId) => {
+    const dataSnapshot = await get(
+      child(lastReadRef, `${oauth2Id}/${chatRoomId}`),
+    );
+
+    dispatch(
+      notificationActions.SET_TIMESTAMPS({
+        chatRoomId,
+        timestamp: dataSnapshot.val(),
+      }),
+    );
+  });
+
   return null;
 };

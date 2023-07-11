@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -18,10 +18,12 @@ import EditCardBtn from 'components/card-actions/EditCardBtn';
 import LeaveBtn from 'components/card-actions/LeaveBtn';
 import JoinBtn from 'components/card-actions/JoinBtn';
 import DeleteCardBtn from 'components/card-actions/DeleteCardBtn';
-import ChatRoom from 'components/chat/ChatRoom';
+import Circular from 'components/loading/Circular';
 import { positionList, queueTypeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
+
+const ChatRoom = lazy(() => import('components/chat/ChatRoom'));
 
 const CardDetailContainer = () => {
   const dispatch = useDispatch();
@@ -113,9 +115,13 @@ const CardDetailContainer = () => {
                 <JoinBtn />
               ))}
           </CardInfo>
-          <MuiBox sx={{ ml: 2 }}>
-            <ChatRoom />
-          </MuiBox>
+          <Suspense
+            fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
+          >
+            <MuiBox sx={{ ml: 2 }}>
+              <ChatRoom />
+            </MuiBox>
+          </Suspense>
         </ModalContent>
       </>
     );
@@ -204,5 +210,6 @@ const MemberList = styled(MuiBox)(() => ({
   justifyContent: 'flex-start',
   minWidth: 520,
   minHeight: 440,
+  maxHeight: 440,
   overflow: 'auto',
 })) as typeof MuiBox;

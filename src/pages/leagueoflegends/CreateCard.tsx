@@ -2,15 +2,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {
-  child,
-  getDatabase,
-  push,
-  ref,
-  set,
-  update,
-  serverTimestamp,
-} from 'firebase/database';
+import { child, getDatabase, push, ref, set, update } from 'firebase/database';
 
 import { RootState } from 'store';
 
@@ -273,10 +265,7 @@ const CreateCard = () => {
           if (key) {
             await update(child(chatroomRef, key), newChatRoom);
             const lastReadRef = ref(getDatabase(), 'lastRead');
-            await set(
-              child(lastReadRef, `${oauth2Id}/${key}`),
-              serverTimestamp(),
-            )
+            await set(child(lastReadRef, `${oauth2Id}/${key}`), Date.now())
               .then(() => {
                 dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
                 closeModal();

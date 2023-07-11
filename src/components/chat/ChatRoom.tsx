@@ -12,7 +12,7 @@ import MuiTextField from '@mui/material/TextField';
 import Send from '@mui/icons-material/Send';
 
 import { RootState } from 'store';
-import { updateLastRead } from 'apis/api/firebase';
+import { updateALastRead } from 'apis/api/firebase';
 import { chatroomActions } from 'store/chatroom-slice';
 import ChatMessage from './ChatMessage';
 import SystemMessage from './SystemMessage';
@@ -131,7 +131,7 @@ const ChatRoom = () => {
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-      updateLastRead(oauth2Id, chatRoomId, Date.now());
+      updateALastRead(oauth2Id, chatRoomId, Date.now());
     }
   }, [currentChatRoomMessages]);
 
@@ -154,7 +154,10 @@ const ChatRoom = () => {
               );
             }
             return (
-              <SystemMessage key={message.timestamp} messageInfo={message} />
+              <SystemMessage
+                key={message.timestamp + Math.random() * 10000}
+                messageInfo={message}
+              />
             );
           })}
       </ChatMessageWrapper>
@@ -192,18 +195,19 @@ const ChatRoomHeader = styled(MuiTypography)(() => ({
   color: 'grey',
   fontSize: 14,
   fontWeight: 600,
-  padding: '0 0 1px 0',
+  padding: '0 0 0 0',
 })) as typeof MuiTypography;
 
 const ChatMessageWrapper = styled(MuiBox)(() => ({
   backgroundColor: 'rgba(236, 236, 236, 0.5)',
   width: 400,
-  height: 510,
+  minHeight: 520,
+  maxHeight: 520,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
   borderRadius: '4px',
-  padding: '4px',
+  padding: '8px',
   overflowX: 'hidden',
   overflowY: 'auto',
 })) as typeof MuiBox;
@@ -216,7 +220,7 @@ const InputWrapper = styled(MuiBox)(() => ({
 const TextField = styled(MuiTextField)(() => ({
   width: '100%',
   height: 40,
-  margin: '8px 0 0 0 ',
+  margin: '6px 0 0 0 ',
   '& .MuiInputBase-root': {
     height: 40,
   },

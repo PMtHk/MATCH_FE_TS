@@ -12,6 +12,9 @@ const chatroomSlice = createSlice({
   name: 'chatroom',
   initialState: initialChatroomState,
   reducers: {
+    SET_JOINED_CHATROOMS_ID: (state, action) => {
+      state.joinedChatRoomsId = action.payload;
+    },
     ADD_JOINED_CHATROOMS_ID: (state, action) => {
       state.joinedChatRoomsId = [...state.joinedChatRoomsId, action.payload];
     },
@@ -20,7 +23,7 @@ const chatroomSlice = createSlice({
         (chatroomId) => chatroomId !== action.payload,
       );
     },
-    REMOVE_ALL_JOINED_CHATROOMS_ID: (state, _) => {
+    REMOVE_ALL_JOINED_CHATROOMS_ID: (state) => {
       state.joinedChatRoomsId = [];
     },
   },

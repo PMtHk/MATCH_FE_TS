@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, Suspense } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -21,6 +21,8 @@ import { RootState } from 'store';
 
 import GameIcon from 'components/GameIcon';
 import { GAME_ID } from 'assets/Games.data';
+import Notification from 'components/notification/Notification';
+import ChatRoomListFetcher from 'components/notification/ChatRoomListFetcher';
 import UserMenu from './UserMenu';
 import GameMenu from './GameMenu';
 
@@ -34,6 +36,9 @@ const Header = ({ currentGame }: HeaderProps) => {
   const { isLogin, representative } = useSelector(
     (state: RootState) => state.user,
   );
+  const { joinedChatRoomsId } = useSelector(
+    (state: RootState) => state.chatroom,
+  );
 
   const [isMobileViewMenuOpen, setIsMobileViewMenuOpen] = React.useState(false);
 
@@ -43,6 +48,16 @@ const Header = ({ currentGame }: HeaderProps) => {
 
   const closeMobileViewMenu = () => {
     setIsMobileViewMenuOpen(false);
+  };
+
+  // notification
+  const [notiAnchorEl, setNotiAnchorEl] = useState<any>(null);
+  const notiOpen = Boolean(notiAnchorEl);
+  const handleNotiClick = (e: any) => {
+    setNotiAnchorEl(e.currentTarget);
+  };
+  const handleNotiClose = () => {
+    setNotiAnchorEl(null);
   };
 
   return (
@@ -110,6 +125,18 @@ const Header = ({ currentGame }: HeaderProps) => {
           </MuiButton>
           <GameMenu currentGame={currentGame} />
           {isLogin && <UserMenu />}
+          {isLogin && (
+            <ChatRoomListFetcher>
+              {joinedChatRoomsId && (
+                <Notification
+                  handleNotiClick={handleNotiClick}
+                  notiAnchorEl={notiAnchorEl}
+                  notiOpen={notiOpen}
+                  handleNotiClose={handleNotiClose}
+                />
+              )}
+            </ChatRoomListFetcher>
+          )}
           {!isLogin && (
             <LoginBtnWrapper
               onClick={() => {
