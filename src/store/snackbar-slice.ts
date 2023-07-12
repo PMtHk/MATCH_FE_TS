@@ -5,14 +5,14 @@ export type Tseverity = 'success' | 'info' | 'warning' | 'error' | undefined;
 interface IOpen_Snackbar {
   payload: {
     message: string;
-    severity?: 'success' | 'info' | 'warning' | 'error';
+    severity: Tseverity;
   };
 }
 
 interface IState {
   toggleSnackbar: boolean;
   snackbarMessage: string;
-  snackbarSeverity?: Tseverity;
+  snackbarSeverity: Tseverity;
 }
 
 const initialState: IState = {

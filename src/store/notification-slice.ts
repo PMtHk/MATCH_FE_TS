@@ -32,6 +32,11 @@ const notificationSlice = createSlice({
       const { chatRoomId, timestamp } = action.payload;
       state.timestamps[chatRoomId] = timestamp;
     },
+    DELETE_NOTIFICATION: (state) => {
+      state.notiToken = '';
+      state.badgeNum = 0;
+      state.timestamps = {};
+    },
   },
 });
 

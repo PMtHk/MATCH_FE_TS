@@ -21,7 +21,7 @@ const tokenSlice = createSlice({
     SET_TOKEN: (state, action: ISet_Token) => {
       state.accessToken = action.payload.accessToken;
     },
-    DELETE_TOKEN: (state, _action) => {
+    DELETE_TOKEN: (state) => {
       state.accessToken = '';
     },
   },
