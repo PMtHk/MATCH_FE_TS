@@ -13,6 +13,7 @@ interface IState {
     overwatch: string;
   };
   isLogin: boolean;
+  isAdmin: boolean;
 }
 
 interface ISet_User {
@@ -58,6 +59,7 @@ const initialState: IState = {
     overwatch: '', // 오버워치 닉네임 + 배틀태그?
   },
   isLogin: false,
+  isAdmin: false,
 };
 
 const userSlice = createSlice({
@@ -80,7 +82,7 @@ const userSlice = createSlice({
     SET_GAMES_WITH_ID: (state, action: ISet_Games_With_Id) => {
       state.games[action.payload.id] = action.payload.value;
     },
-    DELETE_USER: (state, _action) => {
+    DELETE_USER: (state) => {
       state.nickname = '';
       state.oauth2Id = '';
       state.profileImage = '';

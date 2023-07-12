@@ -15,14 +15,16 @@ const DeleteCardBtn = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { chatRoomId, id, game } = useSelector(
+  const { chatRoomId, id } = useSelector(
     (state: RootState) => state.card.currentCard,
   );
+
+  const currentGame = window.location.pathname.split('/')[1];
 
   // 서버에 알리기
   const deleteParty = async () => {
     await authAxios
-      .delete(`/api/${game}/board/${id}`)
+      .delete(`/api/${currentGame}/board/${id}`)
       .then(async (response) => {
         if (response.status === 200) {
           // Firebase Realtime DB의 isDeleted 를 true로 설정

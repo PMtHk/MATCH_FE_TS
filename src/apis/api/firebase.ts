@@ -88,8 +88,8 @@ export const removeMemberFromFirebaseDB = async (
   );
 
   const prevMemberList = [...dataSnapshot.val()];
-  const newMemberList = prevMemberList.filter((member) => {
-    return member.oAuth2Id !== targetMember.oauth2Id;
+  const newMemberList = prevMemberList.filter((member: Member) => {
+    return member.oauth2Id !== targetMember.oauth2Id;
   });
 
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {

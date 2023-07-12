@@ -1,5 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export type Tseverity = 'success' | 'info' | 'warning' | 'error' | undefined;
+
 interface IOpen_Snackbar {
   payload: {
     message: string;
@@ -10,7 +12,7 @@ interface IOpen_Snackbar {
 interface IState {
   toggleSnackbar: boolean;
   snackbarMessage: string;
-  snackbarSeverity?: 'success' | 'info' | 'warning' | 'error';
+  snackbarSeverity?: Tseverity;
 }
 
 const initialState: IState = {
