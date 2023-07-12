@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 // redux
@@ -18,9 +18,11 @@ import MuiDivider from '@mui/material/Divider';
 // mui-icons
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
+import { logout } from 'apis/api/user';
 
 const UserMenu = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const { profileImage, nickname } = useSelector(
     (state: RootState) => state.user,
@@ -105,8 +107,8 @@ const UserMenu = () => {
         <MuiDivider />
         <MuiMenuItem
           onClick={() => {
+            logout(dispatch);
             closeUserMenu();
-            navigate('/login');
           }}
         >
           <LogoutIcon />
