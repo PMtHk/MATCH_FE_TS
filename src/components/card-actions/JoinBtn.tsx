@@ -1,15 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  ref,
-  child,
-  get,
-  getDatabase,
-  update,
-  set,
-  push,
-  DatabaseReference,
-} from 'firebase/database';
+import { ref, getDatabase } from 'firebase/database';
 
 // mui
 import styled from '@emotion/styled';
@@ -17,6 +8,7 @@ import MuiButton from '@mui/material/Button';
 
 import { addMemberToFirebaseDB, isBanned } from 'apis/api/firebase';
 import { authAxios } from 'apis/utils';
+import { snackbarActions } from 'store/snackbar-slice';
 import { RootState } from '../../store';
 import { chatroomActions } from '../../store/chatroom-slice';
 
@@ -31,7 +23,7 @@ const JoinBtn = () => {
     (state: RootState) =>
       state.user.games[`${currentGame as 'overwatch' | 'pubg' | 'lol'}`],
   );
-  const { oauth2Id } = useSelector((state: RootState) => state.user);
+  const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
 
   const { chatRoomId, id } = useSelector(
     (state: RootState) => state.card.currentCard,
@@ -57,7 +49,12 @@ const JoinBtn = () => {
 
     // 1. 밴 당한 사용자인지 확인
     if (await isBanned(chatRoomId, oauth2Id, chatRoomRef)) {
-      alert('참여할 수 없는 사용자입니다. (사유:강제퇴장)');
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          severity: 'error',
+          message: '이전의 강제퇴장으로 인해 참여하실 수 없습니다.',
+        }),
+      );
       dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
       return;
     }
@@ -81,8 +78,13 @@ const JoinBtn = () => {
   };
 
   return (
-    <Button variant="outlined" size="small" onClick={joinParty}>
-      파티 참가
+    <Button
+      variant="outlined"
+      size="small"
+      onClick={joinParty}
+      disabled={!isLogin}
+    >
+      {!isLogin ? '로그인 후 참가하실 수 있습니다.' : '파티 참가'}
     </Button>
   );
 };
