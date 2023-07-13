@@ -41,7 +41,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
             value={queueType}
             onChange={handleQueueType}
           >
-            {queueTypeList.map((item, _) => {
+            {queueTypeList.map((item) => {
               return (
                 <MuiMenuItem key={item.value} value={item.value}>
                   {item.label}
@@ -87,7 +87,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
             },
           }}
         >
-          {positionList.map((item, _) => {
+          {positionList.map((item) => {
             return (
               <ToggleButton
                 key={item.value}
@@ -108,9 +108,11 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           display: { xs: 'none', md: 'flex' },
         }}
       />
-      <GridItem item xs={12} md={1.5}>
-        <CreateCardButton />
-      </GridItem>
+      {isLogin && (
+        <GridItem item xs={12} md={1.5}>
+          <CreateCardButton />
+        </GridItem>
+      )}
     </GridContainer>
   );
 };

@@ -101,29 +101,28 @@ const CardDetailContainer = () => {
                 {Array(totalMember - currentMember).fill(<EmptySlot />)}
               </MemberList>
             </MemberListWrapper>
-            {isLogin &&
-              (joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
-                oauth2Id === currentCard.oauth2Id ? (
-                  <MuiStack direction="row" spacing={2} mt={1}>
-                    <DeleteCardBtn />
-                    <EditCardBtn />
-                  </MuiStack>
-                ) : (
-                  <LeaveBtn />
-                )
+            {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
+              oauth2Id === currentCard.oauth2Id ? (
+                <MuiStack direction="row" spacing={2} mt={1}>
+                  <DeleteCardBtn />
+                  <EditCardBtn />
+                </MuiStack>
               ) : (
-                <JoinBtn />
-              ))}
+                <LeaveBtn />
+              )
+            ) : (
+              <JoinBtn />
+            )}
           </CardInfo>
-          <Suspense
-            fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
-          >
-            {joinedChatRoomsId.includes(currentCard.chatRoomId) && (
+          {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) && (
+            <Suspense
+              fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
+            >
               <MuiBox sx={{ ml: 2 }}>
                 <ChatRoom />
               </MuiBox>
-            )}
-          </Suspense>
+            </Suspense>
+          )}
         </ModalContent>
       </>
     );
