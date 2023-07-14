@@ -5,8 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Linear from 'components/loading/Linear';
 
 // snackbar
-import { Snackbar } from '@mui/material';
-import { Alert } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
 
 // redux
 import { RootState } from 'store';
