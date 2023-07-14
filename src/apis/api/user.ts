@@ -300,3 +300,31 @@ export const joinParty = async (
 
   return null;
 };
+
+export const verifyingNickname = async (
+  nickname: string,
+  game: GAME_ID,
+  dispatch: ReturnType<typeof useDispatch>,
+) => {
+  try {
+    dispatch(registerActions.SET_GAMES_WITH_ID({ id: game, value: '' }));
+
+    const { data: exactNickname } = await defaultAxios.get(
+      `/api/${game}/user/exist/${nickname}`,
+    );
+
+    dispatch(
+      registerActions.SET_GAMES_WITH_ID({ id: game, value: exactNickname }),
+    );
+
+    return exactNickname;
+  } catch (error: any) {
+    dispatch(
+      snackbarActions.OPEN_SNACKBAR({
+        message: '닉네임을 확인할 수 없습니다.',
+        severity: 'error',
+      }),
+    );
+    return nickname;
+  }
+};
