@@ -1,5 +1,5 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,17 +10,30 @@ import MuiToolbar from '@mui/material/Toolbar';
 import MuiButton from '@mui/material/Button';
 
 import { RootState } from 'store';
+import { mypageActions } from 'store/mypage-slice';
 import MyInfo from './MyInfo';
 import Games from './Games';
 import Follow from './Follow';
 import Withdrawal from './Withdrawal';
 
 const UserInfoContainer = () => {
+  const dispatch = useDispatch();
+
   const [currentMenu, setCurrentMenu] = React.useState<string>('myInfo');
 
-  const { nickname, imageUrl } = useSelector(
+  const { nickname, imageUrl, oauth2Id } = useSelector(
     (state: RootState) => state.mypage,
   );
+
+  useEffect(() => {
+    return () => {
+      dispatch(mypageActions.RESET_MYPAGE());
+    };
+  }, []);
+
+  if (!nickname && !oauth2Id) {
+    return <div />;
+  }
 
   return (
     <Container>
@@ -126,7 +139,7 @@ const Container = styled(MuiBox)(() => ({
   justifyContent: 'center',
 })) as typeof MuiBox;
 
-const SidebarWrapper = styled(MuiBox)(({ theme }) => ({
+const SidebarWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   width: '200px',
   height: '540px',
@@ -175,7 +188,7 @@ const Toolbar = styled(MuiToolbar)(() => ({
   padding: '0 0 0 0 !important',
 })) as typeof MuiToolbar;
 
-const MenuButton = styled(MuiButton)(({ theme }) => ({
+const MenuButton = styled(MuiButton)(() => ({
   width: '100%',
   height: '100%',
   padding: '0',

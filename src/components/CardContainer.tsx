@@ -4,17 +4,22 @@ import React from 'react';
 import styled from '@emotion/styled';
 import MuiCard from '@mui/material/Card';
 import MuiCardContent from '@mui/material/CardContent';
-import MuiBox from '@mui/material/Box';
-import MuiDevider from '@mui/material/Divider';
 
 interface CardProps {
   children: React.ReactNode;
+  expired: boolean;
 }
 
-const CardContainer = ({ children }: CardProps) => {
+const CardContainer = ({ children, expired = false }: CardProps) => {
   return (
     <CardLayout>
-      <CardContent>{children}</CardContent>
+      <CardContent
+        sx={{
+          backgroundColor: expired ? '#e9e8e8c4' : '#ffffff',
+        }}
+      >
+        {children}
+      </CardContent>
     </CardLayout>
   );
 };

@@ -110,6 +110,8 @@ const CardDetailContainer = () => {
               ) : (
                 <LeaveBtn />
               )
+            ) : currentCard.expired === 'true' ? (
+              <div />
             ) : (
               <JoinBtn />
             )}
