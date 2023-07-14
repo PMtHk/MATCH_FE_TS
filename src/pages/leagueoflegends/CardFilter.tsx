@@ -10,7 +10,7 @@ import MuiFormControl from '@mui/material/FormControl';
 import MuiSelect, { SelectChangeEvent } from '@mui/material/Select';
 import MuiMenuItem from '@mui/material/MenuItem';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import ToggleButton from '@mui/material/ToggleButton';
+import MuiToggleButton from '@mui/material/ToggleButton';
 
 import CreateCardButton from 'components/card-actions/CreateCardBtn';
 import { positionList, queueTypeList, tierList } from './data';
@@ -89,11 +89,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
         >
           {positionList.map((item) => {
             return (
-              <ToggleButton
-                key={item.value}
-                value={item.value}
-                sx={{ height: '40px' }}
-              >
+              <ToggleButton key={item.value} value={item.value}>
                 {item.label}
               </ToggleButton>
             );
@@ -146,3 +142,13 @@ const FormControl = styled(MuiFormControl)(() => ({
     },
   },
 })) as typeof MuiFormControl;
+
+const ToggleButton = styled(MuiToggleButton)(({ theme }) => ({
+  height: '40px',
+  '&.MuiToggleButton-root': {
+    fontSize: '12px',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '14px',
+    },
+  },
+})) as typeof MuiToggleButton;

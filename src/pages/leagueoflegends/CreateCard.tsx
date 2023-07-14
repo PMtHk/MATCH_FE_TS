@@ -212,18 +212,15 @@ const CreateCard = () => {
 
   const confirmBeforeClosingModal = () => {
     if (isChanged) {
-      if (
-        window.confirm(
-          '현재 창을 나가면 입력한 정보가 사라지게 됩니다.\n 정말 나가시껬습니까?',
-        )
-      ) {
-        closeModal();
-      } else {
-        closeModal();
+      const confirmed = window.confirm(
+        '현재 창을 나가면 입력한 정보가 사라지게 됩니다.\n 정말 나가시껬습니까?',
+      );
+      if (confirmed) {
+        return closeModal();
       }
-    } else {
-      closeModal();
+      return null;
     }
+    return closeModal();
   };
 
   const createChatroomInFirebaseDB = async (
@@ -309,7 +306,6 @@ const CreateCard = () => {
             size="small"
             onClick={() => {
               confirmBeforeClosingModal();
-              navigate('/lol');
             }}
             sx={{ p: 0, m: 0 }}
           >
@@ -381,7 +377,7 @@ const CreateCard = () => {
           <TierToggleWrapper>
             <ToggleButtonGroup
               exclusive
-              disabled={isPosting}
+              disabled={isPosting || userInput.type === 'ARAM'}
               value={userInput.tier}
               onChange={handleTier}
             >
@@ -420,7 +416,7 @@ const CreateCard = () => {
           <SectionTitle>원하는 파티원의 포지션</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={isPosting}
+            disabled={isPosting || userInput.type === 'ARAM'}
             value={userInput.position}
             onChange={handlePosition}
           >
@@ -487,6 +483,7 @@ const CreateCard = () => {
             placeholder="원하는 파티원에 대한 설명이나, 자신에 대해 소개해 보세요."
             inputProps={{
               maxLength: 140,
+              minLength: 20,
             }}
           />
           <HelpTypo>
@@ -506,7 +503,7 @@ const CreateCard = () => {
           </CancelButton>
           <PostButton
             onClick={createCard}
-            disabled={isPosting}
+            disabled={isPosting || userInput.content.length < 20}
             variant="contained"
             startIcon={<Edit />}
           >
