@@ -13,6 +13,7 @@ import { RootState } from 'store';
 import { registerActions } from 'store/register-slice';
 import GameIcon from 'components/GameIcon';
 import { signup } from 'apis/api/user';
+import { snackbarActions } from 'store/snackbar-slice';
 import { GAME, GAME_ID, gameList } from '../../assets/Games.data';
 
 const SetFavGame = () => {
@@ -52,8 +53,39 @@ const SetFavGame = () => {
 
   const handleNextBtn = () => {
     setIsPending(true);
+
     if (code) {
-      signup(code, navigate, dispatch);
+      try {
+        signup(code, navigate, dispatch);
+      } catch (error: any) {
+        if (
+          error.response.status === 400 &&
+          error.response.data.message === '이미 존재하는 회원입니다.'
+        ) {
+          dispatch(
+            snackbarActions.OPEN_SNACKBAR({
+              message: '이미 존재하는 회원입니다. 로그인 해주세요.',
+              severity: 'error',
+            }),
+          );
+        } else {
+          dispatch(
+            snackbarActions.OPEN_SNACKBAR({
+              message: '회원가입에 실패했습니다.',
+              severity: 'error',
+            }),
+          );
+        }
+        navigate('/login');
+      }
+    } else {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '잘못된 접근입니다. 처음부터 다시 시도해주세요.',
+          severity: 'error',
+        }),
+      );
+      navigate('/login');
     }
   };
 

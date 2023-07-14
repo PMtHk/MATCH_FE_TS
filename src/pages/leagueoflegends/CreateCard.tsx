@@ -282,7 +282,7 @@ const CreateCard = () => {
       });
   };
 
-  const createCard = async () => {
+  const createCardBtnHandler = async () => {
     setIsPosting(true);
 
     await authAxios
@@ -502,7 +502,7 @@ const CreateCard = () => {
             뒤로가기
           </CancelButton>
           <PostButton
-            onClick={createCard}
+            onClick={createCardBtnHandler}
             disabled={isPosting || userInput.content.length < 20}
             variant="contained"
             startIcon={<Edit />}

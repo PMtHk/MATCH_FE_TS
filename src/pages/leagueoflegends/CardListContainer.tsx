@@ -24,7 +24,11 @@ const CardListContainer = () => {
               state={{ background: location }}
               style={{ textDecoration: 'none', background: 'fixed' }}
             >
-              <Card item={aCard} key={aCard.id} />
+              <Card
+                item={aCard}
+                key={aCard.id}
+                expired={aCard.expired === 'true'}
+              />
             </Link>
           );
         })}
@@ -36,10 +40,11 @@ export default CardListContainer;
 
 const CardsWrapper = styled(MuiBox)(() => ({
   width: '100%',
-  height: '100%',
+  minHeight: 'calc(100vh - 386px)',
   display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
+  justifyContent: 'flex-start',
+  alignItems: 'flex-start',
   flexWrap: 'wrap',
-  padding: '8px 0 0 8px',
+  padding: '16px 0 0 8px',
+  overflowY: 'auto',
 })) as typeof MuiBox;

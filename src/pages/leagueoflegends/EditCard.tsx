@@ -153,18 +153,15 @@ const CreateCard = () => {
 
   const confirmBeforeClosingModal = () => {
     if (isChanged) {
-      if (
-        window.confirm(
-          '현재 창을 나가면 수정한 정보가 사라지게 됩니다.\n정말 나가시껬습니까?',
-        )
-      ) {
-        closeModal();
-      } else {
-        closeModal();
+      const confirmed = window.confirm(
+        '현재 창을 나가면 수정한 정보가 사라지게 됩니다.\n정말 나가시껬습니까?',
+      );
+      if (confirmed) {
+        return closeModal();
       }
-    } else {
-      closeModal();
+      return null;
     }
+    return closeModal();
   };
 
   const backToDetailPage = () => {
@@ -188,27 +185,23 @@ const CreateCard = () => {
       await authAxios
         .put(`/api/lol/board/${cardId}`, { ...userInput })
         .then(async (response) => {
-          // firebase update
-          const chatRoomRef = ref(getDatabase(), 'chatRooms');
-          await get(child(chatRoomRef, currentCard.chatRoomId))
-            .then(async (datasnapshot) => {
-              const prevMemberList = [];
-              prevMemberList.push(...datasnapshot.val().memberList);
-              const master = prevMemberList[0];
-              const modifiedMemberList = [
-                { nickname: userInput.name, oauth2Id: master.oauth2Id },
-              ].concat(...prevMemberList.slice(1));
-              await update(ref(getDatabase(), `chatRooms/${cardId}`), {
-                memberList: modifiedMemberList,
-                createdBy: userInput.name,
-              });
-            })
-            .then(() => {
+          if (response.status === 200) {
+            // firebase update
+            await update(
+              ref(getDatabase(), `chatRooms/${currentCard.chatRoomId}`),
+              {
+                content: userInput.content,
+              },
+            ).then(() => {
               // 파이어베이스 수정 완료
               alert('수정이 완료되었습니다.');
               navigate('/lol', { replace: true });
               window.location.reload();
             });
+          } else {
+            alert('게시글 수정 중 문제가 발생하였습니다.');
+            window.location.reload();
+          }
         });
     }
   };
@@ -408,7 +401,7 @@ const CreateCard = () => {
           </CancelButton>
           <PostButton
             onClick={updateCard}
-            disabled={isPosting}
+            disabled={isPosting || userInput.content.length < 20}
             variant="contained"
             startIcon={<Edit />}
           >

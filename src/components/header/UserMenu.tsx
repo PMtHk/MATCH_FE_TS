@@ -19,6 +19,7 @@ import MuiDivider from '@mui/material/Divider';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { logout } from 'apis/api/user';
+import { snackbarActions } from 'store/snackbar-slice';
 
 const UserMenu = () => {
   const navigate = useNavigate();
@@ -38,6 +39,20 @@ const UserMenu = () => {
 
   const closeUserMenu = () => {
     setUserMenuAnchor(null);
+  };
+
+  const logoutBtnHandler = () => {
+    try {
+      logout(dispatch);
+      closeUserMenu();
+    } catch (error: any) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '로그아웃에 실패했습니다. 잠시 후 다시 시도해주세요.',
+          severity: 'error',
+        }),
+      );
+    }
   };
 
   return (
@@ -105,12 +120,7 @@ const UserMenu = () => {
           <MenuItemText>내 정보</MenuItemText>
         </MuiMenuItem>
         <MuiDivider />
-        <MuiMenuItem
-          onClick={() => {
-            logout(dispatch);
-            closeUserMenu();
-          }}
-        >
+        <MuiMenuItem onClick={logoutBtnHandler}>
           <LogoutIcon />
           <MenuItemText>로그아웃</MenuItemText>
         </MuiMenuItem>
@@ -127,10 +137,14 @@ const UserMenuBtn = styled(MuiBox)(() => ({
   justifyContent: 'center',
 })) as typeof MuiBox;
 
-const KakaoNickname = styled(MuiTypography)(() => ({
-  color: '#ffffff',
-  fontSize: '14px',
-  fontWeight: '500',
+const KakaoNickname = styled(MuiTypography)(({ theme }) => ({
+  display: 'none',
+  [theme.breakpoints.up('md')]: {
+    display: 'inline-block',
+    color: '#ffffff',
+    fontSize: '14px',
+    fontWeight: '500',
+  },
 })) as typeof MuiTypography;
 
 const ProfileImageWrapper = styled(MuiBox)(() => ({
