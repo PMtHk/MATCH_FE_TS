@@ -15,7 +15,26 @@ const Redirect = () => {
   const code = params.get('code');
 
   if (code) {
-    login(code, navigate, dispatch);
+    try {
+      login(code, navigate, dispatch);
+    } catch (error: any) {
+      if (error?.response?.status === 404) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '일치하는 회원정보가 없습니다.\n회원가입을 진행해주세요.',
+            severity: 'error',
+          }),
+        );
+        navigate('/register');
+      } else {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '로그인에 실패했습니다.',
+            severity: 'error',
+          }),
+        );
+      }
+    }
   }
 
   return (

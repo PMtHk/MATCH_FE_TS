@@ -10,87 +10,10 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { RootState } from 'store';
-import {
-  representative as RespresentativeType,
-  registerActions,
-} from 'store/register-slice';
+import { registerActions } from 'store/register-slice';
 import GameIcon from 'components/GameIcon';
 import { signup } from 'apis/api/user';
-import { GAME, gameList } from './Games.data';
-
-const Wrapper = styled(Box)(() => ({
-  width: '100%',
-  padding: '50px 20px 20px 20px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  overflowY: 'auto',
-  height: '100%',
-})) as typeof Box;
-
-const Title = styled(Typography)(({ theme }) => ({
-  fontSize: '18px',
-  fontWeight: 600,
-  [theme.breakpoints.up('sm')]: {
-    fontSize: '22px',
-  },
-})) as typeof Typography;
-
-const SubTitle = styled(Typography)(({ theme }) => ({
-  fontSize: '14px',
-  fontWeight: 400,
-  wordBreak: 'break-word',
-  margin: '0 0 30px 0',
-  [theme.breakpoints.up('sm')]: {
-    fontSize: '16px',
-  },
-})) as typeof Typography;
-
-const GameWrapper = styled(Box)(() => ({
-  margin: '120px 0 0 0',
-  width: '100%',
-  height: '120px',
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'center',
-  gap: '15px',
-})) as typeof Box;
-
-const GameIconWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  width: '55px',
-  [theme.breakpoints.up('sm')]: {
-    width: '75px',
-  },
-})) as typeof Box;
-
-const NextButton = styled(Button)(() => ({
-  position: 'relative',
-  bottom: '0',
-  width: '95%',
-  height: '60px',
-  borderRadius: '4px',
-  backgroundColor: '#494b4e',
-  fontSize: '18px',
-  color: '#ffffff',
-  '&:hover': {
-    backgroundColor: '#7f8287',
-  },
-  '&.Mui-disabled': {
-    backgroundColor: '#d1d4db',
-  },
-})) as typeof Button;
-
-const PendingMessage = styled(Typography)(() => ({
-  position: 'absolute',
-  bottom: '150px',
-  fontSize: '18px',
-  fontWeight: 600,
-})) as typeof Typography;
+import { GAME, GAME_ID, gameList } from '../../assets/Games.data';
 
 const SetFavGame = () => {
   const dispatch = useDispatch();
@@ -108,13 +31,13 @@ const SetFavGame = () => {
 
   const setRepresentative = (event: React.MouseEvent<HTMLButtonElement>) => {
     if (event.target instanceof Element) {
-      if (games[event.target.id as 'lol' | 'pubg'] === '') {
+      if (games[event.target.id as GAME_ID] === '') {
         setWarning(true);
       } else {
         setWarning(false);
         dispatch(
           registerActions.SET_REPRESENTATIVE({
-            representative: event.target.id as RespresentativeType,
+            representative: event.target.id as GAME_ID,
           }),
         );
       }
@@ -191,3 +114,77 @@ const SetFavGame = () => {
 };
 
 export default SetFavGame;
+
+const Wrapper = styled(Box)(() => ({
+  width: '100%',
+  padding: '50px 20px 20px 20px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  overflowY: 'auto',
+  height: '100%',
+})) as typeof Box;
+
+const Title = styled(Typography)(({ theme }) => ({
+  fontSize: '18px',
+  fontWeight: 600,
+  [theme.breakpoints.up('sm')]: {
+    fontSize: '22px',
+  },
+})) as typeof Typography;
+
+const SubTitle = styled(Typography)(({ theme }) => ({
+  fontSize: '14px',
+  fontWeight: 400,
+  wordBreak: 'break-word',
+  margin: '0 0 30px 0',
+  [theme.breakpoints.up('sm')]: {
+    fontSize: '16px',
+  },
+})) as typeof Typography;
+
+const GameWrapper = styled(Box)(() => ({
+  margin: '120px 0 0 0',
+  width: '100%',
+  height: '120px',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '15px',
+})) as typeof Box;
+
+const GameIconWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '55px',
+  [theme.breakpoints.up('sm')]: {
+    width: '75px',
+  },
+})) as typeof Box;
+
+const NextButton = styled(Button)(() => ({
+  position: 'relative',
+  bottom: '0',
+  width: '95%',
+  height: '60px',
+  borderRadius: '4px',
+  backgroundColor: '#494b4e',
+  fontSize: '18px',
+  color: '#ffffff',
+  '&:hover': {
+    backgroundColor: '#7f8287',
+  },
+  '&.Mui-disabled': {
+    backgroundColor: '#d1d4db',
+  },
+})) as typeof Button;
+
+const PendingMessage = styled(Typography)(() => ({
+  position: 'absolute',
+  bottom: '150px',
+  fontSize: '18px',
+  fontWeight: 600,
+})) as typeof Typography;

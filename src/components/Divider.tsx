@@ -14,10 +14,12 @@ const Divider = ({ children }: DividerProps) => {
       <Grid item xs>
         <MuiDivider />
       </Grid>
-      <Grid item>{children}</Grid>
-      <Grid item xs>
-        <MuiDivider />
-      </Grid>
+      {children && <Grid item>{children}</Grid>}
+      {children && (
+        <Grid item xs>
+          <MuiDivider />
+        </Grid>
+      )}
     </Grid>
   );
 };

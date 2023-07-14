@@ -1,24 +1,24 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-export type representative = 'lol' | 'pubg';
+import { GAME_ID } from 'assets/Games.data';
 
 interface IState {
-  representative: representative | '';
+  representative: GAME_ID | '';
   games: {
     lol: string;
     pubg: string;
+    valorant: string;
   };
 }
 
 interface ISet_Representative {
   payload: {
-    representative: representative;
+    representative: GAME_ID;
   };
 }
 
 interface ISet_Games_With_Id {
   payload: {
-    id: representative;
+    id: GAME_ID;
     value: string;
   };
 }
@@ -28,6 +28,7 @@ const initialState: IState = {
   games: {
     lol: '',
     pubg: '',
+    valorant: '',
   },
 };
 
@@ -46,6 +47,7 @@ const registerSlice = createSlice({
       state.games = {
         lol: '',
         pubg: '',
+        valorant: '',
       };
     },
   },

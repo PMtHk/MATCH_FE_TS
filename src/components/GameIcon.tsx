@@ -1,12 +1,14 @@
 import React from 'react';
 
+import { GAME_ID } from 'assets/Games.data';
+
 interface GameIconProps {
   item: string;
   size: {
     width: string;
     height: string;
   };
-  id: 'lol' | 'pubg';
+  id: GAME_ID;
 }
 
 const GameIcon = ({ item, size, id }: GameIconProps) => {

@@ -1,24 +1,26 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-type representative = 'lol' | 'pubg';
+type representative = 'lol' | 'pubg' | 'overwatch';
 
 interface IState {
   nickname: string;
   oauth2Id: string;
-  profile_imageUrl: string;
+  profileImage: string;
   representative: representative | '';
   games: {
     lol: string;
     pubg: string;
+    overwatch: string;
   };
   isLogin: boolean;
+  isAdmin: boolean;
 }
 
 interface ISet_User {
   payload: {
     nickname: string;
     oauth2Id: string;
-    profile_imageUrl: string;
+    profileImage: string;
     representative: representative;
   };
 }
@@ -34,13 +36,14 @@ interface ISet_Games {
     games: {
       lol: string;
       pubg: string;
+      overwatch: string;
     };
   };
 }
 
 interface ISet_Games_With_Id {
   payload: {
-    id: 'lol' | 'pubg';
+    id: 'lol' | 'pubg' | 'overwatch';
     value: string;
   };
 }
@@ -48,13 +51,15 @@ interface ISet_Games_With_Id {
 const initialState: IState = {
   nickname: '', // 카카오톡 닉네임
   oauth2Id: '', // kakao oauth id
-  profile_imageUrl: '', // 카카오톡 프로필 이미지
+  profileImage: '', // 카카오톡 프로필 이미지
   representative: '', // 대표게임
   games: {
     lol: '', // 롤 소환사명
     pubg: '', // 배틀그라운드 유저네임
+    overwatch: '', // 오버워치 닉네임 + 배틀태그?
   },
   isLogin: false,
+  isAdmin: false,
 };
 
 const userSlice = createSlice({
@@ -64,7 +69,7 @@ const userSlice = createSlice({
     SET_USER: (state, action: ISet_User) => {
       state.nickname = action.payload.nickname;
       state.oauth2Id = action.payload.oauth2Id;
-      state.profile_imageUrl = action.payload.profile_imageUrl;
+      state.profileImage = action.payload.profileImage;
       state.representative = action.payload.representative;
       state.isLogin = true;
     },
@@ -77,14 +82,15 @@ const userSlice = createSlice({
     SET_GAMES_WITH_ID: (state, action: ISet_Games_With_Id) => {
       state.games[action.payload.id] = action.payload.value;
     },
-    DELETE_USER: (state, _action) => {
+    DELETE_USER: (state) => {
       state.nickname = '';
       state.oauth2Id = '';
-      state.profile_imageUrl = '';
+      state.profileImage = '';
       state.representative = '';
       state.games = {
         lol: '',
         pubg: '',
+        overwatch: '',
       };
       state.isLogin = false;
     },

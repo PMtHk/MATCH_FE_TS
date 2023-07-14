@@ -1,5 +1,7 @@
+export type GAME_ID = 'lol' | 'pubg' | 'valorant';
+
 export type GAME = {
-  id: 'lol' | 'pubg';
+  id: GAME_ID;
   name: string;
   name_kor: string;
   image_url: string;
@@ -29,13 +31,13 @@ export const gameList: GAME[] = [
     helperText: '등록되지 않은 닉네임 입니다.',
     available: false,
   },
-  // {
-  //   id: 'valorant',
-  //   name: 'Valorant',
-  //   name_kor: '발로란트',
-  //   image_url: 'https://d18ghgbbpc0qi2.cloudfront.net/game_icons/valorant.png',
-  //   labelText: '발로란트 닉네임을 입력하세요.',
-  //   helperText: '등록되지 않은 닉네임 입니다.',
-  //   available: false,
-  // },
+  {
+    id: 'valorant',
+    name: 'Valorant',
+    name_kor: '발로란트',
+    image_url: 'https://d18ghgbbpc0qi2.cloudfront.net/game_icons/valorant.png',
+    labelText: '발로란트 닉네임을 입력하세요.',
+    helperText: '등록되지 않은 닉네임 입니다.',
+    available: false,
+  },
 ];

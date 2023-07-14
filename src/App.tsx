@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
@@ -12,6 +12,9 @@ import { Alert } from '@mui/material';
 import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 
+// firebase
+import './firebase';
+
 // lazy loading
 const LandingPage = lazy(() => import('pages/landing'));
 
@@ -22,6 +25,9 @@ const Register = lazy(() => import('pages/register/index'));
 const Terms = lazy(() => import('pages/register/Terms'));
 const Games = lazy(() => import('pages/register/Games'));
 const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
+
+const MyPage = lazy(() => import('pages/mypage'));
+const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -51,6 +57,8 @@ const App = () => {
           <Route path="games" element={<Games />} />
           <Route path="favgame" element={<SetFavoriteGame />} />
         </Route>
+        <Route path="/mypage" element={<MyPage />} />
+        <Route path="/lol/*" element={<LeagueOfLegends />} />
       </Routes>
       <Snackbar
         open={SHOW_SNACKBAR}

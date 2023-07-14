@@ -14,7 +14,10 @@ import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 import { styled } from '@mui/material/styles';
 
 // data
-import { collectionAndUseOfPersonalInformation, termOfUse } from './Terms.data';
+import {
+  collectionAndUseOfPersonalInformation,
+  termOfUse,
+} from '../../assets/Terms.data';
 
 const Wrapper = styled(Box)(() => ({
   width: '100%',

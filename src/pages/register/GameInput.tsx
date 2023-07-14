@@ -15,8 +15,8 @@ import { RootState } from 'store';
 
 // import types
 import { Typography } from '@mui/material';
-import { verifyingNickname } from 'apis/api/user';
-import { GAME } from './Games.data';
+
+import { GAME } from '../../assets/Games.data';
 
 const GameWrapper = styled(Box)(() => ({
   width: '100%',
@@ -60,22 +60,22 @@ const GameInput = ({ item }: GameInputProps) => {
     setNickname(event.target.value);
   };
 
-  const verifyNickname = async () => {
-    setIsPending(true);
-    try {
-      const exactNickname = await verifyingNickname(
-        nickname,
-        item.id,
-        dispatch,
-      );
-      setNickname(exactNickname);
-      setWarning(false);
-    } catch (e) {
-      setWarning(true);
-    } finally {
-      setIsPending(false);
-    }
-  };
+  // const verifyNickname = async () => {
+  //   setIsPending(true);
+  //   try {
+  //     const exactNickname = await verifyingNickname(
+  //       nickname,
+  //       item.id,
+  //       dispatch,
+  //     );
+  //     setNickname(exactNickname);
+  //     setWarning(false);
+  //   } catch (e) {
+  //     setWarning(true);
+  //   } finally {
+  //     setIsPending(false);
+  //   }
+  // };
 
   const endAdornment: () => ReactNode = () => {
     if (isPending) {
@@ -85,7 +85,7 @@ const GameInput = ({ item }: GameInputProps) => {
       return <CheckIcon color="primary" sx={{ mr: 1 }} />;
     }
     return (
-      <Button onClick={verifyNickname} disabled={nickname.length < 3}>
+      <Button onClick={() => {}} disabled={nickname.length < 3}>
         <Typography fontSize={12}>인증하기</Typography>
       </Button>
     );
