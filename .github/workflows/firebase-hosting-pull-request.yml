@@ -8,7 +8,7 @@ name: Deploy to Firebase Hosting on PR
       - main
 
 env:
-  REACT_APP_REST_API_URL: '${{ secrets.KAKAO_REST_API_URL }}'
+  REACT_APP_REST_API_KEY: '${{ secrets.KAKAO_REST_API_KEY }}'
   REACT_APP_REDIRECT_URI_LOGIN: '${{ secrets.KAKAO_REDIRECT_URI_LOGIN }}'
   REACT_APP_REDIRECT_URI_REGISTER: '${{ secrets.KAKAO_REDIRECT_URI_REGISTER }}'
   REACT_APP_API_BASE_URL: '${{ secrets.API_BASE_URL }}'
