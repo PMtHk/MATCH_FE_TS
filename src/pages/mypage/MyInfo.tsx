@@ -19,7 +19,9 @@ const MyInfo = () => {
       <Section>
         <SectionTitle>이메일 및 가입 일자</SectionTitle>
         <SectionContentTypo>이메일 : {email}</SectionContentTypo>
-        <SectionContentTypo>가입일자 : {created}</SectionContentTypo>
+        <SectionContentTypo>
+          가입일자 : {created.slice(0, 11)}
+        </SectionContentTypo>
       </Section>
       <Section>
         <SectionTitle>받은 평가</SectionTitle>

@@ -10,7 +10,13 @@ import {
 } from 'firebase/database';
 
 // mui
-import { Tooltip, Badge, Menu, Box, MenuItem, Typography } from '@mui/material';
+import { styled } from '@mui/system';
+import MuiBox from '@mui/material/Box';
+import MuiTypography from '@mui/material/Typography';
+import MuiMenuItem from '@mui/material/MenuItem';
+import MuiTooltip from '@mui/material/Tooltip';
+import MuiBadge from '@mui/material/Badge';
+import MuiMenu from '@mui/material/Menu';
 import NotificationsNone from '@mui/icons-material/NotificationsNone';
 import Delete from '@mui/icons-material/Delete';
 
@@ -119,19 +125,20 @@ const Notification = ({
     addFirebaseListener();
   }, [dispatch]);
 
+  // accordion -> 한번에 하나만 열리도록
+
+  const [expanded, setExpanded] = React.useState<string | false>(false);
+
+  const handleAccordion =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
+
   return (
     <>
-      <Tooltip title="알림">
+      <MuiTooltip title="알림">
         <Badge
           badgeContent={badgeNum}
-          sx={{
-            cursor: 'pointer',
-            '& .MuiBadge-dot': {
-              width: 12,
-              height: 12,
-              borderRadius: '100%',
-            },
-          }}
           onClick={(event: React.MouseEvent<HTMLElement>) => {
             handleNotiClick(event);
           }}
@@ -139,8 +146,8 @@ const Notification = ({
         >
           <NotificationsNone sx={{ color: '#dddddd', fontSize: '24px' }} />
         </Badge>
-      </Tooltip>
-      <Menu
+      </MuiTooltip>
+      <MuiMenu
         anchorEl={notiAnchorEl}
         id="notification-menu"
         open={notiOpen}
@@ -161,8 +168,8 @@ const Notification = ({
               content: '""',
               display: 'block',
               position: 'absolute',
-              top: 0,
-              right: 20,
+              top: 3,
+              right: 7,
               width: 10,
               height: 10,
               bgcolor: 'background.paper',
@@ -174,49 +181,57 @@ const Notification = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <Box
-          sx={{
-            width: '360px',
-            maxHeight: '50vh',
-            overflowY: 'auto',
-            overflowX: 'hidden',
-          }}
-        >
+        <ChatRoomsWrapper>
           {joinedChatRoomsId &&
             joinedChatRoomsId.map((chatRoomId) => {
               return (
                 <NotiAccordion
+                  expanded={expanded === chatRoomId}
+                  expandHandler={handleAccordion}
                   key={chatRoomId}
                   chatRoomId={chatRoomId}
                   timestamp={timestamps[chatRoomId]}
                 />
               );
             })}
-        </Box>
-        <MenuItem
-          onClick={deleteAllNotiHandler}
-          sx={{
-            borderTop: '1px solid gray',
-            marginRight: '4px',
-            marginLeft: '4px',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'center',
-          }}
-        >
+        </ChatRoomsWrapper>
+        <MenuItem onClick={deleteAllNotiHandler}>
           <Delete sx={{ color: 'orangered' }} />
-          <Typography
-            sx={{
-              fontWeight: 'bold',
-              color: 'orangered',
-            }}
-          >
-            모두 지우기
-          </Typography>
+          <DeleteAllTypo>모든 알림 지우기</DeleteAllTypo>
         </MenuItem>
-      </Menu>
+      </MuiMenu>
     </>
   );
 };
 
 export default Notification;
+
+const Badge = styled(MuiBadge)(() => ({
+  cursor: 'pointer',
+  '& .MuiBadge-dot': {
+    width: 12,
+    height: 12,
+    borderRadius: '100%',
+  },
+})) as typeof MuiBadge;
+
+const ChatRoomsWrapper = styled(MuiBox)(() => ({
+  width: '360px',
+  maxHeight: '60vh',
+  overflowY: 'auto',
+  overflowX: 'hidden',
+  gap: '4px',
+})) as typeof MuiBox;
+
+const MenuItem = styled(MuiMenuItem)(() => ({
+  margin: '8px 4px 0 4px',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+}));
+
+const DeleteAllTypo = styled(MuiTypography)(() => ({
+  fontSize: '12px',
+  fontWeight: 'bold',
+  color: 'orangered',
+})) as typeof MuiTypography;

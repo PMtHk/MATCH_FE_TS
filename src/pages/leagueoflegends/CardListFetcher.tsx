@@ -25,7 +25,7 @@ const CardListFetcher = ({
   const config = {
     params: {
       size: 12,
-      page: currentPage,
+      page: currentPage || 0,
       position: lane,
       type: queueType,
       tier,
@@ -38,8 +38,6 @@ const CardListFetcher = ({
 
   useEffect(() => {
     dispatch(cardActions.SET_TOTAL_PAGE(cardList?.totalPage));
-    dispatch(cardActions.SET_CURRENT_PAGE(cardList?.currentPage));
-
     dispatch(cardActions.SET_CARDS(cardList?.content));
   }, [cardList, dispatch]);
 
