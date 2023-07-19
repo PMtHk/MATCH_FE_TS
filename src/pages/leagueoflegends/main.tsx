@@ -7,13 +7,16 @@ import { useDispatch, useSelector } from 'react-redux';
 // mui
 import { styled } from '@mui/system';
 import MuiPagination from '@mui/material/Pagination';
+import MuiBox from '@mui/material/Box';
+import MuiTypography from '@mui/material/Typography';
+import MuiButton from '@mui/material/Button';
+import ErrorIcon from '@mui/icons-material/Error';
 import { SelectChangeEvent } from '@mui/material/Select';
 
 import Layout from 'components/Layout';
-import ErrorFallback from 'components/errorFallback/ErrorFallback';
 import Circular from 'components/loading/Circular';
-import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
+import { RootState } from 'store';
 import CardFilter from './CardFilter';
 import CardListFetcher from './CardListFetcher';
 import CardListContainer from './CardListContainer';
@@ -56,6 +59,13 @@ const Main = () => {
     }
   };
 
+  const filterInitializer = () => {
+    setQueueType('ALL');
+    setTier('ALL');
+    setLane('ALL');
+    dispatch(cardActions.SET_CURRENT_PAGE(0));
+  };
+
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) => {
     dispatch(cardActions.SET_CURRENT_PAGE(value - 1));
     window.scrollTo(0, 0);
@@ -80,12 +90,8 @@ const Main = () => {
     <>
       <Layout currentGame="lol">
         <CardFilter filterProps={filterProps} />
-        <ErrorBoundary FallbackComponent={ErrorFallback}>
-          <Suspense
-            fallback={
-              <Circular text="게시글을 불러오는 중입니다." height="500px" />
-            }
-          >
+        <ErrorBoundary FallbackComponent={CardListErrorFallback}>
+          <Suspense fallback={<CardListFetcherFallback />}>
             <CardListFetcher fetcherProps={fetcherProps}>
               <CardListContainer />
             </CardListFetcher>
@@ -105,6 +111,56 @@ const Main = () => {
 
 export default Main;
 
+const CardListFetcherFallback = () => {
+  return (
+    <Circular text="게시글을 불러오는 중입니다." height="calc(100vh - 386px)" />
+  );
+};
+
+interface ErrorBoundaryProps {
+  error: any;
+  resetErrorBoundary: () => void;
+}
+
+const CardListErrorFallback = ({
+  error,
+  resetErrorBoundary,
+}: ErrorBoundaryProps) => {
+  return (
+    <ErrorFallbackWrapper role="alert">
+      <ErrorTitle>
+        <ErrorIcon sx={{ mr: 1 }} />
+        검색된 파티가 없어요...
+      </ErrorTitle>
+      <ErrorDetail>다른 조건으로 파티를 다시 검색해 보세요.</ErrorDetail>
+      <MuiButton onClick={resetErrorBoundary}>다시 검색하기</MuiButton>
+    </ErrorFallbackWrapper>
+  );
+};
+
 const Pagination = styled(MuiPagination)(() => ({
   margin: '20px 0 40px 0',
 }));
+
+const ErrorFallbackWrapper = styled(MuiBox)(() => ({
+  width: '100%',
+  height: 'calc(100vh - 386px)',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
+
+const ErrorTitle = styled(MuiTypography)(() => ({
+  display: 'flex',
+  fontSize: '1.5rem',
+  fontWeight: 'bold',
+  marginBottom: '1rem',
+  justifyContent: 'center',
+  alignItems: 'center',
+})) as typeof MuiTypography;
+
+const ErrorDetail = styled(MuiTypography)(() => ({
+  fontSize: '1rem',
+  marginBottom: '1rem',
+})) as typeof MuiTypography;

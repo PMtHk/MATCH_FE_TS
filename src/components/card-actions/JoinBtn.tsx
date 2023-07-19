@@ -10,11 +10,13 @@ import { addMemberToFirebaseDB, isBanned } from 'apis/api/firebase';
 import { authAxios } from 'apis/utils';
 import { snackbarActions } from 'store/snackbar-slice';
 import { joinParty } from 'apis/api/user';
+import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
 import { chatroomActions } from '../../store/chatroom-slice';
 
 const JoinBtn = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // current game
   const currentGame = window.location.pathname.split('/')[1];
@@ -43,10 +45,12 @@ const JoinBtn = () => {
     notiToken: notiToken || '',
   };
 
-  const JoinBtnHandler = () => {
-    if (!isBanned(chatRoomId, oauth2Id)) {
+  const JoinBtnHandler = async () => {
+    const banned = await isBanned(chatRoomId, oauth2Id);
+    if (!banned) {
       try {
-        joinParty(currentGame, id, chatRoomId, newMember, dispatch);
+        await joinParty(currentGame, id, chatRoomId, newMember, dispatch);
+        navigate(0);
       } catch (error) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({

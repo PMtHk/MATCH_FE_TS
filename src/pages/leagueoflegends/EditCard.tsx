@@ -191,6 +191,7 @@ const CreateCard = () => {
               ref(getDatabase(), `chatRooms/${currentCard.chatRoomId}`),
               {
                 content: userInput.content,
+                maxMember: userInput.type === 'DUO_RANK' ? 2 : 5,
               },
             ).then(() => {
               // 파이어베이스 수정 완료
@@ -224,12 +225,11 @@ const CreateCard = () => {
     <Modal>
       <Container>
         <HeaderWrapper>
-          <HeaderTitle>새 게시글 작성</HeaderTitle>
+          <HeaderTitle>게시글 수정</HeaderTitle>
           <MuiIconButton
             size="small"
             onClick={() => {
               confirmBeforeClosingModal();
-              navigate('/lol');
             }}
             sx={{ p: 0, m: 0 }}
           >
@@ -258,7 +258,11 @@ const CreateCard = () => {
             {queueTypeList.map((item) => {
               if (item.value !== 'ALL') {
                 return (
-                  <ToggleButton key={item.value} value={item.value}>
+                  <ToggleButton
+                    key={item.value}
+                    value={item.value}
+                    disabled={item.maxMember < currentCard.memberList.length}
+                  >
                     {item.label}
                   </ToggleButton>
                 );
@@ -272,7 +276,7 @@ const CreateCard = () => {
           <TierToggleWrapper>
             <ToggleButtonGroup
               exclusive
-              disabled={isPosting}
+              disabled={isPosting || userInput.type === 'ARAM'}
               value={userInput.tier}
               onChange={handleTier}
             >
@@ -311,7 +315,7 @@ const CreateCard = () => {
           <SectionTitle>원하는 파티원의 포지션</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={isPosting}
+            disabled={isPosting || userInput.type === 'ARAM'}
             value={userInput.position}
             onChange={handlePosition}
           >
@@ -378,6 +382,7 @@ const CreateCard = () => {
             placeholder="원하는 파티원에 대한 설명이나, 자신에 대해 소개해 보세요."
             inputProps={{
               maxLength: 140,
+              minLength: 20,
             }}
           />
           <HelpTypo>

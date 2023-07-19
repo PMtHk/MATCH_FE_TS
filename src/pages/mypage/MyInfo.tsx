@@ -19,13 +19,15 @@ const MyInfo = () => {
       <Section>
         <SectionTitle>이메일 및 가입 일자</SectionTitle>
         <SectionContentTypo>이메일 : {email}</SectionContentTypo>
-        <SectionContentTypo>가입일자 : {created}</SectionContentTypo>
+        <SectionContentTypo>
+          가입일자 : {created.slice(0, 11)}
+        </SectionContentTypo>
       </Section>
       <Section>
         <SectionTitle>받은 평가</SectionTitle>
-        <SectionContentTypo>매칭 횟수 : {likeCount}</SectionContentTypo>
-        <SectionContentTypo>받은 좋아요 : {dislikeCount}</SectionContentTypo>
-        <SectionContentTypo>받은 싫어요 : {matchCount}</SectionContentTypo>
+        <SectionContentTypo>매칭 횟수 : {matchCount}</SectionContentTypo>
+        <SectionContentTypo>받은 좋아요 : {likeCount}</SectionContentTypo>
+        <SectionContentTypo>받은 싫어요 : {dislikeCount}</SectionContentTypo>
       </Section>
     </Container>
   );
