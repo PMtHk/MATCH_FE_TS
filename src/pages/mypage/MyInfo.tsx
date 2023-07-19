@@ -25,9 +25,9 @@ const MyInfo = () => {
       </Section>
       <Section>
         <SectionTitle>받은 평가</SectionTitle>
-        <SectionContentTypo>매칭 횟수 : {likeCount}</SectionContentTypo>
-        <SectionContentTypo>받은 좋아요 : {dislikeCount}</SectionContentTypo>
-        <SectionContentTypo>받은 싫어요 : {matchCount}</SectionContentTypo>
+        <SectionContentTypo>매칭 횟수 : {matchCount}</SectionContentTypo>
+        <SectionContentTypo>받은 좋아요 : {likeCount}</SectionContentTypo>
+        <SectionContentTypo>받은 싫어요 : {dislikeCount}</SectionContentTypo>
       </Section>
     </Container>
   );

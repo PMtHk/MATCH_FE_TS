@@ -38,11 +38,15 @@ import {
   loadSummonerInfoInDB,
 } from 'apis/api/leagueoflegends';
 import { chatroomActions } from 'store/chatroom-slice';
+import { createCard, deleteCard } from 'apis/api/common';
+import { snackbarActions } from 'store/snackbar-slice';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const currentGame = window.location.pathname.split('/')[1];
 
   const { lol: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -223,78 +227,28 @@ const CreateCard = () => {
     return closeModal();
   };
 
-  const createChatroomInFirebaseDB = async (
-    boardId: string,
-    totalUser: number,
-  ) => {
-    const chatroomRef = ref(getDatabase(), 'chatRooms');
-    const { key } = push(chatroomRef);
-
-    // 서버로 전송할 data
-    const chatRoomInfo = {
-      boardId,
-      chatRoomId: key,
-      totalUser,
-    };
-
-    await authAxios
-      .post('/api/chat/lol', chatRoomInfo)
-      .then(async (response) => {
-        if (response.status === 200) {
-          const newChatRoom: any = {
-            game: 'lol',
-            isDeleted: false,
-            key,
-            roomId: boardId,
-            createdBy: userInput.name,
-            maxMember: totalUser,
-            memberList: [
-              {
-                nickname: userInput.name,
-                oauth2Id,
-                notiToken: notiToken || '',
-              },
-            ],
-            timestamp: new Date().toString(),
-            content: userInput.content,
-          };
-
-          if (key) {
-            await update(child(chatroomRef, key), newChatRoom);
-            const lastReadRef = ref(getDatabase(), 'lastRead');
-            await set(child(lastReadRef, `${oauth2Id}/${key}`), Date.now())
-              .then(() => {
-                dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
-                closeModal();
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-        }
-      })
-      .then(() => {
-        navigate('/lol', { replace: true });
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
   const createCardBtnHandler = async () => {
     setIsPosting(true);
+    try {
+      const { key, boardId } = await createCard(
+        currentGame,
+        userInput,
+        oauth2Id,
+        userInput.type === 'DUO_RANK' ? 2 : 5,
+        notiToken || '',
+      );
 
-    await authAxios
-      .post('/api/lol/board', {
-        ...userInput,
-      })
-      .then((response) => {
-        const boardId = response.data;
-        const maxMember = userInput.type === 'DUO_RANK' ? 2 : 5;
-        createChatroomInFirebaseDB(boardId, maxMember);
-        setIsPosting(false);
-      });
+      dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
+      closeModal();
+      navigate(`/lol/${boardId}`, { replace: true });
+    } catch (error) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 작성에 실패했습니다.',
+          severity: 'error',
+        }),
+      );
+    }
   };
 
   return (

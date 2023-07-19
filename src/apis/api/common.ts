@@ -1,6 +1,19 @@
 import { authAxios } from 'apis/utils';
 import { getDatabase, push, ref, update, child, set } from 'firebase/database';
 
+/**
+ * 게시글 생성
+ * @param game 게임 이름
+ * @param userInput 사용자 입력 데이터
+ * @param oauth2Id 사용자 고유 아이디
+ * @param maxMember 최대 인원
+ * @param notiToken 사용자 Notification 토큰
+ * @returns {
+ * key: string; 생성된 채팅방 난수 값
+ * boardId: number; 생성된 게시글의 Id 값
+ * }
+ */
+
 export const createCard = async (
   game: string,
   userInput: any,
@@ -14,7 +27,7 @@ export const createCard = async (
   // 1. 서버 내 게시글 생성 요청
   const boardResponse = await authAxios.post(`/api/${game}/board`, userInput);
 
-  const { boardId } = boardResponse.data;
+  const boardId = boardResponse.data;
 
   // 서버에 전송할 데이터 생성
   // 1. 키 생성
@@ -24,15 +37,12 @@ export const createCard = async (
     // 2. 데이터 생성
     const preChatRoomInfo = {
       boardId,
-      key,
-      maxMember,
+      chatRoomId: key,
+      totalUser: maxMember,
     };
 
     // 2. 서버 내 채팅방 생성 요청
-    const chatResponse = await authAxios.post(
-      `/api/chat/${game}`,
-      preChatRoomInfo,
-    );
+    await authAxios.post(`/api/chat/${game}`, preChatRoomInfo);
 
     const newChatRoom: any = {
       game,
@@ -55,5 +65,46 @@ export const createCard = async (
     await update(child(chatRoomsRef, key), newChatRoom);
     await set(child(lastReadRef, `${oauth2Id}/${key}`), Date.now());
   }
-  return null;
+
+  const result = {
+    key,
+    boardId,
+  };
+
+  return result;
+};
+
+/**
+ * 게시글 삭제
+ *
+ */
+
+export const deleteCard = async (
+  game: string,
+  boardId: number,
+  chatRoomId: string,
+) => {
+  await authAxios.delete(`/api/${game}/board/${boardId}`);
+
+  await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
+    isDeleted: true,
+  });
+};
+
+/**
+ * 게시글 업데이트
+ *
+ */
+
+export const updateCard = async (
+  currentGame: string,
+  boardId: number,
+  chatRoomId: string,
+  userInput: any,
+) => {
+  await authAxios.put(`/api/${currentGame}/board/${boardId}`, { ...userInput });
+
+  await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
+    content: userInput.content,
+  });
 };
