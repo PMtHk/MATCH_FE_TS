@@ -35,7 +35,7 @@ const DeleteCardBtn = () => {
               dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
             })
             .then(() => {
-              navigate('/lol', { replace: true });
+              navigate(`/${currentGame}`, { replace: true });
               window.location.reload();
             })
             .catch((error) => console.log(error));
