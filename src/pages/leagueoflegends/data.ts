@@ -48,6 +48,14 @@ export const tierList = [
       'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/diamond.png',
   },
   {
+    value: 'EMERALD',
+    label: '에메랄드',
+    color: '#009e54',
+    acronym: 'E',
+    imageUrl:
+      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/emerald.png',
+  },
+  {
     value: 'PLATINUM',
     label: '플래티넘',
     color: '#4E9996',

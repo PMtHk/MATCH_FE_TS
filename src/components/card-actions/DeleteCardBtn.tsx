@@ -27,7 +27,8 @@ const DeleteCardBtn = () => {
     try {
       await deleteCard(currentGame, id, chatRoomId);
       dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-      navigate('/lol', { replace: true });
+      navigate('/lol');
+      navigate(0);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '게시글이 삭제되었습니다.',

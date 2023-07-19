@@ -43,7 +43,7 @@ const CardsWrapper = styled(MuiBox)(() => ({
   minHeight: 'calc(100vh - 386px)',
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   flexWrap: 'wrap',
   padding: '16px 0 0 8px',
   overflowY: 'auto',

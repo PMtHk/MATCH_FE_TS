@@ -248,6 +248,7 @@ const CreateCard = () => {
       dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
       closeModal();
       navigate(`/lol/${boardId}`, { replace: true });
+      navigate(0);
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

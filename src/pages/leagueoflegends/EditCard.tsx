@@ -230,7 +230,6 @@ const CreateCard = () => {
             size="small"
             onClick={() => {
               confirmBeforeClosingModal();
-              navigate('/lol');
             }}
             sx={{ p: 0, m: 0 }}
           >
@@ -277,7 +276,7 @@ const CreateCard = () => {
           <TierToggleWrapper>
             <ToggleButtonGroup
               exclusive
-              disabled={isPosting}
+              disabled={isPosting || userInput.type === 'ARAM'}
               value={userInput.tier}
               onChange={handleTier}
             >
@@ -316,7 +315,7 @@ const CreateCard = () => {
           <SectionTitle>원하는 파티원의 포지션</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={isPosting}
+            disabled={isPosting || userInput.type === 'ARAM'}
             value={userInput.position}
             onChange={handlePosition}
           >
