@@ -11,7 +11,7 @@ interface UserInfoFetcherProps {
 const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
   const dispatch = useDispatch();
 
-  const userInfo: any = getUserInfo('/api/user/info');
+  const userInfo: any = getUserInfo();
 
   useEffect(() => {
     dispatch(mypageActions.SET_MYPAGE({ ...userInfo }));

@@ -44,9 +44,10 @@ interface CardProps {
     memberList: [];
     banList: [];
   };
+  expired: boolean;
 }
 
-const Card = ({ item }: CardProps) => {
+const Card = ({ item, expired }: CardProps) => {
   const [isHover, setIsHover] = React.useState<boolean>(false);
 
   const position = positionList.find(
@@ -97,7 +98,7 @@ const Card = ({ item }: CardProps) => {
       }}
       onMouseLeave={() => setIsHover(false)}
     >
-      <CardContainer>
+      <CardContainer expired={expired}>
         <CardTitleWrapper>
           <ImgMixBlendMode>
             <img
@@ -147,7 +148,9 @@ const Card = ({ item }: CardProps) => {
                 })}
               </MemberInfo>
               <TimerWrapper>
-                <Timer expire={item.expire} created={item.created} />
+                {!expired && (
+                  <Timer expire={item.expire} created={item.created} />
+                )}
               </TimerWrapper>
             </RecruitStatusWrapper>
           )}

@@ -2,13 +2,15 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface IState {
   cards: [];
-  currentPageNum: number;
+  currentPage: number;
+  totalPage: number;
   currentCard: any;
 }
 
 const initialState: IState = {
   cards: [],
-  currentPageNum: 0,
+  currentPage: 0,
+  totalPage: 0,
   currentCard: null,
 };
 
@@ -19,8 +21,11 @@ const cardSlice = createSlice({
     SET_CARDS: (state, action) => {
       state.cards = action.payload;
     },
-    SET_CURRENT_PAGENUM: (state, action) => {
-      state.currentPageNum = action.payload;
+    SET_CURRENT_PAGE: (state, action) => {
+      state.currentPage = action.payload;
+    },
+    SET_TOTAL_PAGE: (state, action) => {
+      state.totalPage = action.payload;
     },
     SET_CURRENT_CARD: (state, action) => {
       state.currentCard = action.payload;

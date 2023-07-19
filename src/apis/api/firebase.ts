@@ -19,13 +19,21 @@ type Member = {
   oauth2Id: string;
   notiToken: string;
 };
+/** ------------------------------------------------------------
+ * 채팅방 차단 여부 확인
+ * @param {string} chatRoomId - 채팅방 아이디
+ * @param {string} oauth2Id - 사용자 oauth2Id
+ * @return {boolean} - 해당 채팅방의 요청자 차단 여부
+ *
+ * 해당 채팅방의 차단 목록을 조회하고, 요청자가 차단되어있는지 확인한다.
+ * 차단되어있다면 true, 아니면 false를 반환한다.
+ */
 
-export const isBanned = async (
-  chatRoomId: string,
-  oauth2Id: string,
-  chatRoomRef: DatabaseReference,
-) => {
+export const isBanned = async (chatRoomId: string, oauth2Id: string) => {
+  const chatRoomRef = ref(getDatabase(), 'chatRooms');
+
   let banned = false;
+
   await get(child(chatRoomRef, chatRoomId)).then((datasnapshot) => {
     const bannedList = datasnapshot.val().bannedList
       ? datasnapshot.val().bannedList
@@ -43,12 +51,11 @@ export const isBanned = async (
 export const addMemberToFirebaseDB = async (
   newMember: Member,
   chatRoomId: string,
-  oauth2Id: string,
-  nickname: string,
-  chatRoomsRef: DatabaseReference,
-  messagesRef: DatabaseReference,
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const messagesRef = ref(getDatabase(), 'messages');
+
   const dataSnapshot = await get(child(chatRoomsRef, chatRoomId));
 
   const prevMemberList = [];
@@ -62,15 +69,15 @@ export const addMemberToFirebaseDB = async (
 
   const lastReadRef = ref(getDatabase(), 'lastRead');
 
-  await set(child(lastReadRef, `${oauth2Id}/${chatRoomId}`), Date.now());
+  await set(
+    child(lastReadRef, `${newMember.oauth2Id}/${chatRoomId}`),
+    Date.now(),
+  );
   await set(push(child(messagesRef, chatRoomId)), {
     type: 'system',
     timestamp: Date.now(),
-    user: {
-      nickname,
-      oauth2Id,
-    },
-    content: `${nickname} 님이 참가하였습니다.`,
+    user: newMember,
+    content: `${newMember.nickname} 님이 참가하였습니다.`,
   });
 
   dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(chatRoomId));

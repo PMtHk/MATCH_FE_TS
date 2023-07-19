@@ -1,7 +1,7 @@
 import React from 'react';
 
 // mui
-import { styled } from '@mui/system';
+import styled from '@mui/system/styled';
 import MuiBox from '@mui/material/Box';
 import MuiContainer from '@mui/material/Container';
 import MuiTypography from '@mui/material/Typography';
@@ -38,7 +38,6 @@ export default Layout;
 // styled-components
 const LayoutContainer = styled(MuiBox)(() => ({
   width: '100%',
-  height: '100vh',
   backgroundColor: '#f3f3f3',
 })) as typeof MuiBox;
 
@@ -61,9 +60,10 @@ const GameTypo = styled(MuiTypography)(({ theme }) => ({
 
 const ContentWrapper = styled(MuiContainer)(() => ({
   padding: '120px 0 0 0',
-  height: '100%',
-  minHeight: 'calc(100vh - 60px - 60px)',
+  minHeight: 'calc(100vh)',
   display: 'flex',
   flexDirection: 'column',
+  justifyContent: 'flex-start',
   alignItems: 'center',
+  backgroundColor: '#f3f3f3',
 })) as typeof MuiContainer;

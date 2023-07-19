@@ -5,8 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Linear from 'components/loading/Linear';
 
 // snackbar
-import { Snackbar } from '@mui/material';
-import { Alert } from '@mui/material';
+import { Snackbar, Alert } from '@mui/material';
 
 // redux
 import { RootState } from 'store';
@@ -14,6 +13,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 
 // firebase
 import './firebase';
+import NotFound from 'components/errorFallback/NotFound';
 
 // lazy loading
 const LandingPage = lazy(() => import('pages/landing'));
@@ -61,6 +61,7 @@ const App = () => {
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/lol/*" element={<LeagueOfLegends />} />
         <Route path="/pubg/*" element={<Battlegrounds />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Snackbar
         open={SHOW_SNACKBAR}

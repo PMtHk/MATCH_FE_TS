@@ -12,9 +12,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import { styled } from '@mui/material/styles';
 
 import { RootState } from 'store';
+import { Typography } from '@mui/material';
+import { verifyingNickname } from '../../apis/api/user';
 
 // import types
-import { Typography } from '@mui/material';
 
 import { GAME } from '../../assets/Games.data';
 
@@ -60,22 +61,22 @@ const GameInput = ({ item }: GameInputProps) => {
     setNickname(event.target.value);
   };
 
-  // const verifyNickname = async () => {
-  //   setIsPending(true);
-  //   try {
-  //     const exactNickname = await verifyingNickname(
-  //       nickname,
-  //       item.id,
-  //       dispatch,
-  //     );
-  //     setNickname(exactNickname);
-  //     setWarning(false);
-  //   } catch (e) {
-  //     setWarning(true);
-  //   } finally {
-  //     setIsPending(false);
-  //   }
-  // };
+  const verifyBtnHandler = async () => {
+    setIsPending(true);
+    try {
+      const exactNickname = await verifyingNickname(
+        nickname,
+        item.id,
+        dispatch,
+      );
+      setNickname(exactNickname);
+      setWarning(false);
+    } catch (e) {
+      setWarning(true);
+    } finally {
+      setIsPending(false);
+    }
+  };
 
   const endAdornment: () => ReactNode = () => {
     if (isPending) {
@@ -85,7 +86,7 @@ const GameInput = ({ item }: GameInputProps) => {
       return <CheckIcon color="primary" sx={{ mr: 1 }} />;
     }
     return (
-      <Button onClick={() => {}} disabled={nickname.length < 3}>
+      <Button onClick={verifyBtnHandler} disabled={nickname.length < 3}>
         <Typography fontSize={12}>인증하기</Typography>
       </Button>
     );

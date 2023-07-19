@@ -51,7 +51,7 @@ const mypageSlice = createSlice({
       state.matchCount = action.payload.matchCount;
       state.created = action.payload.created;
     },
-    RESET_MYPAGE: (state, _) => {
+    RESET_MYPAGE: (state) => {
       state.id = 0;
       state.oauth2Id = '';
       state.nickname = '';
