@@ -43,10 +43,12 @@ const JoinBtn = () => {
     notiToken: notiToken || '',
   };
 
-  const JoinBtnHandler = () => {
-    if (!isBanned(chatRoomId, oauth2Id)) {
+  const JoinBtnHandler = async () => {
+    const banned = await isBanned(chatRoomId, oauth2Id);
+    if (!banned) {
       try {
         joinParty(currentGame, id, chatRoomId, newMember, dispatch);
+        window.location.reload();
       } catch (error) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({

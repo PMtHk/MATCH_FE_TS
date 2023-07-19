@@ -193,7 +193,14 @@ const CreateCard = () => {
         setIsNewNicknameCertified(false);
         setIsChanged(true);
       }
-    } catch (error) {
+    } catch (error: any) {
+      if (
+        error.response.status === 404 &&
+        error.response.data.message ===
+          '아직 랭크정보를 보유하고 있지 않습니다.'
+      ) {
+        setIsNewNicknameCertified(true);
+      }
       setIsLoading(false);
       setIsChanged(true);
     }

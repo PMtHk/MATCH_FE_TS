@@ -1,5 +1,5 @@
 export const queueTypeList = [
-  { value: 'ALL', label: '모든 큐', maxMembr: 5 },
+  { value: 'ALL', label: '모든 큐', maxMember: 5 },
   { value: 'DUO_RANK', label: '솔로랭크', maxMember: 2 }, // RANKED_SOLO_5x5
   { value: 'FREE_RANK', label: '자유랭크', maxMember: 5 }, // RANKED_FLEX_SR
   { value: 'NORMAL', label: '일반게임', maxMember: 5 }, // NORMAL

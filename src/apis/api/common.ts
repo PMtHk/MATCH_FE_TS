@@ -101,10 +101,12 @@ export const updateCard = async (
   boardId: number,
   chatRoomId: string,
   userInput: any,
+  updatedMaxMember: number,
 ) => {
   await authAxios.put(`/api/${currentGame}/board/${boardId}`, { ...userInput });
 
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
     content: userInput.content,
+    maxMember: updatedMaxMember,
   });
 };
