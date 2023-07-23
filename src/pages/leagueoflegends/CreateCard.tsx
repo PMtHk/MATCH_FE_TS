@@ -34,8 +34,8 @@ import Modal from 'components/Modal';
 import { authAxios } from 'apis/utils';
 import { CustomSwitch } from 'components/Swtich';
 import {
-  getExactSummonerName,
-  loadSummonerInfoInDB,
+  verifyLOLNickname,
+  loadSummonerInfoIntoDB,
 } from 'apis/api/leagueoflegends';
 import { chatroomActions } from 'store/chatroom-slice';
 import { createCard, deleteCard } from 'apis/api/common';
@@ -176,23 +176,15 @@ const CreateCard = () => {
     try {
       setIsLoading(true);
 
-      const exactSummonerName = await getExactSummonerName(userInput.name);
+      const exactSummonerName = await verifyLOLNickname(userInput.name);
 
       if (exactSummonerName) {
         setUserInput({ ...userInput, name: exactSummonerName });
-
-        const response = await loadSummonerInfoInDB(exactSummonerName);
-
-        if (response) {
-          setIsChanged(true);
-          setIsLoading(false);
-          setIsNewNicknameCertified(true);
-        }
-      } else {
-        setIsLoading(false);
-        setIsNewNicknameCertified(false);
-        setIsChanged(true);
       }
+
+      await loadSummonerInfoIntoDB(exactSummonerName);
+
+      setIsNewNicknameCertified(true);
     } catch (error: any) {
       if (
         error.response.status === 404 &&
@@ -200,7 +192,10 @@ const CreateCard = () => {
           '아직 랭크정보를 보유하고 있지 않습니다.'
       ) {
         setIsNewNicknameCertified(true);
+      } else {
+        setIsNewNicknameCertified(false);
       }
+    } finally {
       setIsLoading(false);
       setIsChanged(true);
     }

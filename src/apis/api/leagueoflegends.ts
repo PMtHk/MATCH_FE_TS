@@ -3,15 +3,29 @@ import { authAxios, defaultAxios } from 'apis/utils';
 
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
 
+/**
+ * 리그오브레전드 소환사명 존재 여부 확인 및 정확한 소환사명 반환
+ * @param nickname 리그오브레전드 닉네임
+ * @returns 닉네임의 정확한 표기
+ */
+
 export const verifyLOLNickname = async (nickname: string) => {
   const response = await defaultAxios.get(`/api/lol/user/exist/${nickname}`);
 
-  const exactNickname = response.data;
+  const exactNickname: string = response.data;
 
   return exactNickname;
 };
 
-// 카드 리스트 가져오기 (게시글 목록 가져오기)
+/**
+ * 리그오브레전드 게시글 불러오기
+ * @param url 요청 url
+ * @param config 요청 config
+ * @param deps useEffect deps
+ * @returns - 리그오브레전드 게시글 목록
+ *
+ * 리그오브레전드 게시글을 불러온다.
+ */
 export function fetchCardList(url: string, config: any, deps: any[]) {
   const [resource, setResource] = useState(null);
 
@@ -29,7 +43,11 @@ export function fetchCardList(url: string, config: any, deps: any[]) {
   return resource;
 }
 
-// 카드 디테일 가져오기 (카드 상세보기 가져오기)
+/**
+ * 리그오브레전드 게시글 상세보기 불러오기
+ * @param url
+ * @returns - 리그오브레저드 게시글 상세보기
+ */
 export function fetchCardDetail(url: string) {
   const [resource, setResource] = useState(null);
 
@@ -45,24 +63,14 @@ export function fetchCardDetail(url: string) {
   return resource;
 }
 
-export const getExactSummonerName = async (summonerName: string) => {
-  const response = await defaultAxios.get(
-    `/api/lol/user/exist/${summonerName}`,
-  );
+/**
+ * 리그오브레전드 소환사의 전적 불러오기 trigger
+ * @param summonerName
+ * @returns null
+ */
 
-  if (response.status === 200) {
-    return response.data;
-  }
-
-  return null;
-};
-
-export const loadSummonerInfoInDB = async (summonerName: string) => {
+export const loadSummonerInfoIntoDB = async (summonerName: string) => {
   const response = await defaultAxios.get(`/api/lol/user/${summonerName}`);
-
-  if (response.status === 200) {
-    return 'success';
-  }
 
   return null;
 };

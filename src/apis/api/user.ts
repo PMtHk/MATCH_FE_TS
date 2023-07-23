@@ -264,6 +264,8 @@ export const getUserChatRooms = () => {
  * 채팅방 참가
  * @param {string} game - 파티의 게임 종류
  * @param {number} id - 파티 번호
+ * @param {string} chatRoomId - 채팅방 아이디
+ * @param {Member} newMember - 새로 참가하는 멤버
  * @returns {null}
  *
  * 조회 중인 파티의 종류와 번호를 이용해 해당 게시글에 참가한다.
@@ -290,32 +292,4 @@ export const joinParty = async (
   }
 
   return null;
-};
-
-export const verifyingNickname = async (
-  nickname: string,
-  game: GAME_ID,
-  dispatch: ReturnType<typeof useDispatch>,
-) => {
-  try {
-    dispatch(registerActions.SET_GAMES_WITH_ID({ id: game, value: '' }));
-
-    const { data: exactNickname } = await defaultAxios.get(
-      `/api/${game}/user/exist/${nickname}`,
-    );
-
-    dispatch(
-      registerActions.SET_GAMES_WITH_ID({ id: game, value: exactNickname }),
-    );
-
-    return exactNickname;
-  } catch (error: any) {
-    dispatch(
-      snackbarActions.OPEN_SNACKBAR({
-        message: '닉네임을 확인할 수 없습니다.',
-        severity: 'error',
-      }),
-    );
-    return nickname;
-  }
 };
