@@ -246,9 +246,13 @@ const CreateCard = () => {
       );
 
       dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
-      closeModal();
       navigate(`/lol/${boardId}`, { replace: true });
-      navigate(0);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 작성에 성공했습니다.',
+          severity: 'success',
+        }),
+      );
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

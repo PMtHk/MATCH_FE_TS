@@ -194,17 +194,21 @@ const CreateCard = () => {
         userInput.type === 'DUO_RANK' ? 2 : 5,
       );
 
-      snackbarActions.OPEN_SNACKBAR({
-        message: '게시글 수정이 완료되었습니다.',
-        severity: 'success',
-      });
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 수정이 완료되었습니다.',
+          severity: 'success',
+        }),
+      );
 
       navigate(`/lol/${currentCard.id}`, { replace: true });
     } catch (error) {
-      snackbarActions.OPEN_SNACKBAR({
-        message: '게시글 수정 중 문제가 발생하였습니다.',
-        severity: 'error',
-      });
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 수정 중 문제가 발생하였습니다.',
+          severity: 'error',
+        }),
+      );
     } finally {
       setIsPosting(false);
     }
