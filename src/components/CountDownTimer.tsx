@@ -45,10 +45,10 @@ const CountDownTimer = ({ created, expire }: TimerProps) => {
   const renderer = ({ hours, minutes, seconds, completed }: any) => {
     return (
       <MuiTypography sx={{ fontSize: '14px', fontWeight: '700' }}>
-        {completed && '만료됨'}
-        {!completed && hours && `${hours}시간 남음`}
-        {!completed && !hours && minutes && `${minutes}분 남음`}
-        {!completed && !hours && !minutes && seconds && `${seconds}초 남음`}
+        {completed ? '만료됨' : ''}
+        {!completed && hours ? `${hours}시간 남음` : ''}
+        {!completed && !hours && minutes ? `${minutes}분 남음` : ''}
+        {!completed && !hours && !minutes && seconds ? `${seconds}초 남음` : ''}
       </MuiTypography>
     );
   };
