@@ -38,7 +38,7 @@ export const gameList: GAME[] = [
     image_url: 'https://d18ghgbbpc0qi2.cloudfront.net/game_icons/overwatch.png',
     labelText: '오버워치 닉네임을 입력하세요.',
     helperText: '등록되지 않은 닉네임 입니다.',
-    available: true,
+    available: false,
   },
   {
     id: 'valorant',
