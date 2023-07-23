@@ -2,7 +2,14 @@ import { useEffect, useState } from 'react';
 import { authAxios, defaultAxios } from 'apis/utils';
 
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
-import { cardActions } from 'store/card-slice';
+
+export const verifyLOLNickname = async (nickname: string) => {
+  const response = await defaultAxios.get(`/api/lol/user/exist/${nickname}`);
+
+  const exactNickname = response.data;
+
+  return exactNickname;
+};
 
 // 카드 리스트 가져오기 (게시글 목록 가져오기)
 export function fetchCardList(url: string, config: any, deps: any[]) {

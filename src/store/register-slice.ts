@@ -6,6 +6,7 @@ interface IState {
   games: {
     lol: string;
     pubg: string;
+    overwatch: string;
     valorant: string;
   };
 }
@@ -28,6 +29,7 @@ const initialState: IState = {
   games: {
     lol: '',
     pubg: '',
+    overwatch: '',
     valorant: '',
   },
 };
@@ -47,6 +49,7 @@ const registerSlice = createSlice({
       state.games = {
         lol: '',
         pubg: '',
+        overwatch: '',
         valorant: '',
       };
     },
