@@ -59,9 +59,3 @@ export const loadSummonerInfoInDB = async (summonerName: string) => {
 
   return null;
 };
-
-/** ------------------------------------------------------------
- * 롤 게시글 수정
- * @param {number} boardId - 게시글 번호
- * @param {any} userInput - 사용자가 입력한 게시글 정보
- */

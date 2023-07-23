@@ -31,6 +31,8 @@ import { RootState } from 'store';
 import { authAxios, defaultAxios } from 'apis/utils';
 import { cardActions } from 'store/card-slice';
 import { get, child, ref, getDatabase, update } from 'firebase/database';
+import { updateCard } from 'apis/api/common';
+import { snackbarActions } from 'store/snackbar-slice';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -39,6 +41,8 @@ const CreateCard = () => {
   const params = useParams();
 
   const { id: cardId } = params;
+
+  const currentGame = window.location.pathname.split('/')[1];
 
   const { lol: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -178,32 +182,31 @@ const CreateCard = () => {
     }
   };
 
-  const updateCard = async () => {
-    if (currentCard.chatRoomId) {
+  const updateHandler = async () => {
+    try {
       setIsPosting(true);
 
-      await authAxios
-        .put(`/api/lol/board/${cardId}`, { ...userInput })
-        .then(async (response) => {
-          if (response.status === 200) {
-            // firebase update
-            await update(
-              ref(getDatabase(), `chatRooms/${currentCard.chatRoomId}`),
-              {
-                content: userInput.content,
-                maxMember: userInput.type === 'DUO_RANK' ? 2 : 5,
-              },
-            ).then(() => {
-              // 파이어베이스 수정 완료
-              alert('수정이 완료되었습니다.');
-              navigate('/lol', { replace: true });
-              window.location.reload();
-            });
-          } else {
-            alert('게시글 수정 중 문제가 발생하였습니다.');
-            window.location.reload();
-          }
-        });
+      await updateCard(
+        currentGame,
+        currentCard.id,
+        currentCard.chatRoomId,
+        userInput,
+        userInput.type === 'DUO_RANK' ? 2 : 5,
+      );
+
+      snackbarActions.OPEN_SNACKBAR({
+        message: '게시글 수정이 완료되었습니다.',
+        severity: 'success',
+      });
+
+      navigate(`/lol/${currentCard.id}`, { replace: true });
+    } catch (error) {
+      snackbarActions.OPEN_SNACKBAR({
+        message: '게시글 수정 중 문제가 발생하였습니다.',
+        severity: 'error',
+      });
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -405,7 +408,7 @@ const CreateCard = () => {
             뒤로가기
           </CancelButton>
           <PostButton
-            onClick={updateCard}
+            onClick={updateHandler}
             disabled={isPosting || userInput.content.length < 20}
             variant="contained"
             startIcon={<Edit />}
