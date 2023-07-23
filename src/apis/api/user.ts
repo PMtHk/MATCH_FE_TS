@@ -178,11 +178,14 @@ export const getUserGameInfo = async (
 
 export const signup = async (
   code: string,
-  navigate: ReturnType<typeof useNavigate>,
-  dispatch: ReturnType<typeof useDispatch>,
+  representative: GAME_ID,
+  games: {
+    lol: string;
+    pubg: string;
+    overwatch: string;
+    valorant: string;
+  },
 ) => {
-  const { representative, games } = store.getState().register;
-
   // 인가코드로 카카오 액세스 토큰 발급
   const {
     data: { access_token: kakaoAccessToken },
@@ -199,23 +202,11 @@ export const signup = async (
     representative: representative.toUpperCase(),
     lol: games.lol,
     pubg: games.pubg,
-    overwatch: '',
-    lostark: '',
-    maplestory: '',
+    overwatch: games.overwatch,
+    valorant: games.valorant,
   });
 
-  // register-slice 내용 삭제
-  dispatch(registerActions.DELETE_REGISTER({}));
-
-  // 회원가입 성공
-  dispatch(
-    snackbarActions.OPEN_SNACKBAR({
-      message: '회원가입에 성공했습니다. 로그인 해주세요.',
-      severity: 'success',
-    }),
-  );
-
-  navigate('/login');
+  // 발로란트로 수정해야함 나중에
 };
 
 /** ------------------------------------------------------------

@@ -9,8 +9,8 @@ import { getDatabase, push, ref, update, child, set } from 'firebase/database';
  * @param maxMember 최대 인원
  * @param notiToken 사용자 Notification 토큰
  * @returns {
- * key: string; 생성된 채팅방 난수 값
- * boardId: number; 생성된 게시글의 Id 값
+ *    key: string; 생성된 채팅방 난수 값
+ *    boardId: number; 생성된 게시글의 Id 값
  * }
  */
 
