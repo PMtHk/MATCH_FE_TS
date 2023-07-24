@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { child, get, getDatabase, ref, set } from 'firebase/database';
 
@@ -10,6 +11,7 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiMenuItem from '@mui/material/MenuItem';
+import MuiButton from '@mui/material/Button';
 import Skeleton from '@mui/material/Skeleton';
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import NotificationsActiveRounded from '@mui/icons-material/NotificationsActiveRounded';
@@ -39,13 +41,24 @@ type TChatRoomInfo = {
 interface NotiAccordionProps {
   chatRoomId: string;
   timestamp: number;
+  expanded: boolean;
+  expandHandler: (
+    panel: string,
+  ) => (event: React.SyntheticEvent, isExpanded: boolean) => void;
 }
 
-const NotiAccordion = ({ chatRoomId, timestamp }: NotiAccordionProps) => {
+const NotiAccordion = ({
+  chatRoomId,
+  timestamp,
+  expanded,
+  expandHandler,
+}: NotiAccordionProps) => {
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const currentChatRoomMessages = useSelector(
     (state: RootState) => state.message.messages[chatRoomId],
   );
+
+  const navigate = useNavigate();
 
   // 파이어베이스에서 채팅방 정보 가져오는 로딩
   const [isLoading, setIsLoading] = useState(true);
@@ -82,14 +95,25 @@ const NotiAccordion = ({ chatRoomId, timestamp }: NotiAccordionProps) => {
 
   if (chatRoomInfo) {
     return (
-      <Accordion>
+      <Accordion
+        disableGutters
+        expanded={expanded}
+        onChange={expandHandler(`${chatRoomId}`)}
+        sx={{
+          border: '1px solid #e0e0e0',
+          borderTop: 'none',
+          borderBottomLeftRadius: '4px',
+          borderBottomRightRadius: '4px',
+        }}
+      >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <AccordionSummaryContent>
             <AccordionSummaryHeader>
               <MuiTypography
                 noWrap
                 sx={{
-                  fontWeight: '560',
+                  fontWeight: '600',
+                  fontSize: '15px',
                 }}
               >
                 {`[${chatRoomInfo?.createdBy}] 님의 파티`}
@@ -103,7 +127,9 @@ const NotiAccordion = ({ chatRoomId, timestamp }: NotiAccordionProps) => {
                   />
                 )}
             </AccordionSummaryHeader>
-            <MuiTypography noWrap>{chatRoomInfo?.content}</MuiTypography>
+            <MuiTypography noWrap sx={{ fontSize: '13px' }}>
+              {chatRoomInfo?.content}
+            </MuiTypography>
           </AccordionSummaryContent>
         </AccordionSummary>
         <AccordionDetails sx={{ maxHeight: '240px', overflow: 'auto' }}>
@@ -118,14 +144,22 @@ const NotiAccordion = ({ chatRoomId, timestamp }: NotiAccordionProps) => {
                 />
               );
             })}
-          <MenuItem
-            onClick={() => {
-              deleteNotification();
-            }}
-            sx={{}}
-          >
-            <DeleteTypo>지우기</DeleteTypo>
-          </MenuItem>
+          <ButtonWrapper>
+            <Button
+              onClick={() => {
+                navigate(`/lol/${chatRoomInfo.roomId}`);
+              }}
+            >
+              <EnterParty>상세보기</EnterParty>
+            </Button>
+            <Button
+              onClick={() => {
+                deleteNotification();
+              }}
+            >
+              <DeleteTypo>알림 지우기</DeleteTypo>
+            </Button>
+          </ButtonWrapper>
         </AccordionDetails>
       </Accordion>
     );
@@ -145,15 +179,31 @@ const AccordionSummaryHeader = styled(MuiBox)(() => ({
   alignItems: 'center',
 })) as typeof MuiBox;
 
-const MenuItem = styled(MuiMenuItem)(() => ({
-  border: '1px solid lightgray',
+const ButtonWrapper = styled(MuiBox)(() => ({
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  gap: '4px',
+})) as typeof MuiBox;
+
+const Button = styled(MuiButton)(() => ({
   borderRadius: '8px',
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'center',
+  alignItems: 'center',
+  width: '100%',
 })) as typeof MuiMenuItem;
 
 const DeleteTypo = styled(MuiTypography)(() => ({
   fontWeight: 'bold',
   color: 'orangered',
+  fontSize: '12px',
+})) as typeof MuiTypography;
+
+const EnterParty = styled(MuiTypography)(() => ({
+  fontWeight: 'bold',
+  fontSize: '12px',
 })) as typeof MuiTypography;

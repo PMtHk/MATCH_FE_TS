@@ -14,18 +14,18 @@ const Redirect = () => {
   const params = new URL(document.URL).searchParams;
   const code = params.get('code');
 
-  if (code) {
+  const loginHandler = async (code: string) => {
     try {
-      login(code, navigate, dispatch);
+      await login(code, navigate, dispatch);
     } catch (error: any) {
-      if (error?.response?.status === 404) {
+      if (error.response.status === 404) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '일치하는 회원정보가 없습니다.\n회원가입을 진행해주세요.',
             severity: 'error',
           }),
         );
-        navigate('/register');
+        navigate('/login');
       } else {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
@@ -33,9 +33,16 @@ const Redirect = () => {
             severity: 'error',
           }),
         );
+        navigate('/login');
       }
     }
-  }
+  };
+
+  React.useEffect(() => {
+    if (code) {
+      loginHandler(code);
+    }
+  });
 
   return (
     <Linear height="100vh" text="로그인 중입니다. 잠시만 기다려 주세요." />

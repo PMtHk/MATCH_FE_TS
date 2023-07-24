@@ -209,7 +209,7 @@ const MenuTypo = styled(MuiTypography)(() => ({
 
 const MenuWrapper = styled(MuiBox)(() => ({
   display: 'flex',
-  width: '520px',
+  width: '560px',
   height: '540px',
   flexDirection: 'column',
   backgroundColor: '#eeeeee',

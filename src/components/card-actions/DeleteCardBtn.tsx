@@ -10,6 +10,8 @@ import MuiButton from '@mui/material/Button';
 import { authAxios } from 'apis/utils';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
+import { snackbarActions } from 'store/snackbar-slice';
+import { deleteCard } from 'apis/api/common';
 
 const DeleteCardBtn = () => {
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ const DeleteCardBtn = () => {
               dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
             })
             .then(() => {
-              navigate(`/${currentGame}`, { replace: true });
+              navigate('/lol', { replace: true });
               window.location.reload();
             })
             .catch((error) => console.log(error));
@@ -48,7 +50,7 @@ const DeleteCardBtn = () => {
       variant="outlined"
       size="small"
       color="warning"
-      onClick={deleteParty}
+      onClick={deleteBtnHandler}
     >
       게시글 삭제
     </Button>
