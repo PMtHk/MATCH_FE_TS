@@ -99,6 +99,7 @@ const CardDetailContainer = () => {
                     return <MemberSlot key={member} summonerName={member} />;
                   })}
                 {Array(totalMember - currentMember).fill(<EmptySlot />)}
+                {/* TODO: EmptySlot 에 key 할당해야 함. */}
               </MemberList>
             </MemberListWrapper>
             {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (

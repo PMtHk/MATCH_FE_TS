@@ -30,7 +30,7 @@ const InputPubg = () => {
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(event.target.value);
+    setNickname(event.target.value.trim());
   };
 
   const gameResult: GAME | undefined = gameList.find(
@@ -40,6 +40,7 @@ const InputPubg = () => {
   const gameInfo = gameResult as GAME;
 
   const handleVerify = async () => {
+    console.log(nickname);
     try {
       setIsPending(true);
       dispatch(registerActions.SET_GAMES_WITH_ID({ id: 'pubg', value: '' }));
@@ -47,7 +48,7 @@ const InputPubg = () => {
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
           id: 'pubg',
-          value: nickname as string,
+          value: nickname,
         }),
       );
       setWarning(false);
@@ -62,7 +63,7 @@ const InputPubg = () => {
       );
     } finally {
       setIsPending(false);
-      defaultAxios.get(`/api/pubg/user/${games.pubg}/${platform}`);
+      defaultAxios.get(`/api/pubg/user/${games[gameInfo.id]}/${platform}`);
       //  여기서 인증 이후 사용자에게 따로 표시 이후 DB에 사용자 랭크정보를 저장하는 API 호출
       //  추가 작업 필요
     }
@@ -72,7 +73,6 @@ const InputPubg = () => {
     if (isPending) {
       return <CircularProgress color="inherit" size={20} sx={{ mr: 1 }} />;
     }
-    console.log(games[gameList[1].id], nickname);
     if (
       games[gameInfo.id] === nickname &&
       nickname !== '' &&

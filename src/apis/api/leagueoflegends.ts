@@ -74,3 +74,17 @@ export const loadSummonerInfoIntoDB = async (summonerName: string) => {
 
   return null;
 };
+
+/**
+ * 파티장이 소환사 명으로 파티인원 추가
+ *
+ */
+
+export const addPartyMemberWithSummonerName = async (
+  cardId: number,
+  nicknameToAdd: string,
+) => {
+  await authAxios.post(`/api/chat/lol/${cardId}/${nicknameToAdd}`);
+
+  return null;
+};
