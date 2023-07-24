@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { authAxios, defaultAxios } from 'apis/utils';
 
+import { ref, getDatabase, child, get, update } from 'firebase/database';
+
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
 
 /**
@@ -77,7 +79,9 @@ export const loadSummonerInfoIntoDB = async (summonerName: string) => {
 
 /**
  * 파티장이 소환사 명으로 파티인원 추가
- *
+ * @param cardId 카드 번호
+ * @param nicknameToAdd 추가하려는 사용자 닉네임
+ * @returns null
  */
 
 export const addPartyMemberWithSummonerName = async (
@@ -87,4 +91,33 @@ export const addPartyMemberWithSummonerName = async (
   await authAxios.post(`/api/chat/lol/${cardId}/${nicknameToAdd}`);
 
   return null;
+};
+
+export const kickMemberFromParty = async (
+  cardId: number,
+  chatRoomId: string,
+  summonerName: string,
+) => {
+  await authAxios.delete(`/api/chat/lol/${cardId}/${summonerName}/ban`);
+
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const dataSnapshot = await get(child(chatRoomsRef, `${cardId}`));
+
+  const prevMemberList = [...dataSnapshot.val().memberList];
+  const target = prevMemberList.find(
+    (member) => member.nickname === summonerName,
+  );
+
+  const prevBannedList = dataSnapshot.val().bannedList
+    ? [...dataSnapshot.val().bannedList]
+    : [];
+  const newMemberList = prevMemberList.filter(
+    (member) => member.nickname !== summonerName,
+  );
+  const newBannedList = [...prevBannedList, target];
+
+  await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
+    memberList: newMemberList,
+    banndedList: newBannedList,
+  });
 };

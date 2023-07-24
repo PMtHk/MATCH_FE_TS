@@ -49,8 +49,27 @@ const EmptySlotForAuthor = () => {
   const hanldeAddPartyMember = async () => {
     try {
       setIsLoading(true);
+
       // 닉네임 인증
       const exactNickname = await verifyLOLNickname(name.trim());
+      if (currentCard.banList.includes(exactNickname)) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '파티에서 강제퇴장 당한 사용자입니다.',
+            severity: 'warning',
+          }),
+        );
+        return;
+      }
+      if (currentCard.memberList.includes(exactNickname)) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '이미 파티에 참여한 사용자입니다.',
+            severity: 'warning',
+          }),
+        );
+        return;
+      }
       // 전적 받아오기 -> DB
       await loadSummonerInfoIntoDB(exactNickname);
       // 파티에 해당 멤버 추가
