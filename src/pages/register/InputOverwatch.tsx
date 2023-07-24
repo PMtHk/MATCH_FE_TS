@@ -13,6 +13,7 @@ import { RootState } from 'store';
 import { verifyOWNickname } from 'apis/api/overwatch';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
+import { defaultAxios } from 'apis/utils';
 import { gameList, GAME } from '../../assets/Games.data';
 
 const InputOverwatch = () => {
@@ -34,12 +35,18 @@ const InputOverwatch = () => {
   const gameInfo = gameResult as GAME;
 
   const handleVerify = async () => {
+    const nickAndTag = nickname.trim().split('#');
+    console.log(nickAndTag);
+
     try {
       setIsPending(true);
       dispatch(
         registerActions.SET_GAMES_WITH_ID({ id: 'overwatch', value: '' }),
       );
-      const exactNickname = await verifyOWNickname(nickname);
+      const exactNickname = await verifyOWNickname(
+        nickAndTag[0],
+        nickAndTag[1],
+      );
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
           id: 'overwatch',
@@ -57,7 +64,7 @@ const InputOverwatch = () => {
       );
     } finally {
       setIsPending(false);
-      //  defaultAxios.get(`/api/overwatch/user/${games.overwatch}`);
+      defaultAxios.get(`/api/overwatch/user/${nickAndTag[0]}/${nickAndTag[1]}`);
       //  여기서 인증 이후 사용자에게 따로 표시 이후 DB에 사용자 랭크정보를 저장하는 API 호출
       //  추가 작업 필요
     }
