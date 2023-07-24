@@ -87,35 +87,41 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
     fetchSummonerInfo();
   }, []);
 
-  const handleKick = async () => {
-    const userCheck = await window.confirm(
-      '한 번 강제퇴장 시키면 다시 들어오거나 추가하실 수 없습니다. \n그래도 진행하시겠습니까?',
+  const handleKickBtn = async () => {
+    const userCheck = window.confirm(
+      '강제퇴장 당한 사용자는 다시 입장할 수 없습니다.\n그래도 진행하시겠습니까?',
     );
 
     if (userCheck) {
-      try {
-        await kickMemberFromParty(
-          currentCard?.id,
-          currentCard?.chatRoomId,
-          summonerName,
-        );
+      await handleKick();
+    }
+    return null;
+  };
 
-        dispatch(
-          snackbarActions.OPEN_SNACKBAR({
-            message: `${summonerName} 님을 파티에서 제외시켰습니다.`,
-            severity: 'success',
-          }),
-        );
+  const handleKick = async () => {
+    try {
+      await kickMemberFromParty(
+        currentCard?.id,
+        currentCard?.chatRoomId,
+        summonerName,
+      );
 
-        window.location.reload();
-      } catch (error: any) {
-        dispatch(
-          snackbarActions.OPEN_SNACKBAR({
-            message: error.response.data.message,
-            severity: 'error',
-          }),
-        );
-      }
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `${summonerName} 님을 파티에서 제외시켰습니다.`,
+          severity: 'success',
+        }),
+      );
+
+      window.location.reload();
+    } catch (error: any) {
+      console.log(error);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+          severity: 'error',
+        }),
+      );
     }
   };
 
@@ -190,7 +196,7 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== summonerName && (
-              <MuiIconButton onClick={handleKick}>
+              <MuiIconButton onClick={handleKickBtn}>
                 <Close />
               </MuiIconButton>
             )}

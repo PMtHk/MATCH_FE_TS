@@ -101,12 +101,14 @@ export const kickMemberFromParty = async (
   await authAxios.delete(`/api/chat/lol/${cardId}/${summonerName}/ban`);
 
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
-  const dataSnapshot = await get(child(chatRoomsRef, `${cardId}`));
+  const dataSnapshot: any = await get(child(chatRoomsRef, chatRoomId));
 
   const prevMemberList = [...dataSnapshot.val().memberList];
+
   const target = prevMemberList.find(
     (member) => member.nickname === summonerName,
   );
+  console.log(target);
 
   const prevBannedList = dataSnapshot.val().bannedList
     ? [...dataSnapshot.val().bannedList]
@@ -118,6 +120,6 @@ export const kickMemberFromParty = async (
 
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
     memberList: newMemberList,
-    banndedList: newBannedList,
+    bannedList: newBannedList,
   });
 };

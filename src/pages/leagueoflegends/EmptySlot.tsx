@@ -16,6 +16,7 @@ import {
 } from 'apis/api/leagueoflegends';
 import { useNavigate } from 'react-router-dom';
 import { snackbarActions } from 'store/snackbar-slice';
+import { addMemberToFirebaseDB } from 'apis/api/firebase';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -47,6 +48,12 @@ const EmptySlotForAuthor = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const hanldeAddPartyMember = async () => {
+    const newMember = {
+      nickname: name,
+      oauth2Id: '',
+      notiToken: '',
+    };
+
     try {
       setIsLoading(true);
 
@@ -74,6 +81,8 @@ const EmptySlotForAuthor = () => {
       await loadSummonerInfoIntoDB(exactNickname);
       // 파티에 해당 멤버 추가
       await addPartyMemberWithSummonerName(currentCard?.id, exactNickname);
+
+      await addMemberToFirebaseDB(newMember, currentCard.chatRoomId, dispatch);
 
       await window.location.reload();
 
