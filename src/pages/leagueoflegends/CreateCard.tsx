@@ -248,6 +248,7 @@ const CreateCard = () => {
           severity: 'success',
         }),
       );
+      navigate(0);
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
