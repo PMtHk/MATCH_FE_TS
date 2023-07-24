@@ -11,12 +11,12 @@ import Card from './Card';
 
 const CardListContainer = () => {
   const location = useLocation();
-  const { cards } = useSelector((state: RootState) => state.card);
+  const { pubgCards } = useSelector((state: RootState) => state.card);
 
   return (
     <CardsWrapper>
-      {cards &&
-        cards.map((aCard: any) => {
+      {pubgCards &&
+        pubgCards.map((aCard: any) => {
           return (
             <Link
               key={aCard.id}
@@ -24,7 +24,11 @@ const CardListContainer = () => {
               state={{ background: location }}
               style={{ textDecoration: 'none', background: 'fixed' }}
             >
-              <Card item={aCard} key={aCard.id} />
+              <Card
+                item={aCard}
+                key={aCard.id}
+                expired={aCard.expired === 'true'}
+              />
             </Link>
           );
         })}

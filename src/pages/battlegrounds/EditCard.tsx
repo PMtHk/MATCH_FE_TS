@@ -164,6 +164,7 @@ const EditCard = () => {
             await update(
               ref(getDatabase(), `chatRooms/${currentCard.chatRoomId}`),
               {
+                maxMember: userInput.type === 'DUO' ? 2 : 4,
                 content: userInput.content,
               },
             ).then(() => {

@@ -48,9 +48,10 @@ interface CardProps {
     memberList: [];
     banList: [];
   };
+  expired: boolean;
 }
 
-const Card = ({ item }: CardProps) => {
+const Card = ({ item, expired }: CardProps) => {
   const [isHover, setIsHover] = React.useState<boolean>(false);
 
   const platform = platformList.find(
@@ -90,7 +91,7 @@ const Card = ({ item }: CardProps) => {
       onFocus={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <CardContainer>
+      <CardContainer expired={expired}>
         <CardTitleWrapper>
           <img
             src={platform?.imageUrl || ''}

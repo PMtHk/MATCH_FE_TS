@@ -11,12 +11,12 @@ import Card from './Card';
 
 const CardListContainer = () => {
   const location = useLocation();
-  const { cards } = useSelector((state: RootState) => state.card);
+  const { lolCards } = useSelector((state: RootState) => state.card);
 
   return (
     <CardsWrapper>
-      {cards &&
-        cards.map((aCard: any) => {
+      {lolCards &&
+        lolCards.map((aCard: any) => {
           return (
             <Link
               key={aCard.id}

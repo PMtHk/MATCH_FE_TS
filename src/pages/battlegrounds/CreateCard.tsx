@@ -69,7 +69,7 @@ const CreateCard = () => {
     name: registeredNickname || '',
     platform: 'STEAM',
     type: 'DUO',
-    tier: 'BRONZE',
+    tier: 'ALL',
     expire: 'FIFTEEN_M',
     voice: 'n',
     content: '',
