@@ -164,10 +164,11 @@ const CreateCard = () => {
       );
 
       if (exactPubgPlayerName) {
-        setUserInput({ ...userInput, name: exactPubgPlayerName });
+        setUserInput({ ...userInput, name: userInput.name });
 
         const response = await loadPubgPlayerInfoInDB(
-          exactPubgPlayerName,
+          // exactPubgPlayerName,
+          userInput.name,
           userInput.platform,
         );
 

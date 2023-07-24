@@ -104,7 +104,7 @@ const Card = ({ item, expired }: CardProps) => {
             <TopInfo>
               <TopInfoTypo>#{platform?.label || '모든큐'}</TopInfoTypo>
               <TopInfoTypo>#{type?.label || '모든큐'}</TopInfoTypo>
-              <TopInfoTypo color={tier?.lightColor || '#000'}>
+              <TopInfoTypo color={tier?.darkColor || '#000'}>
                 #{tier?.label || '모든티어'}
               </TopInfoTypo>
             </TopInfo>
@@ -170,11 +170,7 @@ const Card = ({ item, expired }: CardProps) => {
             <SectionName>RP (Rating Point)</SectionName>
             <SectionContent>
               {item.type !== 'RANKED_SQUAD' ? (
-                <SectionContentText>
-                  {item.type === 'RANKED_SQUAD'
-                    ? item.author.currentRankPoint
-                    : '정보 없음'}
-                </SectionContentText>
+                <SectionContentText>정보없음</SectionContentText>
               ) : (
                 <>
                   <RankEmblemWrapper>
@@ -203,8 +199,8 @@ const Card = ({ item, expired }: CardProps) => {
               <ChildSectionName>K/D</ChildSectionName>
               <SectionContent>
                 <SectionContentText>
-                  {item.author.kills === 0 && item.author.deaths === 0
-                    ? '정보 없음'
+                  {item.author.currentRankPoint === 0
+                    ? '-'
                     : (item.author.kills / item.author.deaths).toFixed(2)}
                 </SectionContentText>
               </SectionContent>
@@ -213,21 +209,29 @@ const Card = ({ item, expired }: CardProps) => {
             <ChildAuthorSection>
               <ChildSectionName>평균 데미지</ChildSectionName>
               <SectionContent>
-                <Author>{item.author.avgDmg.toFixed(2)}</Author>
+                <Author>
+                  {item.author.currentRankPoint
+                    ? item.author.avgDmg.toFixed(2)
+                    : '-'}
+                </Author>
               </SectionContent>
             </ChildAuthorSection>
             {/* Top 1 */}
             <ChildAuthorSection>
               <ChildSectionName>Top 1</ChildSectionName>
               <SectionContent>
-                <Author>{item.author.wins}</Author>
+                <Author>
+                  {item.author.currentRankPoint ? item.author.wins : '-'}
+                </Author>
               </SectionContent>
             </ChildAuthorSection>
             {/* Top 10 */}
             <ChildAuthorSection>
               <ChildSectionName>Top 10</ChildSectionName>
               <SectionContent>
-                <Author>{item.author.top10}</Author>
+                <Author>
+                  {item.author.currentRankPoint ? item.author.top10 : '-'}
+                </Author>
               </SectionContent>
             </ChildAuthorSection>
           </Stack>
@@ -398,6 +402,7 @@ const Author = styled(MuiTypography)(() => ({
 })) as typeof MuiTypography;
 
 const SectionContentText = styled(MuiTypography)(() => ({
+  minHeight: '32px',
   fontSize: '16px',
   fontWeight: '600',
   color: '#000000',

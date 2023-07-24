@@ -16,7 +16,7 @@ import Close from '@mui/icons-material/Close';
 import { RootState } from 'store';
 
 import Circular from 'components/loading/Circular';
-import { platformList, tierList } from './data';
+import { platformList, tierList, rankImage } from './data';
 
 interface MemberSlotProps {
   name: string;
@@ -32,25 +32,24 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   // author info
   const tier = tierList.find((aTier) => aTier.value === memberInfo?.tier);
 
-  // const totalPlayed = memberInfo?.wins + memberInfo?.losses;
-  // const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
-
   const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
 
-  // const rankRomanToNum = (rank: string) => {
-  //   switch (rank) {
-  //     case 'I':
-  //       return 1;
-  //     case 'II':
-  //       return 2;
-  //     case 'III':
-  //       return 3;
-  //     case 'IV':
-  //       return 4;
-  //     default:
-  //       return 4;
-  //   }
-  // };
+  type TierInfo = {
+    imageUrl: string;
+    value: string;
+  };
+
+  const getRank = (): TierInfo => {
+    const str: string = memberInfo.tier.toUpperCase() + memberInfo.subTier;
+    const imageUrl = rankImage[str];
+    const value = str;
+    return {
+      imageUrl,
+      value,
+    };
+  };
+
+  const authorTier = tierList.find((aTier) => aTier.value === memberInfo.tier);
 
   useEffect(() => {
     const fetchPubgPlayerInfo = async () => {
@@ -125,29 +124,53 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>RP</SectionTitleInMember>
-            <MemberInfoTypo>
-              {memberInfo.tier === 'None' ? '정보 없음' : '계산값'}
-            </MemberInfoTypo>
+            <MemberInfoBox>
+              {memberInfo.currentRankPoint === 0 ? (
+                '정보 없음'
+              ) : (
+                <>
+                  <RankEmblemWrapper>
+                    <img
+                      src={getRank().imageUrl}
+                      alt={getRank().value}
+                      width="24px"
+                      height="24px"
+                    />
+                  </RankEmblemWrapper>
+                  <SectionContentText sx={{ color: authorTier?.darkColor }}>
+                    {getRank().value}
+                  </SectionContentText>
+                </>
+              )}
+            </MemberInfoBox>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>K/D</SectionTitleInMember>
             <MemberInfoTypo>
               {memberInfo.kills === 0
-                ? 0
+                ? '-'
                 : (memberInfo.kills / memberInfo.deaths).toFixed(2)}
             </MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>평균 데미지</SectionTitleInMember>
-            <MemberInfoTypo>{memberInfo.avgDmg}</MemberInfoTypo>
+            <MemberInfoTypo>
+              {memberInfo.currentRankPoint === 0
+                ? '-'
+                : Math.ceil(memberInfo.avgDmg)}
+            </MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>Top 1</SectionTitleInMember>
-            <MemberInfoTypo>{memberInfo.wins}</MemberInfoTypo>
+            <MemberInfoTypo>
+              {memberInfo.currentRankPoint === 0 ? '-' : memberInfo.wins}
+            </MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>Top 10</SectionTitleInMember>
-            <MemberInfoTypo>{memberInfo.top10}</MemberInfoTypo>
+            <MemberInfoTypo>
+              {memberInfo.currentRankPoint === 0 ? '-' : memberInfo.top10}
+            </MemberInfoTypo>
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== name && (
@@ -214,6 +237,30 @@ const MemberControlPanel = styled(MuiBox)(() => ({
 })) as typeof MuiBox;
 
 const MemberInfoTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
+  display: 'flex',
   fontWeight: ' bold',
 }));
+
+const MemberInfoBox = styled(MuiBox)(() => ({
+  display: 'flex',
+  fontWeight: ' bold',
+}));
+
+const RankEmblemWrapper = styled(MuiBox)(() => ({
+  backgroundColor: '#eeeeee',
+  borderRadius: '50%',
+  width: '20px',
+  height: '20px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
+
+const SectionContentText = styled(MuiTypography)(() => ({
+  display: 'flex',
+  fontSize: '12px',
+  fontWeight: '600',
+  color: '#000000',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
+})) as typeof MuiTypography;

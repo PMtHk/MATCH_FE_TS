@@ -5,8 +5,9 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
+const currentGame = window.location.pathname.split('/')[1];
+
 const EditCardBtn = () => {
-  const currentGame = window.location.pathname.split('/')[1];
   return (
     <Link
       to="edit"

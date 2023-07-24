@@ -40,7 +40,9 @@ const CardListFetcher = ({
     dispatch(cardActions.SET_TOTAL_PAGE(cardList?.totalPage));
     dispatch(cardActions.SET_CURRENT_PAGE(cardList?.currentPage));
 
-    dispatch(cardActions.SET_CARDS(cardList?.content));
+    dispatch(
+      cardActions.SET_CARDS({ game: 'lol', cardList: cardList?.content }),
+    );
   }, [cardList, dispatch]);
 
   return <div>{children}</div>;

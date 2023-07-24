@@ -23,26 +23,26 @@ const DeleteCardBtn = () => {
 
   const currentGame = window.location.pathname.split('/')[1];
 
-  // 서버에 알리기
-  const deleteParty = async () => {
-    await authAxios
-      .delete(`/api/${currentGame}/board/${id}`)
-      .then(async (response) => {
-        if (response.status === 200) {
-          // Firebase Realtime DB의 isDeleted 를 true로 설정
-          await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
-            isDeleted: true,
-          })
-            .then(() => {
-              dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-            })
-            .then(() => {
-              navigate('/lol', { replace: true });
-              window.location.reload();
-            })
-            .catch((error) => console.log(error));
-        }
-      });
+  const deleteBtnHandler = async () => {
+    try {
+      await deleteCard(currentGame, id, chatRoomId);
+      dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
+      navigate(`/${currentGame}`);
+      navigate(0);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글이 삭제되었습니다.',
+          severity: 'success',
+        }),
+      );
+    } catch (error) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 삭제에 실패했습니다. 잠시 후, 다시 시도해주세요.',
+          severity: 'error',
+        }),
+      );
+    }
   };
 
   return (

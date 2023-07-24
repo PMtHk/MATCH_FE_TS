@@ -253,7 +253,11 @@ const EditCard = () => {
             {typeList.map((item) => {
               if (item.value === 'ALL') return null;
               return (
-                <ToggleButton key={item.value} value={item.value}>
+                <ToggleButton
+                  key={item.value}
+                  value={item.value}
+                  disabled={item.maxMember < currentCard.memberList.length}
+                >
                   {item.label}
                 </ToggleButton>
               );

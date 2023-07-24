@@ -42,8 +42,8 @@ const CardDetailContainer = () => {
     (aPlatform) => aPlatform.value === currentCard?.platform,
   );
 
-  const totalMember = type?.maxMember || 5;
-  const currentMember = currentCard?.memberList?.length || 0;
+  const totalMember = type?.maxMember || 4;
+  const currentMember = currentCard?.memberList?.length || 1;
 
   if (currentCard) {
     return (
@@ -96,7 +96,12 @@ const CardDetailContainer = () => {
                   currentCard?.memberList?.map((member: string) => {
                     return <MemberSlot key={member} name={member} />;
                   })}
-                {Array(totalMember - currentMember).fill(<EmptySlot />)}
+                {Array(totalMember - currentMember)
+                  .fill(0)
+                  .map((num, idx) => {
+                    // eslint-disable-next-line react/no-array-index-key
+                    return <EmptySlot key={idx} />;
+                  })}
               </MemberList>
             </MemberListWrapper>
             {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
