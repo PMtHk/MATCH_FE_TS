@@ -12,6 +12,36 @@ import GameIcon from 'components/GameIcon';
 // mui styled components
 import { styled } from '@mui/system';
 
+import { GAME, gameList } from '../../assets/Games.data';
+
+const GameSupport = () => {
+  const navigate = useNavigate();
+
+  return (
+    <Wrapper>
+      <Text>지원게임 목록</Text>
+      <GameList>
+        {gameList.map((game) => {
+          if (game.available) {
+            return (
+              <Button key={game.id} onClick={() => navigate(`/${game.id}`)}>
+                <GameIcon
+                  id={game.id}
+                  item={game.name}
+                  size={{ width: '100px', height: '100px' }}
+                />
+              </Button>
+            );
+          }
+          return null;
+        })}
+      </GameList>
+    </Wrapper>
+  );
+};
+
+export default GameSupport;
+
 const Wrapper = styled(Box)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'column',
@@ -48,25 +78,5 @@ const GameList = styled(Box)(() => ({
   flexDirection: 'row',
   justifyContent: 'center',
   alignItems: 'center',
+  gap: '16px',
 })) as typeof Box;
-
-const GameSupport = () => {
-  const navigate = useNavigate();
-
-  return (
-    <Wrapper>
-      <Text>지원게임 목록</Text>
-      <GameList>
-        <Button onClick={() => navigate('/lol')}>
-          <GameIcon
-            id="lol"
-            item="leagueoflegends"
-            size={{ width: '100px', height: '100px' }}
-          />
-        </Button>
-      </GameList>
-    </Wrapper>
-  );
-};
-
-export default GameSupport;

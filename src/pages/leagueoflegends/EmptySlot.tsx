@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { authAxios, defaultAxios } from 'apis/utils';
 import { RootState } from 'store';
 
 // mui
@@ -10,6 +9,14 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import { Button, OutlinedInput, CircularProgress } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import {
+  addPartyMemberWithSummonerName,
+  loadSummonerInfoIntoDB,
+  verifyLOLNickname,
+} from 'apis/api/leagueoflegends';
+import { useNavigate } from 'react-router-dom';
+import { snackbarActions } from 'store/snackbar-slice';
+import { addMemberToFirebaseDB } from 'apis/api/firebase';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -23,6 +30,9 @@ const DefaultEmptySlot = () => {
 
 // 방장의 경우
 const EmptySlotForAuthor = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { currentCard } = useSelector((state: RootState) => state.card);
   // 추가하기 버튼과 닉네임 입력창을 전환할 state
   const [isEntering, setIsEntering] = useState(false);
@@ -37,51 +47,75 @@ const EmptySlotForAuthor = () => {
   // 닉네임 인증 요청시 인증중(loading) 상태를 관리하는 state
   const [isLoading, setIsLoading] = useState(false);
 
-  // 추가할 멤버의 닉네임 입력 후 추가하기 버튼 클릭시 호출할 함수
-  const addPartyMember = async () => {
-    setIsLoading(true);
+  const hanldeAddPartyMember = async () => {
+    const newMember = {
+      nickname: name,
+      oauth2Id: '',
+      notiToken: '',
+    };
 
-    await defaultAxios
-      // 라이엇 계정 존재 여부 전송
-      .get(`/api/lol/user/exist/${name.trim()}`)
-      .then(async (response) => {
-        if (response.status === 200) {
-          const certifyedNickname = response.data;
-          await defaultAxios
-            // 라이엇 계정 정보 최신화 및 DB 저장
-            .get(`/api/lol/user/${certifyedNickname}`)
-            .then(async (response) => {
-              if (response.status === 200) {
-                await authAxios
-                  // 채팅방? 파티? 입장 요청
-                  .post(`/api/chat/lol/${currentCard?.id}/${certifyedNickname}`)
-                  .then((response) => {
-                    if (response.status === 200) {
-                      // 최종 성공
-                      setIsLoading(false);
-                      setIsEntering(false);
-                      setName('');
-                      // eslint-disable-next-line no-restricted-globals
-                      location.reload();
-                    }
-                  });
-              }
-            });
-        }
-      })
-      .catch((error: any) => {
-        // eslint-disable-next-line no-alert
-        alert(
-          '파티원을 추가하는 과정에서 문제가 발생하였습니다. \n 잠시 후 다시 시도해주시기 바랍니다.',
+    try {
+      setIsLoading(true);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '소환사 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          severity: 'info',
+        }),
+      );
+
+      // 닉네임 인증
+      const exactNickname = await verifyLOLNickname(name.trim());
+      if (currentCard.banList.includes(exactNickname)) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '파티에서 강제퇴장 당한 사용자입니다.',
+            severity: 'warning',
+          }),
         );
-        setName('');
-        setIsEntering(false);
-        setIsLoading(false);
-      });
+        return;
+      }
+      if (currentCard.memberList.includes(exactNickname)) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '이미 파티에 참여한 사용자입니다.',
+            severity: 'warning',
+          }),
+        );
+        return;
+      }
+      // 전적 받아오기 -> DB
+      await loadSummonerInfoIntoDB(exactNickname);
+      // 파티에 해당 멤버 추가
+      await addPartyMemberWithSummonerName(currentCard?.id, exactNickname);
+
+      await addMemberToFirebaseDB(newMember, currentCard.chatRoomId, dispatch);
+
+      await window.location.reload();
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `파티에 "${exactNickname}" 님을 추가했습니다.`,
+          severity: 'success',
+        }),
+      );
+    } catch (error: any) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: error.response.data.message,
+          severity: 'error',
+        }),
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <EmptySlotWrapper>
+    <EmptySlotWrapper
+      sx={{
+        backgroundColor: isEntering ? '#fff' : '#ececec',
+      }}
+    >
       {isEntering ? (
         <OutlinedInput
           placeholder="소환사 명을 입력하세요"
@@ -97,7 +131,7 @@ const EmptySlotForAuthor = () => {
             isLoading ? (
               <CircularProgress size={24} />
             ) : (
-              <Button size="small" onClick={addPartyMember}>
+              <Button size="small" onClick={hanldeAddPartyMember}>
                 추가하기
               </Button>
             )
@@ -121,7 +155,7 @@ const EmptySlotForAuthor = () => {
 const EmptySlot = () => {
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
-  const isAuthor = oauth2Id === currentCard.oauth2ID;
+  const isAuthor = oauth2Id === currentCard.oauth2Id;
 
   return isAuthor ? <EmptySlotForAuthor /> : <DefaultEmptySlot />;
 };
@@ -135,7 +169,7 @@ const EmptySlotWrapper = styled(MuiBox)(() => ({
   alignItems: 'center',
   minHeight: 80,
   width: 520,
-  backgroundColor: '#d8d8d8c8',
+  backgroundColor: '#ececec',
   color: '#5C5C5C',
   border: '1px solid #CCCCCC',
   borderRadius: '8px',

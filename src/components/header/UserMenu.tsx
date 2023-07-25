@@ -41,10 +41,9 @@ const UserMenu = () => {
     setUserMenuAnchor(null);
   };
 
-  const logoutBtnHandler = () => {
+  const logoutBtnHandler = async () => {
     try {
-      logout(dispatch);
-      closeUserMenu();
+      await logout(dispatch);
     } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
@@ -52,6 +51,8 @@ const UserMenu = () => {
           severity: 'error',
         }),
       );
+    } finally {
+      closeUserMenu();
     }
   };
 
@@ -78,7 +79,7 @@ const UserMenu = () => {
       <MuiMenu
         anchorEl={userMenuAnchor}
         id="user_menu"
-        open={isUserMenuOpen}
+        open={Boolean(userMenuAnchor)}
         onClose={closeUserMenu}
         onClick={closeUserMenu}
         PaperProps={{
@@ -112,8 +113,8 @@ const UserMenu = () => {
       >
         <MuiMenuItem
           onClick={() => {
-            closeUserMenu();
             navigate('/mypage');
+            closeUserMenu();
           }}
         >
           <AccountCircleIcon />

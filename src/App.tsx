@@ -14,6 +14,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 // firebase
 import './firebase';
 import NotFound from 'components/errorFallback/NotFound';
+import Layout from 'components/Layout';
 
 // lazy loading
 const LandingPage = lazy(() => import('pages/landing'));

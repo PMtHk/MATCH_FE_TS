@@ -1,6 +1,8 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import { ref, getDatabase, get, update, child } from 'firebase/database';
 
 import { authAxios, defaultAxios } from 'apis/utils';
@@ -11,12 +13,15 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
 import MuiImageList from '@mui/material/ImageList';
+import MuiToolTip from '@mui/material/Tooltip';
 
 import Close from '@mui/icons-material/Close';
 
 import { RootState } from 'store';
 
 import Circular from 'components/loading/Circular';
+import { snackbarActions } from 'store/snackbar-slice';
+import { kickMemberFromParty } from 'apis/api/leagueoflegends';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -24,6 +29,9 @@ interface MemberSlotProps {
 }
 
 const MemberSlot = ({ summonerName }: MemberSlotProps) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
@@ -37,12 +45,12 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
 
   const tier = tierList.find((aTier) => aTier.value === memberInfo?.tier);
 
-  // 아래 구문은 조금 더 찾아보고 수정할 수 있도록 하겠음. 6/28 나주엽
+  // 아래 구문은 조금 더 찾아보고 수정할 수 있도록 하겠음. - 6/28 나주엽
   // eslint-disable-next-line no-unsafe-optional-chaining
   const totalPlayed = memberInfo?.wins + memberInfo?.losses;
   const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
 
-  const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
+  const isAuthor = oauth2Id === currentCard?.oauth2Id;
 
   const rankRomanToNum = (rank: string) => {
     switch (rank) {
@@ -80,44 +88,42 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
     fetchSummonerInfo();
   }, []);
 
-  const kickMember = async () => {
-    await authAxios
-      .delete(`/api/chat/lol/${currentCard?.id}/ban`)
-      .then(async (response) => {
-        if (response.status === 200) {
-          // Firebase RealtimeDB의 memberList에서 제거 및 banList에 추가
-          const chatRoomRef = ref(getDatabase(), 'chatRooms');
+  const handleKickBtn = async () => {
+    const userCheck = window.confirm(
+      '강제퇴장 당한 사용자는 다시 입장할 수 없습니다.\n그래도 진행하시겠습니까?',
+    );
 
-          await get(child(chatRoomRef, currentCard?.chatRoomId)).then(
-            async (dataSnapshot) => {
-              const prevMemberList = [...dataSnapshot.val().memberList];
-              const target = prevMemberList.find(
-                (member) => member.nickname === summonerName,
-              );
-              if (!target) {
-                return location.reload();
-              }
-              const prevBannedList = dataSnapshot.val().bannedList
-                ? [...dataSnapshot.val().bannedList]
-                : [];
-              const newMemberList = prevMemberList.filter(
-                (member) => member.nickname !== summonerName,
-              );
-              const newBannedList = [...prevBannedList, target];
-              await update(
-                ref(getDatabase(), `chatRooms/${currentCard?.chatRoomId}`),
-                {
-                  memberList: newMemberList,
-                  bannedList: newBannedList,
-                },
-              ).then(() => {
-                location.reload();
-              });
-              return null;
-            },
-          );
-        }
-      });
+    if (userCheck) {
+      await handleKick();
+    }
+    return null;
+  };
+
+  const handleKick = async () => {
+    try {
+      await kickMemberFromParty(
+        currentCard?.id,
+        currentCard?.chatRoomId,
+        summonerName,
+      );
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `${summonerName} 님을 파티에서 제외시켰습니다.`,
+          severity: 'success',
+        }),
+      );
+
+      window.location.reload();
+    } catch (error: any) {
+      console.log(error);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+          severity: 'error',
+        }),
+      );
+    }
   };
 
   return (
@@ -133,14 +139,25 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
             <SectionTitleInMember>소환사명</SectionTitleInMember>
             <Nickname>{memberInfo?.summonerName}</Nickname>
             <MostLaneInfo>
-              <img
-                src={mostLane?.imageUrl}
-                alt="lane_icon"
-                loading="lazy"
-                width="20px"
-                height="20px"
-              />
-              <MostLanteTypo>{mostLane?.label}</MostLanteTypo>
+              {mostLane ? (
+                <>
+                  <img
+                    src={mostLane?.imageUrl}
+                    alt="lane_icon"
+                    loading="lazy"
+                    width="20px"
+                    height="20px"
+                  />
+                  <MostLanteTypo>{mostLane?.label}</MostLanteTypo>
+                </>
+              ) : (
+                <MuiToolTip
+                  title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
+                  placement="bottom-start"
+                >
+                  <MostLanteTypo>포지션: -</MostLanteTypo>
+                </MuiToolTip>
+              )}
             </MostLaneInfo>
           </SectionInMember>
           <SectionInMember>
@@ -176,26 +193,28 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
             <SectionTitleInMember>모스트 챔피언</SectionTitleInMember>
             <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
               {memberInfo &&
-                memberInfo.mostChampion?.map((champion: string) => (
-                  <ChampImgWrapper key={champion}>
-                    <img
-                      src={`https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/${champion.toLowerCase()}.jpg`}
-                      alt={champion}
-                      loading="lazy"
-                      width="40px"
-                      height="50px"
-                    />
-                  </ChampImgWrapper>
-                ))}
+                memberInfo.mostChampion?.map(
+                  (aChampion: string, index: number) => (
+                    <ChampImgWrapper key={aChampion + Math.random()}>
+                      <img
+                        src={
+                          aChampion === 'poro'
+                            ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
+                            : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
+                        }
+                        alt={`most${index}_${aChampion}`}
+                        loading="lazy"
+                        width="50px"
+                        height="50px"
+                      />
+                    </ChampImgWrapper>
+                  ),
+                )}
             </MuiImageList>
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== summonerName && (
-              <MuiIconButton
-                onClick={() => {
-                  //
-                }}
-              >
+              <MuiIconButton onClick={handleKickBtn}>
                 <Close />
               </MuiIconButton>
             )}
@@ -309,5 +328,5 @@ const MemberControlPanel = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  width: '30px',
+  width: '20px',
 })) as typeof MuiBox;

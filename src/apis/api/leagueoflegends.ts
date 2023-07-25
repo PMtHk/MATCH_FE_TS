@@ -1,10 +1,41 @@
 import { useEffect, useState } from 'react';
 import { authAxios, defaultAxios } from 'apis/utils';
 
-import { promiseWrapper } from 'apis/utils/promiseWrapper';
-import { cardActions } from 'store/card-slice';
+import {
+  ref,
+  getDatabase,
+  child,
+  get,
+  update,
+  set,
+  push,
+} from 'firebase/database';
 
-// 카드 리스트 가져오기 (게시글 목록 가져오기)
+import { promiseWrapper } from 'apis/utils/promiseWrapper';
+
+/**
+ * 리그오브레전드 소환사명 존재 여부 확인 및 정확한 소환사명 반환
+ * @param nickname 리그오브레전드 닉네임
+ * @returns 닉네임의 정확한 표기
+ */
+
+export const verifyLOLNickname = async (nickname: string) => {
+  const response = await defaultAxios.get(`/api/lol/user/exist/${nickname}`);
+
+  const exactNickname: string = response.data;
+
+  return exactNickname;
+};
+
+/**
+ * 리그오브레전드 게시글 불러오기
+ * @param url 요청 url
+ * @param config 요청 config
+ * @param deps useEffect deps
+ * @returns - 리그오브레전드 게시글 목록
+ *
+ * 리그오브레전드 게시글을 불러온다.
+ */
 export function fetchCardList(url: string, config: any, deps: any[]) {
   const [resource, setResource] = useState(null);
 
@@ -22,7 +53,11 @@ export function fetchCardList(url: string, config: any, deps: any[]) {
   return resource;
 }
 
-// 카드 디테일 가져오기 (카드 상세보기 가져오기)
+/**
+ * 리그오브레전드 게시글 상세보기 불러오기
+ * @param url
+ * @returns - 리그오브레저드 게시글 상세보기
+ */
 export function fetchCardDetail(url: string) {
   const [resource, setResource] = useState(null);
 
@@ -38,30 +73,69 @@ export function fetchCardDetail(url: string) {
   return resource;
 }
 
-export const getExactSummonerName = async (summonerName: string) => {
-  const response = await defaultAxios.get(
-    `/api/lol/user/exist/${summonerName}`,
-  );
+/**
+ * 리그오브레전드 소환사의 전적 불러오기 trigger
+ * @param summonerName
+ * @returns null
+ */
 
-  if (response.status === 200) {
-    return response.data;
-  }
-
-  return null;
-};
-
-export const loadSummonerInfoInDB = async (summonerName: string) => {
+export const loadSummonerInfoIntoDB = async (summonerName: string) => {
   const response = await defaultAxios.get(`/api/lol/user/${summonerName}`);
 
-  if (response.status === 200) {
-    return 'success';
-  }
+  return null;
+};
+
+/**
+ * 파티장이 소환사 명으로 파티인원 추가
+ * @param cardId 카드 번호
+ * @param nicknameToAdd 추가하려는 사용자 닉네임
+ * @returns null
+ */
+
+export const addPartyMemberWithSummonerName = async (
+  cardId: number,
+  nicknameToAdd: string,
+) => {
+  await authAxios.post(`/api/chat/lol/${cardId}/${nicknameToAdd}`);
 
   return null;
 };
 
-/** ------------------------------------------------------------
- * 롤 게시글 수정
- * @param {number} boardId - 게시글 번호
- * @param {any} userInput - 사용자가 입력한 게시글 정보
- */
+export const kickMemberFromParty = async (
+  cardId: number,
+  chatRoomId: string,
+  summonerName: string,
+) => {
+  await authAxios.delete(`/api/chat/lol/${cardId}/${summonerName}/ban`);
+
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const messagesRef = ref(getDatabase(), 'messages');
+  const dataSnapshot: any = await get(child(chatRoomsRef, chatRoomId));
+
+  const prevMemberList = [...dataSnapshot.val().memberList];
+
+  const target = prevMemberList.find(
+    (member) => member.nickname === summonerName,
+  );
+  console.log(target);
+
+  const prevBannedList = dataSnapshot.val().bannedList
+    ? [...dataSnapshot.val().bannedList]
+    : [];
+  const newMemberList = prevMemberList.filter(
+    (member) => member.nickname !== summonerName,
+  );
+  const newBannedList = [...prevBannedList, target];
+
+  await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
+    memberList: newMemberList,
+    bannedList: newBannedList,
+  });
+
+  await set(push(child(messagesRef, chatRoomId)), {
+    type: 'system',
+    timestamp: Date.now(),
+    user: { nickname: summonerName, oauth2Id: '', notiToken: '' },
+    content: `${summonerName} 님이 퇴장하였습니다.`,
+  });
+};

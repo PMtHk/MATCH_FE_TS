@@ -58,4 +58,34 @@ export const authAxios = axiosInstanceWithAuth(
   process.env.REACT_APP_API_BASE_URL as string,
 );
 
+authAxios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const {
+      config,
+      response: { status },
+    } = error;
+
+    if (status === 401) {
+      if (error.response.data.message === '만료된 엑세스 토큰입니다.') {
+        const originalRequest = config;
+        const refreshToken = await localStorage.getItem('matchGG_refreshToken');
+
+        const { data } = await authAxios.post('/api/user/refresh');
+
+        const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+          data;
+
+        store.dispatch({ type: 'token/SET_TOKEN', payload: newAccessToken });
+        localStorage.setItem('matchGG_refreshToken', newRefreshToken);
+
+        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+
+        return axios(originalRequest);
+      }
+    }
+    return Promise.reject(error);
+  },
+);
+
 export const kakaoAxios = axiosKakaoInstance('https://kauth.kakao.com');
