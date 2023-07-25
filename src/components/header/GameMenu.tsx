@@ -37,7 +37,7 @@ const GameMenu = () => {
     setGameMenuAnchor(event.currentTarget);
   };
 
-  const closeGameMenu = () => {
+  const closeGameMenu = async () => {
     setGameMenuAnchor(null);
   };
 
@@ -53,7 +53,7 @@ const GameMenu = () => {
       <MuiMenu
         id="game_menu"
         anchorEl={gameMenuAnchor}
-        open={isGameMenuOpen}
+        open={Boolean(gameMenuAnchor)}
         onClose={closeGameMenu}
         PaperProps={{
           style: { width: '160px' },
