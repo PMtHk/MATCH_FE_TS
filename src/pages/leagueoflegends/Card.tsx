@@ -88,6 +88,10 @@ const Card = ({ item, expired }: CardProps) => {
   const maxMember = queueType?.maxMember || 5;
   const currentMember = item.memberList.length;
 
+  const arrayForMemberStatus = new Array(maxMember)
+    .fill(0)
+    .map((value, i) => `member_${i}`);
+
   return (
     <div
       onMouseOver={() => {
@@ -130,7 +134,7 @@ const Card = ({ item, expired }: CardProps) => {
             <RecruitStatusWrapper>
               <MemberInfo>
                 <RecruitStatusTypo>모집 현황</RecruitStatusTypo>
-                {new Array(maxMember).fill(0).map((_, index) => {
+                {arrayForMemberStatus.map((_, index) => {
                   return (
                     <Check
                       // eslint-disable-next-line react/no-array-index-key

@@ -111,7 +111,11 @@ const EmptySlotForAuthor = () => {
   };
 
   return (
-    <EmptySlotWrapper>
+    <EmptySlotWrapper
+      sx={{
+        backgroundColor: isEntering ? '#fff' : '#ececec',
+      }}
+    >
       {isEntering ? (
         <OutlinedInput
           placeholder="소환사 명을 입력하세요"
@@ -165,7 +169,7 @@ const EmptySlotWrapper = styled(MuiBox)(() => ({
   alignItems: 'center',
   minHeight: 80,
   width: 520,
-  backgroundColor: '#d8d8d8c8',
+  backgroundColor: '#ececec',
   color: '#5C5C5C',
   border: '1px solid #CCCCCC',
   borderRadius: '8px',

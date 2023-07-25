@@ -314,5 +314,5 @@ const MemberControlPanel = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'center',
-  width: '30px',
+  width: '20px',
 })) as typeof MuiBox;

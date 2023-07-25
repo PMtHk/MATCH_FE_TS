@@ -13,6 +13,18 @@ const CardListContainer = () => {
   const location = useLocation();
   const { cards } = useSelector((state: RootState) => state.card);
 
+  let cardLength = 0;
+
+  if (cards) {
+    cardLength = cards.length;
+  }
+
+  console.log(cardLength);
+
+  const arrayForDummies = new Array(12 - cardLength)
+    .fill(0)
+    .map((value, i) => `dummies_${1}`);
+
   return (
     <CardsWrapper>
       {cards &&
@@ -32,6 +44,9 @@ const CardListContainer = () => {
             </Link>
           );
         })}
+      {arrayForDummies.map((item) => (
+        <DummyCard key={item} />
+      ))}
     </CardsWrapper>
   );
 };
@@ -47,4 +62,9 @@ const CardsWrapper = styled(MuiBox)(() => ({
   flexWrap: 'wrap',
   padding: '16px 0 0 8px',
   overflowY: 'auto',
+})) as typeof MuiBox;
+
+const DummyCard = styled(MuiBox)(() => ({
+  width: '358px',
+  height: '242px',
 })) as typeof MuiBox;

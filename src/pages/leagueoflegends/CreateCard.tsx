@@ -478,7 +478,11 @@ const CreateCard = () => {
           </CancelButton>
           <PostButton
             onClick={createCardBtnHandler}
-            disabled={isPosting || userInput.content.length < 20}
+            disabled={
+              isPosting ||
+              userInput.content.length < 20 ||
+              isNewNicknameCertified === false
+            }
             variant="contained"
             startIcon={<Edit />}
           >
