@@ -7,8 +7,6 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiButton from '@mui/material/Button';
 
-import Layout from 'components/Layout';
-
 const NotFound = () => {
   const navigate = useNavigate();
 
@@ -17,16 +15,14 @@ const NotFound = () => {
   };
 
   return (
-    <Layout currentGame={null}>
-      <Container>
-        <ErrorCodeTypo>404</ErrorCodeTypo>
-        <OverwriteTypo>PAGE NOT FOUND</OverwriteTypo>
-        <ErrorTypo>페이지를 찾을 수 없습니다.</ErrorTypo>
-        <GoHomeBtn variant="outlined" onClick={hanldeGoBackBtn}>
-          뒤로가기
-        </GoHomeBtn>
-      </Container>
-    </Layout>
+    <Container>
+      <ErrorCodeTypo>404</ErrorCodeTypo>
+      <OverwriteTypo>PAGE NOT FOUND</OverwriteTypo>
+      <ErrorTypo>페이지를 찾을 수 없습니다.</ErrorTypo>
+      <GoHomeBtn variant="outlined" onClick={hanldeGoBackBtn}>
+        뒤로가기
+      </GoHomeBtn>
+    </Container>
   );
 };
 export default NotFound;

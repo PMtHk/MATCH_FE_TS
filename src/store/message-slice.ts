@@ -31,6 +31,9 @@ const messageSlice = createSlice({
         state.messages[chatRoomId] = [message];
       }
     },
+    REMOVE_MESSAGES: (state) => {
+      state.messages = {};
+    },
   },
 });
 

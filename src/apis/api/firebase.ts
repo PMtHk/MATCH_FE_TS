@@ -48,6 +48,18 @@ export const isBanned = async (chatRoomId: string, oauth2Id: string) => {
   return banned;
 };
 
+/**
+ * firebaseDB 내 멤버 추가
+ * @param newMember 새로운 멤버 객체
+ * @param chatRoomId 채팅방 아이디
+ * @param dispatch - redux dispatch
+ * @returns null
+ *
+ * 채팅방에 새로운 멤버를 추가한다.
+ * 채팅방의 멤버 목록에 새로운 멤버를 추가하고,
+ * 채팅방에 참가했다는 시스템 메시지를 전송한다.
+ */
+
 export const addMemberToFirebaseDB = async (
   newMember: Member,
   chatRoomId: string,
@@ -81,7 +93,23 @@ export const addMemberToFirebaseDB = async (
   });
 
   dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(chatRoomId));
+
+  return null;
 };
+
+/**
+ * firebaseDB 내 멤버 삭제
+ * @param targetMember
+ * @param chatRoomId
+ * @param chatRoomsRef
+ * @param messagesRef
+ * @param {ReturnType<typeof useDispatch>}dispatch
+ * @returns null
+ *
+ * 채팅방에서 멤버를 삭제한다.
+ * 채팅방의 멤버 목록에서 타겟 멤버를 삭제하고,
+ * 채팅방에 퇴장했다는 시스템 메시지를 전송한다.
+ */
 
 export const removeMemberFromFirebaseDB = async (
   targetMember: Member,
@@ -109,12 +137,24 @@ export const removeMemberFromFirebaseDB = async (
     user: {
       nickname: targetMember.nickname,
       oauth2Id: targetMember.oauth2Id,
+      notiToken: '',
     },
     content: `${targetMember.nickname} 님이 퇴장하였습니다.`,
   });
 
   dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
+
+  return null;
 };
+
+/**
+ * 채팅방 삭제 여부 확인
+ * @param chatRoomId 채팅방 아이디
+ * @param chatRoomsRef 채팅방 레퍼런스
+ * @returns 'false' | 'true' string - 채팅방 삭제 여부
+ *
+ * 채팅방의 isDeleted를 조회하여 삭제 여부를 확인한다.
+ */
 
 export const getIsDeleted = async (
   chatRoomId: string,
@@ -124,6 +164,16 @@ export const getIsDeleted = async (
 
   return dataSnapshot.val().isDeleted;
 };
+
+/**
+ * 사용자의 해당 채팅방 마지막 읽은 시간 업데이트
+ * @param oauth2Id 사용자 oauth2Id
+ * @param chatRoomId 채팅방 아이디
+ * @param timeStamp 타임스탬프
+ * @returns null
+ *
+ * 사용자의 해당 채팅방 마지막 읽은 시간을 업데이트한다.
+ */
 
 export const updateALastRead = async (
   oauth2Id: string,
@@ -135,6 +185,15 @@ export const updateALastRead = async (
   await set(child(lastReadRef, `${oauth2Id}/${chatRoomId}`), timeStamp);
   return null;
 };
+
+/**
+ * 사용자의 모든 채팅방 마지막 읽은 시간 업데이트
+ * @param oauth2Id 사용자 oauth2Id
+ * @param joinedChatRoomsId 사용자가 참여한 채팅방 아이디 목록
+ * @returns null
+ *
+ * 사용자의 모든 채팅방 마지막 읽은 시간을 업데이트한다.
+ */
 
 export const updateLastReads = async (
   oauth2Id: string,
@@ -148,6 +207,15 @@ export const updateLastReads = async (
 
   return null;
 };
+
+/**
+ * 채팅방 정보 가져오기
+ * @param chatRoomId 채팅방 아이디
+ * @param chatRoomsRef 채팅방 레퍼런스
+ * @returns 채팅방 정보
+ *
+ * 채팅방 정보를 가져온다.
+ */
 
 export const getAChatRoomInfo = async (
   chatRoomId: string,
