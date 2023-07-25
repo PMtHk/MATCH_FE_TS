@@ -231,7 +231,11 @@ const Card = ({ item, expired }: CardProps) => {
                       }}
                     >
                       <img
-                        src={`http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`}
+                        src={
+                          aChampion === 'poro'
+                            ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
+                            : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
+                        }
                         alt={aChampion}
                         loading="lazy"
                       />
