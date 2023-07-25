@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
+import Link from '@mui/material/Link';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
 import MuiMenu from '@mui/material/Menu';
@@ -67,11 +68,10 @@ const GameMenu = () => {
           return (
             <MuiMenuItem
               key={aGame.id}
-              onClick={() => {
-                closeGameMenu();
-                navigate(`/${aGame.id}`);
-              }}
+              onClick={closeGameMenu}
               sx={{ gap: '10px' }}
+              component={Link}
+              href={`/${aGame.id}`}
             >
               <GameIcon
                 id={aGame.id}
