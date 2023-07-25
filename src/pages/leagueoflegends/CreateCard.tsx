@@ -484,7 +484,7 @@ const CreateCard = () => {
             disabled={
               isPosting ||
               userInput.content.length < 20 ||
-              isNewNicknameCertified === false
+              (!useRegisteredNickname && isNewNicknameCertified === false)
             }
             variant="contained"
             startIcon={<Edit />}
