@@ -7,8 +7,7 @@ import MuiTypography from '@mui/material/Typography';
 import MuiDivider from '@mui/material/Divider';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-
-// mui icons
+import MuiToolTip from '@mui/material/Tooltip';
 import CheckIcon from '@mui/icons-material/Check';
 import MicIcon from '@mui/icons-material/Mic';
 
@@ -88,6 +87,10 @@ const Card = ({ item, expired }: CardProps) => {
   const maxMember = queueType?.maxMember || 5;
   const currentMember = item.memberList.length;
 
+  const arrayForMemberStatus = new Array(maxMember)
+    .fill(0)
+    .map((value, i) => `member_${i}`);
+
   return (
     <div
       onMouseOver={() => {
@@ -130,7 +133,7 @@ const Card = ({ item, expired }: CardProps) => {
             <RecruitStatusWrapper>
               <MemberInfo>
                 <RecruitStatusTypo>모집 현황</RecruitStatusTypo>
-                {new Array(maxMember).fill(0).map((_, index) => {
+                {arrayForMemberStatus.map((_, index) => {
                   return (
                     <Check
                       // eslint-disable-next-line react/no-array-index-key
@@ -177,15 +180,26 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>주 포지션</SectionName>
             <SectionContent>
-              <ImgMixBlendMode>
-                <img
-                  src={mostLane?.imageUrl}
-                  alt={mostLane?.value}
-                  width="24px"
-                  height="24px"
-                />
-              </ImgMixBlendMode>
-              <SectionTypo>{mostLane?.label}</SectionTypo>
+              {mostLane ? (
+                <>
+                  <ImgMixBlendMode>
+                    <img
+                      src={mostLane?.imageUrl}
+                      alt={mostLane?.value}
+                      width="24px"
+                      height="24px"
+                    />
+                  </ImgMixBlendMode>
+                  <SectionTypo>{mostLane?.label}</SectionTypo>
+                </>
+              ) : (
+                <MuiToolTip
+                  title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
+                  placement="bottom-start"
+                >
+                  <SectionTypo>정보없음</SectionTypo>
+                </MuiToolTip>
+              )}
             </SectionContent>
           </AuthorSection>
           <AuthorSection>
@@ -225,13 +239,17 @@ const Card = ({ item, expired }: CardProps) => {
                     <ImageListItem
                       key={aChampion}
                       sx={{
-                        width: '36px',
+                        width: '44px',
                         height: '44px',
                         gap: 1,
                       }}
                     >
                       <img
-                        src={`https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/${aChampion.toLowerCase()}.jpg`}
+                        src={
+                          aChampion === 'poro'
+                            ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
+                            : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
+                        }
                         alt={aChampion}
                         loading="lazy"
                       />

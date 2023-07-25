@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { cardActions } from 'store/card-slice';
 import { fetchCardDetail } from 'apis/api/leagueoflegends';
+import { RootState } from 'store';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;

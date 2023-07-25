@@ -3,15 +3,19 @@ import { getDatabase, push, ref, update, child, set } from 'firebase/database';
 
 /**
  * 게시글 생성
- * @param game 게임 이름
- * @param userInput 사용자 입력 데이터
- * @param oauth2Id 사용자 고유 아이디
- * @param maxMember 최대 인원
- * @param notiToken 사용자 Notification 토큰
+ * @param {string} game 게임 이름
+ * @param {any} userInput 사용자 입력 데이터
+ * @param {string} oauth2Id 사용자 고유 아이디
+ * @param {number} maxMember 최대 인원
+ * @param {string} notiToken 사용자 Notification 토큰
  * @returns {
- * key: string; 생성된 채팅방 난수 값
- * boardId: number; 생성된 게시글의 Id 값
- * }
+ *    key: string; 생성된 채팅방 난수 값
+ *    boardId: number; 생성된 게시글의 Id 값
+ * } - 채팅방 난수 값과 게시글 Id 값
+ *
+ * firebaseDB의 새 채팅방 난수값을 생성한 후 이를 게시글 내용과 함께
+ * 서버에 게시글 생성 요청을 보낸 후,
+ * 해당 요청 성공시, firebaseDB에 게시글 정보를 생성한다.
  */
 
 export const createCard = async (
@@ -76,7 +80,13 @@ export const createCard = async (
 
 /**
  * 게시글 삭제
+ * @param game 게임 이름
+ * @param boardId 게시글 Id
+ * @param chatRoomId 채팅방 Id
+ * @returns null
  *
+ * 서버 DB에 해당 게시글을 삭제 요청을 보낸 후,
+ * 해당 요청 성공시, firebaseDB의 게시글 정보 중 isDeleted 를 수정한다.
  */
 
 export const deleteCard = async (
@@ -89,11 +99,21 @@ export const deleteCard = async (
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
     isDeleted: true,
   });
+
+  return null;
 };
 
 /**
  * 게시글 업데이트
+ * @param currentGame 현재 게임 이름
+ * @param boardId 게시글 Id
+ * @param chatRoomId 채팅방 Id
+ * @param userInput 사용자 입력 데이터
+ * @param updatedMaxMember 최대 인원
+ * @returns null
  *
+ * 서버 DB에 해당 게시글의 내용을 사용자 입력에 따라 업데이트 요청을 보낸 후,
+ * 해당 요청 성공시, firebaseDB의 게시글 정보를 수정한다.
  */
 
 export const updateCard = async (
@@ -109,4 +129,6 @@ export const updateCard = async (
     content: userInput.content,
     maxMember: updatedMaxMember,
   });
+
+  return null;
 };

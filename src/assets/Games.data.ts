@@ -1,4 +1,4 @@
-export type GAME_ID = 'lol' | 'pubg' | 'valorant';
+export type GAME_ID = 'lol' | 'pubg' | 'overwatch' | 'valorant';
 
 export type GAME = {
   id: GAME_ID;
@@ -29,7 +29,16 @@ export const gameList: GAME[] = [
       'https://d18ghgbbpc0qi2.cloudfront.net/game_icons/battlegrounds.png',
     labelText: '배틀그라운드 닉네임을 입력하세요.',
     helperText: '등록되지 않은 닉네임 입니다.',
-    available: false,
+    available: true,
+  },
+  {
+    id: 'overwatch',
+    name: 'Overwatch',
+    name_kor: '오버워치II',
+    image_url: 'https://d18ghgbbpc0qi2.cloudfront.net/game_icons/overwatch.png',
+    labelText: '오버워치 닉네임#배틀태그를 입력하세요.',
+    helperText: '등록되지 않은 닉네임 입니다.',
+    available: true,
   },
   {
     id: 'valorant',

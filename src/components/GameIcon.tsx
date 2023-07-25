@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { GAME_ID } from 'assets/Games.data';
+import { GAME_ID, gameList, GAME } from 'assets/Games.data';
 
 interface GameIconProps {
   item: string;
@@ -12,11 +12,14 @@ interface GameIconProps {
 }
 
 const GameIcon = ({ item, size, id }: GameIconProps) => {
+  const gameResult = gameList.find((game) => game.id === id);
+  const gameInfo = gameResult as GAME;
+
   return (
     <img
       id={id}
-      src={`https://d18ghgbbpc0qi2.cloudfront.net/game_icons/${item}.png`}
-      alt={`${item}_icon`}
+      src={gameInfo.image_url}
+      alt={gameInfo.name_kor}
       width={size.width}
       height={size.height}
       loading="lazy"

@@ -34,8 +34,8 @@ import Modal from 'components/Modal';
 import { authAxios } from 'apis/utils';
 import { CustomSwitch } from 'components/Swtich';
 import {
-  getExactSummonerName,
-  loadSummonerInfoInDB,
+  verifyLOLNickname,
+  loadSummonerInfoIntoDB,
 } from 'apis/api/leagueoflegends';
 import { chatroomActions } from 'store/chatroom-slice';
 import { createCard, deleteCard } from 'apis/api/common';
@@ -176,23 +176,22 @@ const CreateCard = () => {
     try {
       setIsLoading(true);
 
-      const exactSummonerName = await getExactSummonerName(userInput.name);
+      const exactSummonerName = await verifyLOLNickname(userInput.name);
 
       if (exactSummonerName) {
         setUserInput({ ...userInput, name: exactSummonerName });
-
-        const response = await loadSummonerInfoInDB(exactSummonerName);
-
-        if (response) {
-          setIsChanged(true);
-          setIsLoading(false);
-          setIsNewNicknameCertified(true);
-        }
-      } else {
-        setIsLoading(false);
-        setIsNewNicknameCertified(false);
-        setIsChanged(true);
       }
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '소환사 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          severity: 'info',
+        }),
+      );
+
+      await loadSummonerInfoIntoDB(exactSummonerName);
+
+      setIsNewNicknameCertified(true);
     } catch (error: any) {
       if (
         error.response.status === 404 &&
@@ -200,7 +199,16 @@ const CreateCard = () => {
           '아직 랭크정보를 보유하고 있지 않습니다.'
       ) {
         setIsNewNicknameCertified(true);
+      } else {
+        setIsNewNicknameCertified(false);
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '입력하신 정보와 일치하는 소환사를 찾을 수 없습니다.',
+            severity: 'error',
+          }),
+        );
       }
+    } finally {
       setIsLoading(false);
       setIsChanged(true);
     }
@@ -246,8 +254,13 @@ const CreateCard = () => {
       );
 
       dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
-      closeModal();
       navigate(`/lol/${boardId}`, { replace: true });
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 작성에 성공했습니다.',
+          severity: 'success',
+        }),
+      );
       navigate(0);
     } catch (error) {
       dispatch(
@@ -306,7 +319,10 @@ const CreateCard = () => {
                 <MuiButton
                   sx={{ whiteSpace: 'nowrap' }}
                   onClick={certifyNewNickname}
-                  disabled={isPosting ? true : useRegisteredNickname}
+                  disabled={
+                    (isPosting ? true : useRegisteredNickname) ||
+                    userInput.name.length < 2
+                  }
                 >
                   {isNewNicknameCertified ? '인증완료' : '인증하기'}
                 </MuiButton>
@@ -465,7 +481,11 @@ const CreateCard = () => {
           </CancelButton>
           <PostButton
             onClick={createCardBtnHandler}
-            disabled={isPosting || userInput.content.length < 20}
+            disabled={
+              isPosting ||
+              userInput.content.length < 20 ||
+              (!useRegisteredNickname && isNewNicknameCertified === false)
+            }
             variant="contained"
             startIcon={<Edit />}
           >

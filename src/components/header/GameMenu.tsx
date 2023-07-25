@@ -14,13 +14,11 @@ import GameIcon from 'components/GameIcon';
 import { RootState } from 'store';
 import { gameList, GAME, GAME_ID } from '../../assets/Games.data';
 
-interface GameMenuProps {
-  currentGame: GAME_ID | null;
-}
-
-const GameMenu = ({ currentGame }: GameMenuProps) => {
+const GameMenu = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
+  const currentGame = window.location.pathname.split('/')[1];
   const { representative } = useSelector((state: RootState) => state.user);
 
   let gameInfo: GAME;
@@ -39,7 +37,7 @@ const GameMenu = ({ currentGame }: GameMenuProps) => {
     setGameMenuAnchor(event.currentTarget);
   };
 
-  const closeUserMenu = () => {
+  const closeGameMenu = async () => {
     setGameMenuAnchor(null);
   };
 
@@ -55,8 +53,8 @@ const GameMenu = ({ currentGame }: GameMenuProps) => {
       <MuiMenu
         id="game_menu"
         anchorEl={gameMenuAnchor}
-        open={isGameMenuOpen}
-        onClose={closeUserMenu}
+        open={Boolean(gameMenuAnchor)}
+        onClose={closeGameMenu}
         PaperProps={{
           style: { width: '160px' },
         }}
@@ -70,6 +68,7 @@ const GameMenu = ({ currentGame }: GameMenuProps) => {
             <MuiMenuItem
               key={aGame.id}
               onClick={() => {
+                closeGameMenu();
                 navigate(`/${aGame.id}`);
               }}
               sx={{ gap: '10px' }}

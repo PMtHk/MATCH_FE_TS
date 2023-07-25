@@ -178,11 +178,14 @@ export const getUserGameInfo = async (
 
 export const signup = async (
   code: string,
-  navigate: ReturnType<typeof useNavigate>,
-  dispatch: ReturnType<typeof useDispatch>,
+  representative: GAME_ID,
+  games: {
+    lol: string;
+    pubg: string;
+    overwatch: string;
+    valorant: string;
+  },
 ) => {
-  const { representative, games } = store.getState().register;
-
   // 인가코드로 카카오 액세스 토큰 발급
   const {
     data: { access_token: kakaoAccessToken },
@@ -199,23 +202,11 @@ export const signup = async (
     representative: representative.toUpperCase(),
     lol: games.lol,
     pubg: games.pubg,
-    overwatch: '',
-    lostark: '',
-    maplestory: '',
+    overwatch: games.overwatch,
+    valorant: games.valorant,
   });
 
-  // register-slice 내용 삭제
-  dispatch(registerActions.DELETE_REGISTER({}));
-
-  // 회원가입 성공
-  dispatch(
-    snackbarActions.OPEN_SNACKBAR({
-      message: '회원가입에 성공했습니다. 로그인 해주세요.',
-      severity: 'success',
-    }),
-  );
-
-  navigate('/login');
+  // 발로란트로 수정해야함 나중에
 };
 
 /** ------------------------------------------------------------
@@ -273,6 +264,8 @@ export const getUserChatRooms = () => {
  * 채팅방 참가
  * @param {string} game - 파티의 게임 종류
  * @param {number} id - 파티 번호
+ * @param {string} chatRoomId - 채팅방 아이디
+ * @param {Member} newMember - 새로 참가하는 멤버
  * @returns {null}
  *
  * 조회 중인 파티의 종류와 번호를 이용해 해당 게시글에 참가한다.
@@ -299,32 +292,4 @@ export const joinParty = async (
   }
 
   return null;
-};
-
-export const verifyingNickname = async (
-  nickname: string,
-  game: GAME_ID,
-  dispatch: ReturnType<typeof useDispatch>,
-) => {
-  try {
-    dispatch(registerActions.SET_GAMES_WITH_ID({ id: game, value: '' }));
-
-    const { data: exactNickname } = await defaultAxios.get(
-      `/api/${game}/user/exist/${nickname}`,
-    );
-
-    dispatch(
-      registerActions.SET_GAMES_WITH_ID({ id: game, value: exactNickname }),
-    );
-
-    return exactNickname;
-  } catch (error: any) {
-    dispatch(
-      snackbarActions.OPEN_SNACKBAR({
-        message: '닉네임을 확인할 수 없습니다.',
-        severity: 'error',
-      }),
-    );
-    return nickname;
-  }
 };
