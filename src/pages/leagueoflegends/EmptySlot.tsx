@@ -56,6 +56,12 @@ const EmptySlotForAuthor = () => {
 
     try {
       setIsLoading(true);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '소환사 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          severity: 'info',
+        }),
+      );
 
       // 닉네임 인증
       const exactNickname = await verifyLOLNickname(name.trim());

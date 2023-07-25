@@ -58,7 +58,8 @@ const InputOverwatch = () => {
       setWarning(true);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '닉네임을 확인할 수 없습니다.',
+          message:
+            '입력하신 정보와 일치하는 플레이어#배틀태그 를 찾을 수 없습니다.',
           severity: 'error',
         }),
       );

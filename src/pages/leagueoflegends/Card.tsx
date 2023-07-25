@@ -225,13 +225,13 @@ const Card = ({ item, expired }: CardProps) => {
                     <ImageListItem
                       key={aChampion}
                       sx={{
-                        width: '36px',
+                        width: '44px',
                         height: '44px',
                         gap: 1,
                       }}
                     >
                       <img
-                        src={`https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/${aChampion.toLowerCase()}.jpg`}
+                        src={`http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`}
                         alt={aChampion}
                         loading="lazy"
                       />

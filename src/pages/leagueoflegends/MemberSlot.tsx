@@ -181,13 +181,13 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
             <SectionTitleInMember>모스트 챔피언</SectionTitleInMember>
             <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
               {memberInfo &&
-                memberInfo.mostChampion?.map((champion: string) => (
-                  <ChampImgWrapper key={champion}>
+                memberInfo.mostChampion?.map((aChampion: string) => (
+                  <ChampImgWrapper key={aChampion}>
                     <img
-                      src={`https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/${champion.toLowerCase()}.jpg`}
-                      alt={champion}
+                      src={`http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`}
+                      alt={aChampion}
                       loading="lazy"
-                      width="40px"
+                      width="50px"
                       height="50px"
                     />
                   </ChampImgWrapper>
