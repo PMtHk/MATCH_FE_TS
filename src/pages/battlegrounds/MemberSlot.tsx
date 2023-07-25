@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { ref, getDatabase, get, update, child } from 'firebase/database';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { authAxios, defaultAxios } from 'apis/utils';
 
@@ -16,6 +16,8 @@ import Close from '@mui/icons-material/Close';
 import { RootState } from 'store';
 
 import Circular from 'components/loading/Circular';
+import { snackbarActions } from 'store/snackbar-slice';
+import { kickMemberFromParty } from 'apis/api/common';
 import { platformList, tierList, rankImage } from './data';
 
 interface MemberSlotProps {
@@ -23,6 +25,9 @@ interface MemberSlotProps {
 }
 
 const MemberSlot = ({ name }: MemberSlotProps) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
@@ -30,9 +35,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   // author info
-  const tier = tierList.find((aTier) => aTier.value === memberInfo?.tier);
+  const authorTier = tierList.find((aTier) => aTier.value === memberInfo.tier);
 
-  const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
+  const isAuthor = oauth2Id === currentCard?.oauth2Id;
 
   type TierInfo = {
     imageUrl: string;
@@ -48,8 +53,6 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
       value,
     };
   };
-
-  const authorTier = tierList.find((aTier) => aTier.value === memberInfo.tier);
 
   useEffect(() => {
     const fetchPubgPlayerInfo = async () => {
@@ -70,45 +73,45 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
     fetchPubgPlayerInfo();
   }, []);
 
-  const kickMember = async () => {
-    await authAxios
-      .delete(`/api/chat/pubg/${currentCard?.id}/${name}/ban`)
-      .then(async (response) => {
-        if (response.status === 200) {
-          // Firebase RealtimeDB의 memberList에서 제거 및 banList에 추가
-          const chatRoomRef = ref(getDatabase(), 'chatRooms');
+  const handleKickBtn = async () => {
+    const userCheck = window.confirm(
+      '강제퇴장 당한 사용자는 다시 입장할 수 없습니다.\n그래도 진행하시겠습니까?',
+    );
 
-          await get(child(chatRoomRef, currentCard?.chatRoomId)).then(
-            async (dataSnapshot) => {
-              const prevMemberList = [...dataSnapshot.val().memberList];
-              const target = prevMemberList.find(
-                (member) => member.nickname === name,
-              );
-              if (!target) {
-                return window.location.reload();
-              }
-              const prevBannedList = dataSnapshot.val().bannedList
-                ? [...dataSnapshot.val().bannedList]
-                : [];
-              const newMemberList = prevMemberList.filter(
-                (member) => member.nickname !== name,
-              );
-              const newBannedList = [...prevBannedList, target];
-              await update(
-                ref(getDatabase(), `chatRooms/${currentCard?.chatRoomId}`),
-                {
-                  memberList: newMemberList,
-                  bannedList: newBannedList,
-                },
-              ).then(() => {
-                window.location.reload();
-              });
-              return null;
-            },
-          );
-        }
-      });
+    if (userCheck) {
+      await handleKick();
+    }
+    return null;
   };
+
+  const handleKick = async () => {
+    try {
+      await kickMemberFromParty(
+        currentCard?.id,
+        currentCard?.chatRoomId,
+        name,
+        'pubg',
+      );
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `${name} 님을 파티에서 제외시켰습니다.`,
+          severity: 'success',
+        }),
+      );
+
+      window.location.reload();
+    } catch (error: any) {
+      console.log(error);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+
   return (
     <>
       {isLoading && (
@@ -174,11 +177,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== name && (
-              <MuiIconButton
-                onClick={() => {
-                  //
-                }}
-              >
+              <MuiIconButton onClick={handleKickBtn}>
                 <Close />
               </MuiIconButton>
             )}

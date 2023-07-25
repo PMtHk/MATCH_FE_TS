@@ -74,7 +74,7 @@ const Card = ({ item, expired }: CardProps) => {
     imageUrl: string;
     value: string;
   };
-
+  // 작성자의 정보를 표시할 때 사용할 랭크 정보 계산
   const getRank = (): TierInfo => {
     const str: string = item.author.tier.toUpperCase() + item.author.subTier;
     const imageUrl = rankImage[str];

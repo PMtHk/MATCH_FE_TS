@@ -59,10 +59,12 @@ const App = () => {
           <Route path="games" element={<Games />} />
           <Route path="favgame" element={<SetFavoriteGame />} />
         </Route>
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/lol/*" element={<LeagueOfLegends />} />
-        <Route path="/pubg/*" element={<Battlegrounds />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Layout />}>
+          <Route path="mypage" element={<MyPage />} />
+          <Route path="lol/*" element={<LeagueOfLegends />} />
+          <Route path="pubg/*" element={<Battlegrounds />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
       </Routes>
       <Snackbar
         open={SHOW_SNACKBAR}

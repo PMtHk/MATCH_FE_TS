@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react';
-import { defaultAxios } from 'apis/utils';
+import { defaultAxios, authAxios } from 'apis/utils';
 
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
-import { cardActions } from 'store/card-slice';
 
-// 카드 리스트 가져오기 (게시글 목록 가져오기)
+/**
+ *배틀그라운드 게시글 불러오기
+ * @param url 요청 url
+ * @param config 요청 config
+ * @param deps useEffect deps
+ * @returns 배틀그라운드 게시글 목록
+ */
 export function fetchCardList(url: string, config: any, deps: any[]) {
   const [resource, setResource] = useState(null);
 
@@ -22,7 +27,11 @@ export function fetchCardList(url: string, config: any, deps: any[]) {
   return resource;
 }
 
-// 카드 디테일 가져오기 (카드 상세보기 가져오기)
+/**
+ * 배틀그라운드 게시글 상세정보 불러오기
+ * @param url 요청 url
+ * @returns 게시글 상세 정보
+ */
 export function fetchCardDetail(url: string) {
   const [resource, setResource] = useState(null);
 
@@ -38,6 +47,12 @@ export function fetchCardDetail(url: string) {
   return resource;
 }
 
+/**
+ *배틀그라운드 닉네임으로 사용자 존재 여부 인증받기
+ * @param name 배틀그라운드 닉네임
+ * @param platform 배틀그라운드 플랫폼
+ * @returns 닉네임 인증 성공 여부
+ */
 export const getExactPubgPlayerName = async (
   name: string,
   platform: string,
@@ -53,7 +68,13 @@ export const getExactPubgPlayerName = async (
   return null;
 };
 
-export const loadPubgPlayerInfoInDB = async (
+/**
+ * 배틀그라운드 플레이어 전적 불러오기 trigger
+ * @param name 배틀그라운드 닉네임
+ * @param platform 배틀그라운드 플랫폼
+ * @returns
+ */
+export const loadPubgPlayerInfoIntoDB = async (
   name: string,
   platform: string,
 ) => {

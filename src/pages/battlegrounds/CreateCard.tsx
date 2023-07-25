@@ -35,7 +35,7 @@ import { authAxios } from 'apis/utils';
 import { CustomSwitch } from 'components/Swtich';
 import {
   getExactPubgPlayerName,
-  loadPubgPlayerInfoInDB,
+  loadPubgPlayerInfoIntoDB,
 } from 'apis/api/battlegrounds';
 import { chatroomActions } from 'store/chatroom-slice';
 import { typeList, tierList, platformList, expiredTimeList } from './data';
@@ -166,8 +166,7 @@ const CreateCard = () => {
       if (exactPubgPlayerName) {
         setUserInput({ ...userInput, name: userInput.name });
 
-        const response = await loadPubgPlayerInfoInDB(
-          // exactPubgPlayerName,
+        const response = await loadPubgPlayerInfoIntoDB(
           userInput.name,
           userInput.platform,
         );
@@ -311,7 +310,7 @@ const CreateCard = () => {
           <SectionTitle>플레이할 플랫폼</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={isPosting}
+            disabled={isPosting || isNewNicknameCertified}
             value={userInput.platform}
             onChange={handlePlatform}
           >

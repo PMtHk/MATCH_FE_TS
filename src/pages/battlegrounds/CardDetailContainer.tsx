@@ -85,7 +85,9 @@ const CardDetailContainer = () => {
               <HashTag color={tier?.darkColor}>#{tier?.label}</HashTag>
               <HashTag>#{platform?.label}</HashTag>
               <HashTag>#{type?.label}구함</HashTag>
-              <HashTag>{currentCard?.voice ? '#음성채팅가능' : ''}</HashTag>
+              <HashTag>
+                {currentCard?.voice === 'Y' ? '#음성채팅가능' : ''}
+              </HashTag>
             </HashTagWrapper>
             <MemberListWrapper>
               <MemeberListTitle>

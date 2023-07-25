@@ -10,13 +10,13 @@ import MuiTypography from '@mui/material/Typography';
 import { Button, OutlinedInput, CircularProgress } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import {
-  addPartyMemberWithSummonerName,
   loadSummonerInfoIntoDB,
   verifyLOLNickname,
 } from 'apis/api/leagueoflegends';
 import { useNavigate } from 'react-router-dom';
 import { snackbarActions } from 'store/snackbar-slice';
 import { addMemberToFirebaseDB } from 'apis/api/firebase';
+import { addPartyMemberWithName } from 'apis/api/common';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -86,7 +86,7 @@ const EmptySlotForAuthor = () => {
       // 전적 받아오기 -> DB
       await loadSummonerInfoIntoDB(exactNickname);
       // 파티에 해당 멤버 추가
-      await addPartyMemberWithSummonerName(currentCard?.id, exactNickname);
+      await addPartyMemberWithName(currentCard?.id, exactNickname, 'lol');
 
       await addMemberToFirebaseDB(newMember, currentCard.chatRoomId, dispatch);
 
