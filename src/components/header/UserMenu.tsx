@@ -7,6 +7,7 @@ import { RootState } from 'store';
 
 // mui
 import { styled } from '@mui/system';
+import Link from '@mui/material/Link';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiTooltip from '@mui/material/Tooltip';
@@ -112,8 +113,9 @@ const UserMenu = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MuiMenuItem
+          component={Link}
+          href="/mypage"
           onClick={() => {
-            navigate('/mypage');
             closeUserMenu();
           }}
         >
