@@ -1,7 +1,15 @@
 import { useEffect, useState } from 'react';
 import { authAxios, defaultAxios } from 'apis/utils';
 
-import { ref, getDatabase, child, get, update } from 'firebase/database';
+import {
+  ref,
+  getDatabase,
+  child,
+  get,
+  update,
+  set,
+  push,
+} from 'firebase/database';
 
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
 
@@ -101,6 +109,7 @@ export const kickMemberFromParty = async (
   await authAxios.delete(`/api/chat/lol/${cardId}/${summonerName}/ban`);
 
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const messagesRef = ref(getDatabase(), 'messages');
   const dataSnapshot: any = await get(child(chatRoomsRef, chatRoomId));
 
   const prevMemberList = [...dataSnapshot.val().memberList];
@@ -121,5 +130,12 @@ export const kickMemberFromParty = async (
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
     memberList: newMemberList,
     bannedList: newBannedList,
+  });
+
+  await set(push(child(messagesRef, chatRoomId)), {
+    type: 'system',
+    timestamp: Date.now(),
+    user: { nickname: summonerName, oauth2Id: '', notiToken: '' },
+    content: `${summonerName} 님이 퇴장하였습니다.`,
   });
 };

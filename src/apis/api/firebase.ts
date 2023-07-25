@@ -137,6 +137,7 @@ export const removeMemberFromFirebaseDB = async (
     user: {
       nickname: targetMember.nickname,
       oauth2Id: targetMember.oauth2Id,
+      notiToken: '',
     },
     content: `${targetMember.nickname} 님이 퇴장하였습니다.`,
   });
