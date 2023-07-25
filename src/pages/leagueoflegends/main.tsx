@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
+import MuiContainer from '@mui/material/Container';
 import MuiPagination from '@mui/material/Pagination';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
@@ -88,22 +89,20 @@ const Main = () => {
 
   return (
     <>
-      <Layout currentGame="lol">
-        <CardFilter filterProps={filterProps} />
-        <ErrorBoundary FallbackComponent={CardListErrorFallback}>
-          <Suspense fallback={<CardListFetcherFallback />}>
-            <CardListFetcher fetcherProps={fetcherProps}>
-              <CardListContainer />
-            </CardListFetcher>
-          </Suspense>
-        </ErrorBoundary>
-        <Pagination
-          count={totalPage}
-          page={currentPage + 1}
-          color="primary"
-          onChange={handlePage}
-        />
-      </Layout>
+      <CardFilter filterProps={filterProps} />
+      <ErrorBoundary FallbackComponent={CardListErrorFallback}>
+        <Suspense fallback={<CardListFetcherFallback />}>
+          <CardListFetcher fetcherProps={fetcherProps}>
+            <CardListContainer />
+          </CardListFetcher>
+        </Suspense>
+      </ErrorBoundary>
+      <Pagination
+        count={totalPage}
+        page={currentPage + 1}
+        color="primary"
+        onChange={handlePage}
+      />
       <Outlet />
     </>
   );
@@ -164,3 +163,13 @@ const ErrorDetail = styled(MuiTypography)(() => ({
   fontSize: '1rem',
   marginBottom: '1rem',
 })) as typeof MuiTypography;
+
+const ContentWrapper = styled(MuiContainer)(() => ({
+  padding: '120px 0 0 0',
+  minHeight: 'calc(100vh)',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+  backgroundColor: '#f3f3f3',
+})) as typeof MuiContainer;

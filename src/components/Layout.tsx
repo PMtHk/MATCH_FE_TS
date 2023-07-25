@@ -1,4 +1,5 @@
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 
 // mui
 import styled from '@mui/system/styled';
@@ -11,22 +12,12 @@ import Footer from './Footer';
 
 import { gameList, GAME_ID, GAME } from '../assets/Games.data';
 
-interface LayoutProps {
-  children: React.ReactNode;
-  currentGame: GAME_ID | null;
-}
-
-const Layout = ({ children, currentGame }: LayoutProps) => {
-  const gameInfo: GAME = gameList.find(
-    (game) => game.id === currentGame,
-  ) as GAME;
-
+const Layout = () => {
   return (
     <LayoutContainer>
-      <Header currentGame={currentGame} />
-      <ContentWrapper maxWidth="lg">
-        {gameInfo && <GameTypo>{gameInfo.name}</GameTypo>}
-        {children}
+      <Header />
+      <ContentWrapper>
+        <Outlet />
       </ContentWrapper>
       <Footer />
     </LayoutContainer>

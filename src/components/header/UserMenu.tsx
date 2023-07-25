@@ -44,7 +44,6 @@ const UserMenu = () => {
   const logoutBtnHandler = () => {
     try {
       logout(dispatch);
-      closeUserMenu();
     } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
@@ -52,6 +51,8 @@ const UserMenu = () => {
           severity: 'error',
         }),
       );
+    } finally {
+      closeUserMenu();
     }
   };
 

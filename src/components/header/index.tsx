@@ -26,11 +26,8 @@ import ChatRoomListFetcher from 'components/notification/ChatRoomListFetcher';
 import UserMenu from './UserMenu';
 import GameMenu from './GameMenu';
 
-interface HeaderProps {
-  currentGame: GAME_ID | null;
-}
-
-const Header = ({ currentGame }: HeaderProps) => {
+const Header = () => {
+  const currentGame = window.location.pathname.split('/')[1];
   const navigate = useNavigate();
 
   const { isLogin, representative } = useSelector(
@@ -123,7 +120,7 @@ const Header = ({ currentGame }: HeaderProps) => {
           >
             <MatchGGLogo>MatchGG</MatchGGLogo>
           </MuiButton>
-          <GameMenu currentGame={currentGame} />
+          <GameMenu />
           {isLogin && <UserMenu />}
           {isLogin && (
             <ChatRoomListFetcher>

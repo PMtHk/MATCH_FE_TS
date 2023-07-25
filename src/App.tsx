@@ -14,6 +14,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 // firebase
 import './firebase';
 import NotFound from 'components/errorFallback/NotFound';
+import Layout from 'components/Layout';
 
 // lazy loading
 const LandingPage = lazy(() => import('pages/landing'));
@@ -57,9 +58,11 @@ const App = () => {
           <Route path="games" element={<Games />} />
           <Route path="favgame" element={<SetFavoriteGame />} />
         </Route>
-        <Route path="/mypage" element={<MyPage />} />
-        <Route path="/lol/*" element={<LeagueOfLegends />} />
-        <Route path="*" element={<NotFound />} />
+        <Route path="*" element={<Layout />}>
+          <Route path="mypage" element={<MyPage />} />
+          <Route path="lol/*" element={<LeagueOfLegends />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
       </Routes>
       <Snackbar
         open={SHOW_SNACKBAR}
