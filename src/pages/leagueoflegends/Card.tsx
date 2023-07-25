@@ -7,8 +7,7 @@ import MuiTypography from '@mui/material/Typography';
 import MuiDivider from '@mui/material/Divider';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-
-// mui icons
+import MuiToolTip from '@mui/material/Tooltip';
 import CheckIcon from '@mui/icons-material/Check';
 import MicIcon from '@mui/icons-material/Mic';
 
@@ -181,15 +180,26 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>주 포지션</SectionName>
             <SectionContent>
-              <ImgMixBlendMode>
-                <img
-                  src={mostLane?.imageUrl}
-                  alt={mostLane?.value}
-                  width="24px"
-                  height="24px"
-                />
-              </ImgMixBlendMode>
-              <SectionTypo>{mostLane?.label}</SectionTypo>
+              {mostLane ? (
+                <>
+                  <ImgMixBlendMode>
+                    <img
+                      src={mostLane?.imageUrl}
+                      alt={mostLane?.value}
+                      width="24px"
+                      height="24px"
+                    />
+                  </ImgMixBlendMode>
+                  <SectionTypo>{mostLane?.label}</SectionTypo>
+                </>
+              ) : (
+                <MuiToolTip
+                  title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
+                  placement="bottom-start"
+                >
+                  <SectionTypo>정보없음</SectionTypo>
+                </MuiToolTip>
+              )}
             </SectionContent>
           </AuthorSection>
           <AuthorSection>

@@ -319,7 +319,10 @@ const CreateCard = () => {
                 <MuiButton
                   sx={{ whiteSpace: 'nowrap' }}
                   onClick={certifyNewNickname}
-                  disabled={isPosting ? true : useRegisteredNickname}
+                  disabled={
+                    (isPosting ? true : useRegisteredNickname) ||
+                    userInput.name.length < 2
+                  }
                 >
                   {isNewNicknameCertified ? '인증완료' : '인증하기'}
                 </MuiButton>

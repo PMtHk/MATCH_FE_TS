@@ -13,6 +13,7 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
 import MuiImageList from '@mui/material/ImageList';
+import MuiToolTip from '@mui/material/Tooltip';
 
 import Close from '@mui/icons-material/Close';
 
@@ -138,14 +139,25 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
             <SectionTitleInMember>소환사명</SectionTitleInMember>
             <Nickname>{memberInfo?.summonerName}</Nickname>
             <MostLaneInfo>
-              <img
-                src={mostLane?.imageUrl}
-                alt="lane_icon"
-                loading="lazy"
-                width="20px"
-                height="20px"
-              />
-              <MostLanteTypo>{mostLane?.label}</MostLanteTypo>
+              {mostLane ? (
+                <>
+                  <img
+                    src={mostLane?.imageUrl}
+                    alt="lane_icon"
+                    loading="lazy"
+                    width="20px"
+                    height="20px"
+                  />
+                  <MostLanteTypo>{mostLane?.label}</MostLanteTypo>
+                </>
+              ) : (
+                <MuiToolTip
+                  title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
+                  placement="bottom-start"
+                >
+                  <MostLanteTypo>포지션: -</MostLanteTypo>
+                </MuiToolTip>
+              )}
             </MostLaneInfo>
           </SectionInMember>
           <SectionInMember>
@@ -181,21 +193,23 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
             <SectionTitleInMember>모스트 챔피언</SectionTitleInMember>
             <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
               {memberInfo &&
-                memberInfo.mostChampion?.map((aChampion: string) => (
-                  <ChampImgWrapper key={aChampion}>
-                    <img
-                      src={
-                        aChampion === 'poro'
-                          ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
-                          : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
-                      }
-                      alt={aChampion}
-                      loading="lazy"
-                      width="50px"
-                      height="50px"
-                    />
-                  </ChampImgWrapper>
-                ))}
+                memberInfo.mostChampion?.map(
+                  (aChampion: string, index: number) => (
+                    <ChampImgWrapper key={aChampion + Math.random()}>
+                      <img
+                        src={
+                          aChampion === 'poro'
+                            ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
+                            : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
+                        }
+                        alt={`most${index}_${aChampion}`}
+                        loading="lazy"
+                        width="50px"
+                        height="50px"
+                      />
+                    </ChampImgWrapper>
+                  ),
+                )}
             </MuiImageList>
           </SectionInMember>
           <MemberControlPanel>

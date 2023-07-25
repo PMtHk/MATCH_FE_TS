@@ -19,11 +19,9 @@ const CardListContainer = () => {
     cardLength = cards.length;
   }
 
-  console.log(cardLength);
-
   const arrayForDummies = new Array(12 - cardLength)
     .fill(0)
-    .map((value, i) => `dummies_${1}`);
+    .map((value, i) => `dummies_${i}`);
 
   return (
     <CardsWrapper>

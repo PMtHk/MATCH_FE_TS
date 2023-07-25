@@ -47,6 +47,10 @@ const CardDetailContainer = () => {
   const totalMember = queueType?.maxMember || 5;
   const currentMember = currentCard?.memberList?.length || 0;
 
+  const arrayForEmptySlot = new Array(totalMember - currentMember)
+    .fill(0)
+    .map((value, i) => `memberSlot_${i}`);
+
   if (currentCard) {
     return (
       <>
@@ -98,8 +102,9 @@ const CardDetailContainer = () => {
                   currentCard?.memberList?.map((member: string) => {
                     return <MemberSlot key={member} summonerName={member} />;
                   })}
-                {Array(totalMember - currentMember).fill(<EmptySlot />)}
-                {/* TODO: EmptySlot 에 key 할당해야 함. */}
+                {arrayForEmptySlot.map((value, index) => (
+                  <EmptySlot key={value} />
+                ))}
               </MemberList>
             </MemberListWrapper>
             {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
