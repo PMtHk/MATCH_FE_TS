@@ -224,7 +224,10 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== summonerName && (
-              <MuiIconButton onClick={handleKickBtn}>
+              <MuiIconButton
+                onClick={handleKickBtn}
+                disabled={currentCard.expired || currentCard.finished}
+              >
                 <Close />
               </MuiIconButton>
             )}

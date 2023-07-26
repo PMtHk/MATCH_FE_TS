@@ -136,3 +136,9 @@ export const updateCard = async (
 
   return null;
 };
+
+export const finishCard = async (currentGame: string, boardId: number) => {
+  await authAxios.post(`/api/chat/${currentGame}/${boardId}/finish`);
+
+  return null;
+};

@@ -144,6 +144,7 @@ const EmptySlotForAuthor = () => {
             height: '100%',
           }}
           onClick={() => setIsEntering(true)}
+          disabled={currentCard.expired}
         >
           파티원 추가하기
         </Button>

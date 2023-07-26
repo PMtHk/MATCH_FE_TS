@@ -11,10 +11,11 @@ import { authAxios } from 'apis/utils';
 import { snackbarActions } from 'store/snackbar-slice';
 import { joinParty } from 'apis/api/user';
 import { useNavigate } from 'react-router-dom';
+import { finishCard } from 'apis/api/common';
 import { RootState } from '../../store';
 import { chatroomActions } from '../../store/chatroom-slice';
 
-const JoinBtn = () => {
+const FinishBtn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -22,50 +23,34 @@ const JoinBtn = () => {
   const currentGame = window.location.pathname.split('/')[1];
 
   const { notiToken } = useSelector((state: RootState) => state.notification);
+
   const nickname = useSelector(
     (state: RootState) =>
       state.user.games[`${currentGame as 'overwatch' | 'pubg' | 'lol'}`],
   );
   const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
 
-  const { chatRoomId, id } = useSelector(
+  const { id, finished } = useSelector(
     (state: RootState) => state.card.currentCard,
   );
 
-  type Member = {
-    nickname: string;
-    oauth2Id: string;
-    notiToken: string;
-  };
+  const [isPending, setIsPending] = React.useState<boolean>(false);
 
-  // 채팅방에 참여할 사용자 객체
-  const newMember: Member = {
-    nickname,
-    oauth2Id,
-    notiToken: notiToken || '',
-  };
-
-  const JoinBtnHandler = async () => {
-    const banned = await isBanned(chatRoomId, oauth2Id);
-    if (!banned) {
-      try {
-        await joinParty(currentGame, id, chatRoomId, newMember, dispatch);
-        navigate(0);
-      } catch (error) {
-        dispatch(
-          snackbarActions.OPEN_SNACKBAR({
-            message: '파티 참가에 실패했습니다. 잠시 후 다시 시도해주세요.',
-            severity: 'error',
-          }),
-        );
-      }
-    } else {
+  const FinishBtnHandler = async () => {
+    try {
+      setIsPending(true);
+      await finishCard(currentGame, id);
+    } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '차단된 사용자입니다.',
-          severity: 'warning',
+          message:
+            '요청을 처리하는 도중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+          severity: 'error',
         }),
       );
+    } finally {
+      setIsPending(false);
+      navigate(`/${currentGame}/card/${id}`);
     }
   };
 
@@ -73,18 +58,19 @@ const JoinBtn = () => {
     <Button
       variant="outlined"
       size="small"
-      onClick={JoinBtnHandler}
-      disabled={!isLogin || !nickname}
+      onClick={FinishBtnHandler}
+      disabled={!isLogin || !nickname || isPending || finished}
     >
-      {!isLogin ? '로그인 후 참가하실 수 있습니다.' : '파티 참가'}
+      모집 완료
     </Button>
   );
 };
 
-export default JoinBtn;
+export default FinishBtn;
 
 const Button = styled(MuiButton)(() => ({
   p: 1,
+  width: '32%',
   mt: 1,
   height: 40,
   borderColor: '#CCCCCC',

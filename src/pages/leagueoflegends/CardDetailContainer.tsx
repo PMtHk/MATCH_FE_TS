@@ -19,6 +19,7 @@ import LeaveBtn from 'components/card-actions/LeaveBtn';
 import JoinBtn from 'components/card-actions/JoinBtn';
 import DeleteCardBtn from 'components/card-actions/DeleteCardBtn';
 import Circular from 'components/loading/Circular';
+import FinishBtn from 'components/card-actions/FinishBtn';
 import { positionList, queueTypeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
@@ -50,6 +51,14 @@ const CardDetailContainer = () => {
   const arrayForEmptySlot = new Array(totalMember - currentMember)
     .fill(0)
     .map((value, i) => `memberSlot_${i}`);
+
+  // TODO: 일단은 5초뒤에 리뷰 페이지로 넘어가도록 구성했는데, 어떻게 해야할 지 고민중...
+
+  if (currentCard?.finished) {
+    setTimeout(() => {
+      navigate('review');
+    }, 5000);
+  }
 
   if (currentCard) {
     return (
@@ -109,9 +118,10 @@ const CardDetailContainer = () => {
             </MemberListWrapper>
             {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
               oauth2Id === currentCard.oauth2Id ? (
-                <MuiStack direction="row" spacing={2} mt={1}>
+                <MuiStack direction="row" spacing="2%" mt={1}>
                   <DeleteCardBtn />
                   <EditCardBtn />
+                  <FinishBtn />
                 </MuiStack>
               ) : (
                 <LeaveBtn />
