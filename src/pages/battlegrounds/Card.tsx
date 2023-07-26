@@ -76,12 +76,88 @@ const Card = ({ item, expired }: CardProps) => {
   };
   // 작성자의 정보를 표시할 때 사용할 랭크 정보 계산
   const getRank = (): TierInfo => {
-    const str: string = item.author.tier.toUpperCase() + item.author.subTier;
+    const str: string =
+      item.author.tier === 'Master'
+        ? 'MASTER'
+        : item.author.tier.toUpperCase() + item.author.subTier;
     const imageUrl = rankImage[str];
     const value = str;
-    return {
+    const rankInfo: TierInfo = {
       imageUrl,
       value,
+    };
+    return rankInfo;
+  };
+
+  type calcedInfo = {
+    value: number;
+    color: string;
+  };
+
+  const calcKDInfo = (): calcedInfo => {
+    const kd: number =
+      item.author.kills === 0 || item.author.deaths === 0
+        ? 0
+        : Number((item.author.kills / item.author.deaths).toFixed(1));
+    let color = '#000';
+    if (kd >= 4) {
+      color = 'red';
+    } else if (kd >= 2.5) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: kd,
+      color,
+    };
+  };
+
+  const calcAvgDmgInfo = (): calcedInfo => {
+    const avgDmg = Math.ceil(item.author.avgDmg);
+    let color = '#000';
+    if (avgDmg >= 500) {
+      color = 'red';
+    } else if (avgDmg >= 300) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: avgDmg,
+      color,
+    };
+  };
+
+  const calcTop1Info = (): calcedInfo => {
+    const top1 = item.author.wins;
+    let color = '#000';
+    if (top1 >= 100) {
+      color = 'red';
+    } else if (top1 >= 50) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: top1,
+      color,
+    };
+  };
+
+  const calcTop10Info = (): calcedInfo => {
+    const { top10 } = item.author;
+    let color = '#000';
+    if (top10 >= 100) {
+      color = 'red';
+    } else if (top10 >= 50) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: top10,
+      color,
     };
   };
 
@@ -200,10 +276,8 @@ const Card = ({ item, expired }: CardProps) => {
             <ChildAuthorSection>
               <ChildSectionName>K/D</ChildSectionName>
               <SectionContent>
-                <SectionContentText>
-                  {item.author.kills === 0 || item.author.deaths === 0
-                    ? 0
-                    : (item.author.kills / item.author.deaths).toFixed(1)}
+                <SectionContentText sx={{ color: calcKDInfo().color }}>
+                  {calcKDInfo().value}
                 </SectionContentText>
               </SectionContent>
             </ChildAuthorSection>
@@ -211,21 +285,27 @@ const Card = ({ item, expired }: CardProps) => {
             <ChildAuthorSection>
               <ChildSectionName>평균 데미지</ChildSectionName>
               <SectionContent>
-                <Author>{Math.ceil(item.author.avgDmg)}</Author>
+                <Author sx={{ color: calcAvgDmgInfo().color }}>
+                  {calcAvgDmgInfo().value}
+                </Author>
               </SectionContent>
             </ChildAuthorSection>
             {/* Top 1 */}
             <ChildAuthorSection>
               <ChildSectionName>Top 1</ChildSectionName>
               <SectionContent>
-                <Author>{item.author.wins}</Author>
+                <Author sx={{ color: calcTop1Info().color }}>
+                  {calcTop1Info().value}
+                </Author>
               </SectionContent>
             </ChildAuthorSection>
             {/* Top 10 */}
             <ChildAuthorSection>
               <ChildSectionName>Top 10</ChildSectionName>
               <SectionContent>
-                <Author>{item.author.top10}</Author>
+                <Author sx={{ color: calcTop10Info().color }}>
+                  {calcTop10Info().value}
+                </Author>
               </SectionContent>
             </ChildAuthorSection>
           </Stack>
