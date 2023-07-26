@@ -191,6 +191,7 @@ const Notification = ({
                   key={chatRoomId}
                   chatRoomId={chatRoomId}
                   timestamp={timestamps[chatRoomId]}
+                  handleNotiClose={handleNotiClose}
                 />
               );
             })}
