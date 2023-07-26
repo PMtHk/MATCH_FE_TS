@@ -130,5 +130,9 @@ export const updateCard = async (
     maxMember: updatedMaxMember,
   });
 
+  await authAxios.put(`/api/chat/${currentGame}/${boardId}`, {
+    totalUser: updatedMaxMember,
+  });
+
   return null;
 };
