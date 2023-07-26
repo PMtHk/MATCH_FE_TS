@@ -13,6 +13,15 @@ const CardListContainer = () => {
   const location = useLocation();
   const { pubgCards } = useSelector((state: RootState) => state.card);
 
+  let cardLength = 0;
+  if (pubgCards) {
+    cardLength = pubgCards.length;
+  }
+
+  const arrayForDummies = new Array(12 - cardLength)
+    .fill(0)
+    .map((value, i) => `dummies_${i}`);
+
   return (
     <CardsWrapper>
       {pubgCards &&
@@ -32,6 +41,9 @@ const CardListContainer = () => {
             </Link>
           );
         })}
+      {arrayForDummies.map((item) => (
+        <DummyCard key={item} />
+      ))}
     </CardsWrapper>
   );
 };
@@ -46,4 +58,9 @@ const CardsWrapper = styled(MuiBox)(() => ({
   alignItems: 'center',
   flexWrap: 'wrap',
   padding: '8px 0 0 8px',
+})) as typeof MuiBox;
+
+const DummyCard = styled(MuiBox)(() => ({
+  width: '358px',
+  height: '242px',
 })) as typeof MuiBox;

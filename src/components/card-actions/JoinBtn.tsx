@@ -1,18 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ref, getDatabase } from 'firebase/database';
 
 // mui
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
-import { addMemberToFirebaseDB, isBanned } from 'apis/api/firebase';
-import { authAxios } from 'apis/utils';
+import { checkPUBGUserPlatform } from 'apis/api/pubg';
+import { isBanned } from 'apis/api/firebase';
 import { snackbarActions } from 'store/snackbar-slice';
 import { joinParty } from 'apis/api/user';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
-import { chatroomActions } from '../../store/chatroom-slice';
 
 const JoinBtn = () => {
   const dispatch = useDispatch();
@@ -20,6 +18,8 @@ const JoinBtn = () => {
 
   // current game
   const currentGame = window.location.pathname.split('/')[1];
+
+  const { currentCard } = useSelector((state: RootState) => state.card);
 
   const { notiToken } = useSelector((state: RootState) => state.notification);
   const nickname = useSelector(
@@ -46,6 +46,21 @@ const JoinBtn = () => {
   };
 
   const JoinBtnHandler = async () => {
+    // 배틀그라운드의 경우 파티 참가 요청 시 파티의 플랫폼과 사용자(참가자) 계정의 플랫폼 비교
+    if (currentGame === 'pubg') {
+      const { platform: myPlatform } = await checkPUBGUserPlatform(nickname);
+      if (myPlatform !== currentCard?.platform) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '해당 파티와의 플랫폼 정보가 일치하지 않습니다. 플랫폼 확인 후 다시 시도하여 주시기 바랍니다.',
+            severity: 'error',
+          }),
+        );
+        return;
+      }
+    }
+
     const banned = await isBanned(chatRoomId, oauth2Id);
     if (!banned) {
       try {

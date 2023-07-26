@@ -169,7 +169,8 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>RP (Rating Point)</SectionName>
             <SectionContent>
-              {item.type !== 'RANKED_SQUAD' ? (
+              {item.type !== 'RANKED_SQUAD' ||
+              item.author.currentRankPoint === 0 ? (
                 <SectionContentText>정보없음</SectionContentText>
               ) : (
                 <>
@@ -199,9 +200,9 @@ const Card = ({ item, expired }: CardProps) => {
               <ChildSectionName>K/D</ChildSectionName>
               <SectionContent>
                 <SectionContentText>
-                  {item.author.currentRankPoint === 0
-                    ? '-'
-                    : (item.author.kills / item.author.deaths).toFixed(2)}
+                  {item.author.kills === 0 || item.author.deaths === 0
+                    ? 0
+                    : (item.author.kills / item.author.deaths).toFixed(1)}
                 </SectionContentText>
               </SectionContent>
             </ChildAuthorSection>
@@ -209,29 +210,21 @@ const Card = ({ item, expired }: CardProps) => {
             <ChildAuthorSection>
               <ChildSectionName>평균 데미지</ChildSectionName>
               <SectionContent>
-                <Author>
-                  {item.author.currentRankPoint
-                    ? item.author.avgDmg.toFixed(2)
-                    : '-'}
-                </Author>
+                <Author>{Math.ceil(item.author.avgDmg)}</Author>
               </SectionContent>
             </ChildAuthorSection>
             {/* Top 1 */}
             <ChildAuthorSection>
               <ChildSectionName>Top 1</ChildSectionName>
               <SectionContent>
-                <Author>
-                  {item.author.currentRankPoint ? item.author.wins : '-'}
-                </Author>
+                <Author>{item.author.wins}</Author>
               </SectionContent>
             </ChildAuthorSection>
             {/* Top 10 */}
             <ChildAuthorSection>
               <ChildSectionName>Top 10</ChildSectionName>
               <SectionContent>
-                <Author>
-                  {item.author.currentRankPoint ? item.author.top10 : '-'}
-                </Author>
+                <Author>{item.author.top10}</Author>
               </SectionContent>
             </ChildAuthorSection>
           </Stack>

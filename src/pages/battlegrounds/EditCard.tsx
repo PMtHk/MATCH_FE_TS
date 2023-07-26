@@ -1,6 +1,6 @@
 /* eslint-disable no-alert */
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getDatabase, ref, update } from 'firebase/database';
 
@@ -30,13 +30,18 @@ import Edit from '@mui/icons-material/Edit';
 import Modal from 'components/Modal';
 
 import { authAxios } from 'apis/utils';
+import { updateCard } from 'apis/api/common';
+import { snackbarActions } from 'store/snackbar-slice';
 import { typeList, tierList, platformList, expiredTimeList } from './data';
 
 const EditCard = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const params = useParams();
 
   const { id: cardId } = params;
+
+  const currentGame = window.location.pathname.split('/')[1];
 
   const { pubg: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -152,32 +157,35 @@ const EditCard = () => {
     }
   };
 
-  const updateCard = async () => {
-    if (currentCard.chatRoomId) {
+  const updateHandler = async () => {
+    try {
       setIsPosting(true);
 
-      await authAxios
-        .put(`/api/pubg/board/${cardId}`, { ...userInput })
-        .then(async (response) => {
-          if (response.status === 200) {
-            // firebase update
-            await update(
-              ref(getDatabase(), `chatRooms/${currentCard.chatRoomId}`),
-              {
-                maxMember: userInput.type === 'DUO' ? 2 : 4,
-                content: userInput.content,
-              },
-            ).then(() => {
-              // 파이어베이스 수정 완료
-              alert('수정이 완료되었습니다.');
-              navigate('/pubg', { replace: true });
-              window.location.reload();
-            });
-          } else {
-            alert('게시글 수정 중 문제가 발생하였습니다.');
-            window.location.reload();
-          }
-        });
+      await updateCard(
+        currentGame,
+        currentCard.id,
+        currentCard.chatRoomId,
+        userInput,
+        userInput.type === 'DUO' ? 2 : 4,
+      );
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 수정이 완료되었습니다.',
+          severity: 'success',
+        }),
+      );
+
+      navigate(`/pubg/${currentCard.id}`, { replace: true });
+    } catch (error) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 수정 중 문제가 발생하였습니다.',
+          severity: 'error',
+        }),
+      );
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -374,7 +382,7 @@ const EditCard = () => {
             뒤로가기
           </CancelButton>
           <PostButton
-            onClick={updateCard}
+            onClick={updateHandler}
             disabled={isPosting || userInput.content.length < 20}
             variant="contained"
             startIcon={<Edit />}

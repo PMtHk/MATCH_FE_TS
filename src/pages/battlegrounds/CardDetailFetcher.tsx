@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
 import { cardActions } from 'store/card-slice';
-import { fetchCardDetail } from 'apis/api/battlegrounds';
+import { fetchCardDetail } from 'apis/api/pubg';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;

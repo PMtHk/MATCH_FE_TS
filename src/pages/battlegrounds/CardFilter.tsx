@@ -5,12 +5,11 @@ import { RootState } from 'store';
 
 // mui
 import { styled } from '@mui/system';
-import Box from '@mui/material/Box';
 import MuiGrid from '@mui/material/Grid';
 import MuiFormControl from '@mui/material/FormControl';
 import MuiSelect, { SelectChangeEvent } from '@mui/material/Select';
 import MuiMenuItem from '@mui/material/MenuItem';
-import { Stack } from '@mui/material';
+import MuiToggleButton from '@mui/material/ToggleButton';
 
 import CreateCardButton from 'components/card-actions/CreateCardBtn';
 import { platformList, typeList, tierList } from './data';
@@ -124,3 +123,13 @@ const FormControl = styled(MuiFormControl)(() => ({
     },
   },
 })) as typeof MuiFormControl;
+
+const ToggleButton = styled(MuiToggleButton)(({ theme }) => ({
+  height: '40px',
+  '&.MuiToggleButton-root': {
+    fontSize: '12px',
+    [theme.breakpoints.up('sm')]: {
+      fontSize: '14px',
+    },
+  },
+})) as typeof MuiToggleButton;

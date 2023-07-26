@@ -12,7 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { RootState } from 'store';
-import { checkPUBGUserPlatform, verifyPUBGNickname } from 'apis/api/pubg';
+import { checkPUBGUserPlatform } from 'apis/api/pubg';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { defaultAxios } from 'apis/utils';

@@ -128,7 +128,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           <SectionInMember>
             <SectionTitleInMember>RP</SectionTitleInMember>
             <MemberInfoBox>
-              {memberInfo.currentRankPoint === 0 ? (
+              {memberInfo.type !== 'RANKED_SQUAD' ||
+              (memberInfo.type === 'RANKED_SQUAD' &&
+                memberInfo.currentRankPoint === 0) ? (
                 '정보 없음'
               ) : (
                 <>
@@ -150,30 +152,26 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           <SectionInMember>
             <SectionTitleInMember>K/D</SectionTitleInMember>
             <MemberInfoTypo>
-              {memberInfo.kills === 0
-                ? '-'
-                : (memberInfo.kills / memberInfo.deaths).toFixed(2)}
+              {memberInfo.kills === 0 || memberInfo.deaths === 0
+                ? 0
+                : (memberInfo.kills / memberInfo.deaths).toFixed(1)}
             </MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>평균 데미지</SectionTitleInMember>
             <MemberInfoTypo>
-              {memberInfo.currentRankPoint === 0
-                ? '-'
+              {Math.ceil(memberInfo.avgDmg) === 0
+                ? 0
                 : Math.ceil(memberInfo.avgDmg)}
             </MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>Top 1</SectionTitleInMember>
-            <MemberInfoTypo>
-              {memberInfo.currentRankPoint === 0 ? '-' : memberInfo.wins}
-            </MemberInfoTypo>
+            <MemberInfoTypo>{memberInfo.wins}</MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>Top 10</SectionTitleInMember>
-            <MemberInfoTypo>
-              {memberInfo.currentRankPoint === 0 ? '-' : memberInfo.top10}
-            </MemberInfoTypo>
+            <MemberInfoTypo>{memberInfo.top10}</MemberInfoTypo>
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== name && (

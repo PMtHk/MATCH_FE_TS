@@ -144,11 +144,6 @@ export const rankImage: rankImageType = {
   BRONZE5: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/bronze5.png',
 };
 
-// export const platformImage = {
-//   STEAM: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/platform/steam.png',
-//   KAKAO: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/platform/kakao.png',
-// };
-
 export const expiredTimeList = [
   { value: 'FIFTEEN_M', label: '15분', time: 15 * 60 * 1000 },
   { value: 'THIRTY_M', label: '30분', time: 30 * 60 * 1000 },

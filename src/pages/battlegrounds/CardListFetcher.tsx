@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { cardActions } from 'store/card-slice';
-import { fetchCardList } from 'apis/api/battlegrounds';
+import { fetchCardList } from 'apis/api/pubg';
 import { RootState } from 'store';
 
 interface CardListFetcherProps {

@@ -12,8 +12,7 @@ import { Button, OutlinedInput, CircularProgress } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useNavigate } from 'react-router-dom';
 import { snackbarActions } from 'store/snackbar-slice';
-import { verifyPUBGNickname } from 'apis/api/pubg';
-import { loadPubgPlayerInfoIntoDB } from 'apis/api/battlegrounds';
+import { verifyPUBGNickname, loadPubgPlayerInfoIntoDB } from 'apis/api/pubg';
 import { addPartyMemberWithName } from 'apis/api/common';
 import { addMemberToFirebaseDB } from 'apis/api/firebase';
 

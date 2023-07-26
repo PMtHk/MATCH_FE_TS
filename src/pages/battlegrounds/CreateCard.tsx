@@ -32,17 +32,23 @@ import Edit from '@mui/icons-material/Edit';
 import Modal from 'components/Modal';
 
 import { authAxios } from 'apis/utils';
+import { createCard, deleteCard } from 'apis/api/common';
 import { CustomSwitch } from 'components/Swtich';
 import {
-  getExactPubgPlayerName,
+  verifyPUBGNickname,
   loadPubgPlayerInfoIntoDB,
-} from 'apis/api/battlegrounds';
+  checkPUBGUserPlatform,
+} from 'apis/api/pubg';
 import { chatroomActions } from 'store/chatroom-slice';
+import { snackbarActions } from 'store/snackbar-slice';
+
 import { typeList, tierList, platformList, expiredTimeList } from './data';
 
 const CreateCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const currentGame = window.location.pathname.split('/')[1];
 
   const { pubg: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -74,6 +80,19 @@ const CreateCard = () => {
     voice: 'n',
     content: '',
   });
+
+  // 게시글 생성 모달 렌더 시 리덕스의 닉네임으로 플랫폼 정보 가져오기
+  useEffect(() => {
+    const getPlatform = async () => {
+      const { platform: myPlatform } = await checkPUBGUserPlatform(
+        registeredNickname,
+      );
+      setUserInput({ ...userInput, platform: myPlatform });
+    };
+    if (registeredNickname) {
+      getPlatform();
+    }
+  }, [registeredNickname]);
 
   // 게시글 생성 요청 상태
   const [isPosting, setIsPosting] = React.useState<boolean>(false);
@@ -158,30 +177,43 @@ const CreateCard = () => {
     try {
       setIsLoading(true);
 
-      const exactPubgPlayerName = await getExactPubgPlayerName(
-        userInput.name,
-        userInput.platform,
+      // 닉네임, 플랫폼 정보 가져오기
+      const { nickname, platform } = await checkPUBGUserPlatform(
+        userInput.name.trim(),
+      );
+      setUserInput({
+        ...userInput,
+        name: nickname,
+        platform,
+      });
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '플레이어 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          severity: 'info',
+        }),
       );
 
-      if (exactPubgPlayerName) {
-        setUserInput({ ...userInput, name: userInput.name });
+      await loadPubgPlayerInfoIntoDB(nickname, platform);
 
-        const response = await loadPubgPlayerInfoIntoDB(
-          userInput.name,
-          userInput.platform,
-        );
-
-        if (response) {
-          setIsChanged(true);
-          setIsLoading(false);
-          setIsNewNicknameCertified(true);
-        }
+      setIsNewNicknameCertified(true);
+    } catch (error: any) {
+      if (
+        error.response.status === 404 &&
+        error.response.data.message ===
+          '아직 랭크정보를 보유하고 있지 않습니다.'
+      ) {
+        setIsNewNicknameCertified(true);
       } else {
-        setIsLoading(false);
         setIsNewNicknameCertified(false);
-        setIsChanged(true);
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '입력하신 정보와 일치하는 플레이어를 찾을 수 없습니다.',
+            severity: 'error',
+          }),
+        );
       }
-    } catch (error) {
+    } finally {
       setIsLoading(false);
       setIsChanged(true);
     }
@@ -215,78 +247,34 @@ const CreateCard = () => {
     return closeModal();
   };
 
-  const createChatroomInFirebaseDB = async (
-    boardId: string,
-    totalUser: number,
-  ) => {
-    const chatroomRef = ref(getDatabase(), 'chatRooms');
-    const { key } = push(chatroomRef);
-
-    // 서버로 전송할 data
-    const chatRoomInfo = {
-      boardId,
-      chatRoomId: key,
-      totalUser,
-    };
-
-    await authAxios
-      .post('/api/chat/pubg', chatRoomInfo)
-      .then(async (response) => {
-        if (response.status === 200) {
-          const newChatRoom: any = {
-            game: 'pubg',
-            isDeleted: false,
-            key,
-            roomId: boardId,
-            createdBy: userInput.name,
-            maxMember: totalUser,
-            memberList: [
-              {
-                nickname: userInput.name,
-                oauth2Id,
-                notiToken: notiToken || '',
-              },
-            ],
-            timestamp: new Date().toString(),
-            content: userInput.content,
-          };
-
-          if (key) {
-            await update(child(chatroomRef, key), newChatRoom);
-            const lastReadRef = ref(getDatabase(), 'lastRead');
-            await set(child(lastReadRef, `${oauth2Id}/${key}`), Date.now())
-              .then(() => {
-                dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
-                closeModal();
-              })
-              .catch((error) => {
-                console.log(error);
-              });
-          }
-        }
-      })
-      .then(() => {
-        navigate('/pubg', { replace: true });
-        window.location.reload();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
-
-  const createCard = async () => {
+  const createCardBtnHandler = async () => {
     setIsPosting(true);
+    try {
+      const { key, boardId } = await createCard(
+        currentGame,
+        userInput,
+        oauth2Id,
+        userInput.type === 'DUO' ? 2 : 4,
+        notiToken || '',
+      );
 
-    await authAxios
-      .post('/api/pubg/board', {
-        ...userInput,
-      })
-      .then((response) => {
-        const boardId = response.data;
-        const maxMember = userInput.type === 'DUO' ? 2 : 4;
-        createChatroomInFirebaseDB(boardId, maxMember);
-        setIsPosting(false);
-      });
+      dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
+      navigate(`/pubg/${boardId}`, { replace: true });
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 작성에 성공했습니다.',
+          severity: 'success',
+        }),
+      );
+      navigate(0);
+    } catch (error: any) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 작성에 실패했습니다.',
+          severity: 'error',
+        }),
+      );
+    }
   };
 
   return (
@@ -305,27 +293,7 @@ const CreateCard = () => {
           </MuiIconButton>
         </HeaderWrapper>
         <MuiDivider />
-        {/* 플랫폼 선택 영역 */}
-        <PlatformSection>
-          <SectionTitle>플레이할 플랫폼</SectionTitle>
-          <ToggleButtonGroup
-            exclusive
-            disabled={isPosting || isNewNicknameCertified}
-            value={userInput.platform}
-            onChange={handlePlatform}
-          >
-            {platformList.map((item) => {
-              if (item.value !== 'ALL') {
-                return (
-                  <PlatformToggleButton key={item.value} value={item.value}>
-                    {item.label}
-                  </PlatformToggleButton>
-                );
-              }
-              return null;
-            })}
-          </ToggleButtonGroup>
-        </PlatformSection>
+
         {/* 닉네임 입력 영역 */}
         <SelectRegisteredNickname>
           <CustomSwitch
@@ -366,6 +334,27 @@ const CreateCard = () => {
             }
           />
         </NicknameSection>
+        {/* 플랫폼 선택 영역 */}
+        <PlatformSection>
+          <SectionTitle>플레이할 플랫폼</SectionTitle>
+          <ToggleButtonGroup
+            exclusive
+            disabled
+            value={userInput.platform}
+            onChange={handlePlatform}
+          >
+            {platformList.map((item) => {
+              if (item.value !== 'ALL') {
+                return (
+                  <PlatformToggleButton key={item.value} value={item.value}>
+                    {item.label}
+                  </PlatformToggleButton>
+                );
+              }
+              return null;
+            })}
+          </ToggleButtonGroup>
+        </PlatformSection>
         {/* 게임 타입 선택 영역 */}
         <TypeSection>
           <SectionTitle>플레이할 게임 타입</SectionTitle>
@@ -491,7 +480,7 @@ const CreateCard = () => {
             뒤로가기
           </CancelButton>
           <PostButton
-            onClick={createCard}
+            onClick={createCardBtnHandler}
             disabled={isPosting || userInput.content.length < 20}
             variant="contained"
             startIcon={<Edit />}
