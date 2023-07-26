@@ -91,6 +91,10 @@ const Card = ({ item, expired }: CardProps) => {
     .fill(0)
     .map((value, i) => `member_${i}`);
 
+  // unranked info
+  const unranked =
+    item.author.tier === 'UNRANKED' && item.author.rank === 'UNRANKED';
+
   return (
     <div
       onMouseOver={() => {
@@ -106,7 +110,7 @@ const Card = ({ item, expired }: CardProps) => {
           <ImgMixBlendMode>
             <img
               src={position?.imageUrl || ''}
-              alt="ranked_emblem"
+              alt="position_to_find"
               loading="lazy"
               height="40px"
               width="40px"
@@ -205,7 +209,11 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>티어</SectionName>
             <SectionContent>
-              <RankEmblemWrapper>
+              <RankEmblemWrapper
+                sx={{
+                  backgroundColor: expired ? '#ffffff' : '',
+                }}
+              >
                 <img
                   src={authorTier?.imageUrl}
                   alt={mostLane?.value}
@@ -214,19 +222,26 @@ const Card = ({ item, expired }: CardProps) => {
                 />
               </RankEmblemWrapper>
               <TierWinRateWrapper>
-                <SectionTypo sx={{ color: authorTier?.color }}>
-                  {authorTier?.acronym}
-                  {authorRank(item)}-{item.author.leaguePoints}LP
-                </SectionTypo>
-                <MatchPlayed>
-                  {item.author?.wins}승 {item.author?.losses}패
-                  <WinRate
-                    component="span"
-                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                  >
-                    ({winRate}%)
-                  </WinRate>
-                </MatchPlayed>
+                {!unranked && (
+                  <>
+                    <SectionTypo sx={{ color: authorTier?.color }}>
+                      {authorTier?.acronym}
+                      {authorRank(item)}-{item.author.leaguePoints}LP
+                    </SectionTypo>
+                    <MatchPlayed>
+                      {item.author?.wins}승 {item.author?.losses}패
+                      <WinRate
+                        component="span"
+                        sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                      >
+                        ({winRate}%)
+                      </WinRate>
+                    </MatchPlayed>
+                  </>
+                )}
+                {unranked && (
+                  <SectionTypo sx={{ color: '#9e9e9e' }}>Unranked</SectionTypo>
+                )}
               </TierWinRateWrapper>
             </SectionContent>
           </AuthorSection>
