@@ -203,7 +203,7 @@ export const signup = async (
     lol: games.lol,
     pubg: games.pubg,
     overwatch: games.overwatch,
-    valorant: games.valorant,
+    // valorant: games.valorant,
   });
 
   // 발로란트로 수정해야함 나중에
