@@ -52,15 +52,16 @@ export default CardListContainer;
 
 const CardsWrapper = styled(MuiBox)(() => ({
   width: '100%',
-  height: '100%',
+  minHeight: 'calc(100vh - 386px)',
   display: 'flex',
   justifyContent: 'center',
-  alignItems: 'center',
+  alignItems: 'flex-start',
   flexWrap: 'wrap',
-  padding: '8px 0 0 8px',
+  padding: '60px 0 20px 0 ',
+  overflowY: 'auto',
 })) as typeof MuiBox;
 
 const DummyCard = styled(MuiBox)(() => ({
-  width: '358px',
-  height: '242px',
+  width: '368px',
+  height: '243px',
 })) as typeof MuiBox;
