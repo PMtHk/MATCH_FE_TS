@@ -99,6 +99,7 @@ const Card = ({ item, expired }: CardProps) => {
             loading="lazy"
             height="40px"
             width="40px"
+            style={{ borderRadius: '100%' }}
           />
           <CardTitle>
             <TopInfo>
