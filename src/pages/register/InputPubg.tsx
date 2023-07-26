@@ -12,7 +12,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { RootState } from 'store';
-import { verifyPUBGNickname } from 'apis/api/pubg';
+import { checkPUBGUserPlatform, verifyPUBGNickname } from 'apis/api/pubg';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { defaultAxios } from 'apis/utils';
@@ -40,19 +40,47 @@ const InputPubg = () => {
   const gameInfo = gameResult as GAME;
 
   const handleVerify = async () => {
-    console.log(nickname);
     try {
-      setIsPending(true);
-      dispatch(registerActions.SET_GAMES_WITH_ID({ id: 'pubg', value: '' }));
-      await verifyPUBGNickname(nickname, platform);
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
           id: 'pubg',
-          value: nickname,
+          value: '',
         }),
       );
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '사용자 정보를 확인하는 중입니다.',
+          severity: 'info',
+        }),
+      );
+      const result = await checkPUBGUserPlatform(nickname);
+
       setWarning(false);
-      setIsPlatformChanged(false);
+      if (result.platform === '') {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '플랫폼 정보를 가져올 수 없습니다. 해당 계정으로 최소 1판 플레이하셔야 합니다.',
+            severity: 'error',
+          }),
+        );
+      } else {
+        setPlatform(result.platform as 'STEAM' | 'KAKAO');
+        setIsPlatformChanged(false);
+        dispatch(
+          registerActions.SET_GAMES_WITH_ID({
+            id: 'pubg',
+            value: result.nickname,
+          }),
+        );
+
+        dispatch(snackbarActions.CLOSE_SNACKBAR());
+
+        defaultAxios.get(
+          `/api/pubg/user/${games[gameInfo.id]}/${result.platform}`,
+        );
+      }
     } catch (error) {
       setWarning(true);
       dispatch(
@@ -63,9 +91,6 @@ const InputPubg = () => {
       );
     } finally {
       setIsPending(false);
-      defaultAxios.get(`/api/pubg/user/${games[gameInfo.id]}/${platform}`);
-      //  여기서 인증 이후 사용자에게 따로 표시 이후 DB에 사용자 랭크정보를 저장하는 API 호출
-      //  추가 작업 필요
     }
   };
 
