@@ -255,8 +255,8 @@ const Card = ({ item, expired }: CardProps) => {
                     <img
                       src={getRank().imageUrl}
                       alt={getRank().value}
-                      width="24px"
-                      height="24px"
+                      width="28px"
+                      height="28px"
                     />
                   </RankEmblemWrapper>
                   <SectionContentText sx={{ color: authorTier?.darkColor }}>
