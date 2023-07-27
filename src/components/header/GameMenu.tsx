@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
+import Link from '@mui/material/Link';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
 import MuiMenu from '@mui/material/Menu';
@@ -37,7 +38,7 @@ const GameMenu = () => {
     setGameMenuAnchor(event.currentTarget);
   };
 
-  const closeGameMenu = () => {
+  const closeGameMenu = async () => {
     setGameMenuAnchor(null);
   };
 
@@ -53,7 +54,7 @@ const GameMenu = () => {
       <MuiMenu
         id="game_menu"
         anchorEl={gameMenuAnchor}
-        open={isGameMenuOpen}
+        open={Boolean(gameMenuAnchor)}
         onClose={closeGameMenu}
         PaperProps={{
           style: { width: '160px' },
@@ -67,11 +68,10 @@ const GameMenu = () => {
           return (
             <MuiMenuItem
               key={aGame.id}
-              onClick={() => {
-                closeGameMenu();
-                navigate(`/${aGame.id}`);
-              }}
+              onClick={closeGameMenu}
               sx={{ gap: '10px' }}
+              component={Link}
+              href={`/${aGame.id}`}
             >
               <GameIcon
                 id={aGame.id}

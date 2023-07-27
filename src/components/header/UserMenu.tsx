@@ -7,6 +7,7 @@ import { RootState } from 'store';
 
 // mui
 import { styled } from '@mui/system';
+import Link from '@mui/material/Link';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiTooltip from '@mui/material/Tooltip';
@@ -41,9 +42,9 @@ const UserMenu = () => {
     setUserMenuAnchor(null);
   };
 
-  const logoutBtnHandler = () => {
+  const logoutBtnHandler = async () => {
     try {
-      logout(dispatch);
+      await logout(dispatch);
     } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
@@ -79,7 +80,7 @@ const UserMenu = () => {
       <MuiMenu
         anchorEl={userMenuAnchor}
         id="user_menu"
-        open={isUserMenuOpen}
+        open={Boolean(userMenuAnchor)}
         onClose={closeUserMenu}
         onClick={closeUserMenu}
         PaperProps={{
@@ -112,9 +113,10 @@ const UserMenu = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MuiMenuItem
+          component={Link}
+          href="/mypage"
           onClick={() => {
             closeUserMenu();
-            navigate('/mypage');
           }}
         >
           <AccountCircleIcon />
