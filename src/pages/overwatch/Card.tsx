@@ -294,7 +294,7 @@ const Card = ({ item, expired }: CardProps) => {
                         width: '44px',
                         height: '44px',
                         gap: 1,
-                        border: '2px solid black',
+                        border: '3px solid black',
                       }}
                     >
                       <img
