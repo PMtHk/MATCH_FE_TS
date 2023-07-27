@@ -110,7 +110,7 @@ const CardDetailContainer = () => {
               oauth2Id === currentCard.oauth2Id ? (
                 <MuiStack direction="row" spacing={2} mt={1}>
                   <DeleteCardBtn />
-                  <EditCardBtn />
+                  {currentCard.expired === 'false' && <EditCardBtn />}
                 </MuiStack>
               ) : (
                 <LeaveBtn />
@@ -215,7 +215,7 @@ const MemberList = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   minWidth: 520,
-  minHeight: 440,
-  maxHeight: 440,
+  minHeight: 418,
+  maxHeight: 418,
   overflow: 'auto',
 })) as typeof MuiBox;

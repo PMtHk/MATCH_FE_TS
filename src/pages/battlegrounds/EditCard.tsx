@@ -1,5 +1,5 @@
 /* eslint-disable no-alert */
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getDatabase, ref, update } from 'firebase/database';
@@ -41,14 +41,27 @@ const EditCard = () => {
 
   const { id: cardId } = params;
 
-  const currentGame = window.location.pathname.split('/')[1];
-
   const { pubg: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
   );
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
+
+  const currentGame = window.location.pathname.split('/')[1];
+
+  // 파티가 마감된 경우 뒤로가기
+  useEffect(() => {
+    if (currentCard.expired === 'true') {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '파티가 마감되어 수정이 불가능합니다.',
+          severity: 'warning',
+        }),
+      );
+      navigate(-1);
+    }
+  }, []);
 
   // 새 게시글 생성 모달 내부 변동사항 여부 state => 모달 닫기 전 확인하는데 쓰임.
   const [isChanged, setIsChanged] = React.useState<boolean>(false);

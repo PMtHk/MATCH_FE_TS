@@ -45,13 +45,73 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   };
 
   const getRank = (): TierInfo => {
-    const str: string = memberInfo.tier.toUpperCase() + memberInfo.subTier;
+    const str: string =
+      memberInfo.tier === 'Master'
+        ? 'MASTER'
+        : memberInfo.tier.toUpperCase() + memberInfo.subTier;
     const imageUrl = rankImage[str];
     const value = str;
-    return {
+    const rankInfo: TierInfo = {
       imageUrl,
       value,
     };
+    return rankInfo;
+  };
+
+  type calcedInfo = {
+    value: number;
+    color: string;
+  };
+
+  const calcKDInfo = (): calcedInfo => {
+    const kd: number =
+      memberInfo.kills === 0 || memberInfo.deaths === 0
+        ? 0
+        : Number((memberInfo.kills / memberInfo.deaths).toFixed(1));
+    let color = '#000';
+    if (kd >= 4) {
+      color = 'red';
+    } else if (kd >= 2.5) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: kd,
+      color,
+    };
+  };
+
+  const calcAvgDmgInfo = (): calcedInfo => {
+    const avgDmg = Math.ceil(memberInfo.avgDmg);
+    let color = '#000';
+    if (avgDmg >= 500) {
+      color = 'red';
+    } else if (avgDmg >= 300) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: avgDmg,
+      color,
+    };
+  };
+
+  const calcTop1Info = (): string => {
+    const { totalPlayed, wins } = memberInfo;
+    if (totalPlayed === 0 || wins === 0) {
+      return '0';
+    }
+    return ((wins / totalPlayed) * 100).toFixed(1);
+  };
+
+  const calcTop10Info = (): string => {
+    const { totalPlayed, top10 } = memberInfo;
+    if (totalPlayed === 0 || top10 === 0) {
+      return '0';
+    }
+    return ((top10 / totalPlayed) * 100).toFixed(1);
   };
 
   useEffect(() => {
@@ -131,7 +191,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
               {memberInfo.type !== 'RANKED_SQUAD' ||
               (memberInfo.type === 'RANKED_SQUAD' &&
                 memberInfo.currentRankPoint === 0) ? (
-                '정보 없음'
+                <span style={{ color: 'gray' }}>정보 없음</span>
               ) : (
                 <>
                   <RankEmblemWrapper>
@@ -151,27 +211,23 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>K/D</SectionTitleInMember>
-            <MemberInfoTypo>
-              {memberInfo.kills === 0 || memberInfo.deaths === 0
-                ? 0
-                : (memberInfo.kills / memberInfo.deaths).toFixed(1)}
+            <MemberInfoTypo sx={{ color: calcKDInfo().color }}>
+              {calcKDInfo().value}
             </MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>평균 데미지</SectionTitleInMember>
-            <MemberInfoTypo>
-              {Math.ceil(memberInfo.avgDmg) === 0
-                ? 0
-                : Math.ceil(memberInfo.avgDmg)}
+            <MemberInfoTypo sx={{ color: calcAvgDmgInfo().color }}>
+              {calcAvgDmgInfo().value}
             </MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>Top 1</SectionTitleInMember>
-            <MemberInfoTypo>{memberInfo.wins}</MemberInfoTypo>
+            <MemberInfoTypo>{`${calcTop1Info()}%`}</MemberInfoTypo>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>Top 10</SectionTitleInMember>
-            <MemberInfoTypo>{memberInfo.top10}</MemberInfoTypo>
+            <MemberInfoTypo>{`${calcTop10Info()}%`}</MemberInfoTypo>
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== name && (
@@ -251,6 +307,7 @@ const RankEmblemWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  marginRight: '4px',
 })) as typeof MuiBox;
 
 const SectionContentText = styled(MuiTypography)(() => ({

@@ -129,36 +129,20 @@ const Card = ({ item, expired }: CardProps) => {
     };
   };
 
-  const calcTop1Info = (): calcedInfo => {
-    const top1 = item.author.wins;
-    let color = '#000';
-    if (top1 >= 100) {
-      color = 'red';
-    } else if (top1 >= 50) {
-      color = 'orange';
-    } else {
-      color = '#000';
+  const calcTop1Info = (): string => {
+    const { totalPlayed, wins } = item.author;
+    if (totalPlayed === 0 || wins === 0) {
+      return '0';
     }
-    return {
-      value: top1,
-      color,
-    };
+    return ((wins / totalPlayed) * 100).toFixed(1);
   };
 
-  const calcTop10Info = (): calcedInfo => {
-    const { top10 } = item.author;
-    let color = '#000';
-    if (top10 >= 100) {
-      color = 'red';
-    } else if (top10 >= 50) {
-      color = 'orange';
-    } else {
-      color = '#000';
+  const calcTop10Info = (): string => {
+    const { totalPlayed, top10 } = item.author;
+    if (totalPlayed === 0 || top10 === 0) {
+      return '0';
     }
-    return {
-      value: top10,
-      color,
-    };
+    return ((top10 / totalPlayed) * 100).toFixed(1);
   };
 
   return (
@@ -248,7 +232,9 @@ const Card = ({ item, expired }: CardProps) => {
             <SectionContent>
               {item.type !== 'RANKED_SQUAD' ||
               item.author.currentRankPoint === 0 ? (
-                <SectionContentText>정보없음</SectionContentText>
+                <SectionContentText sx={{ color: 'gray' }}>
+                  정보없음
+                </SectionContentText>
               ) : (
                 <>
                   <RankEmblemWrapper>
@@ -294,18 +280,14 @@ const Card = ({ item, expired }: CardProps) => {
             <ChildAuthorSection>
               <ChildSectionName>Top 1</ChildSectionName>
               <SectionContent>
-                <Author sx={{ color: calcTop1Info().color }}>
-                  {calcTop1Info().value}
-                </Author>
+                <Author>{`${calcTop1Info()}%`}</Author>
               </SectionContent>
             </ChildAuthorSection>
             {/* Top 10 */}
             <ChildAuthorSection>
               <ChildSectionName>Top 10</ChildSectionName>
               <SectionContent>
-                <Author sx={{ color: calcTop10Info().color }}>
-                  {calcTop10Info().value}
-                </Author>
+                <Author>{`${calcTop10Info()}%`}</Author>
               </SectionContent>
             </ChildAuthorSection>
           </Stack>

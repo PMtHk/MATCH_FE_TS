@@ -12,7 +12,11 @@ import { Button, OutlinedInput, CircularProgress } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { useNavigate } from 'react-router-dom';
 import { snackbarActions } from 'store/snackbar-slice';
-import { verifyPUBGNickname, loadPubgPlayerInfoIntoDB } from 'apis/api/pubg';
+import {
+  verifyPUBGNickname,
+  loadPubgPlayerInfoIntoDB,
+  checkPUBGUserPlatform,
+} from 'apis/api/pubg';
 import { addPartyMemberWithName } from 'apis/api/common';
 import { addMemberToFirebaseDB } from 'apis/api/firebase';
 
@@ -47,6 +51,28 @@ const EmptySlotForAuthor = ({ platform }: any) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAddPartyMember = async () => {
+    // 파티가 마감된 경우
+    if (currentCard.expired === 'true') {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '파티가 마감되어 파티원을 추가할 수 없습니다.',
+          severity: 'warning',
+        }),
+      );
+      navigate(0);
+      return;
+    }
+    // 닉네임을 작성하지 않은 경우
+    if (name.trim() === '') {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '플레이어 이름이 올바르지 않습니다.',
+          severity: 'warning',
+        }),
+      );
+      return;
+    }
+
     const newMember = {
       nickname: name,
       oauth2Id: '',
@@ -63,11 +89,30 @@ const EmptySlotForAuthor = ({ platform }: any) => {
       );
 
       // 닉네임 인증
-      const exactNickname = await verifyPUBGNickname(
-        name.trim(),
-        currentCard.platform,
-      );
-      if (currentCard.banList.includes(exactNickname)) {
+      const { nickname, platform } = await checkPUBGUserPlatform(name.trim());
+      // 파티의 플랫폼과 추가하려는 사용자의 플랫폼이 일치하지 않는 경우
+      if (currentCard.platform !== platform) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '추가하려는 사용자의 플랫폼이 파티의 플랫폼 정보와 일치하지 않습니다.',
+            severity: 'warning',
+          }),
+        );
+        return;
+      }
+      // 전적이 없어서 플랫폼 조회가 불가능한 경우
+      if (platform === '') {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '추가하려는 사용자의 전적이 없어 정보를 불러올 수 없습니다.',
+            severity: 'warning',
+          }),
+        );
+        return;
+      }
+      if (currentCard.banList.includes(nickname)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '파티에서 강제퇴장 당한 사용자입니다.',
@@ -76,7 +121,7 @@ const EmptySlotForAuthor = ({ platform }: any) => {
         );
         return;
       }
-      if (currentCard.memberList.includes(name)) {
+      if (currentCard.memberList.includes(nickname)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '이미 파티에 참여한 사용자입니다.',
@@ -86,7 +131,7 @@ const EmptySlotForAuthor = ({ platform }: any) => {
         return;
       }
       // 전적 받아오기 -> DB
-      await loadPubgPlayerInfoIntoDB(name, currentCard.platform);
+      await loadPubgPlayerInfoIntoDB(nickname, currentCard.platform);
       // 파티에 해당 멤버 추가
       // (Server)
       await addPartyMemberWithName(currentCard?.id, name, 'pubg');
