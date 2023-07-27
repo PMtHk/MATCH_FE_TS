@@ -27,7 +27,7 @@ const DeleteCardBtn = () => {
     try {
       await deleteCard(currentGame, id, chatRoomId);
       dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-      navigate('/lol');
+      navigate(`/${currentGame}`);
       navigate(0);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
@@ -60,8 +60,8 @@ const DeleteCardBtn = () => {
 export default DeleteCardBtn;
 
 const Button = styled(MuiButton)(() => ({
-  width: '100%',
   p: 1,
+  width: '32%',
   height: 40,
   borderColor: '#CCCCCC',
   fontWeight: 700,

@@ -103,7 +103,7 @@ const Games = () => {
           </PubgPlatformToggle>
           <LolTextField
             id="pubg"
-            value={pubg}
+            value={initialPubg}
             size="small"
             onChange={pubgHandler}
           />

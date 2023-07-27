@@ -5,16 +5,16 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiDivider from '@mui/material/Divider';
-import ImageList from '@mui/material/ImageList';
-import ImageListItem from '@mui/material/ImageListItem';
-import MuiToolTip from '@mui/material/Tooltip';
+
+// mui icons
 import CheckIcon from '@mui/icons-material/Check';
 import MicIcon from '@mui/icons-material/Mic';
 
 import CardContainer from 'components/CardContainer';
 import Timer, { EXPIRE_TYPE } from 'components/CountDownTimer';
+import { Stack } from '@mui/material';
 
-import { positionList, positionValue, queueTypeList, tierList } from './data';
+import { platformList, typeList, tierList, rankImage } from './data';
 
 interface CardProps {
   item: {
@@ -23,21 +23,26 @@ interface CardProps {
     name: string;
     type: string;
     tier: string;
-    position: positionValue;
+    platform: string;
     voice: 'Y' | 'N';
     content: string;
     expire: EXPIRE_TYPE;
+    expired: true | false;
     created: string;
     author: {
-      queueType: string;
-      summonerName: string;
+      id: number;
+      name: string;
+      platform: string;
+      type: string;
+      currentRankPoint: number;
       tier: string;
-      rank: string;
-      leaguePoints: number;
+      subTier: string;
+      kills: number;
+      deaths: number;
+      avgDmg: number;
+      totalPlayed: number;
       wins: number;
-      losses: number;
-      mostChampion: string[];
-      mostLane: string;
+      top10: number;
     };
     chatRoomId: string;
     memberList: [];
@@ -49,81 +54,126 @@ interface CardProps {
 const Card = ({ item, expired }: CardProps) => {
   const [isHover, setIsHover] = React.useState<boolean>(false);
 
-  const position = positionList.find(
-    (aPosition) => aPosition.value === item.position,
+  const platform = platformList.find(
+    (aPlatform) => aPlatform.value === item.platform,
   );
 
   const tier = tierList.find((aTier) => aTier.value === item.tier);
 
-  const queueType = queueTypeList.find(
-    (aQueueType) => aQueueType.value === item.type,
+  const type = typeList.find((aType) => aType.value === item.type);
+
+  // 작성자 정보
+  const authorTier = tierList.find(
+    (aTier) => aTier.value === item.author.tier.toUpperCase(),
   );
 
-  // author info
-  const mostLane = positionList.find(
-    (aPosition) => aPosition.value === item.author.mostLane,
-  );
-
-  const authorTier = tierList.find((aTier) => aTier.value === item.author.tier);
-
-  const totalPlayed = item.author.wins + item.author.losses;
-  const winRate = Math.round((item.author.wins / totalPlayed) * 100);
-
-  const authorRank = (item: { author: { rank: string } }) => {
-    switch (item.author.rank) {
-      case 'I':
-        return 1;
-      case 'II':
-        return 2;
-      case 'III':
-        return 3;
-      case 'IV':
-        return 4;
-      default:
-        return 4;
-    }
-  };
-
-  const maxMember = queueType?.maxMember || 5;
+  const maxMember = type?.maxMember || 4;
   const currentMember = item.memberList.length;
 
   const arrayForMemberStatus = new Array(maxMember)
     .fill(0)
     .map((value, i) => `member_${i}`);
 
-  // unranked info
-  const unranked =
-    item.author.tier === 'UNRANKED' && item.author.rank === 'UNRANKED';
+  type TierInfo = {
+    imageUrl: string;
+    value: string;
+  };
+  // 작성자의 정보를 표시할 때 사용할 랭크 정보 계산
+  const getRank = (): TierInfo => {
+    const str: string =
+      item.author.tier === 'Master'
+        ? 'MASTER'
+        : item.author.tier.toUpperCase() + item.author.subTier;
+    const imageUrl = rankImage[str];
+    const value = str;
+    const rankInfo: TierInfo = {
+      imageUrl,
+      value,
+    };
+    return rankInfo;
+  };
+
+  type calcedInfo = {
+    value: number;
+    color: string;
+  };
+
+  const calcKDInfo = (): calcedInfo => {
+    const kd: number =
+      item.author.kills === 0 || item.author.deaths === 0
+        ? 0
+        : Number((item.author.kills / item.author.deaths).toFixed(1));
+    let color = '#000';
+    if (kd >= 4) {
+      color = 'red';
+    } else if (kd >= 2.5) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: kd,
+      color,
+    };
+  };
+
+  const calcAvgDmgInfo = (): calcedInfo => {
+    const avgDmg = Math.ceil(item.author.avgDmg);
+    let color = '#000';
+    if (avgDmg >= 500) {
+      color = 'red';
+    } else if (avgDmg >= 300) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: avgDmg,
+      color,
+    };
+  };
+
+  const calcTop1Info = (): string => {
+    const { totalPlayed, wins } = item.author;
+    if (totalPlayed === 0 || wins === 0) {
+      return '0';
+    }
+    return ((wins / totalPlayed) * 100).toFixed(1);
+  };
+
+  const calcTop10Info = (): string => {
+    const { totalPlayed, top10 } = item.author;
+    if (totalPlayed === 0 || top10 === 0) {
+      return '0';
+    }
+    return ((top10 / totalPlayed) * 100).toFixed(1);
+  };
 
   return (
     <div
-      onMouseOver={() => {
-        setIsHover(true);
-      }}
-      onFocus={() => {
-        setIsHover(true);
-      }}
+      onMouseOver={() => setIsHover(true)}
+      onFocus={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
       <CardContainer expired={expired}>
         <CardTitleWrapper>
-          <ImgMixBlendMode>
-            <img
-              src={position?.imageUrl || ''}
-              alt="position_to_find"
-              loading="lazy"
-              height="40px"
-              width="40px"
-            />
-          </ImgMixBlendMode>
+          <img
+            src={platform?.imageUrl || ''}
+            alt="platform_image"
+            loading="lazy"
+            height="40px"
+            width="40px"
+            style={{ borderRadius: '100%' }}
+          />
           <CardTitle>
             <TopInfo>
-              <TopInfoTypo>#{queueType?.label || '모든큐'}</TopInfoTypo>
-              <TopInfoTypo color={tier?.color || '#000000'}>
+              <TopInfoTypo>#{platform?.label || '모든큐'}</TopInfoTypo>
+              <TopInfoTypo>#{type?.label || '모든큐'}</TopInfoTypo>
+              <TopInfoTypo color={tier?.darkColor || '#000'}>
                 #{tier?.label || '모든티어'}
               </TopInfoTypo>
             </TopInfo>
-            <Description>{` ${item.content}`}</Description>
+            <Description>{`${item.content}`}</Description>
           </CardTitle>
         </CardTitleWrapper>
         {/* ------------------------------------------------------ */}
@@ -164,10 +214,11 @@ const Card = ({ item, expired }: CardProps) => {
         {/* ------------------------------------------------------ */}
         <MuiDivider sx={{ my: 1 }} />
         <AuthorInfoWrapper>
+          {/* 작성자 이름 */}
           <AuthorSection>
             <SectionName>작성자</SectionName>
             <SectionContent>
-              <Author>{item.author.summonerName}</Author>
+              <Author>{item.author.name}</Author>
               {item.voice === 'Y' && (
                 <MicIcon
                   fontSize="small"
@@ -180,99 +231,71 @@ const Card = ({ item, expired }: CardProps) => {
               )}
             </SectionContent>
           </AuthorSection>
+          {/* RP(Raing Point) */}
           <AuthorSection>
-            <SectionName>주 포지션</SectionName>
+            <SectionName>RP (Rating Point)</SectionName>
             <SectionContent>
-              {mostLane ? (
-                <>
-                  <ImgMixBlendMode>
-                    <img
-                      src={mostLane?.imageUrl}
-                      alt={mostLane?.value}
-                      width="24px"
-                      height="24px"
-                    />
-                  </ImgMixBlendMode>
-                  <SectionTypo>{mostLane?.label}</SectionTypo>
-                </>
+              {item.type !== 'RANKED_SQUAD' ||
+              item.author.currentRankPoint === 0 ? (
+                <SectionContentText sx={{ color: 'gray' }}>
+                  정보없음
+                </SectionContentText>
               ) : (
-                <MuiToolTip
-                  title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
-                  placement="bottom-start"
-                >
-                  <SectionTypo>정보없음</SectionTypo>
-                </MuiToolTip>
+                <>
+                  <RankEmblemWrapper>
+                    <img
+                      src={getRank().imageUrl}
+                      alt={getRank().value}
+                      width="28px"
+                      height="28px"
+                    />
+                  </RankEmblemWrapper>
+                  <SectionContentText sx={{ color: authorTier?.darkColor }}>
+                    {getRank().value}
+                  </SectionContentText>
+                </>
               )}
             </SectionContent>
           </AuthorSection>
-          <AuthorSection>
-            <SectionName>티어</SectionName>
-            <SectionContent>
-              <RankEmblemWrapper
-                sx={{
-                  backgroundColor: expired ? '#ffffff' : '',
-                }}
-              >
-                <img
-                  src={authorTier?.imageUrl}
-                  alt={mostLane?.value}
-                  width="28px"
-                  height="20px"
-                />
-              </RankEmblemWrapper>
-              <TierWinRateWrapper>
-                {!unranked && (
-                  <>
-                    <SectionTypo sx={{ color: authorTier?.color }}>
-                      {authorTier?.acronym}
-                      {authorRank(item)}-{item.author.leaguePoints}LP
-                    </SectionTypo>
-                    <MatchPlayed>
-                      {item.author?.wins}승 {item.author?.losses}패
-                      <WinRate
-                        component="span"
-                        sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                      >
-                        ({winRate}%)
-                      </WinRate>
-                    </MatchPlayed>
-                  </>
-                )}
-                {unranked && (
-                  <SectionTypo sx={{ color: '#9e9e9e' }}>Unranked</SectionTypo>
-                )}
-              </TierWinRateWrapper>
-            </SectionContent>
-          </AuthorSection>
-          <AuthorSection>
-            <SectionName>모스트 챔피언</SectionName>
-            <SectionContent>
-              <ImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
-                {item.author.mostChampion.map((aChampion, index) => {
-                  return (
-                    <ImageListItem
-                      key={aChampion}
-                      sx={{
-                        width: '44px',
-                        height: '44px',
-                        gap: 1,
-                      }}
-                    >
-                      <img
-                        src={
-                          aChampion === 'poro'
-                            ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
-                            : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
-                        }
-                        alt={aChampion}
-                        loading="lazy"
-                      />
-                    </ImageListItem>
-                  );
-                })}
-              </ImageList>
-            </SectionContent>
-          </AuthorSection>
+          {/* 하위 4개 */}
+          <Stack
+            direction="row"
+            justifyContent="space-between"
+            sx={{ marginTop: 1 }}
+          >
+            {/* K/D */}
+            <ChildAuthorSection>
+              <ChildSectionName>K/D</ChildSectionName>
+              <SectionContent>
+                <SectionContentText sx={{ color: calcKDInfo().color }}>
+                  {calcKDInfo().value}
+                </SectionContentText>
+              </SectionContent>
+            </ChildAuthorSection>
+            {/* 평균 데미지 */}
+            <ChildAuthorSection>
+              <ChildSectionName>평균 데미지</ChildSectionName>
+              <SectionContent>
+                <Author sx={{ color: calcAvgDmgInfo().color }}>
+                  {calcAvgDmgInfo().value}
+                </Author>
+              </SectionContent>
+            </ChildAuthorSection>
+            {/* Top 1 */}
+            <ChildAuthorSection>
+              <ChildSectionName>Top 1</ChildSectionName>
+              <SectionContent>
+                <Author>{`${calcTop1Info()}%`}</Author>
+              </SectionContent>
+            </ChildAuthorSection>
+            {/* Top 10 */}
+            <ChildAuthorSection>
+              <ChildSectionName>Top 10</ChildSectionName>
+              <SectionContent>
+                <Author>{`${calcTop10Info()}%`}</Author>
+              </SectionContent>
+            </ChildAuthorSection>
+          </Stack>
         </AuthorInfoWrapper>
       </CardContainer>
     </div>
@@ -289,11 +312,11 @@ const CardTitleWrapper = styled(MuiBox)(() => ({
   justifyContent: 'flex-start',
 })) as typeof MuiBox;
 
-const ImgMixBlendMode = styled(MuiBox)(() => ({
-  '& > img': {
-    mixBlendMode: 'exclusion',
-  },
-})) as typeof MuiBox;
+// const ImgMixBlendMode = styled(MuiBox)(() => ({
+//   '& > img': {
+//     mixBlendMode: 'exclusion',
+//   },
+// })) as typeof MuiBox;
 
 const CardTitle = styled(MuiBox)(() => ({
   display: 'flex',
@@ -390,8 +413,24 @@ const AuthorSection = styled(MuiBox)(() => ({
   justifyContent: 'flex-start',
 })) as typeof MuiBox;
 
+const ChildAuthorSection = styled(MuiBox)(() => ({
+  maxWidth: '80px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+})) as typeof MuiBox;
+
 const SectionName = styled(MuiTypography)(() => ({
   minWidth: '160px',
+  fontSize: '12px',
+  fontWeight: '700',
+  color: '#999999',
+  margin: '0 0 4px 0',
+})) as typeof MuiTypography;
+
+const ChildSectionName = styled(MuiTypography)(() => ({
+  minWidth: '80px',
   fontSize: '12px',
   fontWeight: '700',
   color: '#999999',
@@ -405,6 +444,16 @@ const SectionContent = styled(MuiBox)(() => ({
   gap: '4px',
 })) as typeof MuiBox;
 
+const RankEmblemWrapper = styled(MuiBox)(() => ({
+  backgroundColor: '#eeeeee',
+  borderRadius: '50%',
+  width: '32px',
+  height: '32px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
+
 const Author = styled(MuiTypography)(() => ({
   fontSize: '16px',
   fontWeight: '600',
@@ -413,38 +462,11 @@ const Author = styled(MuiTypography)(() => ({
   textOverflow: 'ellipsis',
 })) as typeof MuiTypography;
 
-const SectionTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
-  color: '#000000',
-})) as typeof MuiTypography;
-
-const RankEmblemWrapper = styled(MuiBox)(() => ({
-  backgroundColor: '#eeeeee',
-  borderRadius: '50%',
-  width: '44px',
-  height: '44px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-})) as typeof MuiBox;
-
-const TierWinRateWrapper = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  justifyContent: 'center',
-  padding: '0 0 0 4px',
-})) as typeof MuiBox;
-
-const MatchPlayed = styled(MuiTypography)(() => ({
-  fontSize: '12px',
-  fontWeight: '500',
-  color: '#000000',
-})) as typeof MuiTypography;
-
-const WinRate = styled(MuiTypography)(() => ({
-  fontSize: '12px',
+const SectionContentText = styled(MuiTypography)(() => ({
+  minHeight: '32px',
+  fontSize: '16px',
   fontWeight: '600',
-  padding: '0 0 0 2px',
+  color: '#000000',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 })) as typeof MuiTypography;
