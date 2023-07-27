@@ -1,18 +1,16 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ref, getDatabase } from 'firebase/database';
 
 // mui
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
-import { addMemberToFirebaseDB, isBanned } from 'apis/api/firebase';
-import { authAxios } from 'apis/utils';
+import { checkPUBGUserPlatform } from 'apis/api/pubg';
+import { isBanned } from 'apis/api/firebase';
 import { snackbarActions } from 'store/snackbar-slice';
 import { joinParty } from 'apis/api/user';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
-import { chatroomActions } from '../../store/chatroom-slice';
 
 const JoinBtn = () => {
   const dispatch = useDispatch();
@@ -21,7 +19,10 @@ const JoinBtn = () => {
   // current game
   const currentGame = window.location.pathname.split('/')[1];
 
+  const { currentCard } = useSelector((state: RootState) => state.card);
+
   const { notiToken } = useSelector((state: RootState) => state.notification);
+
   const nickname = useSelector(
     (state: RootState) =>
       state.user.games[`${currentGame as 'overwatch' | 'pubg' | 'lol'}`],
@@ -47,7 +48,74 @@ const JoinBtn = () => {
     isReviewed: false,
   };
 
+  type JoinBtnInfo = {
+    disabled: boolean;
+    text: string;
+  };
+
+  const calcJoinBtn = (): JoinBtnInfo => {
+    // disabled 계산
+    let disabled = false;
+    if (!isLogin) {
+      disabled = true;
+    } else if (currentCard.expired === 'true') {
+      disabled = true;
+    } else if (nickname === '' || nickname === null) {
+      disabled = true;
+    } else {
+      disabled = false;
+    }
+
+    // 텍스트 계산
+    let text = '파티 참가';
+    if (!isLogin) {
+      text = '로그인 후 참가하실 수 있습니다.';
+    } else if (nickname === '' || nickname === null) {
+      text = '게임에 대한 정보가 없어 참가할 수 없습니다.';
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '마이페이지에서 해당 게임에 대한 닉네임을 입력해주세요.',
+          severity: 'info',
+        }),
+      );
+    } else if (currentCard.expired === 'true') {
+      text = '파티가 마감되었습니다.';
+    } else {
+      text = '파티 참가';
+    }
+    return {
+      disabled,
+      text,
+    };
+  };
+
   const JoinBtnHandler = async () => {
+    // 파티가 마감된 경우
+    if (currentCard.expired === 'true') {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '파티가 마감되어 참가가 불가합니다.',
+          severity: 'warning',
+        }),
+      );
+      navigate(0);
+      return;
+    }
+    // 배틀그라운드의 경우 파티 참가 요청 시 파티의 플랫폼과 사용자(참가자) 계정의 플랫폼 비교
+    if (currentGame === 'pubg') {
+      const { platform: myPlatform } = await checkPUBGUserPlatform(nickname);
+      if (myPlatform !== currentCard?.platform) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '해당 파티와의 플랫폼 정보가 일치하지 않습니다. 플랫폼 확인 후 다시 시도하여 주시기 바랍니다.',
+            severity: 'error',
+          }),
+        );
+        return;
+      }
+    }
+
     const banned = await isBanned(chatRoomId, oauth2Id);
     if (!banned) {
       try {
@@ -76,9 +144,10 @@ const JoinBtn = () => {
       variant="outlined"
       size="small"
       onClick={JoinBtnHandler}
-      disabled={!isLogin || !nickname}
+      disabled={calcJoinBtn().disabled}
     >
-      {!isLogin ? '로그인 후 참가하실 수 있습니다.' : '파티 참가'}
+      {/* {!isLogin ? '로그인 후 참가하실 수 있습니다.' : '파티 참가'} */}
+      {calcJoinBtn().text}
     </Button>
   );
 };

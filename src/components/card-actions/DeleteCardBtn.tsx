@@ -27,7 +27,7 @@ const DeleteCardBtn = () => {
     try {
       await deleteCard(currentGame, id, chatRoomId);
       dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-      navigate('/lol');
+      navigate(`/${currentGame}`);
       navigate(0);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

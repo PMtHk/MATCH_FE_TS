@@ -65,7 +65,8 @@ const FinishBtn = () => {
       variant="outlined"
       size="small"
       onClick={handleFinishBtn}
-      disabled={!isLogin || !nickname || isPending || finished === 'true'}
+      // disabled={!isLogin || !nickname || isPending || finished === 'true'}
+      disabled
     >
       모집 완료
     </Button>

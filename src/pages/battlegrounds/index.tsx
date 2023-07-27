@@ -1,12 +1,12 @@
+import React from 'react';
 import { useLocation, Route, Routes } from 'react-router-dom';
 
-import Review from 'components/Review';
 import Main from './main';
-import CreateCard from './CreateCard';
 import CardDetail from './CardDetail';
+import CreateCard from './CreateCard';
 import EditCard from './EditCard';
 
-const LeagueOfLegends = () => {
+const Battlegrounds = () => {
   const location = useLocation();
   const background = location.state && location.state.background;
 
@@ -32,4 +32,4 @@ const LeagueOfLegends = () => {
   );
 };
 
-export default LeagueOfLegends;
+export default Battlegrounds;

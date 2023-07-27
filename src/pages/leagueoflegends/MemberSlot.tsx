@@ -3,8 +3,6 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { ref, getDatabase, get, update, child } from 'firebase/database';
-
 import { authAxios, defaultAxios } from 'apis/utils';
 
 // mui
@@ -21,7 +19,7 @@ import { RootState } from 'store';
 
 import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
-import { kickMemberFromParty } from 'apis/api/leagueoflegends';
+import { kickMemberFromParty } from 'apis/api/common';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -105,6 +103,7 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
         currentCard?.id,
         currentCard?.chatRoomId,
         summonerName,
+        'lol',
       );
 
       dispatch(

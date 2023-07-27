@@ -7,12 +7,14 @@ import MuiButton from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 
+const currentGame = window.location.pathname.split('/')[1];
+
 const EditCardBtn = () => {
   const { currentCard } = useSelector((state: RootState) => state.card);
   const { expired, finished } = currentCard;
 
   return (
-    <Link to="edit" style={{ width: '32%' }} state={{ background: '/lol' }}>
+    <Link to="edit" style={{ width: '32%' }} state={{ background: `/${currentGame}` }}>
       <Button
         disabled={expired === 'true' || finished === 'true'}
         fullWidth
