@@ -27,7 +27,7 @@ type ChatRoom = {
 // interfaces
 interface IAccessTokenPayload {
   sub: string;
-  oauth2Id: string;
+  oAuth2Id: string;
   nickname: string;
   imageUrl: string;
   representative: 'LOL' | 'PUBG' | 'VALORANT' | 'OVERWATCH';
@@ -84,12 +84,12 @@ export const login = async (
 
   const jwtPayload: IAccessTokenPayload =
     jwtDecode<IAccessTokenPayload>(accessToken);
-  const { nickname, oauth2Id, imageUrl, representative } = jwtPayload;
+  const { nickname, oAuth2Id, imageUrl, representative } = jwtPayload;
 
   dispatch(
     userActions.SET_USER({
       nickname,
-      oauth2Id,
+      oauth2Id: oAuth2Id,
       profileImage: imageUrl,
       representative: representative.toLowerCase() as 'lol' | 'pubg',
     }),
