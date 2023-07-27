@@ -8,6 +8,7 @@ interface IState {
   currentPage: number;
   totalPage: number;
   currentCard: any;
+  isReviewed: boolean | undefined;
 }
 
 const initialState: IState = {
@@ -18,6 +19,7 @@ const initialState: IState = {
   currentPage: 0,
   totalPage: 0,
   currentCard: null,
+  isReviewed: true,
 };
 
 const cardSlice = createSlice({
@@ -54,6 +56,9 @@ const cardSlice = createSlice({
     },
     DELETE_CURRENT_CARD: (state) => {
       state.currentCard = {};
+    },
+    SET_IS_REVIEWED: (state, action) => {
+      state.isReviewed = action.payload;
     },
   },
 });

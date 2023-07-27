@@ -36,12 +36,14 @@ const LeaveBtn = () => {
     nickname: string;
     oauth2Id: string;
     notiToken: string;
+    isReviewed: boolean;
   };
 
   const targetMember: Member = {
     nickname,
     oauth2Id,
     notiToken: '',
+    isReviewed: false,
   };
 
   const leaveParty = async () => {

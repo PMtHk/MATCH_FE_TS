@@ -125,6 +125,9 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
     }
   };
 
+  const unranked =
+    memberInfo?.tier === 'UNRANKED' && memberInfo?.rank === 'UNRANKED';
+
   return (
     <>
       {isLoading && (
@@ -172,19 +175,26 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
                 />
               </RankEmblemWrapper>
               <TierWinRateWrapper>
-                <TierTypo sx={{ color: tier?.color }}>
-                  {tier?.acronym}
-                  {rankRomanToNum(memberInfo.rank)}-{memberInfo?.leaguePoints}LP
-                </TierTypo>
-                <MatchPlayed>
-                  {memberInfo?.wins}승 {memberInfo?.losses}패
-                  <WinRate
-                    component="span"
-                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                  >
-                    ({winRate}%)
-                  </WinRate>
-                </MatchPlayed>
+                {!unranked ? (
+                  <TierTypo sx={{ color: tier?.color }}>
+                    {tier?.acronym}
+                    {rankRomanToNum(memberInfo.rank)}-{memberInfo?.leaguePoints}
+                    LP
+                  </TierTypo>
+                ) : (
+                  <TierTypo>Unranked</TierTypo>
+                )}
+                {!unranked && (
+                  <MatchPlayed>
+                    {memberInfo?.wins}승 {memberInfo?.losses}패
+                    <WinRate
+                      component="span"
+                      sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                    >
+                      ({winRate}%)
+                    </WinRate>
+                  </MatchPlayed>
+                )}
               </TierWinRateWrapper>
             </FlexRow>
           </SectionInMember>
@@ -213,7 +223,10 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== summonerName && (
-              <MuiIconButton onClick={handleKickBtn}>
+              <MuiIconButton
+                onClick={handleKickBtn}
+                disabled={currentCard.expired || currentCard.finished}
+              >
                 <Close />
               </MuiIconButton>
             )}
