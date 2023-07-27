@@ -36,6 +36,7 @@ const JoinBtn = () => {
     nickname: string;
     oauth2Id: string;
     notiToken: string;
+    isReviewed: boolean;
   };
 
   // 채팅방에 참여할 사용자 객체
@@ -43,6 +44,7 @@ const JoinBtn = () => {
     nickname,
     oauth2Id,
     notiToken: notiToken || '',
+    isReviewed: false,
   };
 
   const JoinBtnHandler = async () => {
@@ -74,7 +76,7 @@ const JoinBtn = () => {
       variant="outlined"
       size="small"
       onClick={JoinBtnHandler}
-      disabled={!isLogin}
+      disabled={!isLogin || !nickname}
     >
       {!isLogin ? '로그인 후 참가하실 수 있습니다.' : '파티 참가'}
     </Button>

@@ -60,6 +60,7 @@ export const createCard = async (
           nickname: userInput.name,
           oauth2Id,
           notiToken: notiToken || '',
+          isReviewed: false,
         },
       ],
       timestamp: new Date().toString(),
@@ -129,6 +130,16 @@ export const updateCard = async (
     content: userInput.content,
     maxMember: updatedMaxMember,
   });
+
+  await authAxios.put(`/api/chat/${currentGame}/${boardId}`, {
+    totalUser: updatedMaxMember,
+  });
+
+  return null;
+};
+
+export const finishCard = async (currentGame: string, boardId: number) => {
+  await authAxios.post(`/api/chat/${currentGame}/${boardId}/finish`);
 
   return null;
 };

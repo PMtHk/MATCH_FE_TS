@@ -45,6 +45,7 @@ interface NotiAccordionProps {
   expandHandler: (
     panel: string,
   ) => (event: React.SyntheticEvent, isExpanded: boolean) => void;
+  handleNotiClose: () => void;
 }
 
 const NotiAccordion = ({
@@ -52,6 +53,7 @@ const NotiAccordion = ({
   timestamp,
   expanded,
   expandHandler,
+  handleNotiClose,
 }: NotiAccordionProps) => {
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const currentChatRoomMessages = useSelector(
@@ -148,6 +150,7 @@ const NotiAccordion = ({
             <Button
               onClick={() => {
                 navigate(`/lol/${chatRoomInfo.roomId}`);
+                handleNotiClose();
               }}
             >
               <EnterParty>상세보기</EnterParty>

@@ -10,6 +10,8 @@ import {
   DatabaseReference,
 } from 'firebase/database';
 import { notificationActions } from 'store/notification-slice';
+import { useEffect, useState } from 'react';
+import { promiseWrapper } from 'apis/utils/promiseWrapper';
 import { RootState } from '../../store';
 
 import { chatroomActions } from '../../store/chatroom-slice';
@@ -18,6 +20,7 @@ type Member = {
   nickname: string;
   oauth2Id: string;
   notiToken: string;
+  isReviewed: boolean;
 };
 /** ------------------------------------------------------------
  * 채팅방 차단 여부 확인
@@ -85,6 +88,7 @@ export const addMemberToFirebaseDB = async (
     child(lastReadRef, `${newMember.oauth2Id}/${chatRoomId}`),
     Date.now(),
   );
+
   await set(push(child(messagesRef, chatRoomId)), {
     type: 'system',
     timestamp: Date.now(),
@@ -247,4 +251,69 @@ export const getAllLastReads = async (
   });
 
   return null;
+};
+
+// 추가됨
+export const getIsReviewed = (oauth2Id: string, chatRoomId: string) => {
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+
+  const [resource, setResource] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const promise = get(child(chatRoomsRef, chatRoomId)).then(
+        (dataSnapshot) => {
+          return dataSnapshot.val().memberList.find((member: Member) => {
+            return member.oauth2Id === oauth2Id;
+          }).isReviewed;
+        },
+      );
+
+      setResource(promiseWrapper(promise));
+    };
+
+    getData();
+  }, []);
+
+  return resource;
+};
+
+export const asyncGetIsReviewed = async (
+  oauth2Id: string,
+  chatRoomId: string,
+) => {
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+
+  const isReviewed = await get(child(chatRoomsRef, chatRoomId)).then(
+    (dataSnapshot) => {
+      return dataSnapshot
+        .val()
+        .memberList.find((member: Member) => member.oauth2Id === oauth2Id)
+        .isReviewed;
+    },
+  );
+
+  return isReviewed;
+};
+
+// 추가됨
+export const doReview = async (oauth2Id: string, chatRoomId: string) => {
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+
+  const dataSnapshot = await get(
+    child(chatRoomsRef, `${chatRoomId}/memberList`),
+  );
+
+  const prevMemberList = [...dataSnapshot.val()];
+  const newMemberList = prevMemberList.map((member: Member) => {
+    if (member.oauth2Id === oauth2Id) {
+      // eslint-disable-next-line no-param-reassign
+      member.isReviewed = true;
+    }
+    return member;
+  });
+
+  await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
+    memberList: newMemberList,
+  });
 };
