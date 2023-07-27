@@ -215,7 +215,7 @@ const MemberList = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   minWidth: 520,
-  minHeight: 418,
-  maxHeight: 418,
+  minHeight: '438px',
+  maxHeight: '440px',
   overflow: 'auto',
 })) as typeof MuiBox;
