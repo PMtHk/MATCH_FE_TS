@@ -77,6 +77,7 @@ const EmptySlotForAuthor = ({ platform }: any) => {
       nickname: name,
       oauth2Id: '',
       notiToken: '',
+      isReviewed: false,
     };
 
     try {

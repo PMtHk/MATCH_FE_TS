@@ -137,11 +137,10 @@ const Card = ({ item, expired }: CardProps) => {
             <RecruitStatusWrapper>
               <MemberInfo>
                 <RecruitStatusTypo>모집 현황</RecruitStatusTypo>
-                {arrayForMemberStatus.map((_, index) => {
+                {arrayForMemberStatus.map((value, index) => {
                   return (
                     <Check
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={index}
+                      key={value}
                       sx={{
                         color:
                           index < currentMember

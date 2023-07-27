@@ -70,6 +70,10 @@ const Card = ({ item, expired }: CardProps) => {
   const maxMember = type?.maxMember || 4;
   const currentMember = item.memberList.length;
 
+  const arrayForMemberStatus = new Array(maxMember)
+    .fill(0)
+    .map((value, i) => `member_${i}`);
+
   type TierInfo = {
     imageUrl: string;
     value: string;
@@ -183,11 +187,10 @@ const Card = ({ item, expired }: CardProps) => {
             <RecruitStatusWrapper>
               <MemberInfo>
                 <RecruitStatusTypo>모집 현황</RecruitStatusTypo>
-                {new Array(maxMember).fill(0).map((_, index) => {
+                {arrayForMemberStatus.map((value, index) => {
                   return (
                     <Check
-                      // eslint-disable-next-line react/no-array-index-key
-                      key={index}
+                      key={value}
                       sx={{
                         color:
                           index < currentMember
@@ -201,7 +204,9 @@ const Card = ({ item, expired }: CardProps) => {
                 })}
               </MemberInfo>
               <TimerWrapper>
-                <Timer expire={item.expire} created={item.created} />
+                {!expired && (
+                  <Timer expire={item.expire} created={item.created} />
+                )}
               </TimerWrapper>
             </RecruitStatusWrapper>
           )}

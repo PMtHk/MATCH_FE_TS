@@ -65,22 +65,25 @@ const GameMenu = () => {
         }}
       >
         {gameList.map((aGame, _) => {
-          return (
-            <MuiMenuItem
-              key={aGame.id}
-              onClick={closeGameMenu}
-              sx={{ gap: '10px' }}
-              component={Link}
-              href={`/${aGame.id}`}
-            >
-              <GameIcon
-                id={aGame.id}
-                item={aGame.name.toLowerCase().split(' ').join('')}
-                size={{ width: '20px', height: '20px' }}
-              />
-              {aGame.name_kor}
-            </MuiMenuItem>
-          );
+          if (aGame.available) {
+            return (
+              <MuiMenuItem
+                key={aGame.id}
+                onClick={closeGameMenu}
+                sx={{ gap: '10px' }}
+                component={Link}
+                href={`/${aGame.id}`}
+              >
+                <GameIcon
+                  id={aGame.id}
+                  item={aGame.name.toLowerCase().split(' ').join('')}
+                  size={{ width: '20px', height: '20px' }}
+                />
+                {aGame.name_kor}
+              </MuiMenuItem>
+            );
+          }
+          return null;
         })}
       </MuiMenu>
       {/* <TextMenuBtn>파티찾기</TextMenuBtn>
