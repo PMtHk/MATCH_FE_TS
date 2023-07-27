@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { cardActions } from 'store/card-slice';
 import { fetchCardDetail } from 'apis/api/leagueoflegends';
 import { RootState } from 'store';
+import { asyncGetIsReviewed, getIsReviewed } from 'apis/api/firebase';
+import { current } from '@reduxjs/toolkit';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;
@@ -16,11 +18,32 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
 
   const { id: cardId } = params;
 
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
+  const { currentCard } = useSelector((state: RootState) => state.card);
+
   const cardDetail: any = fetchCardDetail(`/api/lol/boards/${cardId}`);
 
   useEffect(() => {
     dispatch(cardActions.SET_CURRENT_CARD(cardDetail));
-  }, [cardDetail, dispatch]);
+
+    // if (currentCard?.chatRoomId) {
+    //   isReviewedFromFirebaseDB = getIsReviewed(
+    //     oauth2Id,
+    //     currentCard.chatRoomId,
+    //   );
+    //   dispatch(cardActions.SET_IS_REVIEWED(isReviewedFromFirebaseDB));
+    // }
+
+    const getIsReviewed2 = async () => {
+      const review = await asyncGetIsReviewed(oauth2Id, currentCard.chatRoomId);
+      console.log(review);
+      dispatch(cardActions.SET_IS_REVIEWED(review));
+    };
+
+    if (currentCard) {
+      getIsReviewed2();
+    }
+  }, [cardDetail, dispatch, currentCard]);
 
   return <div>{children}</div>;
 };

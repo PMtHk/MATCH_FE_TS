@@ -1,19 +1,14 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ref, getDatabase } from 'firebase/database';
 
 // mui
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
-import { addMemberToFirebaseDB, isBanned } from 'apis/api/firebase';
-import { authAxios } from 'apis/utils';
 import { snackbarActions } from 'store/snackbar-slice';
-import { joinParty } from 'apis/api/user';
 import { useNavigate } from 'react-router-dom';
 import { finishCard } from 'apis/api/common';
 import { RootState } from '../../store';
-import { chatroomActions } from '../../store/chatroom-slice';
 
 const FinishBtn = () => {
   const dispatch = useDispatch();
@@ -36,7 +31,18 @@ const FinishBtn = () => {
 
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
-  const FinishBtnHandler = async () => {
+  const handleFinishBtn = async () => {
+    const userCheck = window.confirm(
+      '실제로 인게임에서 서로 확인한 경우에 모집 완료를 눌러주세요.\n모집 완료 이후, 리뷰 페이지로 넘어가게 됩니다.',
+    );
+
+    if (userCheck) {
+      await handleFinish();
+    }
+    return null;
+  };
+
+  const handleFinish = async () => {
     try {
       setIsPending(true);
       await finishCard(currentGame, id);
@@ -50,7 +56,7 @@ const FinishBtn = () => {
       );
     } finally {
       setIsPending(false);
-      navigate(`/${currentGame}/card/${id}`);
+      navigate(`/${currentGame}/${id}`);
     }
   };
 
@@ -58,8 +64,8 @@ const FinishBtn = () => {
     <Button
       variant="outlined"
       size="small"
-      onClick={FinishBtnHandler}
-      disabled={!isLogin || !nickname || isPending || finished}
+      onClick={handleFinishBtn}
+      disabled={!isLogin || !nickname || isPending || finished === 'true'}
     >
       모집 완료
     </Button>

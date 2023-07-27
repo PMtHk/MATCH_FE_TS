@@ -52,6 +52,7 @@ const EmptySlotForAuthor = () => {
       nickname: name,
       oauth2Id: '',
       notiToken: '',
+      isReviewed: false,
     };
 
     try {
@@ -144,7 +145,7 @@ const EmptySlotForAuthor = () => {
             height: '100%',
           }}
           onClick={() => setIsEntering(true)}
-          disabled={currentCard.expired}
+          disabled={currentCard.expired === 'true'}
         >
           파티원 추가하기
         </Button>

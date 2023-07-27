@@ -36,6 +36,7 @@ const JoinBtn = () => {
     nickname: string;
     oauth2Id: string;
     notiToken: string;
+    isReviewed: boolean;
   };
 
   // 채팅방에 참여할 사용자 객체
@@ -43,6 +44,7 @@ const JoinBtn = () => {
     nickname,
     oauth2Id,
     notiToken: notiToken || '',
+    isReviewed: false,
   };
 
   const JoinBtnHandler = async () => {

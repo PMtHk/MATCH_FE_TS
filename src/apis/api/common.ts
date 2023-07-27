@@ -60,6 +60,7 @@ export const createCard = async (
           nickname: userInput.name,
           oauth2Id,
           notiToken: notiToken || '',
+          isReviewed: false,
         },
       ],
       timestamp: new Date().toString(),

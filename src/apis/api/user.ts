@@ -27,7 +27,7 @@ type ChatRoom = {
 // interfaces
 interface IAccessTokenPayload {
   sub: string;
-  oAuth2Id: string;
+  oauth2Id: string;
   nickname: string;
   imageUrl: string;
   representative: 'LOL' | 'PUBG' | 'VALORANT' | 'OVERWATCH';
@@ -84,12 +84,12 @@ export const login = async (
 
   const jwtPayload: IAccessTokenPayload =
     jwtDecode<IAccessTokenPayload>(accessToken);
-  const { nickname, oAuth2Id, imageUrl, representative } = jwtPayload;
+  const { nickname, oauth2Id, imageUrl, representative } = jwtPayload;
 
   dispatch(
     userActions.SET_USER({
       nickname,
-      oauth2Id: oAuth2Id,
+      oauth2Id,
       profileImage: imageUrl,
       representative: representative.toLowerCase() as 'lol' | 'pubg',
     }),
@@ -276,6 +276,7 @@ type Member = {
   nickname: string;
   oauth2Id: string;
   notiToken: string;
+  isReviewed: boolean;
 };
 
 export const joinParty = async (
@@ -287,9 +288,7 @@ export const joinParty = async (
 ) => {
   const response = await authAxios.post(`/api/chat/${game}/${boardId}/member`);
 
-  if (response.status === 200) {
-    await addMemberToFirebaseDB(newMember, chatRoomId, dispatch);
-  }
+  await addMemberToFirebaseDB(newMember, chatRoomId, dispatch);
 
   return null;
 };

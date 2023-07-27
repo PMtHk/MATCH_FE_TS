@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { lazy, Suspense } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,7 +32,9 @@ const CardDetailContainer = () => {
 
   // redux
   const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
-  const { currentCard } = useSelector((state: RootState) => state.card);
+  const { currentCard, isReviewed } = useSelector(
+    (state: RootState) => state.card,
+  );
   const { joinedChatRoomsId } = useSelector(
     (state: RootState) => state.chatroom,
   );
@@ -52,103 +54,115 @@ const CardDetailContainer = () => {
     .fill(0)
     .map((value, i) => `memberSlot_${i}`);
 
-  // TODO: 일단은 5초뒤에 리뷰 페이지로 넘어가도록 구성했는데, 어떻게 해야할 지 고민중...
-
-  if (currentCard?.finished) {
-    setTimeout(() => {
-      navigate('review');
-    }, 5000);
-  }
-
   if (currentCard) {
-    return (
-      <>
-        <ModalHeader>
-          <Title>{currentCard?.name} 님의 파티</Title>
-          <MuiIconButton
-            size="small"
-            onClick={() => {
-              dispatch(cardActions.SET_CURRENT_CARD(null));
-              navigate('/lol');
-            }}
-            sx={{ p: 0, m: 0 }}
-          >
-            <Close />
-          </MuiIconButton>
-        </ModalHeader>
-        <ModalContent>
-          <CardInfo>
-            <InfoWrapper>
-              <SectionWrapper>
-                <SectionName>모집 내용</SectionName>
-                <SectionContent>{currentCard?.content}</SectionContent>
-              </SectionWrapper>
-              <SectionWrapper>
-                <SectionName>마감일시</SectionName>
-
-                <div>
-                  {currentCard?.expire && currentCard?.created && (
-                    <Timer
-                      expire={currentCard?.expire}
-                      created={currentCard?.created || '2000-01-01 00:00:00'}
-                    />
-                  )}
-                </div>
-              </SectionWrapper>
-            </InfoWrapper>
-            <HashTagWrapper>
-              <HashTag color={tier?.color}>#{tier?.label}</HashTag>
-              <HashTag>#{queueType?.label}</HashTag>
-              <HashTag>#{position?.label}구함</HashTag>
-              <HashTag>{currentCard?.voice ? '#음성채팅가능' : ''}</HashTag>
-            </HashTagWrapper>
-            <MemberListWrapper>
-              <MemeberListTitle>
-                참여자 목록 ( {currentMember} / {totalMember} )
-              </MemeberListTitle>
-              <MemberList>
-                {currentCard &&
-                  currentCard?.memberList?.map((member: string) => {
-                    return <MemberSlot key={member} summonerName={member} />;
-                  })}
-                {arrayForEmptySlot.map((value, index) => (
-                  <EmptySlot key={value} />
-                ))}
-              </MemberList>
-            </MemberListWrapper>
-            {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
-              oauth2Id === currentCard.oauth2Id ? (
-                <MuiStack direction="row" spacing="2%" mt={1}>
-                  <DeleteCardBtn />
-                  <EditCardBtn />
-                  <FinishBtn />
-                </MuiStack>
-              ) : (
-                <LeaveBtn />
-              )
-            ) : currentCard.expired === 'true' ? (
-              <div />
-            ) : (
-              <JoinBtn />
-            )}
-          </CardInfo>
-          {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) && (
-            <Suspense
-              fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
+    if (
+      currentCard.finished === 'true' &&
+      joinedChatRoomsId.includes(currentCard.chatRoomId) &&
+      !isReviewed
+    ) {
+      navigate('review');
+    } else {
+      return (
+        <>
+          <ModalHeader>
+            <Title>{currentCard?.name} 님의 파티</Title>
+            <MuiIconButton
+              size="small"
+              onClick={() => {
+                dispatch(cardActions.SET_CURRENT_CARD(null));
+                navigate('/lol');
+              }}
+              sx={{ p: 0, m: 0 }}
             >
-              <MuiBox sx={{ ml: 2 }}>
-                <ChatRoom />
-              </MuiBox>
-            </Suspense>
-          )}
-        </ModalContent>
-      </>
-    );
+              <Close />
+            </MuiIconButton>
+          </ModalHeader>
+          <ModalContent>
+            <CardInfo>
+              <InfoWrapper>
+                <SectionWrapper>
+                  <SectionName>모집 내용</SectionName>
+                  <SectionContent>{currentCard?.content}</SectionContent>
+                </SectionWrapper>
+                <SectionWrapper>
+                  <SectionName>마감일시</SectionName>
+
+                  <div>
+                    {currentCard?.expire && currentCard?.created && (
+                      <Timer
+                        expire={currentCard?.expire}
+                        created={currentCard?.created || '2000-01-01 00:00:00'}
+                      />
+                    )}
+                  </div>
+                </SectionWrapper>
+              </InfoWrapper>
+              <HashTagWrapper>
+                <HashTag color={tier?.color}>#{tier?.label}</HashTag>
+                <HashTag>#{queueType?.label}</HashTag>
+                <HashTag>#{position?.label}구함</HashTag>
+                <HashTag>{currentCard?.voice ? '#음성채팅가능' : ''}</HashTag>
+              </HashTagWrapper>
+              <MemberListWrapper>
+                <MemeberListTitle>
+                  참여자 목록 ( {currentMember} / {totalMember} )
+                </MemeberListTitle>
+                <MemberList>
+                  {currentCard &&
+                    currentCard?.memberList?.map((member: string) => {
+                      return <MemberSlot key={member} summonerName={member} />;
+                    })}
+                  {arrayForEmptySlot.map((value, index) => (
+                    <EmptySlot key={value} />
+                  ))}
+                </MemberList>
+              </MemberListWrapper>
+              {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
+                oauth2Id === currentCard.oauth2Id ? (
+                  <MuiStack direction="row" spacing="2%" mt={1}>
+                    <DeleteCardBtn />
+                    <EditCardBtn />
+                    <FinishBtn />
+                  </MuiStack>
+                ) : (
+                  <LeaveBtn />
+                )
+              ) : currentCard.expired === 'true' ? (
+                <div />
+              ) : (
+                <JoinBtn />
+              )}
+            </CardInfo>
+            {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) && (
+              <Suspense
+                fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
+              >
+                <MuiBox sx={{ ml: 2 }}>
+                  <ChatRoom />
+                </MuiBox>
+              </Suspense>
+            )}
+          </ModalContent>
+        </>
+      );
+    }
   }
-  return <div />;
+  return (
+    <LoadingWrapper>
+      <Circular text="게시글을 불러오는 중입니다." height="100%" />
+    </LoadingWrapper>
+  );
 };
 
 export default CardDetailContainer;
+
+const LoadingWrapper = styled(MuiBox)(() => ({
+  width: '520px',
+  height: '360px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+})) as typeof MuiBox;
 
 const ModalHeader = styled(MuiBox)(() => ({
   width: '100%',

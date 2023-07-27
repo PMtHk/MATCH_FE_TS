@@ -9,12 +9,12 @@ import { RootState } from 'store';
 
 const EditCardBtn = () => {
   const { currentCard } = useSelector((state: RootState) => state.card);
-  const { expired } = currentCard;
+  const { expired, finished } = currentCard;
 
   return (
     <Link to="edit" style={{ width: '32%' }} state={{ background: '/lol' }}>
       <Button
-        disabled={expired}
+        disabled={expired === 'true' || finished === 'true'}
         fullWidth
         variant="outlined"
         size="small"

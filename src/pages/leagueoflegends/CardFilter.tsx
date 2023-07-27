@@ -40,8 +40,6 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
 
   const handleScroll = throttle(updateScroll, 200);
 
-  console.log(scrollPosition);
-
   React.useEffect(() => {
     window.addEventListener('scroll', handleScroll);
     return () => {
