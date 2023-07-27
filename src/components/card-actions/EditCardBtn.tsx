@@ -14,7 +14,11 @@ const EditCardBtn = () => {
   const { expired, finished } = currentCard;
 
   return (
-    <Link to="edit" style={{ width: '32%' }} state={{ background: `/${currentGame}` }}>
+    <Link
+      to="edit"
+      style={{ width: '32%' }}
+      state={{ background: `/${currentGame}` }}
+    >
       <Button
         disabled={expired === 'true' || finished === 'true'}
         fullWidth
