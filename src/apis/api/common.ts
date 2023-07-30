@@ -1,5 +1,13 @@
 import { authAxios } from 'apis/utils';
-import { getDatabase, push, ref, update, child, set } from 'firebase/database';
+import {
+  getDatabase,
+  push,
+  ref,
+  update,
+  child,
+  set,
+  get,
+} from 'firebase/database';
 
 /**
  * 게시글 생성
@@ -60,6 +68,7 @@ export const createCard = async (
           nickname: userInput.name,
           oauth2Id,
           notiToken: notiToken || '',
+          isReviewed: false,
         },
       ],
       timestamp: new Date().toString(),
@@ -130,5 +139,76 @@ export const updateCard = async (
     maxMember: updatedMaxMember,
   });
 
+  await authAxios.put(`/api/chat/${currentGame}/${boardId}`, {
+    totalUser: updatedMaxMember,
+  });
+
   return null;
+};
+
+export const finishCard = async (currentGame: string, boardId: number) => {
+  await authAxios.post(`/api/chat/${currentGame}/${boardId}/finish`);
+
+  return null;
+};
+
+/**
+ * 파티장이 직접 파티원 추가
+ * @param cardId 게시글id
+ * @param nicknameToAdd 추가하려는 사용자 닉네임
+ * @returns null
+ */
+
+export const addPartyMemberWithName = async (
+  cardId: number,
+  nicknameToAdd: string,
+  game: string,
+) => {
+  await authAxios.post(`/api/chat/${game}/${cardId}/${nicknameToAdd}`);
+
+  return null;
+};
+
+/**
+ * 파티장이 파티원 강퇴
+ * @param cardId 게시글 id
+ * @param chatRoomId 채팅방 id
+ * @param nickname 강퇴하려는 사용자 닉네임
+ * @param game 해당 게임
+ */
+export const kickMemberFromParty = async (
+  cardId: number,
+  chatRoomId: string,
+  nickname: string,
+  game: string,
+) => {
+  await authAxios.delete(`/api/chat/${game}/${cardId}/${nickname}/ban`);
+
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const messagesRef = ref(getDatabase(), 'messages');
+  const dataSnapshot: any = await get(child(chatRoomsRef, chatRoomId));
+
+  const prevMemberList = [...dataSnapshot.val().memberList];
+
+  const target = prevMemberList.find((member) => member.nickname === nickname);
+
+  const prevBannedList = dataSnapshot.val().bannedList
+    ? [...dataSnapshot.val().bannedList]
+    : [];
+  const newMemberList = prevMemberList.filter(
+    (member) => member.nickname !== nickname,
+  );
+  const newBannedList = [...prevBannedList, target];
+
+  await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
+    memberList: newMemberList,
+    bannedList: newBannedList,
+  });
+
+  await set(push(child(messagesRef, chatRoomId)), {
+    type: 'system',
+    timestamp: Date.now(),
+    user: { nickname, oauth2Id: '', notiToken: '' },
+    content: `${nickname} 님이 퇴장하였습니다.`,
+  });
 };

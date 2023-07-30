@@ -2,13 +2,13 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { cardActions } from 'store/card-slice';
-import { fetchCardList } from 'apis/api/leagueoflegends';
+import { fetchCardList } from 'apis/api/pubg';
 import { RootState } from 'store';
 
 interface CardListFetcherProps {
   fetcherProps: {
-    lane: string;
-    queueType: string;
+    platform: string;
+    type: string;
     tier: string;
   };
   children: React.ReactNode;
@@ -16,7 +16,7 @@ interface CardListFetcherProps {
 
 const CardListFetcher = ({
   children,
-  fetcherProps: { lane, queueType, tier },
+  fetcherProps: { platform, type, tier },
 }: CardListFetcherProps) => {
   const dispatch = useDispatch();
 
@@ -26,21 +26,21 @@ const CardListFetcher = ({
     params: {
       size: 12,
       page: currentPage || 0,
-      position: lane,
-      type: queueType,
+      platform,
+      type,
       tier,
     },
   };
 
-  const deps = [lane, queueType, tier, currentPage];
+  const deps = [platform, type, tier, currentPage];
 
-  const cardList: any = fetchCardList('/api/lol/boards', config, deps);
+  const cardList: any = fetchCardList('/api/pubg/boards', config, deps);
 
   useEffect(() => {
     dispatch(cardActions.SET_TOTAL_PAGE(cardList?.totalPage));
 
     dispatch(
-      cardActions.SET_CARDS({ game: 'lol', cardList: cardList?.content }),
+      cardActions.SET_CARDS({ game: 'pubg', cardList: cardList?.content }),
     );
   }, [cardList, dispatch]);
 

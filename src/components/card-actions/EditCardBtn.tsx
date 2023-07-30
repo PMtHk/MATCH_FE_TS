@@ -4,17 +4,28 @@ import { Link } from 'react-router-dom';
 // mui
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 const currentGame = window.location.pathname.split('/')[1];
 
 const EditCardBtn = () => {
+  const { currentCard } = useSelector((state: RootState) => state.card);
+  const { expired, finished } = currentCard;
+
   return (
     <Link
       to="edit"
-      style={{ width: '100%' }}
+      style={{ width: '32%' }}
       state={{ background: `/${currentGame}` }}
     >
-      <Button fullWidth variant="outlined" size="small" color="primary">
+      <Button
+        disabled={expired === 'true' || finished === 'true'}
+        fullWidth
+        variant="outlined"
+        size="small"
+        color="primary"
+      >
         게시글 수정
       </Button>
     </Link>

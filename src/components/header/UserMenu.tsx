@@ -45,6 +45,7 @@ const UserMenu = () => {
   const logoutBtnHandler = async () => {
     try {
       await logout(dispatch);
+      navigate('/login');
     } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

@@ -203,7 +203,7 @@ export const signup = async (
     lol: games.lol,
     pubg: games.pubg,
     overwatch: games.overwatch,
-    valorant: games.valorant,
+    // valorant: games.valorant,
   });
 
   // 발로란트로 수정해야함 나중에
@@ -276,6 +276,7 @@ type Member = {
   nickname: string;
   oauth2Id: string;
   notiToken: string;
+  isReviewed: boolean;
 };
 
 export const joinParty = async (
@@ -287,9 +288,7 @@ export const joinParty = async (
 ) => {
   const response = await authAxios.post(`/api/chat/${game}/${boardId}/member`);
 
-  if (response.status === 200) {
-    await addMemberToFirebaseDB(newMember, chatRoomId, dispatch);
-  }
+  await addMemberToFirebaseDB(newMember, chatRoomId, dispatch);
 
   return null;
 };

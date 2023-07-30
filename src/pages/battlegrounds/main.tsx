@@ -25,46 +25,27 @@ import CardListContainer from './CardListContainer';
 const Main = () => {
   const dispatch = useDispatch();
 
-  const [queueType, setQueueType] = React.useState('ALL');
+  const [platform, setPlatform] = React.useState('ALL');
+  const [type, setType] = React.useState('ALL');
   const [tier, setTier] = React.useState('ALL');
-  const [lane, setLane] = React.useState<string>('ALL');
 
   const { totalPage, currentPage } = useSelector(
     (state: RootState) => state.card,
   );
 
-  const handleQueueType = (event: SelectChangeEvent) => {
-    if (event.target.value === 'ARAM') {
-      setTier('ALL');
-      setLane('ALL');
-    }
-
+  const handlePlatform = (e: SelectChangeEvent) => {
     dispatch(cardActions.SET_CURRENT_PAGE(0));
-    setQueueType(event.target.value);
+    setPlatform(e.target.value);
   };
 
-  const handleTier = (event: SelectChangeEvent) => {
+  const handleType = (e: SelectChangeEvent) => {
     dispatch(cardActions.SET_CURRENT_PAGE(0));
-    setTier(event.target.value);
+    setType(e.target.value);
   };
 
-  const handleLane = (
-    event: React.MouseEvent<HTMLElement>,
-    newLane: string,
-  ) => {
-    if (newLane !== null) {
-      dispatch(cardActions.SET_CURRENT_PAGE(0));
-      setLane(() => {
-        return newLane;
-      });
-    }
-  };
-
-  const filterInitializer = () => {
-    setQueueType('ALL');
-    setTier('ALL');
-    setLane('ALL');
+  const handleTier = (e: SelectChangeEvent) => {
     dispatch(cardActions.SET_CURRENT_PAGE(0));
+    setTier(e.target.value);
   };
 
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -73,17 +54,17 @@ const Main = () => {
   };
 
   const filterProps = {
-    queueType,
-    handleQueueType,
+    platform,
+    handlePlatform,
+    type,
+    handleType,
     tier,
     handleTier,
-    lane,
-    handleLane,
   };
 
   const fetcherProps = {
-    lane,
-    queueType,
+    platform,
+    type,
     tier,
   };
 

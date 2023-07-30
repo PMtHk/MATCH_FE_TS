@@ -74,7 +74,11 @@ const UserInfoContainer = () => {
               </MenuButton>
             </Toolbar>
             <Toolbar disableGutters>
-              <MenuButton fullWidth onClick={() => setCurrentMenu('follow')}>
+              <MenuButton
+                disabled
+                fullWidth
+                onClick={() => setCurrentMenu('follow')}
+              >
                 <MenuTypo
                   sx={{
                     borderBottom:
@@ -88,6 +92,7 @@ const UserInfoContainer = () => {
             <Toolbar disableGutters>
               <MenuButton
                 fullWidth
+                disabled
                 onClick={() => setCurrentMenu('withdrawal')}
               >
                 <MenuTypo

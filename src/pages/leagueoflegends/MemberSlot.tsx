@@ -3,8 +3,6 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { ref, getDatabase, get, update, child } from 'firebase/database';
-
 import { authAxios, defaultAxios } from 'apis/utils';
 
 // mui
@@ -21,7 +19,7 @@ import { RootState } from 'store';
 
 import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
-import { kickMemberFromParty } from 'apis/api/leagueoflegends';
+import { kickMemberFromParty } from 'apis/api/common';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -105,6 +103,7 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
         currentCard?.id,
         currentCard?.chatRoomId,
         summonerName,
+        'lol',
       );
 
       dispatch(
@@ -125,6 +124,9 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
       );
     }
   };
+
+  const unranked =
+    memberInfo?.tier === 'UNRANKED' && memberInfo?.rank === 'UNRANKED';
 
   return (
     <>
@@ -173,19 +175,26 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
                 />
               </RankEmblemWrapper>
               <TierWinRateWrapper>
-                <TierTypo sx={{ color: tier?.color }}>
-                  {tier?.acronym}
-                  {rankRomanToNum(memberInfo.rank)}-{memberInfo?.leaguePoints}LP
-                </TierTypo>
-                <MatchPlayed>
-                  {memberInfo?.wins}승 {memberInfo?.losses}패
-                  <WinRate
-                    component="span"
-                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                  >
-                    ({winRate}%)
-                  </WinRate>
-                </MatchPlayed>
+                {!unranked ? (
+                  <TierTypo sx={{ color: tier?.color }}>
+                    {tier?.acronym}
+                    {rankRomanToNum(memberInfo.rank)}-{memberInfo?.leaguePoints}
+                    LP
+                  </TierTypo>
+                ) : (
+                  <TierTypo>Unranked</TierTypo>
+                )}
+                {!unranked && (
+                  <MatchPlayed>
+                    {memberInfo?.wins}승 {memberInfo?.losses}패
+                    <WinRate
+                      component="span"
+                      sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                    >
+                      ({winRate}%)
+                    </WinRate>
+                  </MatchPlayed>
+                )}
               </TierWinRateWrapper>
             </FlexRow>
           </SectionInMember>
@@ -214,7 +223,10 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== summonerName && (
-              <MuiIconButton onClick={handleKickBtn}>
+              <MuiIconButton
+                onClick={handleKickBtn}
+                disabled={currentCard.expired || currentCard.finished}
+              >
                 <Close />
               </MuiIconButton>
             )}

@@ -1,17 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 interface IState {
-  cards: [];
+  lolCards: [];
+  pubgCards: [];
+  overwatchCards: [];
+  valorantCards: [];
   currentPage: number;
   totalPage: number;
   currentCard: any;
+  isReviewed: boolean | undefined;
 }
 
 const initialState: IState = {
-  cards: [],
+  lolCards: [],
+  pubgCards: [],
+  overwatchCards: [],
+  valorantCards: [],
   currentPage: 0,
   totalPage: 0,
   currentCard: null,
+  isReviewed: true,
 };
 
 const cardSlice = createSlice({
@@ -19,7 +27,23 @@ const cardSlice = createSlice({
   initialState,
   reducers: {
     SET_CARDS: (state, action) => {
-      state.cards = action.payload;
+      const { game, cardList } = action.payload;
+      switch (game) {
+        case 'lol':
+          state.lolCards = cardList;
+          break;
+        case 'pubg':
+          state.pubgCards = cardList;
+          break;
+        case 'overwatch':
+          state.overwatchCards = cardList;
+          break;
+        case 'valorant':
+          state.valorantCards = cardList;
+          break;
+        default:
+          break;
+      }
     },
     SET_CURRENT_PAGE: (state, action) => {
       state.currentPage = action.payload;
@@ -32,6 +56,9 @@ const cardSlice = createSlice({
     },
     DELETE_CURRENT_CARD: (state) => {
       state.currentCard = {};
+    },
+    SET_IS_REVIEWED: (state, action) => {
+      state.isReviewed = action.payload;
     },
   },
 });

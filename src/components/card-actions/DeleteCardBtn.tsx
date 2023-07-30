@@ -60,8 +60,8 @@ const DeleteCardBtn = () => {
 export default DeleteCardBtn;
 
 const Button = styled(MuiButton)(() => ({
-  width: '100%',
   p: 1,
+  width: '32%',
   height: 40,
   borderColor: '#CCCCCC',
   fontWeight: 700,
