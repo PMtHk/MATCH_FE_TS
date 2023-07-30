@@ -20,6 +20,9 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
+  const { joinedChatRoomsId } = useSelector(
+    (state: RootState) => state.chatroom,
+  );
 
   const cardDetail: any = fetchCardDetail(`/api/lol/boards/${cardId}`);
 
@@ -36,12 +39,13 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
 
     const getIsReviewed2 = async () => {
       const review = await asyncGetIsReviewed(oauth2Id, currentCard.chatRoomId);
-      console.log(review);
       dispatch(cardActions.SET_IS_REVIEWED(review));
     };
 
     if (currentCard) {
-      getIsReviewed2();
+      if (joinedChatRoomsId.includes(currentCard.chatRoomId)) {
+        getIsReviewed2();
+      }
     }
   }, [cardDetail, dispatch, currentCard]);
 
