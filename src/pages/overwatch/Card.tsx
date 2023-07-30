@@ -66,6 +66,33 @@ const Card = ({ item, expired }: CardProps) => {
   );
 
   // author info
+  const nickAndTag = item.author.name.trim().split('#');
+  const authorNickname = nickAndTag[0];
+
+  type calcedInfo = {
+    value: number;
+    color: string;
+  };
+
+  const calcKDInfo = (): calcedInfo => {
+    const kd: number =
+      item.author.kills === 0 || item.author.deaths === 0
+        ? 0
+        : Number((item.author.kills / item.author.deaths).toFixed(2));
+    let color = '#000';
+    if (kd >= 4) {
+      color = 'red';
+    } else if (kd >= 2.5) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: kd,
+      color,
+    };
+  };
+
   const authorTankTier = tierList.find(
     (aTier) => aTier.value === item.author.tank_tier.toUpperCase(),
   );
@@ -152,7 +179,7 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>작성자</SectionName>
             <SectionContent>
-              <Author>{item.author.name}</Author>
+              <Author>{authorNickname}</Author>
               {item.voice === 'Y' && (
                 <MicIcon
                   fontSize="small"
@@ -182,16 +209,7 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <ChildSectionName>K/D</ChildSectionName>
             <ChildSectionContent>
-              <KDTypo
-                sx={{
-                  color:
-                    item.author.kills / item.author.deaths > 2.5
-                      ? 'orange'
-                      : 'black',
-                }}
-              >
-                {authorKDTypo}
-              </KDTypo>
+              <KDTypo sx={{ color: calcKDInfo().color }}>{authorKDTypo}</KDTypo>
               <KillsAndDeaths>
                 {item.author?.kills} / {item.author?.deaths}
               </KillsAndDeaths>

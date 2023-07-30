@@ -29,25 +29,73 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
-  const [memberInfo, setMemberInfo] = React.useState<any>({});
+  const [memberInfo, setMemberInfo] = React.useState<any>({
+    name: '',
+    type: '',
+    tank_tier: '',
+    tank_rank: '',
+    damage_tier: '',
+    damage_rank: '',
+    support_tier: '',
+    support_rank: '',
+    wins: 0,
+    losses: 0,
+    kills: 0,
+    deaths: 0,
+    mostHero: [],
+  });
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   // author info
-  const mostHero = ['genji', 'reinhardt', 'soldier76'];
+  const nickAndTag = memberInfo.name.trim().split('#');
+  const authorNickname = nickAndTag[0];
 
-  // 아래 구문은 조금 더 찾아보고 수정할 수 있도록 하겠음. 6/28 나주엽
-  // eslint-disable-next-line no-unsafe-optional-chaining
-  const totalPlayed = memberInfo?.wins + memberInfo?.losses;
-  // const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
-  const winRate = '58';
+  type calcedInfo = {
+    value: number;
+    color: string;
+  };
+
+  const calcKDInfo = (): calcedInfo => {
+    const kd: number =
+      memberInfo.kills === 0 || memberInfo.deaths === 0
+        ? 0
+        : Number((memberInfo.kills / memberInfo.deaths).toFixed(2));
+    let color = '#000';
+    if (kd >= 4) {
+      color = 'red';
+    } else if (kd >= 2.5) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: kd,
+      color,
+    };
+  };
+
+  const authorTankTier = tierList.find(
+    (aTier) => aTier.value === memberInfo?.tank_tier.toUpperCase(),
+  );
+  const authorDamageTier = tierList.find(
+    (aTier) => aTier.value === memberInfo?.damage_tier.toUpperCase(),
+  );
+  const authorSupportTier = tierList.find(
+    (aTier) => aTier.value === memberInfo?.support_tier.toUpperCase(),
+  );
+  const totalPlayed = memberInfo.wins + memberInfo.losses;
+  const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
+  const authorKDTypo = (memberInfo.kills / memberInfo.deaths).toFixed(2);
 
   const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
 
   useEffect(() => {
     const fetchSummonerInfo = async () => {
+      const nickAndTag = name.trim().split('#');
+
       await defaultAxios
         .get(
-          `/api/overwatch/player/${name}/${currentCard.position}/${currentCard.type}`,
+          `/api/overwatch/player/${nickAndTag[0]}%23${nickAndTag[1]}/${currentCard.type}`,
         )
         .then((res) => {
           setMemberInfo(res.data);
@@ -113,14 +161,14 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
         <Member>
           <SectionInMember>
             <SectionTitleInMember>닉네임</SectionTitleInMember>
-            <Nickname>Carpe</Nickname>
+            <Nickname>{authorNickname}</Nickname>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>승률</SectionTitleInMember>
             <WinRateSection>
               <WinRate
                 component="span"
-                // sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
               >
                 {winRate}%
               </WinRate>
@@ -130,17 +178,10 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           <SectionInMember>
             <SectionTitleInMember>K/D</SectionTitleInMember>
             <WinRateSection>
-              <KDTypo
-              // sx={{
-              //   color:
-              //     item.author.kills / item.author.deaths > 2.5
-              //       ? 'orange'
-              //       : 'black',
-              // }}
-              >
-                2.5
-              </KDTypo>
-              <KillsAndDeaths>154 / 78</KillsAndDeaths>
+              <KDTypo sx={{ color: calcKDInfo().color }}>{authorKDTypo}</KDTypo>
+              <KillsAndDeaths>
+                {memberInfo?.kills} / {memberInfo?.deaths}
+              </KillsAndDeaths>
             </WinRateSection>
           </SectionInMember>
           <SectionInMember>
@@ -157,14 +198,17 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </PositionEmblemWrapper>
                 <RankEmblemWrapper>
                   <img
-                    src={tierList[8]?.imageUrl}
-                    alt={tierList[8]?.value}
+                    src={authorTankTier?.imageUrl}
+                    alt={authorTankTier?.value}
                     width="36px"
                     height="36px"
                   />
                 </RankEmblemWrapper>
-                <Tier sx={{ color: tierList[8]?.color }}>
-                  {tierList[8]?.acronym}
+                <Tier sx={{ color: authorTankTier?.color }}>
+                  {authorTankTier?.acronym}
+                  {memberInfo?.tank_rank === 'none'
+                    ? ''
+                    : memberInfo?.tank_rank}
                 </Tier>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -179,14 +223,17 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </PositionEmblemWrapper>
                 <RankEmblemWrapper>
                   <img
-                    src={tierList[1]?.imageUrl}
-                    alt={tierList[1]?.value}
+                    src={authorDamageTier?.imageUrl}
+                    alt={authorDamageTier?.value}
                     width="36px"
                     height="36px"
                   />
                 </RankEmblemWrapper>
-                <Tier sx={{ color: tierList[1]?.color }}>
-                  {tierList[1]?.acronym}
+                <Tier sx={{ color: authorDamageTier?.color }}>
+                  {authorDamageTier?.acronym}
+                  {memberInfo?.tank_rank === 'none'
+                    ? ''
+                    : memberInfo?.tank_rank}
                 </Tier>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -201,14 +248,17 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </PositionEmblemWrapper>
                 <RankEmblemWrapper>
                   <img
-                    src={tierList[6]?.imageUrl}
-                    alt={tierList[6]?.value}
+                    src={authorSupportTier?.imageUrl}
+                    alt={authorSupportTier?.value}
                     width="36px"
                     height="36px"
                   />
                 </RankEmblemWrapper>
-                <Tier sx={{ color: tierList[6]?.color }}>
-                  {tierList[6]?.acronym}4
+                <Tier sx={{ color: authorSupportTier?.color }}>
+                  {authorSupportTier?.acronym}
+                  {memberInfo?.support_rank === 'none'
+                    ? ''
+                    : memberInfo?.support_rank}
                 </Tier>
               </PositionRankSection>
             </TierSection>
@@ -220,7 +270,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
               cols={3}
               gap={4}
             >
-              {mostHero.map((aHero, index) => {
+              {memberInfo?.mostHero.map((aHero, index) => {
                 return (
                   <ImageListItem
                     key={aHero}

@@ -40,7 +40,7 @@ export function fetchCardDetail(url: string) {
 
 export const verifyOWNickname = async (nickname: string, battleTag: string) => {
   const response = await defaultAxios.get(
-    `/api/overwatch/user/exist/${nickname}/${battleTag}`,
+    `/api/overwatch/user/exist/${nickname}%23${battleTag}`,
   );
 
   const exactNickname = response.data;
@@ -53,7 +53,7 @@ export const loadOWPlayerInfoInDB = async (
   battleTag: string,
 ) => {
   const response = await defaultAxios.get(
-    `/api/overwatch/user/${nickname}/${battleTag}`,
+    `/api/overwatch/user/${nickname}%23${battleTag}`,
   );
 
   if (response.status === 200) {

@@ -173,7 +173,7 @@ const CreateCard = () => {
       );
 
       if (exactNickname) {
-        setUserInput({ ...userInput, name: nickAndTag[0] });
+        setUserInput({ ...userInput, name: userInput.name });
       }
 
       dispatch(
