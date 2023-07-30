@@ -144,40 +144,21 @@ const Notification = ({
           }}
           color="warning"
         >
-          <NotificationsNone sx={{ color: '#dddddd', fontSize: '24px' }} />
+          <NotificationsNone
+            sx={{
+              color: '#dddddd',
+              fontSize: '30px',
+              paddingBottom: notiOpen ? '1px' : 'none',
+              borderBottom: notiOpen ? '1px solid #dddddd' : 'none',
+            }}
+          />
         </Badge>
       </MuiTooltip>
-      <MuiMenu
+      <Menu
         anchorEl={notiAnchorEl}
         id="notification-menu"
         open={notiOpen}
         onClose={handleNotiClose}
-        PaperProps={{
-          elevation: 0,
-          sx: {
-            overflow: 'visible',
-            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-            mt: 1,
-            '& .MuiAvatar-root': {
-              width: 32,
-              height: 32,
-              ml: -0.5,
-              mr: 1,
-            },
-            '&:before': {
-              content: '""',
-              display: 'block',
-              position: 'absolute',
-              top: 3,
-              right: 7,
-              width: 10,
-              height: 10,
-              bgcolor: 'background.paper',
-              transform: 'translateY(-50%) rotate(45deg)',
-              zIndex: 0,
-            },
-          },
-        }}
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
@@ -200,7 +181,7 @@ const Notification = ({
           <Delete sx={{ color: 'orangered' }} />
           <DeleteAllTypo>모든 알림 지우기</DeleteAllTypo>
         </MenuItem>
-      </MuiMenu>
+      </Menu>
     </>
   );
 };
@@ -223,6 +204,10 @@ const ChatRoomsWrapper = styled(MuiBox)(() => ({
   overflowX: 'hidden',
   gap: '4px',
 })) as typeof MuiBox;
+
+const Menu = styled(MuiMenu)(() => ({
+  margin: '20px 0 0 0',
+})) as typeof MuiMenu;
 
 const MenuItem = styled(MuiMenuItem)(() => ({
   margin: '8px 4px 0 4px',
