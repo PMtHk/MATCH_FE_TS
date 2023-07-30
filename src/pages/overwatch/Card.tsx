@@ -312,7 +312,7 @@ const Card = ({ item, expired }: CardProps) => {
                       }}
                     >
                       <img
-                        src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero}.png`}
+                        src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero.toLowerCase()}.png`}
                         alt={aHero}
                         loading="lazy"
                       />
