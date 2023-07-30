@@ -60,7 +60,7 @@ const CardDetailContainer = () => {
             size="small"
             onClick={() => {
               dispatch(cardActions.SET_CURRENT_CARD(null));
-              navigate('/ovewatch');
+              navigate('/overwatch');
             }}
             sx={{ p: 0, m: 0 }}
           >
