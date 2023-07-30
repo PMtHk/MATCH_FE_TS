@@ -38,7 +38,9 @@ const CardListFetcher = ({
 
   useEffect(() => {
     dispatch(cardActions.SET_TOTAL_PAGE(cardList?.totalPage));
-    dispatch(cardActions.SET_CARDS(cardList?.content));
+    dispatch(
+      cardActions.SET_CARDS({ game: 'overwatch', cardList: cardList?.content }),
+    );
   }, [cardList, dispatch]);
 
   return <div>{children}</div>;
