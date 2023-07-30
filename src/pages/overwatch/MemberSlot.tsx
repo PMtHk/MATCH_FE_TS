@@ -47,8 +47,10 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   // author info
-  const nickAndTag = memberInfo.name.trim().split('#');
-  const authorNickname = nickAndTag[0];
+  const authorNickname = memberInfo.name.substring(
+    0,
+    memberInfo.name.indexOf('#'),
+  );
 
   type calcedInfo = {
     value: number;
@@ -231,9 +233,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </RankEmblemWrapper>
                 <Tier sx={{ color: authorDamageTier?.color }}>
                   {authorDamageTier?.acronym}
-                  {memberInfo?.tank_rank === 'none'
+                  {memberInfo?.damage_rank === 'none'
                     ? ''
-                    : memberInfo?.tank_rank}
+                    : memberInfo?.damage_rank}
                 </Tier>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />

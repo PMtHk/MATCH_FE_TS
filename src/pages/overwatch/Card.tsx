@@ -66,8 +66,10 @@ const Card = ({ item, expired }: CardProps) => {
   );
 
   // author info
-  const nickAndTag = item.author.name.trim().split('#');
-  const authorNickname = nickAndTag[0];
+  const authorNickname = item.author.name.substring(
+    0,
+    item.author.name.indexOf('#'),
+  );
 
   type calcedInfo = {
     value: number;

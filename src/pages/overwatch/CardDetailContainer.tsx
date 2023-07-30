@@ -36,6 +36,10 @@ const CardDetailContainer = () => {
     (state: RootState) => state.chatroom,
   );
 
+  const authorNickname = currentCard?.author.name.substring(
+    0,
+    currentCard?.author.name.indexOf('#'),
+  );
   const tier = tierList.find((tier) => tier.value === currentCard?.tier);
   const queueType = queueTypeList.find(
     (queueType) => queueType.value === currentCard?.type,
@@ -55,7 +59,7 @@ const CardDetailContainer = () => {
     return (
       <>
         <ModalHeader>
-          <Title>{currentCard?.author.name} 님의 파티</Title>
+          <Title>{authorNickname} 님의 파티</Title>
           <MuiIconButton
             size="small"
             onClick={() => {
