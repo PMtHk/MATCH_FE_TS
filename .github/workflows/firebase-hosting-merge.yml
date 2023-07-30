@@ -35,3 +35,6 @@ jobs:
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MATCHGG_STORAGE }}'
           channelId: live
           projectId: matchgg-storage
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
