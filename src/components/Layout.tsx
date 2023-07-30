@@ -7,12 +7,37 @@ import MuiBox from '@mui/material/Box';
 import MuiContainer from '@mui/material/Container';
 import MuiTypography from '@mui/material/Typography';
 
+import { getToken } from 'firebase/messaging';
+import { messaging } from '../firebase';
+
 import Header from './header';
 import Footer from './Footer';
 
 import { gameList, GAME_ID, GAME } from '../assets/Games.data';
 
 const Layout = () => {
+  // 알림 권한 허용, 토큰 발급
+  const getPermission = () => {
+    console.log('알림 권한 요청중...');
+    if ('serviceWorker' in navigator) {
+      console.log('서비스 워커 안잡힘...');
+    }
+
+    Notification.requestPermission().then(async (permission) => {
+      // 알림 허용
+      if (permission === 'granted') {
+        console.log('알림 허용됨 -> 토큰 발급 시도하겠음');
+        const token = await getToken(messaging, {
+          vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
+        }).catch((error: any) => console.log(error));
+        if (token) {
+          console.log(`토큰 : ${token}`);
+        } else {
+          console.log('토큰 없음...');
+        }
+      }
+    });
+  };
   return (
     <LayoutContainer>
       <Header />
