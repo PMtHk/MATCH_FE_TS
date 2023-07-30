@@ -250,7 +250,7 @@ const CreateCard = () => {
         userInput,
         oauth2Id,
         userInput.type === 'DUO_RANK' ? 2 : 5,
-        notiToken || '',
+        notiToken,
       );
 
       dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));

@@ -51,14 +51,19 @@ interface NotiAccordionDetailProps {
     content: string;
   };
   boardId: string;
+  game: string;
 }
 
 const NotiAccordionDetail = ({
   message,
   boardId,
+  game,
 }: NotiAccordionDetailProps) => {
   return (
-    <Link to={`${boardId}`} style={{ textDecoration: 'none', color: 'black' }}>
+    <Link
+      to={`/${game}/${boardId}`}
+      style={{ textDecoration: 'none', color: 'black' }}
+    >
       {message.type === 'system' ? (
         <NotificationOfSystemAction content={message.content} />
       ) : (
