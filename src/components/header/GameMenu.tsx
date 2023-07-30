@@ -1,10 +1,15 @@
 import React from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  Link as RouterLink,
+} from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
-import Link from '@mui/material/Link';
+import MuiLink from '@mui/material/Link';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
 import MuiMenu from '@mui/material/Menu';
@@ -20,74 +25,29 @@ const GameMenu = () => {
   const location = useLocation();
 
   const currentGame = window.location.pathname.split('/')[1];
-  const { representative } = useSelector((state: RootState) => state.user);
-
-  let gameInfo: GAME;
-  if (currentGame) {
-    gameInfo = gameList.find((game) => game.id === currentGame) as GAME;
-  } else {
-    gameInfo = gameList.find((game) => game.id === representative) as GAME;
-  }
-
-  const [gameMenuAnchor, setGameMenuAnchor] =
-    React.useState<null | HTMLElement>(null);
-
-  const isGameMenuOpen = Boolean(gameMenuAnchor);
-
-  const openGameMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setGameMenuAnchor(event.currentTarget);
-  };
-
-  const closeGameMenu = async () => {
-    setGameMenuAnchor(null);
-  };
 
   const isMyPage = location.pathname === '/mypage';
 
   return (
     <GameMenuContainer>
-      <GameMenuBtn id="game_menu" onClick={openGameMenu}>
-        {isMyPage ? '지원하는 게임 목록' : gameInfo.name_kor}
-        <KeyboardArrowDown />
-      </GameMenuBtn>
-
-      <MuiMenu
-        id="game_menu"
-        anchorEl={gameMenuAnchor}
-        open={Boolean(gameMenuAnchor)}
-        onClose={closeGameMenu}
-        PaperProps={{
-          style: { width: '160px' },
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left',
-        }}
-      >
-        {gameList.map((aGame, _) => {
-          if (aGame.available) {
-            return (
-              <MuiMenuItem
-                key={aGame.id}
-                onClick={closeGameMenu}
-                sx={{ gap: '10px' }}
-                component={Link}
-                href={`/${aGame.id}`}
-              >
-                <GameIcon
-                  id={aGame.id}
-                  item={aGame.name.toLowerCase().split(' ').join('')}
-                  size={{ width: '20px', height: '20px' }}
-                />
-                {aGame.name_kor}
-              </MuiMenuItem>
-            );
-          }
-          return null;
-        })}
-      </MuiMenu>
-      {/* <TextMenuBtn>파티찾기</TextMenuBtn>
-      <TextMenuBtn>자유게시판</TextMenuBtn> */}
+      {gameList.map((game: GAME) => {
+        if (game.available === false) return null;
+        return (
+          <Link
+            component={RouterLink}
+            key={game.id}
+            underline="none"
+            to={`/${game.id}`}
+            color="white"
+            sx={{
+              borderBottom:
+                currentGame === game.id ? '2px solid white' : 'none',
+            }}
+          >
+            {game.name_kor}
+          </Link>
+        );
+      })}
     </GameMenuContainer>
   );
 };
@@ -120,3 +80,13 @@ const TextMenuBtn = styled(MuiButton)(() => ({
   fontWeight: '600',
   color: '#ffffff',
 })) as typeof MuiButton;
+
+const Link = styled(MuiLink)(() => ({
+  margin: '0 16px 0 0 ',
+  padding: '0 0 4px 0',
+
+  '&:hover': {
+    transform: 'translateY(-1px) scale(1.02)',
+    borderBottom: '1px solid #dddddd',
+  },
+})) as typeof MuiLink;

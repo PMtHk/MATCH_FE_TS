@@ -143,13 +143,14 @@ const NotiAccordion = ({
                   key={message.timestamp}
                   message={message}
                   boardId={chatRoomInfo.roomId}
+                  game={chatRoomInfo.game}
                 />
               );
             })}
           <ButtonWrapper>
             <Button
               onClick={() => {
-                navigate(`/lol/${chatRoomInfo.roomId}`);
+                navigate(`/${chatRoomInfo.game}/${chatRoomInfo.roomId}`);
                 handleNotiClose();
               }}
             >
