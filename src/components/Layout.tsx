@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 
 // mui
@@ -6,6 +6,9 @@ import styled from '@mui/system/styled';
 import MuiBox from '@mui/material/Box';
 import MuiContainer from '@mui/material/Container';
 import MuiTypography from '@mui/material/Typography';
+
+import { useSelector } from 'react-redux';
+import { RootState } from 'store';
 
 import { getToken } from 'firebase/messaging';
 import { messaging } from '../firebase';
@@ -16,6 +19,8 @@ import Footer from './Footer';
 import { gameList, GAME_ID, GAME } from '../assets/Games.data';
 
 const Layout = () => {
+  const { isLogin } = useSelector((state: RootState) => state.user);
+
   // 알림 권한 허용, 토큰 발급
   const getPermission = () => {
     console.log('알림 권한 요청중...');
@@ -38,6 +43,13 @@ const Layout = () => {
       }
     });
   };
+
+  useEffect(() => {
+    if (isLogin) {
+      getPermission();
+    }
+  }, [isLogin]);
+
   return (
     <LayoutContainer>
       <Header />
