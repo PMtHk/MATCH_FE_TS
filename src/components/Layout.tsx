@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import styled from '@mui/system/styled';
@@ -7,10 +8,10 @@ import MuiBox from '@mui/material/Box';
 import MuiContainer from '@mui/material/Container';
 import MuiTypography from '@mui/material/Typography';
 
-import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 
 import { getToken } from 'firebase/messaging';
+import { notificationActions } from 'store/notification-slice';
 import { messaging } from '../firebase';
 
 import Header from './header';
@@ -19,26 +20,20 @@ import Footer from './Footer';
 import { gameList, GAME_ID, GAME } from '../assets/Games.data';
 
 const Layout = () => {
+  const dispatch = useDispatch();
   const { isLogin } = useSelector((state: RootState) => state.user);
 
   // 알림 권한 허용, 토큰 발급
   const getPermission = () => {
-    console.log('알림 권한 요청중...');
-    if ('serviceWorker' in navigator) {
-      console.log('서비스 워커 안잡힘...');
-    }
-
     Notification.requestPermission().then(async (permission) => {
       // 알림 허용
       if (permission === 'granted') {
-        console.log('알림 허용됨 -> 토큰 발급 시도하겠음');
-        const token = await getToken(messaging, {
+        const token: string | void = await getToken(messaging, {
           vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
         }).catch((error: any) => console.log(error));
+
         if (token) {
-          console.log(`토큰 : ${token}`);
-        } else {
-          console.log('토큰 없음...');
+          dispatch(notificationActions.SET_NOTITOKEN(token));
         }
       }
     });
