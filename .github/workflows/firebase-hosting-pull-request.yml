@@ -28,9 +28,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: npm ci && npm run build && firebase login --reauth
+      - run: npm ci && npm run build
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
           firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_MATCHGG_STORAGE }}'
           projectId: matchgg-storage
+        use:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
