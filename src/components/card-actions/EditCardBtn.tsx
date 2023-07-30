@@ -5,9 +5,15 @@ import { Link } from 'react-router-dom';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
+const currentGame = window.location.pathname.split('/')[1];
+
 const EditCardBtn = () => {
   return (
-    <Link to="edit" style={{ width: '100%' }} state={{ background: '/lol' }}>
+    <Link
+      to="edit"
+      style={{ width: '100%' }}
+      state={{ background: `/${currentGame}` }}
+    >
       <Button fullWidth variant="outlined" size="small" color="primary">
         게시글 수정
       </Button>

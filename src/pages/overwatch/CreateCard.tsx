@@ -174,22 +174,18 @@ const CreateCard = () => {
 
       if (exactNickname) {
         setUserInput({ ...userInput, name: nickAndTag[0] });
-
-        const response = await loadOWPlayerInfoInDB(
-          nickAndTag[0],
-          nickAndTag[1],
-        );
-
-        if (response) {
-          setIsChanged(true);
-          setIsLoading(false);
-          setIsNewNicknameCertified(true);
-        }
-      } else {
-        setIsLoading(false);
-        setIsNewNicknameCertified(false);
-        setIsChanged(true);
       }
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '사용자 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          severity: 'info',
+        }),
+      );
+
+      await loadOWPlayerInfoInDB(nickAndTag[0], nickAndTag[1]);
+
+      setIsNewNicknameCertified(true);
     } catch (error: any) {
       if (
         error.response.status === 404 &&
@@ -197,7 +193,16 @@ const CreateCard = () => {
           '아직 랭크정보를 보유하고 있지 않습니다.'
       ) {
         setIsNewNicknameCertified(true);
+      } else {
+        setIsNewNicknameCertified(false);
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '입력하신 정보와 일치하는 소환사를 찾을 수 없습니다.',
+            severity: 'error',
+          }),
+        );
       }
+    } finally {
       setIsLoading(false);
       setIsChanged(true);
     }
@@ -294,7 +299,7 @@ const CreateCard = () => {
           <SectionTitle>플레이할 닉네임</SectionTitle>
           <NicknameInput
             value={userInput.name}
-            placeholder="닉네임을 입력하세요."
+            placeholder="배틀태그와 함께 입력하세요."
             disabled={isPosting ? true : useRegisteredNickname}
             onChange={handleNickname}
             error={!isNewNicknameCertified}

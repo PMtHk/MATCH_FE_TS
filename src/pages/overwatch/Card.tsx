@@ -77,7 +77,7 @@ const Card = ({ item, expired }: CardProps) => {
   );
   const totalPlayed = item.author.wins + item.author.losses;
   const winRate = Math.round((item.author.wins / totalPlayed) * 100);
-  const authorKD = (item.author.kills / item.author.deaths).toFixed(2);
+  const authorKDTypo = (item.author.kills / item.author.deaths).toFixed(2);
   const maxMember = queueType?.maxMember || 5;
   const currentMember = item.memberList.length;
 
@@ -97,8 +97,8 @@ const Card = ({ item, expired }: CardProps) => {
             src={position?.imageUrl || ''}
             alt="game_img"
             loading="lazy"
-            height="40px"
-            width="40px"
+            height="35px"
+            width="35px"
           />
           <CardTitle>
             <TopInfo>
@@ -182,7 +182,7 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <ChildSectionName>K/D</ChildSectionName>
             <ChildSectionContent>
-              <KD
+              <KDTypo
                 sx={{
                   color:
                     item.author.kills / item.author.deaths > 2.5
@@ -190,8 +190,8 @@ const Card = ({ item, expired }: CardProps) => {
                       : 'black',
                 }}
               >
-                {authorKD}
-              </KD>
+                {authorKDTypo}
+              </KDTypo>
               <KillsAndDeaths>
                 {item.author?.kills} / {item.author?.deaths}
               </KillsAndDeaths>
@@ -213,8 +213,8 @@ const Card = ({ item, expired }: CardProps) => {
                   <img
                     src={authorTankTier?.imageUrl}
                     alt={authorTankTier?.value}
-                    width={authorTankTier?.value === 'NONE' ? '50px' : '60px'}
-                    height={authorTankTier?.value === 'NONE' ? '50px' : '60px'}
+                    width="50px"
+                    height="50px"
                   />
                 </RankWrapper>
                 <Tier sx={{ color: authorTankTier?.color }}>
@@ -238,10 +238,8 @@ const Card = ({ item, expired }: CardProps) => {
                   <img
                     src={authorDamageTier?.imageUrl}
                     alt={authorDamageTier?.value}
-                    width={authorDamageTier?.value === 'NONE' ? '50px' : '60px'}
-                    height={
-                      authorDamageTier?.value === 'NONE' ? '50px' : '60px'
-                    }
+                    width="50px"
+                    height="50px"
                   />
                 </RankWrapper>
                 <Tier sx={{ color: authorDamageTier?.color }}>
@@ -265,12 +263,8 @@ const Card = ({ item, expired }: CardProps) => {
                   <img
                     src={authorSupportTier?.imageUrl}
                     alt={authorSupportTier?.value}
-                    width={
-                      authorSupportTier?.value === 'NONE' ? '50px' : '60px'
-                    }
-                    height={
-                      authorSupportTier?.value === 'NONE' ? '50px' : '60px'
-                    }
+                    width="50px"
+                    height="50px"
                   />
                 </RankWrapper>
                 <Tier sx={{ color: authorSupportTier?.color }}>
@@ -471,7 +465,7 @@ const WinRate = styled(MuiTypography)(() => ({
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
 
-const KD = styled(MuiTypography)(() => ({
+const KDTypo = styled(MuiTypography)(() => ({
   fontSize: '12px',
   fontWeight: '600',
   padding: '0 0 0 2px',
@@ -479,7 +473,7 @@ const KD = styled(MuiTypography)(() => ({
 
 const KillsAndDeaths = styled(MuiTypography)(() => ({
   fontSize: '8px',
-  fontWeight: '600',
+  fontWeight: '500',
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
 
@@ -500,7 +494,7 @@ const RankWrapper = styled(MuiBox)(() => ({
 })) as typeof MuiBox;
 
 const PositionEmblemWrapper = styled(MuiBox)(() => ({
-  backgroundColor: 'white',
+  backgroundColor: '#e9e8e8c4',
   borderRadius: '50%',
   width: '20px',
   height: '20px',

@@ -10,7 +10,9 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
-import MuiImageList from '@mui/material/ImageList';
+import MuiDivider from '@mui/material/Divider';
+import ImageList from '@mui/material/ImageList';
+import ImageListItem from '@mui/material/ImageListItem';
 
 import Close from '@mui/icons-material/Close';
 
@@ -20,10 +22,10 @@ import Circular from 'components/loading/Circular';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
-  summonerName: string;
+  name: string;
 }
 
-const MemberSlot = ({ summonerName }: MemberSlotProps) => {
+const MemberSlot = ({ name }: MemberSlotProps) => {
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
@@ -31,41 +33,21 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   // author info
-  const mostLane = positionList.find(
-    (aPosition) => aPosition.value === memberInfo?.mostLane,
-  );
-
-  const tier = tierList.find((aTier) => aTier.value === memberInfo?.tier);
+  const mostHero = ['genji', 'reinhardt', 'soldier76'];
 
   // 아래 구문은 조금 더 찾아보고 수정할 수 있도록 하겠음. 6/28 나주엽
   // eslint-disable-next-line no-unsafe-optional-chaining
   const totalPlayed = memberInfo?.wins + memberInfo?.losses;
-  const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
+  // const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
+  const winRate = '58';
 
   const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
-
-  const rankRomanToNum = (rank: string) => {
-    switch (rank) {
-      case 'I':
-        return 1;
-      case 'II':
-        return 2;
-      case 'III':
-        return 3;
-      case 'IV':
-        return 4;
-      default:
-        return 4;
-    }
-  };
 
   useEffect(() => {
     const fetchSummonerInfo = async () => {
       await defaultAxios
         .get(
-          `/api/overwatch/player/${summonerName}/${
-            currentCard.type === 'FREE_RANK' ? 'free_rank' : 'duo_rank'
-          }`,
+          `/api/overwatch/player/${name}/${currentCard.position}/${currentCard.type}`,
         )
         .then((res) => {
           setMemberInfo(res.data);
@@ -82,7 +64,7 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
 
   const kickMember = async () => {
     await authAxios
-      .delete(`/api/chat/lol/${currentCard?.id}/ban`)
+      .delete(`/api/chat/overwatch/${currentCard?.id}/ban`)
       .then(async (response) => {
         if (response.status === 200) {
           // Firebase RealtimeDB의 memberList에서 제거 및 banList에 추가
@@ -92,7 +74,7 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
             async (dataSnapshot) => {
               const prevMemberList = [...dataSnapshot.val().memberList];
               const target = prevMemberList.find(
-                (member) => member.nickname === summonerName,
+                (member) => member.nickname === name,
               );
               if (!target) {
                 return location.reload();
@@ -101,7 +83,7 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
                 ? [...dataSnapshot.val().bannedList]
                 : [];
               const newMemberList = prevMemberList.filter(
-                (member) => member.nickname !== summonerName,
+                (member) => member.nickname !== name,
               );
               const newBannedList = [...prevBannedList, target];
               await update(
@@ -130,67 +112,137 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
       {!isLoading && (
         <Member>
           <SectionInMember>
-            <SectionTitleInMember>소환사명</SectionTitleInMember>
-            <Nickname>{memberInfo?.summonerName}</Nickname>
-            <MostLaneInfo>
-              <img
-                src={mostLane?.imageUrl}
-                alt="lane_icon"
-                loading="lazy"
-                width="20px"
-                height="20px"
-              />
-              <MostLanteTypo>{mostLane?.label}</MostLanteTypo>
-            </MostLaneInfo>
+            <SectionTitleInMember>닉네임</SectionTitleInMember>
+            <Nickname>Carpe</Nickname>
+          </SectionInMember>
+          <SectionInMember>
+            <SectionTitleInMember>승률</SectionTitleInMember>
+            <WinRateSection>
+              <WinRate
+                component="span"
+                // sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+              >
+                {winRate}%
+              </WinRate>
+              <MatchPlayed>18승 / 9패</MatchPlayed>
+            </WinRateSection>
+          </SectionInMember>
+          <SectionInMember>
+            <SectionTitleInMember>K/D</SectionTitleInMember>
+            <WinRateSection>
+              <KDTypo
+              // sx={{
+              //   color:
+              //     item.author.kills / item.author.deaths > 2.5
+              //       ? 'orange'
+              //       : 'black',
+              // }}
+              >
+                2.5
+              </KDTypo>
+              <KillsAndDeaths>154 / 78</KillsAndDeaths>
+            </WinRateSection>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>티어</SectionTitleInMember>
-            <FlexRow>
-              <RankEmblemWrapper>
-                <img
-                  src={tier?.imageUrl}
-                  alt="rank"
-                  width="32px"
-                  height="24px"
-                  loading="lazy"
-                />
-              </RankEmblemWrapper>
-              <TierWinRateWrapper>
-                <TierTypo sx={{ color: tier?.color }}>
-                  {tier?.acronym}
-                  {rankRomanToNum(memberInfo.rank)}-{memberInfo?.leaguePoints}LP
-                </TierTypo>
-                <MatchPlayed>
-                  {memberInfo?.wins}승 {memberInfo?.losses}패
-                  <WinRate
-                    component="span"
-                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                  >
-                    ({winRate}%)
-                  </WinRate>
-                </MatchPlayed>
-              </TierWinRateWrapper>
-            </FlexRow>
+            <TierSection>
+              <PositionRankSection>
+                <PositionEmblemWrapper>
+                  <img
+                    src={positionList[1].imageUrl}
+                    alt={positionList[1]?.value}
+                    width="8px"
+                    height="8px"
+                  />
+                </PositionEmblemWrapper>
+                <RankEmblemWrapper>
+                  <img
+                    src={tierList[8]?.imageUrl}
+                    alt={tierList[8]?.value}
+                    width="36px"
+                    height="36px"
+                  />
+                </RankEmblemWrapper>
+                <Tier sx={{ color: tierList[8]?.color }}>
+                  {tierList[8]?.acronym}
+                </Tier>
+              </PositionRankSection>
+              <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+              <PositionRankSection>
+                <PositionEmblemWrapper>
+                  <img
+                    src={positionList[2].imageUrl}
+                    alt={positionList[2]?.value}
+                    width="8px"
+                    height="8px"
+                  />
+                </PositionEmblemWrapper>
+                <RankEmblemWrapper>
+                  <img
+                    src={tierList[1]?.imageUrl}
+                    alt={tierList[1]?.value}
+                    width="36px"
+                    height="36px"
+                  />
+                </RankEmblemWrapper>
+                <Tier sx={{ color: tierList[1]?.color }}>
+                  {tierList[1]?.acronym}
+                </Tier>
+              </PositionRankSection>
+              <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+              <PositionRankSection>
+                <PositionEmblemWrapper>
+                  <img
+                    src={positionList[3].imageUrl}
+                    alt={positionList[3]?.value}
+                    width="8px"
+                    height="8px"
+                  />
+                </PositionEmblemWrapper>
+                <RankEmblemWrapper>
+                  <img
+                    src={tierList[6]?.imageUrl}
+                    alt={tierList[6]?.value}
+                    width="36px"
+                    height="36px"
+                  />
+                </RankEmblemWrapper>
+                <Tier sx={{ color: tierList[6]?.color }}>
+                  {tierList[6]?.acronym}4
+                </Tier>
+              </PositionRankSection>
+            </TierSection>
           </SectionInMember>
           <SectionInMember>
-            <SectionTitleInMember>모스트 챔피언</SectionTitleInMember>
-            <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
-              {memberInfo &&
-                memberInfo.mostChampion?.map((champion: string) => (
-                  <ChampImgWrapper key={champion}>
+            <SectionTitleInMember>모스트 영웅</SectionTitleInMember>
+            <ImageList
+              sx={{ m: '4px 0 0 0', p: 0, height: '50px' }}
+              cols={3}
+              gap={4}
+            >
+              {mostHero.map((aHero, index) => {
+                return (
+                  <ImageListItem
+                    key={aHero}
+                    sx={{
+                      width: '44px',
+                      height: '44px',
+                      gap: 1,
+                      border: '2px solid black',
+                    }}
+                  >
                     <img
-                      src={`https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/${champion.toLowerCase()}.jpg`}
-                      alt={champion}
+                      src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero}.png`}
+                      alt={aHero}
                       loading="lazy"
-                      width="40px"
-                      height="50px"
                     />
-                  </ChampImgWrapper>
-                ))}
-            </MuiImageList>
+                  </ImageListItem>
+                );
+              })}
+            </ImageList>
           </SectionInMember>
           <MemberControlPanel>
-            {isAuthor && currentCard?.name !== summonerName && (
+            {isAuthor && currentCard?.name !== name && (
               <MuiIconButton
                 onClick={() => {
                   //
@@ -213,8 +265,8 @@ const Member = styled(MuiBox)(() => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
-  width: '520px',
-  height: '80px',
+  width: '600px',
+  height: '90px',
   border: '1px solid #cccccc',
   borderRadius: '8px',
   padding: '8px',
@@ -236,73 +288,78 @@ const Nickname = styled(MuiTypography)(() => ({
   fontSize: '16px',
   fontWeight: '700',
   minWidth: '120px',
+  lineHeight: '54px',
   textOverflow: 'ellipsis',
 })) as typeof MuiTypography;
 
-const MostLaneInfo = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  '& > img': {
-    mixBlendMode: 'exclusion',
-  },
-})) as typeof MuiBox;
-
-const MostLanteTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
-  margin: '0 0 0 4px',
-})) as typeof MuiTypography;
-
-const FlexRow = styled(MuiBox)(() => ({
+const TierSection = styled(MuiBox)(() => ({
+  width: '150px',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
 })) as typeof MuiBox;
 
-const RankEmblemWrapper = styled(MuiBox)(() => ({
-  backgroundColor: '#e3e0e0',
-  borderRadius: '50%',
-  width: '44px',
-  height: '44px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  margin: '0 4px 0 0',
-})) as typeof MuiBox;
-
-const TierWinRateWrapper = styled(MuiBox)(() => ({
+const PositionRankSection = styled(MuiBox)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
-  justifyContent: 'center',
-  padding: '0 0 0 4px',
+  justifyContent: 'flex-start',
 })) as typeof MuiBox;
 
-const TierTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
-  color: '#000000',
+const RankEmblemWrapper = styled(MuiBox)(() => ({
+  width: '40px',
+  height: '25px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: 0,
+})) as typeof MuiBox;
+
+const PositionEmblemWrapper = styled(MuiBox)(() => ({
+  backgroundColor: '#d8d8d8c8',
+  borderRadius: '50%',
+  width: '14px',
+  height: '14px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
+
+const Tier = styled(MuiTypography)(() => ({
+  width: '100%',
+  fontSize: '8px',
+  fontWeight: '600',
+  textAlign: 'center',
+})) as typeof MuiTypography;
+
+const WinRateSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  minWidth: '70px',
+  minHeight: '54px',
+})) as typeof MuiBox;
+
+const WinRate = styled(MuiTypography)(() => ({
+  fontSize: '16px',
+  fontWeight: '700',
 })) as typeof MuiTypography;
 
 const MatchPlayed = styled(MuiTypography)(() => ({
-  fontSize: '12px',
+  fontSize: '8px',
   fontWeight: '500',
   color: '#000000',
 })) as typeof MuiTypography;
 
-const WinRate = styled(MuiTypography)(() => ({
-  fontSize: '12px',
-  fontWeight: '600',
-  padding: '0 0 0 2px',
+const KDTypo = styled(MuiTypography)(() => ({
+  fontSize: '16px',
+  fontWeight: '700',
 })) as typeof MuiTypography;
 
-const ChampImgWrapper = styled(MuiBox)(() => ({
-  borderRadius: '4px',
-  '& > img': {
-    borderRadius: '4px',
-    objectFit: 'cover',
-  },
-})) as typeof MuiBox;
+const KillsAndDeaths = styled(MuiTypography)(() => ({
+  fontSize: '8px',
+  fontWeight: '500',
+})) as typeof MuiTypography;
 
 const MemberControlPanel = styled(MuiBox)(() => ({
   display: 'flex',

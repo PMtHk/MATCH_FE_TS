@@ -33,6 +33,11 @@ const Main = () => {
   );
 
   const handleQueueType = (event: SelectChangeEvent) => {
+    if (event.target.value === 'ARCADE') {
+      setTier('ALL');
+      setPosition('ALL');
+    }
+
     dispatch(cardActions.SET_CURRENT_PAGE(0));
     setQueueType(event.target.value);
   };

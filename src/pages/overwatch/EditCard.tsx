@@ -31,6 +31,8 @@ import { RootState } from 'store';
 import { authAxios, defaultAxios } from 'apis/utils';
 import { cardActions } from 'store/card-slice';
 import { get, child, ref, getDatabase, update } from 'firebase/database';
+import { updateCard } from 'apis/api/common';
+import { snackbarActions } from 'store/snackbar-slice';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -40,7 +42,9 @@ const CreateCard = () => {
 
   const { id: cardId } = params;
 
-  const { lol: registeredNickname } = useSelector(
+  const currentGame = window.location.pathname.split('/')[1];
+
+  const { overwatch: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
   );
 
@@ -54,7 +58,7 @@ const CreateCard = () => {
 
   // 사용자의 input state
   const [userInput, setUserInput] = React.useState({
-    name: currentCard?.name,
+    name: currentCard?.author.name,
     type: currentCard?.type,
     tier: currentCard?.tier,
     position: currentCard?.position,
@@ -171,32 +175,35 @@ const CreateCard = () => {
     }
   };
 
-  const updateCard = async () => {
-    if (currentCard.chatRoomId) {
+  const updateHandler = async () => {
+    try {
       setIsPosting(true);
 
-      await authAxios
-        .put(`/api/overwatch/board/${cardId}`, { ...userInput })
-        .then(async (response) => {
-          if (response.status === 200) {
-            // firebase update
-            await update(
-              ref(getDatabase(), `chatRooms/${currentCard.chatRoomId}`),
-              {
-                content: userInput.content,
-                maxMember: 5,
-              },
-            ).then(() => {
-              // 파이어베이스 수정 완료
-              alert('수정이 완료되었습니다.');
-              navigate('/overwatch', { replace: true });
-              window.location.reload();
-            });
-          } else {
-            alert('게시글 수정 중 문제가 발생하였습니다.');
-            window.location.reload();
-          }
-        });
+      await updateCard(
+        currentGame,
+        currentCard.id,
+        currentCard.chatRoomId,
+        userInput,
+        5,
+      );
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 수정이 완료되었습니다.',
+          severity: 'success',
+        }),
+      );
+
+      navigate(`/overwatch/${currentCard.id}`, { replace: true });
+    } catch (error) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 수정 중 문제가 발생하였습니다.',
+          severity: 'error',
+        }),
+      );
+    } finally {
+      setIsPosting(false);
     }
   };
 
@@ -231,7 +238,7 @@ const CreateCard = () => {
         </HeaderWrapper>
         <MuiDivider />
         <NicknameSection>
-          <SectionTitle>플레이할 소환사 명</SectionTitle>
+          <SectionTitle>플레이할 닉네임</SectionTitle>
           <NicknameInput
             value={userInput.name}
             disabled
@@ -251,11 +258,7 @@ const CreateCard = () => {
             {queueTypeList.map((item) => {
               if (item.value !== 'ALL') {
                 return (
-                  <ToggleButton
-                    key={item.value}
-                    value={item.value}
-                    disabled={item.maxMember < currentCard.memberList.length}
-                  >
+                  <ToggleButton key={item.value} value={item.value}>
                     {item.label}
                   </ToggleButton>
                 );
@@ -269,7 +272,7 @@ const CreateCard = () => {
           <TierToggleWrapper>
             <ToggleButtonGroup
               exclusive
-              disabled={isPosting || userInput.type === 'ARAM'}
+              disabled={isPosting || userInput.type === 'ARCADE'}
               value={userInput.tier}
               onChange={handleTier}
             >
@@ -294,7 +297,7 @@ const CreateCard = () => {
           <SectionTitle>원하는 파티원의 포지션</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={isPosting || userInput.type === 'ARAM'}
+            disabled={isPosting || userInput.type === 'ARCADE'}
             value={userInput.position}
             onChange={handlePosition}
           >
@@ -384,7 +387,7 @@ const CreateCard = () => {
             뒤로가기
           </CancelButton>
           <PostButton
-            onClick={updateCard}
+            onClick={updateHandler}
             disabled={isPosting || userInput.content.length < 20}
             variant="contained"
             startIcon={<Edit />}

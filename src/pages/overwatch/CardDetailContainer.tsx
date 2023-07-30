@@ -47,11 +47,15 @@ const CardDetailContainer = () => {
   const totalMember = queueType?.maxMember || 5;
   const currentMember = currentCard?.memberList?.length || 0;
 
+  const arrayForEmptySlot = new Array(totalMember - currentMember)
+    .fill(0)
+    .map((value, i) => `memberSlot_${i}`);
+
   if (currentCard) {
     return (
       <>
         <ModalHeader>
-          <Title>{currentCard?.name} 님의 파티</Title>
+          <Title>{currentCard?.author.name} 님의 파티</Title>
           <MuiIconButton
             size="small"
             onClick={() => {
@@ -96,9 +100,11 @@ const CardDetailContainer = () => {
               <MemberList>
                 {currentCard &&
                   currentCard?.memberList?.map((member: string) => {
-                    return <MemberSlot key={member} summonerName={member} />;
+                    return <MemberSlot key={member} name={member} />;
                   })}
-                {Array(totalMember - currentMember).fill(<EmptySlot />)}
+                {arrayForEmptySlot.map((value, index) => (
+                  <EmptySlot key={value} />
+                ))}
               </MemberList>
             </MemberListWrapper>
             {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
@@ -212,8 +218,8 @@ const MemberList = styled(MuiBox)(() => ({
   display: 'flex',
   flexDirection: 'column',
   justifyContent: 'flex-start',
-  minWidth: 520,
-  minHeight: '418px',
-  maxHeight: '418px',
+  minWidth: 600,
+  minHeight: '470px',
+  maxHeight: '470px',
   overflow: 'auto',
 })) as typeof MuiBox;
