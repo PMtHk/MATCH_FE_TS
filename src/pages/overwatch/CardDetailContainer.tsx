@@ -19,6 +19,7 @@ import LeaveBtn from 'components/card-actions/LeaveBtn';
 import JoinBtn from 'components/card-actions/JoinBtn';
 import DeleteCardBtn from 'components/card-actions/DeleteCardBtn';
 import Circular from 'components/loading/Circular';
+import FinishBtn from 'components/card-actions/FinishBtn';
 import { positionList, queueTypeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
@@ -118,6 +119,7 @@ const CardDetailContainer = () => {
                 <MuiStack direction="row" spacing="2%" mt={1}>
                   <DeleteCardBtn />
                   <EditCardBtn />
+                  <FinishBtn />
                 </MuiStack>
               ) : (
                 <LeaveBtn />
