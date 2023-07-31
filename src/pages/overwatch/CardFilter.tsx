@@ -104,6 +104,15 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           {positionList.map((item) => {
             return (
               <ToggleButton key={item.value} value={item.value}>
+                {item.value !== 'ALL' && (
+                  <img
+                    src={item.imageUrl}
+                    alt={item.value}
+                    width="16px"
+                    height="16px"
+                    style={{ marginRight: '8px' }}
+                  />
+                )}
                 {item.label}
               </ToggleButton>
             );
