@@ -10,7 +10,7 @@ import MuiTypography from '@mui/material/Typography';
 
 import { RootState } from 'store';
 
-import { getToken } from 'firebase/messaging';
+import { deleteToken, getToken } from 'firebase/messaging';
 import { notificationActions } from 'store/notification-slice';
 import { messaging } from '../firebase';
 
@@ -26,6 +26,7 @@ const Layout = () => {
   // 알림 권한 허용, 토큰 발급
   const getPermission = () => {
     Notification.requestPermission().then(async (permission) => {
+      await deleteToken(messaging);
       // 알림 허용
       if (permission === 'granted') {
         const token: string | void = await getToken(messaging, {
