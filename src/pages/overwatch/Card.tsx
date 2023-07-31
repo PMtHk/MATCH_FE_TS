@@ -126,8 +126,8 @@ const Card = ({ item, expired }: CardProps) => {
             src={position?.imageUrl || ''}
             alt="game_img"
             loading="lazy"
-            height="35px"
-            width="35px"
+            height="30px"
+            width="30px"
           />
           <CardTitle>
             <TopInfo>
@@ -179,7 +179,7 @@ const Card = ({ item, expired }: CardProps) => {
         <MuiDivider sx={{ my: 1 }} />
         <AuthorInfoWrapper>
           <AuthorSection>
-            <SectionName>작성자</SectionName>
+            <AuthorSectionName>작성자</AuthorSectionName>
             <SectionContent>
               <Author>{authorNickname}</Author>
               {item.voice === 'Y' && (
@@ -195,26 +195,23 @@ const Card = ({ item, expired }: CardProps) => {
             </SectionContent>
           </AuthorSection>
           <AuthorSection>
-            <ChildSectionName>승률</ChildSectionName>
+            <WinRateSectionName>승률</WinRateSectionName>
             <ChildSectionContent>
-              <WinRate
-                component="span"
-                sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-              >
-                {winRate}%
-              </WinRate>
               <MatchPlayed>
-                {item.author?.wins}승 / {item.author?.losses}패
+                {item.author?.wins}승 {item.author?.losses}패
+                <WinRate
+                  component="span"
+                  sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                >
+                  ({winRate}%)
+                </WinRate>
               </MatchPlayed>
             </ChildSectionContent>
           </AuthorSection>
           <AuthorSection>
-            <ChildSectionName>K/D</ChildSectionName>
+            <KDSectionName>K/D</KDSectionName>
             <ChildSectionContent>
               <KDTypo sx={{ color: calcKDInfo().color }}>{authorKDTypo}</KDTypo>
-              <KillsAndDeaths>
-                {item.author?.kills} / {item.author?.deaths}
-              </KillsAndDeaths>
             </ChildSectionContent>
           </AuthorSection>
           <AuthorSection>
@@ -237,12 +234,12 @@ const Card = ({ item, expired }: CardProps) => {
                     height="50px"
                   />
                 </RankWrapper>
-                <Tier sx={{ color: authorTankTier?.color }}>
+                <TierTypo sx={{ color: authorTankTier?.color }}>
                   {authorTankTier?.acronym}
                   {item.author.tank_rank === 'none'
                     ? ''
                     : item.author.tank_rank}
-                </Tier>
+                </TierTypo>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem />
               <PositionRankSection>
@@ -262,12 +259,12 @@ const Card = ({ item, expired }: CardProps) => {
                     height="50px"
                   />
                 </RankWrapper>
-                <Tier sx={{ color: authorDamageTier?.color }}>
+                <TierTypo sx={{ color: authorDamageTier?.color }}>
                   {authorDamageTier?.acronym}
                   {item.author.damage_rank === 'none'
                     ? ''
                     : item.author.damage_rank}
-                </Tier>
+                </TierTypo>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem />
               <PositionRankSection>
@@ -287,19 +284,19 @@ const Card = ({ item, expired }: CardProps) => {
                     height="50px"
                   />
                 </RankWrapper>
-                <Tier sx={{ color: authorSupportTier?.color }}>
+                <TierTypo sx={{ color: authorSupportTier?.color }}>
                   {authorSupportTier?.acronym}
                   {item.author.support_rank === 'none'
                     ? ''
                     : item.author.support_rank}
-                </Tier>
+                </TierTypo>
               </PositionRankSection>
             </SectionContent>
           </AuthorSection>
           <MostHeroSection>
             <SectionName>모스트 영웅</SectionName>
             <SectionContent>
-              <ImageList sx={{ m: '8px 0 0 0', p: 0 }} cols={3} gap={8}>
+              <ImageList sx={{ m: '8px 0 0 0', p: 0 }} cols={3} gap={4}>
                 {item.author.mostHero.map((aHero, index) => {
                   return (
                     <ImageListItem
@@ -308,7 +305,7 @@ const Card = ({ item, expired }: CardProps) => {
                         width: '44px',
                         height: '44px',
                         gap: 1,
-                        border: '3px solid black',
+                        border: '2px solid black',
                       }}
                     >
                       <img
@@ -427,7 +424,7 @@ const AuthorInfoWrapper = styled(MuiBox)(() => ({
 })) as typeof MuiBox;
 
 const AuthorSection = styled(MuiBox)(() => ({
-  minHeight: '65px',
+  minHeight: '55px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
@@ -442,8 +439,24 @@ const SectionName = styled(MuiTypography)(() => ({
   margin: '0 0 4px 0',
 })) as typeof MuiTypography;
 
-const ChildSectionName = styled(MuiTypography)(() => ({
-  minWidth: '80px',
+const AuthorSectionName = styled(MuiTypography)(() => ({
+  minWidth: '120px',
+  fontSize: '12px',
+  fontWeight: '700',
+  color: '#999999',
+  margin: '0 0 4px 0',
+})) as typeof MuiTypography;
+
+const WinRateSectionName = styled(MuiTypography)(() => ({
+  minWidth: '140px',
+  fontSize: '12px',
+  fontWeight: '700',
+  color: '#999999',
+  margin: '0 0 4px 0',
+})) as typeof MuiTypography;
+
+const KDSectionName = styled(MuiTypography)(() => ({
+  minWidth: '60px',
   fontSize: '12px',
   fontWeight: '700',
   color: '#999999',
@@ -462,7 +475,7 @@ const ChildSectionContent = styled(MuiBox)(() => ({
   flexDirection: 'column',
   alignItems: 'flex-start',
   justifyContent: 'flex-start',
-  gap: '4px',
+  gap: '2px',
 })) as typeof MuiBox;
 
 const Author = styled(MuiTypography)(() => ({
@@ -474,26 +487,20 @@ const Author = styled(MuiTypography)(() => ({
 })) as typeof MuiTypography;
 
 const MatchPlayed = styled(MuiTypography)(() => ({
-  fontSize: '8px',
+  fontSize: '14px',
   fontWeight: '500',
   color: '#000000',
 })) as typeof MuiTypography;
 
 const WinRate = styled(MuiTypography)(() => ({
-  fontSize: '12px',
+  fontSize: '14px',
   fontWeight: '600',
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
 
 const KDTypo = styled(MuiTypography)(() => ({
-  fontSize: '12px',
+  fontSize: '14px',
   fontWeight: '600',
-  padding: '0 0 0 2px',
-})) as typeof MuiTypography;
-
-const KillsAndDeaths = styled(MuiTypography)(() => ({
-  fontSize: '8px',
-  fontWeight: '500',
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
 
@@ -506,7 +513,7 @@ const PositionRankSection = styled(MuiBox)(() => ({
 
 const RankWrapper = styled(MuiBox)(() => ({
   width: '40px',
-  height: '40px',
+  height: '30px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
@@ -514,8 +521,6 @@ const RankWrapper = styled(MuiBox)(() => ({
 })) as typeof MuiBox;
 
 const PositionEmblemWrapper = styled(MuiBox)(() => ({
-  backgroundColor: '#e9e8e8c4',
-  borderRadius: '50%',
   width: '20px',
   height: '20px',
   display: 'flex',
@@ -523,15 +528,15 @@ const PositionEmblemWrapper = styled(MuiBox)(() => ({
   justifyContent: 'center',
 })) as typeof MuiBox;
 
-const Tier = styled(MuiTypography)(() => ({
+const TierTypo = styled(MuiTypography)(() => ({
   width: '100%',
-  fontSize: '8px',
+  fontSize: '12px',
   fontWeight: '600',
   textAlign: 'center',
 })) as typeof MuiTypography;
 
 const MostHeroSection = styled(MuiBox)(() => ({
-  minHeight: '100px',
+  minHeight: '90px',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
