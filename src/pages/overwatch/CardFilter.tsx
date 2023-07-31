@@ -67,7 +67,11 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           >
             {queueTypeList.map((item) => {
               return (
-                <MuiMenuItem key={item.value} value={item.value}>
+                <MuiMenuItem
+                  key={item.value}
+                  value={item.value}
+                  disabled={item.value === 'ARCADE'}
+                >
                   {item.label}
                 </MuiMenuItem>
               );

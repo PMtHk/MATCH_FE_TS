@@ -334,10 +334,12 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
               <MuiIconButton
                 size="small"
                 onClick={handleKickBtn}
-                disabled={
-                  currentCard.expired === 'true' ||
-                  currentCard.finished === 'true'
-                }
+                // disabled={
+                //   currentCard.expired === 'true' ||
+                //   currentCard.finished === 'true'
+                // }
+                // 강퇴 api 서버 오류로 인한 disabled
+                disabled
               >
                 <Close />
               </MuiIconButton>

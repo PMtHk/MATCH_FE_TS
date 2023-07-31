@@ -329,7 +329,11 @@ const CreateCard = () => {
             {queueTypeList.map((item) => {
               if (item.value !== 'ALL') {
                 return (
-                  <ToggleButton key={item.value} value={item.value}>
+                  <ToggleButton
+                    key={item.value}
+                    value={item.value}
+                    disabled={item.value === 'ARCADE'}
+                  >
                     {item.label}
                   </ToggleButton>
                 );
