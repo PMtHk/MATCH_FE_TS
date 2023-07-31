@@ -49,8 +49,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
     deaths: 0,
     mostHero: [],
   });
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);4
-
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   // author info
   const authorNickname = memberInfo.name.substring(
     0,
