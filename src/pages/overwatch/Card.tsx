@@ -237,8 +237,18 @@ const Card = ({ item, expired }: CardProps) => {
                   <img
                     src={authorTankTier?.imageUrl}
                     alt={authorTankTier?.value}
-                    width="50px"
-                    height="50px"
+                    width={
+                      authorTankTier?.value === 'GRANDMASTER' ||
+                      authorTankTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                    height={
+                      authorTankTier?.value === 'GRANDMASTER' ||
+                      authorTankTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
                   />
                 </RankWrapper>
                 <TierTypo sx={{ color: authorTankTier?.color }}>
@@ -262,8 +272,18 @@ const Card = ({ item, expired }: CardProps) => {
                   <img
                     src={authorDamageTier?.imageUrl}
                     alt={authorDamageTier?.value}
-                    width="50px"
-                    height="50px"
+                    width={
+                      authorDamageTier?.value === 'GRANDMASTER' ||
+                      authorDamageTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                    height={
+                      authorDamageTier?.value === 'GRANDMASTER' ||
+                      authorDamageTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
                   />
                 </RankWrapper>
                 <TierTypo sx={{ color: authorDamageTier?.color }}>
@@ -287,8 +307,18 @@ const Card = ({ item, expired }: CardProps) => {
                   <img
                     src={authorSupportTier?.imageUrl}
                     alt={authorSupportTier?.value}
-                    width="50px"
-                    height="50px"
+                    width={
+                      authorSupportTier?.value === 'GRANDMASTER' ||
+                      authorSupportTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                    height={
+                      authorSupportTier?.value === 'GRANDMASTER' ||
+                      authorSupportTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
                   />
                 </RankWrapper>
                 <TierTypo sx={{ color: authorSupportTier?.color }}>

@@ -217,15 +217,23 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                   <img
                     src={authorTankTier?.imageUrl}
                     alt={authorTankTier?.value}
-                    width="36px"
-                    height="36px"
+                    width={
+                      authorTankTier?.value === 'GRANDMASTER' ||
+                      authorTankTier?.value === 'MASTER'
+                        ? '30px'
+                        : '36px'
+                    }
+                    height={
+                      authorTankTier?.value === 'GRANDMASTER' ||
+                      authorTankTier?.value === 'MASTER'
+                        ? '30px'
+                        : '36px'
+                    }
                   />
                 </RankEmblemWrapper>
                 <Tier sx={{ color: authorTankTier?.color }}>
                   {authorTankTier?.acronym}
-                  {memberInfo.tank_rank === 'none'
-                    ? ''
-                    : memberInfo.tank_rank}
+                  {memberInfo.tank_rank === 'none' ? '' : memberInfo.tank_rank}
                 </Tier>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -242,8 +250,18 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                   <img
                     src={authorDamageTier?.imageUrl}
                     alt={authorDamageTier?.value}
-                    width="36px"
-                    height="36px"
+                    width={
+                      authorDamageTier?.value === 'GRANDMASTER' ||
+                      authorDamageTier?.value === 'MASTER'
+                        ? '30px'
+                        : '36px'
+                    }
+                    height={
+                      authorDamageTier?.value === 'GRANDMASTER' ||
+                      authorDamageTier?.value === 'MASTER'
+                        ? '30px'
+                        : '36px'
+                    }
                   />
                 </RankEmblemWrapper>
                 <Tier sx={{ color: authorDamageTier?.color }}>
@@ -267,8 +285,18 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                   <img
                     src={authorSupportTier?.imageUrl}
                     alt={authorSupportTier?.value}
-                    width="36px"
-                    height="36px"
+                    width={
+                      authorSupportTier?.value === 'GRANDMASTER' ||
+                      authorSupportTier?.value === 'MASTER'
+                        ? '30px'
+                        : '36px'
+                    }
+                    height={
+                      authorSupportTier?.value === 'GRANDMASTER' ||
+                      authorSupportTier?.value === 'MASTER'
+                        ? '30px'
+                        : '36px'
+                    }
                   />
                 </RankEmblemWrapper>
                 <Tier sx={{ color: authorSupportTier?.color }}>
