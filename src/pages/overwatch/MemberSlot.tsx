@@ -1,7 +1,7 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { ref, getDatabase, get, update, child } from 'firebase/database';
+import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { authAxios, defaultAxios } from 'apis/utils';
 
@@ -19,6 +19,8 @@ import Close from '@mui/icons-material/Close';
 import { RootState } from 'store';
 
 import Circular from 'components/loading/Circular';
+import { snackbarActions } from 'store/snackbar-slice';
+import { kickMemberFromParty } from 'apis/api/common';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -26,6 +28,9 @@ interface MemberSlotProps {
 }
 
 const MemberSlot = ({ name }: MemberSlotProps) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
@@ -44,7 +49,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
     deaths: 0,
     mostHero: [],
   });
-  const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);4
 
   // author info
   const authorNickname = memberInfo.name.substring(
@@ -96,7 +101,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
   const authorKDTypo = (memberInfo.kills / memberInfo.deaths).toFixed(2);
 
-  const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
+  const isAuthor = oauth2Id === currentCard?.oauth2Id;
 
   useEffect(() => {
     const fetchSummonerInfo = async () => {
@@ -119,46 +124,44 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
     fetchSummonerInfo();
   }, []);
 
-  const kickMember = async () => {
-    await authAxios
-      .delete(`/api/chat/overwatch/${currentCard?.id}/ban`)
-      .then(async (response) => {
-        if (response.status === 200) {
-          // Firebase RealtimeDB의 memberList에서 제거 및 banList에 추가
-          const chatRoomRef = ref(getDatabase(), 'chatRooms');
+  const handleKickBtn = async () => {
+    const userCheck = window.confirm(
+      '강제퇴장 당한 사용자는 다시 입장할 수 없습니다.\n그래도 진행하시겠습니까?',
+    );
 
-          await get(child(chatRoomRef, currentCard?.chatRoomId)).then(
-            async (dataSnapshot) => {
-              const prevMemberList = [...dataSnapshot.val().memberList];
-              const target = prevMemberList.find(
-                (member) => member.nickname === name,
-              );
-              if (!target) {
-                return location.reload();
-              }
-              const prevBannedList = dataSnapshot.val().bannedList
-                ? [...dataSnapshot.val().bannedList]
-                : [];
-              const newMemberList = prevMemberList.filter(
-                (member) => member.nickname !== name,
-              );
-              const newBannedList = [...prevBannedList, target];
-              await update(
-                ref(getDatabase(), `chatRooms/${currentCard?.chatRoomId}`),
-                {
-                  memberList: newMemberList,
-                  bannedList: newBannedList,
-                },
-              ).then(() => {
-                location.reload();
-              });
-              return null;
-            },
-          );
-        }
-      });
+    if (userCheck) {
+      await handleKick();
+    }
+    return null;
   };
 
+  const handleKick = async () => {
+    try {
+      await kickMemberFromParty(
+        currentCard?.id,
+        currentCard?.chatRoomId,
+        name,
+        'overwatch',
+      );
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `${name} 님을 파티에서 제외시켰습니다.`,
+          severity: 'success',
+        }),
+      );
+
+      window.location.reload();
+    } catch (error: any) {
+      console.log(error);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '문제가 발생했습니다. 잠시 후 다시 시도해주세요.',
+          severity: 'error',
+        }),
+      );
+    }
+  };
   return (
     <>
       {isLoading && (
@@ -306,7 +309,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
               cols={3}
               gap={4}
             >
-              {memberInfo?.mostHero.map((aHero, index) => {
+              {memberInfo?.mostHero.map((aHero: string, _index: number) => {
                 return (
                   <ImageListItem
                     key={aHero}
@@ -328,11 +331,14 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
             </ImageList>
           </SectionInMember>
           <MemberControlPanel>
-            {isAuthor && currentCard?.name !== name && (
+            {isAuthor && currentCard?.author.name !== name && (
               <MuiIconButton
-                onClick={() => {
-                  //
-                }}
+                size="small"
+                onClick={handleKickBtn}
+                disabled={
+                  currentCard.expired === 'true' ||
+                  currentCard.finished === 'true'
+                }
               >
                 <Close />
               </MuiIconButton>
@@ -351,7 +357,7 @@ const Member = styled(MuiBox)(() => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
-  width: '600px',
+  width: '625px',
   height: '90px',
   border: '1px solid #cccccc',
   borderRadius: '8px',
