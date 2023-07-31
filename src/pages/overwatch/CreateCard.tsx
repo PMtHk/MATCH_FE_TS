@@ -353,7 +353,16 @@ const CreateCard = () => {
                     <ToggleButton
                       key={item.value}
                       value={item.value}
-                      disabled={isPosting}
+                      disabled={
+                        isPosting
+                          ? true
+                          : !!(
+                              (item.value === 'GRANDMASTER' ||
+                                item.value === 'MASTER' ||
+                                item.value === 'ALL') &&
+                              userInput.type === 'RANKED'
+                            )
+                      }
                     >
                       {item.label}
                     </ToggleButton>

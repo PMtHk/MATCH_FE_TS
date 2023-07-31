@@ -71,7 +71,7 @@ export const tierList = [
       'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/bronze.png',
   },
   {
-    value: 'NONE',
+    value: 'UNRANKED',
     label: '언랭',
     color: '#000000',
     acronym: 'ㅡ',

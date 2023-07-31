@@ -95,15 +95,22 @@ const Card = ({ item, expired }: CardProps) => {
     };
   };
 
-  const authorTankTier = tierList.find(
-    (aTier) => aTier.value === item.author.tank_tier.toUpperCase(),
-  );
-  const authorDamageTier = tierList.find(
-    (aTier) => aTier.value === item.author.damage_tier.toUpperCase(),
-  );
-  const authorSupportTier = tierList.find(
-    (aTier) => aTier.value === item.author.support_tier.toUpperCase(),
-  );
+  const tank =
+    item.author.tank_tier === 'none'
+      ? 'UNRANKED'
+      : item.author.tank_tier.toUpperCase();
+  const damage =
+    item.author.damage_tier === 'none'
+      ? 'UNRANKED'
+      : item.author.damage_tier.toUpperCase();
+  const support =
+    item.author.support_tier === 'none'
+      ? 'UNRANKED'
+      : item.author.support_tier.toUpperCase();
+
+  const authorTankTier = tierList.find((aTier) => aTier.value === tank);
+  const authorDamageTier = tierList.find((aTier) => aTier.value === damage);
+  const authorSupportTier = tierList.find((aTier) => aTier.value === support);
   const totalPlayed = item.author.wins + item.author.losses;
   const winRate = Math.round((item.author.wins / totalPlayed) * 100);
   const authorKDTypo = (item.author.kills / item.author.deaths).toFixed(2);

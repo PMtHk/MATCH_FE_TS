@@ -76,18 +76,33 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
     };
   };
 
-  const authorTankTier = tierList.find(
-    (aTier) => aTier.value === memberInfo?.tank_tier.toUpperCase(),
-  );
-  const authorDamageTier = tierList.find(
-    (aTier) => aTier.value === memberInfo?.damage_tier.toUpperCase(),
-  );
-  const authorSupportTier = tierList.find(
-    (aTier) => aTier.value === memberInfo?.support_tier.toUpperCase(),
-  );
+  const tank =
+    memberInfo.tank_tier === 'none'
+      ? 'UNRANKED'
+      : memberInfo.tank_tier.toUpperCase();
+  const damage =
+    memberInfo.damage_tier === 'none'
+      ? 'UNRANKED'
+      : memberInfo.damage_tier.toUpperCase();
+  const support =
+    memberInfo.support_tier === 'none'
+      ? 'UNRANKED'
+      : memberInfo.support_tier.toUpperCase();
+
+  const authorTankTier = tierList.find((aTier) => aTier.value === tank);
+  const authorDamageTier = tierList.find((aTier) => aTier.value === damage);
+  const authorSupportTier = tierList.find((aTier) => aTier.value === support);
   const totalPlayed = memberInfo.wins + memberInfo.losses;
   const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
   const authorKDTypo = (memberInfo.kills / memberInfo.deaths).toFixed(2);
+
+  // unranked info
+  const tankUnranked =
+    memberInfo.tank_tier === 'none' && memberInfo.tank_rank === 'none';
+  const damageUnranked =
+    memberInfo.damage_tier === 'none' && memberInfo.damage_rank === 'none';
+  const supportUnranked =
+    memberInfo.support_tier === 'none' && memberInfo.support_rank === 'none';
 
   const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
 
@@ -208,9 +223,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </RankEmblemWrapper>
                 <Tier sx={{ color: authorTankTier?.color }}>
                   {authorTankTier?.acronym}
-                  {memberInfo?.tank_rank === 'none'
+                  {memberInfo.tank_rank === 'none'
                     ? ''
-                    : memberInfo?.tank_rank}
+                    : memberInfo.tank_rank}
                 </Tier>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -233,9 +248,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </RankEmblemWrapper>
                 <Tier sx={{ color: authorDamageTier?.color }}>
                   {authorDamageTier?.acronym}
-                  {memberInfo?.damage_rank === 'none'
+                  {memberInfo.damage_rank === 'none'
                     ? ''
-                    : memberInfo?.damage_rank}
+                    : memberInfo.damage_rank}
                 </Tier>
               </PositionRankSection>
               <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
@@ -258,9 +273,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </RankEmblemWrapper>
                 <Tier sx={{ color: authorSupportTier?.color }}>
                   {authorSupportTier?.acronym}
-                  {memberInfo?.support_rank === 'none'
+                  {memberInfo.support_rank === 'none'
                     ? ''
-                    : memberInfo?.support_rank}
+                    : memberInfo.support_rank}
                 </Tier>
               </PositionRankSection>
             </TierSection>
