@@ -17,7 +17,7 @@ export const tierList = [
   {
     value: 'GRANDMASTER',
     label: '그랜드마스터',
-    color: '#A7C7B4',
+    color: '#92AD9D',
     acronym: 'GM',
     imageUrl:
       'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/grandmaster.png',
@@ -25,7 +25,7 @@ export const tierList = [
   {
     value: 'MASTER',
     label: '마스터',
-    color: '#D6C669',
+    color: '#B5A759',
     acronym: 'M',
     imageUrl:
       'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/master.png',
@@ -33,7 +33,7 @@ export const tierList = [
   {
     value: 'DIAMOND',
     label: '다이아몬드',
-    color: '#95ABC2',
+    color: '#879BB0',
     acronym: 'D',
     imageUrl:
       'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/diamond.png',
@@ -41,7 +41,7 @@ export const tierList = [
   {
     value: 'PLATINUM',
     label: '플래티넘',
-    color: '#A0BAA9',
+    color: '#95AD9E',
     acronym: 'P',
     imageUrl:
       'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/platinum.png',
