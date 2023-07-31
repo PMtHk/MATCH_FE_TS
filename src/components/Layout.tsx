@@ -26,7 +26,6 @@ const Layout = () => {
   // 알림 권한 허용, 토큰 발급
   const getPermission = () => {
     Notification.requestPermission().then(async (permission) => {
-      await deleteToken(messaging);
       // 알림 허용
       if (permission === 'granted') {
         const token: string | void = await getToken(messaging, {
@@ -34,6 +33,7 @@ const Layout = () => {
         }).catch((error: any) => console.log(error));
 
         if (token) {
+          console.log(token);
           dispatch(notificationActions.SET_NOTITOKEN(token));
         }
       }
