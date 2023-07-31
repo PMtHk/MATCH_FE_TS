@@ -41,8 +41,23 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
     handlePosition,
   } = filterProps;
 
+  const [scrollPosition, setScrollPosition] = React.useState<number>(0);
+
+  const updateScroll = () => {
+    setScrollPosition(window.scrollY || document.documentElement.scrollTop);
+  };
+
+  const handleScroll = throttle(updateScroll, 200);
+
+  React.useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <GridContainer container spacing={1}>
+    <GridContainer scrollPosition={scrollPosition} container spacing={1}>
       <GridItem item xs={6} sm={6} md={2} lg={1.5}>
         <FormControl size="small">
           <MuiSelect
@@ -114,19 +129,41 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
 
 export default CardFilter;
 
+const throttle = (callback: () => void, delay: number) => {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  return () => {
+    if (timer) return;
+    timer = setTimeout(() => {
+      callback();
+      timer = null;
+    }, delay);
+  };
+};
+
 // styled components
-const GridContainer = styled(MuiGrid)(({ theme }) => ({
+
+interface GridContainerProps {
+  scrollPosition: number;
+}
+const GridContainer = styled(MuiGrid, {
+  shouldForwardProp: (prop) => prop !== 'scrollPosition',
+})<GridContainerProps>(({ theme, scrollPosition }) => ({
+  position: scrollPosition >= 60 ? 'sticky' : 'static',
+  top: scrollPosition >= 60 ? '60px' : '0',
   margin: '0',
   padding: '0  8px 8px 0',
   backgroundColor: '#ffffff',
   border: '1px solid #dddddd',
   borderRadius: '8px',
+  borderTopLeftRadius: scrollPosition >= 60 ? '0' : '8px',
+  borderTopRightRadius: scrollPosition >= 60 ? '0' : '8px',
   width: '95%',
   alignItems: 'center',
   [theme.breakpoints.up('lg')]: {
     width: '1180px',
   },
-})) as typeof MuiGrid;
+  zIndex: 1,
+}));
 
 const GridItem = styled(MuiGrid)(() => ({})) as typeof MuiGrid;
 
