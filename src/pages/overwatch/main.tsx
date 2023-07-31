@@ -137,7 +137,7 @@ const CardListErrorFallback = ({
 };
 
 const Pagination = styled(MuiPagination)(() => ({
-  margin: '20px 0 40px 0',
+  margin: '10px 0 30px 0',
 }));
 
 const ErrorFallbackWrapper = styled(MuiBox)(() => ({
