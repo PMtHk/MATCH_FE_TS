@@ -26,26 +26,24 @@ const games = {
 };
 
 messaging.onBackgroundMessage((payload) => {
-  console.log('Received background message ', payload);
   const notificationTitle = `${payload.data.createdBy}의 방(${
     games[payload.data.game]
   })`;
   const notificationOptions = {
     body: payload.data.content,
-    icon: './logo512.png',
+    icon: './logo192.png',
     content: payload.data.content,
     timestamp: payload.data.timestamp,
     user_nickname: payload.data.user_nickname,
     roomId: payload.data.roomId,
     createdBy: payload.data.createdBy,
     game: payload.data.game,
+    badge: './logo512.png',
   };
 
   self.addEventListener('notificationclick', (event) => {
     let clickResponsePromise = Promise.resolve();
 
-    console.log(event.notification.data);
-    console.log(event);
     event.notification.close();
 
     clickResponsePromise = clients.openWindow(

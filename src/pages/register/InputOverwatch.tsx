@@ -36,7 +36,6 @@ const InputOverwatch = () => {
 
   const handleVerify = async () => {
     const nickAndTag = nickname.trim().split('#');
-    console.log(nickAndTag);
 
     try {
       setIsPending(true);

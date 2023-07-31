@@ -33,7 +33,6 @@ const Layout = () => {
         }).catch((error: any) => console.log(error));
 
         if (token) {
-          console.log(token);
           dispatch(notificationActions.SET_NOTITOKEN(token));
         }
       }
