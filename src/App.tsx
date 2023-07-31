@@ -30,6 +30,7 @@ const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
 const MyPage = lazy(() => import('pages/mypage'));
 const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
 const Battlegrounds = lazy(() => import('pages/battlegrounds'));
+const Overwatch = lazy(() => import('pages/overwatch'));
 
 const App = () => {
   const dispatch = useDispatch();
@@ -63,6 +64,7 @@ const App = () => {
           <Route path="mypage" element={<MyPage />} />
           <Route path="lol/*" element={<LeagueOfLegends />} />
           <Route path="pubg/*" element={<Battlegrounds />} />
+          <Route path="overwatch/*" element={<Overwatch />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
