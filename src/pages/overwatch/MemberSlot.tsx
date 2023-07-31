@@ -96,14 +96,6 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
   const authorKDTypo = (memberInfo.kills / memberInfo.deaths).toFixed(2);
 
-  // unranked info
-  const tankUnranked =
-    memberInfo.tank_tier === 'none' && memberInfo.tank_rank === 'none';
-  const damageUnranked =
-    memberInfo.damage_tier === 'none' && memberInfo.damage_rank === 'none';
-  const supportUnranked =
-    memberInfo.support_tier === 'none' && memberInfo.support_rank === 'none';
-
   const isAuthor = oauth2Id === currentCard?.author?.oauth2Id;
 
   useEffect(() => {
@@ -189,17 +181,16 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
               >
                 {winRate}%
               </WinRate>
-              <MatchPlayed>18승 / 9패</MatchPlayed>
+              <MatchPlayed>
+                {memberInfo.wins}승 {memberInfo.losses}패
+              </MatchPlayed>
             </WinRateSection>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>K/D</SectionTitleInMember>
-            <WinRateSection>
+            <KDSection>
               <KDTypo sx={{ color: calcKDInfo().color }}>{authorKDTypo}</KDTypo>
-              <KillsAndDeaths>
-                {memberInfo?.kills} / {memberInfo?.deaths}
-              </KillsAndDeaths>
-            </WinRateSection>
+            </KDSection>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>티어</SectionTitleInMember>
@@ -380,11 +371,43 @@ const SectionTitleInMember = styled(MuiTypography)(() => ({
 })) as typeof MuiTypography;
 
 const Nickname = styled(MuiTypography)(() => ({
-  fontSize: '16px',
+  fontSize: '18px',
   fontWeight: '700',
   minWidth: '120px',
-  lineHeight: '54px',
+  lineHeight: '57px',
   textOverflow: 'ellipsis',
+})) as typeof MuiTypography;
+
+const WinRateSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  minWidth: '80px',
+  minHeight: '57px',
+})) as typeof MuiBox;
+
+const WinRate = styled(MuiTypography)(() => ({
+  fontSize: '18px',
+  fontWeight: '700',
+})) as typeof MuiTypography;
+
+const MatchPlayed = styled(MuiTypography)(() => ({
+  fontSize: '12px',
+  fontWeight: '500',
+  color: '#000000',
+})) as typeof MuiTypography;
+
+const KDSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  minWidth: '60px',
+  minHeight: '57px',
+})) as typeof MuiBox;
+
+const KDTypo = styled(MuiTypography)(() => ({
+  fontSize: '18px',
+  fontWeight: '700',
 })) as typeof MuiTypography;
 
 const TierSection = styled(MuiBox)(() => ({
@@ -422,38 +445,9 @@ const PositionEmblemWrapper = styled(MuiBox)(() => ({
 
 const Tier = styled(MuiTypography)(() => ({
   width: '100%',
-  fontSize: '8px',
+  fontSize: '12px',
   fontWeight: '600',
   textAlign: 'center',
-})) as typeof MuiTypography;
-
-const WinRateSection = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  minWidth: '70px',
-  minHeight: '54px',
-})) as typeof MuiBox;
-
-const WinRate = styled(MuiTypography)(() => ({
-  fontSize: '16px',
-  fontWeight: '700',
-})) as typeof MuiTypography;
-
-const MatchPlayed = styled(MuiTypography)(() => ({
-  fontSize: '8px',
-  fontWeight: '500',
-  color: '#000000',
-})) as typeof MuiTypography;
-
-const KDTypo = styled(MuiTypography)(() => ({
-  fontSize: '16px',
-  fontWeight: '700',
-})) as typeof MuiTypography;
-
-const KillsAndDeaths = styled(MuiTypography)(() => ({
-  fontSize: '8px',
-  fontWeight: '500',
 })) as typeof MuiTypography;
 
 const MemberControlPanel = styled(MuiBox)(() => ({

@@ -95,7 +95,9 @@ const CardDetailContainer = () => {
               <HashTag color={tier?.color}>#{tier?.label}</HashTag>
               <HashTag>#{queueType?.label}</HashTag>
               <HashTag>#{position?.label}구함</HashTag>
-              <HashTag>{currentCard?.voice ? '#음성채팅가능' : ''}</HashTag>
+              <HashTag>
+                {currentCard?.voice === 'Y' ? '#음성채팅가능' : ''}
+              </HashTag>
             </HashTagWrapper>
             <MemberListWrapper>
               <MemeberListTitle>
@@ -113,7 +115,7 @@ const CardDetailContainer = () => {
             </MemberListWrapper>
             {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
               oauth2Id === currentCard.oauth2Id ? (
-                <MuiStack direction="row" spacing={2} mt={1}>
+                <MuiStack direction="row" spacing="2%" mt={1}>
                   <DeleteCardBtn />
                   <EditCardBtn />
                 </MuiStack>
@@ -223,7 +225,8 @@ const MemberList = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   minWidth: 600,
-  minHeight: '470px',
-  maxHeight: '470px',
-  overflow: 'auto',
+  minHeight: '418px',
+  maxHeight: '418px',
+  overflowY: 'auto',
+  overflowX: 'hidden',
 })) as typeof MuiBox;
