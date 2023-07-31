@@ -41,21 +41,22 @@ const EmptySlotForAuthor = () => {
   const addPartyMember = async () => {
     setIsLoading(true);
 
+    const nickAndTag = name.trim().split('#');
+
     await defaultAxios
       // 오버워치 계정 존재 여부 전송
-      .get(`/api/overwatch/user/exist/${name.trim()}`)
+      .get(`/api/overwatch/user/exist/${nickAndTag[0]}%23${nickAndTag[1]}`)
       .then(async (response) => {
         if (response.status === 200) {
-          const certifyedNickname = response.data;
           await defaultAxios
             // 오버워치계정 정보 최신화 및 DB 저장
-            .get(`/api/overwatch/user/${certifyedNickname}`)
+            .get(`/api/overwatch/user/${nickAndTag[0]}%23${nickAndTag[1]}`)
             .then(async (response) => {
               if (response.status === 200) {
                 await authAxios
                   // 채팅방? 파티? 입장 요청
                   .post(
-                    `/api/chat/overwatch/${currentCard?.id}/${certifyedNickname}`,
+                    `/api/chat/overwatch/${currentCard?.id}/${nickAndTag[0]}%23${nickAndTag[1]}`,
                   )
                   .then((response) => {
                     if (response.status === 200) {
@@ -123,7 +124,7 @@ const EmptySlotForAuthor = () => {
 const EmptySlot = () => {
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
-  const isAuthor = oauth2Id === currentCard.oauth2ID;
+  const isAuthor = oauth2Id === currentCard.oauth2Id;
 
   return isAuthor ? <EmptySlotForAuthor /> : <DefaultEmptySlot />;
 };
