@@ -25,6 +25,7 @@ import { RootState } from 'store';
 import { updateLastReads } from 'apis/api/firebase';
 import { messageActions, Message } from 'store/message-slice';
 import { getUserChatRooms } from 'apis/api/user';
+import { refreshActions } from 'store/refresh-slice';
 import { chatroomActions } from 'store/chatroom-slice';
 import NotiAccordion from './NotiAccordion';
 
@@ -43,7 +44,7 @@ const Notification = ({
 }: NotificationProps) => {
   const dispatch = useDispatch();
 
-  const { joinedChatRoomsId } = useSelector(
+  const { joinedChatRoomsId, detachedListener } = useSelector(
     (state: RootState) => state.chatroom,
   );
   const { oauth2Id } = useSelector((state: RootState) => state.user);
@@ -51,6 +52,7 @@ const Notification = ({
   const { badgeNum, timestamps } = useSelector(
     (state: RootState) => state.notification,
   );
+  const { currentCard } = useSelector((state: RootState) => state.card);
 
   // 파이어베이스의 lastRead 래퍼런스
   const lastReadRef = ref(getDatabase(), `lastRead/${oauth2Id}`);
@@ -110,20 +112,22 @@ const Notification = ({
   useEffect(() => {
     // 메세지 각 채팅방의 메세지 리스너 추가
     const addFirebaseListener = async () => {
-      joinedChatRoomsId.forEach((chatRoomId) => {
-        onChildAdded(child(messagesRef, chatRoomId), (datasnapshot) => {
-          const data = {
-            chatRoomId,
-            message: datasnapshot.val(),
-          };
-          // 각 채팅방의 메세지를 리덕스에 저장
-          dispatch(messageActions.SET_MESSAGES(data));
-        });
+      joinedChatRoomsId.forEach((chatRoomId: string) => {
+        if (!detachedListener.includes(chatRoomId)) {
+          onChildAdded(child(messagesRef, chatRoomId), (datasnapshot) => {
+            const data = {
+              chatRoomId,
+              message: datasnapshot.val(),
+            };
+            dispatch(messageActions.SET_MESSAGES(data));
+          });
+          dispatch(chatroomActions.ADD_DETACHEDLISTENER(chatRoomId));
+        }
       });
     };
 
     addFirebaseListener();
-  }, [dispatch]);
+  }, [dispatch, joinedChatRoomsId]);
 
   // accordion -> 한번에 하나만 열리도록
 

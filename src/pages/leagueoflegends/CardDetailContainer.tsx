@@ -137,9 +137,11 @@ const CardDetailContainer = () => {
               <Suspense
                 fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
               >
-                <MuiBox sx={{ ml: 2 }}>
-                  <ChatRoom />
-                </MuiBox>
+                {currentCard.finished !== 'true' && (
+                  <MuiBox sx={{ ml: 2 }}>
+                    <ChatRoom />
+                  </MuiBox>
+                )}
               </Suspense>
             )}
           </ModalContent>
@@ -245,5 +247,6 @@ const MemberList = styled(MuiBox)(() => ({
   minWidth: 520,
   minHeight: '418px',
   maxHeight: '418px',
-  overflow: 'auto',
+  overflowY: 'auto',
+  overflowX: 'hidden',
 })) as typeof MuiBox;

@@ -16,9 +16,9 @@ import MuiToolTip from '@mui/material/Tooltip';
 import Close from '@mui/icons-material/Close';
 
 import { RootState } from 'store';
-
-import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
+import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
 import { positionList, tierList } from './data';
 
@@ -78,7 +78,12 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.log(error);
+          dispatch(
+            snackbarActions.OPEN_SNACKBAR({
+              message: '소환사 정보를 불러오는 중 문제가 발생했습니다.',
+              severity: 'error',
+            }),
+          );
           setIsLoading(false);
         });
     };
@@ -112,10 +117,8 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
           severity: 'success',
         }),
       );
-
-      window.location.reload();
+      dispatch(refreshActions.REFRESH_CARD());
     } catch (error: any) {
-      console.log(error);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '문제가 발생했습니다. 잠시 후 다시 시도해주세요.',

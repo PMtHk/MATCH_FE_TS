@@ -8,6 +8,7 @@ import MuiButton from '@mui/material/Button';
 import { snackbarActions } from 'store/snackbar-slice';
 import { useNavigate } from 'react-router-dom';
 import { finishCard } from 'apis/api/common';
+import { refreshActions } from 'store/refresh-slice';
 import { RootState } from '../../store';
 
 const FinishBtn = () => {
@@ -16,6 +17,8 @@ const FinishBtn = () => {
 
   // current game
   const currentGame = window.location.pathname.split('/')[1];
+
+  const { currentCard } = useSelector((state: RootState) => state.card);
 
   const { notiToken } = useSelector((state: RootState) => state.notification);
 
@@ -37,6 +40,8 @@ const FinishBtn = () => {
     );
 
     if (userCheck) {
+      dispatch(refreshActions.REFRESH_CARD());
+
       await handleFinish();
     }
     return null;
@@ -56,7 +61,7 @@ const FinishBtn = () => {
       );
     } finally {
       setIsPending(false);
-      navigate(`/${currentGame}/${id}`);
+      navigate(`/${currentGame}/${id}/review`);
     }
   };
 
@@ -65,8 +70,13 @@ const FinishBtn = () => {
       variant="outlined"
       size="small"
       onClick={handleFinishBtn}
-      // disabled={!isLogin || !nickname || isPending || finished === 'true'}
-      disabled
+      disabled={
+        !isLogin ||
+        !nickname ||
+        isPending ||
+        finished === 'true' ||
+        currentCard.memberList.length === 1
+      }
     >
       모집 완료
     </Button>

@@ -23,19 +23,14 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
   const { joinedChatRoomsId } = useSelector(
     (state: RootState) => state.chatroom,
   );
+  const { cardRefresh } = useSelector((state: RootState) => state.refresh);
 
-  const cardDetail: any = fetchCardDetail(`/api/lol/boards/${cardId}`);
+  const deps = [cardRefresh];
+
+  const cardDetail: any = fetchCardDetail(`/api/lol/boards/${cardId}`, deps);
 
   useEffect(() => {
     dispatch(cardActions.SET_CURRENT_CARD(cardDetail));
-
-    // if (currentCard?.chatRoomId) {
-    //   isReviewedFromFirebaseDB = getIsReviewed(
-    //     oauth2Id,
-    //     currentCard.chatRoomId,
-    //   );
-    //   dispatch(cardActions.SET_IS_REVIEWED(isReviewedFromFirebaseDB));
-    // }
 
     const getIsReviewed2 = async () => {
       const review = await asyncGetIsReviewed(oauth2Id, currentCard.chatRoomId);
@@ -47,7 +42,7 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
         getIsReviewed2();
       }
     }
-  }, [cardDetail, dispatch, currentCard]);
+  }, [cardDetail, dispatch]);
 
   return <div>{children}</div>;
 };

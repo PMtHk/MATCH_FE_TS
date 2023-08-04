@@ -8,16 +8,16 @@ import EditCard from './EditCard';
 
 const LeagueOfLegends = () => {
   const location = useLocation();
-  const background = location.state && location.state.background;
+  const background = '/lol';
 
   return (
     <>
-      <Routes location={background || location}>
+      <Routes location={background}>
         <Route path="/*" element={<Main />}>
           <Route path="new" element={<CreateCard />} />
           <Route path=":id" element={<CardDetail />} />
           <Route path=":id/edit" element={<EditCard />} />
-          {/* <Route path=":id/review" element={<Review />} /> */}
+          <Route path=":id/review" element={<Review />} />
         </Route>
       </Routes>
       {background && (
@@ -25,7 +25,7 @@ const LeagueOfLegends = () => {
           <Route path="new" element={<CreateCard />} />
           <Route path=":id" element={<CardDetail />} />
           <Route path=":id/edit" element={<EditCard />} />
-          {/* <Route path=":id/review" element={<Review />} /> */}
+          <Route path=":id/review" element={<Review />} />
         </Routes>
       )}
     </>

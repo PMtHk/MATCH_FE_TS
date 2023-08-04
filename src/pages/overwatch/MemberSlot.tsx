@@ -13,13 +13,12 @@ import MuiIconButton from '@mui/material/IconButton';
 import MuiDivider from '@mui/material/Divider';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-
 import Close from '@mui/icons-material/Close';
 
 import { RootState } from 'store';
-
-import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
+import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
 import { positionList, tierList } from './data';
 
@@ -51,10 +50,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   // author info
-  const authorNickname = memberInfo.name.substring(
-    0,
-    memberInfo.name.indexOf('#'),
-  );
+  const authorNickname = memberInfo.name.split('#')[0];
 
   type calcedInfo = {
     value: number;
@@ -115,7 +111,12 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.log(error);
+          dispatch(
+            snackbarActions.OPEN_SNACKBAR({
+              message: '플레이어 정보를 불러오는 중 문제가 발생했습니다.',
+              severity: 'error',
+            }),
+          );
           setIsLoading(false);
         });
     };
@@ -149,10 +150,8 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           severity: 'success',
         }),
       );
-
-      window.location.reload();
+      dispatch(refreshActions.REFRESH_CARD());
     } catch (error: any) {
-      console.log(error);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '문제가 발생했습니다. 잠시 후 다시 시도해주세요.',

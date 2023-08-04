@@ -10,8 +10,12 @@ import { RootState } from 'store';
 import Card from './Card';
 
 const CardListContainer = () => {
-  const location = useLocation();
+  const currentGame = window.location.pathname.split('/')[1];
   const { overwatchCards } = useSelector((state: RootState) => state.card);
+
+  const { overwatch: registeredOverwatchNickname } = useSelector(
+    (state: RootState) => state.user.games,
+  );
 
   let cardLength = 0;
 
@@ -30,8 +34,13 @@ const CardListContainer = () => {
           return (
             <Link
               key={aCard.id}
-              to={`${aCard.id}`}
-              state={{ background: location }}
+              to={
+                aCard.finished === 'true' &&
+                aCard.memberList.includes(registeredOverwatchNickname)
+                  ? `${aCard.id}/review`
+                  : `${aCard.id}`
+              }
+              state={{ background: `/${currentGame}` }}
               style={{ textDecoration: 'none', background: 'fixed' }}
             >
               <Card

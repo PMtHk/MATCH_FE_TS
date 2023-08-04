@@ -11,6 +11,7 @@ import mypageSlice from './mypage-slice';
 import chatroomSlice from './chatroom-slice';
 import messageSlice from './message-slice';
 import notificationSlice from './notification-slice';
+import refreshSlice from './refresh-slice';
 
 const reducers = combineReducers({
   user: userSlice.reducer,
@@ -22,6 +23,7 @@ const reducers = combineReducers({
   chatroom: chatroomSlice.reducer,
   message: messageSlice.reducer,
   notification: notificationSlice.reducer,
+  refresh: refreshSlice.reducer,
 });
 
 const persistConfig = {

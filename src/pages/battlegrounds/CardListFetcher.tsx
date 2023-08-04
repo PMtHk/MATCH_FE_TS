@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { cardActions } from 'store/card-slice';
-import { fetchCardList } from 'apis/api/pubg';
 import { RootState } from 'store';
+import { cardActions } from 'store/card-slice';
+import { refreshActions } from 'store/refresh-slice';
+import { fetchCardList } from 'apis/api/pubg';
+import { useInterval } from 'hooks/useInterval';
 
 interface CardListFetcherProps {
   fetcherProps: {
@@ -21,6 +23,18 @@ const CardListFetcher = ({
   const dispatch = useDispatch();
 
   const { currentPage } = useSelector((state: RootState) => state.card);
+  const { remainingTime } = useSelector((state: RootState) => state.refresh);
+
+  const [refresh, setRefresh] = React.useState<number>(0);
+
+  useInterval(() => {
+    if (remainingTime === 0) {
+      setRefresh((prev) => prev + 1);
+      dispatch(refreshActions.INITIALIZE());
+    } else {
+      dispatch(refreshActions.DECREASE());
+    }
+  }, 1000);
 
   const config = {
     params: {
@@ -32,7 +46,7 @@ const CardListFetcher = ({
     },
   };
 
-  const deps = [platform, type, tier, currentPage];
+  const deps = [platform, type, tier, currentPage, refresh];
 
   const cardList: any = fetchCardList('/api/pubg/boards', config, deps);
 

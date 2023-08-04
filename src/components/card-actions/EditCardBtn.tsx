@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 // mui
 import styled from '@emotion/styled';
@@ -7,9 +7,9 @@ import MuiButton from '@mui/material/Button';
 import { useSelector } from 'react-redux';
 import { RootState } from 'store';
 
-const currentGame = window.location.pathname.split('/')[1];
-
 const EditCardBtn = () => {
+  const currentGame = window.location.pathname.split('/')[1];
+
   const { currentCard } = useSelector((state: RootState) => state.card);
   const { expired, finished } = currentCard;
 
