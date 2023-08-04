@@ -129,13 +129,15 @@ const Card = ({ item, expired }: CardProps) => {
     >
       <CardContainer expired={expired}>
         <CardTitleWrapper>
-          <img
-            src={position?.imageUrl || ''}
-            alt="game_img"
-            loading="lazy"
-            height="30px"
-            width="30px"
-          />
+          <ImgWrapper>
+            <img
+              src={position?.imageUrl || ''}
+              alt="game_img"
+              loading="lazy"
+              height="28px"
+              width="28px"
+            />
+          </ImgWrapper>
           <CardTitle>
             <TopInfo>
               <TopInfoTypo>#{queueType?.label || '모든큐'}</TopInfoTypo>
@@ -365,6 +367,14 @@ const Card = ({ item, expired }: CardProps) => {
 };
 
 export default Card;
+
+const ImgWrapper = styled(MuiBox)(() => ({
+  width: '36px',
+  height: '36px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
 
 const CardTitleWrapper = styled(MuiBox)(() => ({
   width: '100%',
