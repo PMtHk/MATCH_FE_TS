@@ -112,7 +112,7 @@ const CardDetailContainer = () => {
               oauth2Id === currentCard.oauth2Id ? (
                 <MuiStack direction="row" spacing={2} mt={1}>
                   <DeleteCardBtn />
-                  {currentCard.expired === 'false' && <EditCardBtn />}
+                  <EditCardBtn />
                   <FinishBtn />
                 </MuiStack>
               ) : (
@@ -122,15 +122,17 @@ const CardDetailContainer = () => {
               <JoinBtn />
             )}
           </CardInfo>
-          {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) && (
-            <Suspense
-              fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
-            >
-              <MuiBox sx={{ ml: 2 }}>
-                <ChatRoom />
-              </MuiBox>
-            </Suspense>
-          )}
+          {isLogin &&
+            joinedChatRoomsId.includes(currentCard.chatRoomId) &&
+            currentCard.finished !== 'true' && (
+              <Suspense
+                fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
+              >
+                <MuiBox sx={{ ml: 2 }}>
+                  <ChatRoom />
+                </MuiBox>
+              </Suspense>
+            )}
         </ModalContent>
       </>
     );
