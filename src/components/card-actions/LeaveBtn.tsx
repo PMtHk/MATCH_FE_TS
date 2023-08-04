@@ -16,6 +16,7 @@ import { authAxios } from 'apis/utils';
 import { removeMemberFromFirebaseDB } from 'apis/api/firebase';
 import { refreshActions } from 'store/refresh-slice';
 import { snackbarActions } from 'store/snackbar-slice';
+import { chatroomActions } from 'store/chatroom-slice';
 
 const LeaveBtn = () => {
   const dispatch = useDispatch();
@@ -65,10 +66,9 @@ const LeaveBtn = () => {
           chatRoomId,
           chatRoomsRef,
           messagesRef,
-          dispatch,
         );
       }
-
+      dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
       dispatch(refreshActions.REFRESH_CARD());
     } catch (error: any) {
       dispatch(

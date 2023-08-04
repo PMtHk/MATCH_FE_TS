@@ -42,7 +42,7 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
         getIsReviewed2();
       }
     }
-  }, [cardDetail, dispatch, currentCard]);
+  }, [cardDetail, dispatch]);
 
   return <div>{children}</div>;
 };

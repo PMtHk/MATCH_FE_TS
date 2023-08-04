@@ -124,7 +124,6 @@ export const removeMemberFromFirebaseDB = async (
   chatRoomId: string,
   chatRoomsRef: DatabaseReference,
   messagesRef: DatabaseReference,
-  dispatch: ReturnType<typeof useDispatch>,
 ) => {
   const dataSnapshot = await get(
     child(chatRoomsRef, `${chatRoomId}/memberList`),
@@ -149,8 +148,6 @@ export const removeMemberFromFirebaseDB = async (
     },
     content: `${targetMember.nickname} 님이 퇴장하였습니다.`,
   });
-
-  dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
 
   return null;
 };
@@ -290,10 +287,18 @@ export const asyncGetIsReviewed = async (
 
   const isReviewed = await get(child(chatRoomsRef, chatRoomId)).then(
     (dataSnapshot) => {
-      return dataSnapshot
+      const member = dataSnapshot
         .val()
-        .memberList.find((member: Member) => member.oauth2Id === oauth2Id)
-        .isReviewed;
+        .memberList.find((aMember: Member) => aMember.oauth2Id === oauth2Id);
+
+      if (member) {
+        return dataSnapshot
+          .val()
+          .memberList.find((member: Member) => member.oauth2Id === oauth2Id)
+          .isReviewed;
+      }
+
+      return false;
     },
   );
 
