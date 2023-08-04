@@ -17,7 +17,7 @@ const LeagueOfLegends = () => {
           <Route path="new" element={<CreateCard />} />
           <Route path=":id" element={<CardDetail />} />
           <Route path=":id/edit" element={<EditCard />} />
-          {/* <Route path=":id/review" element={<Review />} /> */}
+          <Route path=":id/review" element={<Review />} />
         </Route>
       </Routes>
       {background && (
@@ -25,7 +25,7 @@ const LeagueOfLegends = () => {
           <Route path="new" element={<CreateCard />} />
           <Route path=":id" element={<CardDetail />} />
           <Route path=":id/edit" element={<EditCard />} />
-          {/* <Route path=":id/review" element={<Review />} /> */}
+          <Route path=":id/review" element={<Review />} />
         </Routes>
       )}
     </>

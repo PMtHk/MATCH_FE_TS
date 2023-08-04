@@ -13,6 +13,10 @@ const CardListContainer = () => {
   const currentGame = window.location.pathname.split('/')[1];
   const { overwatchCards } = useSelector((state: RootState) => state.card);
 
+  const { overwatch: registeredOverwatchNickname } = useSelector(
+    (state: RootState) => state.user.games,
+  );
+
   let cardLength = 0;
 
   if (overwatchCards) {
@@ -30,7 +34,12 @@ const CardListContainer = () => {
           return (
             <Link
               key={aCard.id}
-              to={`${aCard.id}`}
+              to={
+                aCard.finished === 'true' &&
+                aCard.memberList.includes(registeredOverwatchNickname)
+                  ? `${aCard.id}/review`
+                  : `${aCard.id}`
+              }
               state={{ background: `/${currentGame}` }}
               style={{ textDecoration: 'none', background: 'fixed' }}
             >

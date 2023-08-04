@@ -137,9 +137,11 @@ const CardDetailContainer = () => {
               <Suspense
                 fallback={<Circular text="채팅방 불러오는 중" height="100%" />}
               >
-                <MuiBox sx={{ ml: 2 }}>
-                  <ChatRoom />
-                </MuiBox>
+                {currentCard.finished !== 'true' && (
+                  <MuiBox sx={{ ml: 2 }}>
+                    <ChatRoom />
+                  </MuiBox>
+                )}
               </Suspense>
             )}
           </ModalContent>

@@ -296,7 +296,11 @@ export const asyncGetIsReviewed = async (
   return isReviewed;
 };
 
-// 추가됨
+/**
+ * 파이어베이스의 isReviewed 핸들링 함수
+ * @param oauth2Id 사용자의 oauth2id
+ * @param chatRoomId 해당 파티의 채팅방 Id
+ */
 export const doReview = async (oauth2Id: string, chatRoomId: string) => {
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
 
@@ -307,8 +311,9 @@ export const doReview = async (oauth2Id: string, chatRoomId: string) => {
   const prevMemberList = [...dataSnapshot.val()];
   const newMemberList = prevMemberList.map((member: Member) => {
     if (member.oauth2Id === oauth2Id) {
-      // eslint-disable-next-line no-param-reassign
-      member.isReviewed = true;
+      const temp = member;
+      temp.isReviewed = true;
+      return temp;
     }
     return member;
   });
@@ -316,4 +321,27 @@ export const doReview = async (oauth2Id: string, chatRoomId: string) => {
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
     memberList: newMemberList,
   });
+};
+
+/**
+ * 리뷰에 필요한 필터링된 멤버리스트 반환 함수
+ * @param chatRoomId 해당 파티의 채팅방 id
+ * @param oauth2Id 사용자의 oauth2Id
+ * @returns 필터링된 멤버의 닉네임을 담고있는 배열
+ */
+export const getFilteredMemberListForReview = async (
+  chatRoomId: string,
+  oauth2Id: string,
+) => {
+  const chatRoomRef = ref(getDatabase(), 'chatRooms');
+
+  const data = await get(child(chatRoomRef, `${chatRoomId}/memberList`));
+
+  const prevMemberList = [...data.val()];
+  const filteredMemberList = prevMemberList.filter(
+    (member) => member.oauth2Id.length > 0 && member.oauth2Id !== oauth2Id,
+  );
+
+  const result = filteredMemberList.map((member) => member.nickname);
+  return result;
 };

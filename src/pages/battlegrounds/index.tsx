@@ -1,5 +1,6 @@
 import React from 'react';
 import { useLocation, Route, Routes } from 'react-router-dom';
+import Review from 'components/Review';
 
 import Main from './main';
 import CardDetail from './CardDetail';
@@ -17,7 +18,7 @@ const Battlegrounds = () => {
           <Route path="new" element={<CreateCard />} />
           <Route path=":id" element={<CardDetail />} />
           <Route path=":id/edit" element={<EditCard />} />
-          {/* <Route path=":id/review" element={<Review />} /> */}
+          <Route path=":id/review" element={<Review />} />
         </Route>
       </Routes>
       {background && (
@@ -25,7 +26,7 @@ const Battlegrounds = () => {
           <Route path="new" element={<CreateCard />} />
           <Route path=":id" element={<CardDetail />} />
           <Route path=":id/edit" element={<EditCard />} />
-          {/* <Route path=":id/review" element={<Review />} /> */}
+          <Route path=":id/review" element={<Review />} />
         </Routes>
       )}
     </>
