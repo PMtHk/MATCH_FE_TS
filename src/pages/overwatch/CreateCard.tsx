@@ -257,6 +257,7 @@ const CreateCard = () => {
         }),
       );
       dispatch(refreshActions.REFRESH_CARD());
+      dispatch(refreshActions.FORCE_REFRESH());
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

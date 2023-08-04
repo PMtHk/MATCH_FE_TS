@@ -28,7 +28,6 @@ const DeleteCardBtn = () => {
     try {
       await deleteCard(currentGame, id, chatRoomId);
       dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-      navigate(`/${currentGame}`);
       dispatch(refreshActions.REFRESH_CARD());
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
@@ -36,6 +35,8 @@ const DeleteCardBtn = () => {
           severity: 'success',
         }),
       );
+      dispatch(refreshActions.FORCE_REFRESH());
+      navigate(`/${currentGame}`);
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
