@@ -5,7 +5,7 @@ import {
   useParams,
   Link as RouterLink,
 } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
@@ -16,12 +16,15 @@ import MuiMenu from '@mui/material/Menu';
 import MuiMenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
-import GameIcon from 'components/GameIcon';
 import { RootState } from 'store';
+import { cardActions } from 'store/card-slice';
+import { refreshActions } from 'store/refresh-slice';
+import GameIcon from 'components/GameIcon';
 import { gameList, GAME, GAME_ID } from '../../assets/Games.data';
 
 const GameMenu = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
 
   const currentGame = window.location.pathname.split('/')[1];
@@ -38,7 +41,12 @@ const GameMenu = () => {
             key={game.id}
             underline="none"
             to={`/${game.id}`}
+            state={{ background: `/${game.id}` }}
             color="white"
+            onClick={() => {
+              dispatch(cardActions.SET_CURRENT_PAGE(0));
+              dispatch(refreshActions.INITIALIZE());
+            }}
             sx={{
               borderBottom:
                 currentGame === game.id ? '2px solid white' : 'none',

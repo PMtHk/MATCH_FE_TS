@@ -14,6 +14,8 @@ import {
 import { RootState } from 'store';
 import { authAxios } from 'apis/utils';
 import { removeMemberFromFirebaseDB } from 'apis/api/firebase';
+import { refreshActions } from 'store/refresh-slice';
+import { snackbarActions } from 'store/snackbar-slice';
 
 const LeaveBtn = () => {
   const dispatch = useDispatch();
@@ -27,10 +29,11 @@ const LeaveBtn = () => {
       state.user.games[`${currentGame as 'overwatch' | 'pubg' | 'lol'}`],
   );
   const { oauth2Id } = useSelector((state: RootState) => state.user);
-
   const { chatRoomId, id } = useSelector(
     (state: RootState) => state.card.currentCard,
   );
+
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   type Member = {
     nickname: string;
@@ -48,6 +51,7 @@ const LeaveBtn = () => {
 
   const leaveParty = async () => {
     try {
+      setIsLoading(true);
       const chatRoomsRef = ref(getDatabase(), 'chatRooms');
       const messagesRef = ref(getDatabase(), 'messages');
 
@@ -65,9 +69,17 @@ const LeaveBtn = () => {
         );
       }
 
-      window.location.reload();
-    } catch (error) {
-      console.log(error);
+      dispatch(refreshActions.REFRESH_CARD());
+    } catch (error: any) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message:
+            '파티를 나가는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+          severity: 'error',
+        }),
+      );
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,8 +100,9 @@ const LeaveBtn = () => {
         },
       }}
       onClick={leaveParty}
+      disabled={isLoading}
     >
-      파티 탈퇴
+      {isLoading ? '파티에서 나가는 중입니다.' : '파티 탈퇴'}
     </Button>
   );
 };

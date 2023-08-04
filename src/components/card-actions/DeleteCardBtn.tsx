@@ -7,10 +7,11 @@ import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
-import { authAxios } from 'apis/utils';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
 import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
+import { authAxios } from 'apis/utils';
 import { deleteCard } from 'apis/api/common';
 
 const DeleteCardBtn = () => {
@@ -27,14 +28,15 @@ const DeleteCardBtn = () => {
     try {
       await deleteCard(currentGame, id, chatRoomId);
       dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-      navigate(`/${currentGame}`);
-      navigate(0);
+      dispatch(refreshActions.REFRESH_CARD());
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '게시글이 삭제되었습니다.',
           severity: 'success',
         }),
       );
+      dispatch(refreshActions.FORCE_REFRESH());
+      navigate(`/${currentGame}`);
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

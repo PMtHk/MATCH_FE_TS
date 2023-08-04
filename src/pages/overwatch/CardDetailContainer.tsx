@@ -37,10 +37,7 @@ const CardDetailContainer = () => {
     (state: RootState) => state.chatroom,
   );
 
-  const authorNickname = currentCard?.author.name.substring(
-    0,
-    currentCard?.author.name.indexOf('#'),
-  );
+  const authorNickname = currentCard?.author?.name.split('#')[0];
   const tier = tierList.find((tier) => tier.value === currentCard?.tier);
   const queueType = queueTypeList.find(
     (queueType) => queueType.value === currentCard?.type,

@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
-
-import { authAxios, defaultAxios } from 'apis/utils';
-import { RootState } from 'store';
+import { useSelector, useDispatch } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,6 +7,10 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import { Button, OutlinedInput, CircularProgress } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+
+import { RootState } from 'store';
+import { refreshActions } from 'store/refresh-slice';
+import { authAxios, defaultAxios } from 'apis/utils';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -23,6 +24,7 @@ const DefaultEmptySlot = () => {
 
 // 방장의 경우
 const EmptySlotForAuthor = () => {
+  const dispatch = useDispatch();
   const { currentCard } = useSelector((state: RootState) => state.card);
   // 추가하기 버튼과 닉네임 입력창을 전환할 state
   const [isEntering, setIsEntering] = useState(false);
@@ -64,8 +66,7 @@ const EmptySlotForAuthor = () => {
                       setIsLoading(false);
                       setIsEntering(false);
                       setName('');
-                      // eslint-disable-next-line no-restricted-globals
-                      location.reload();
+                      dispatch(refreshActions.REFRESH_CARD());
                     }
                   });
               }

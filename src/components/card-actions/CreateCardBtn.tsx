@@ -6,9 +6,10 @@ import { styled } from '@mui/system';
 import MuiButton from '@mui/material/Button';
 
 const CreateCardBtn = () => {
-  const location = useLocation();
+  const currentGame = window.location.pathname.split('/')[1];
+
   return (
-    <Link to="new" state={{ background: location }}>
+    <Link to="new" state={{ background: `/${currentGame}` }}>
       <Button variant="outlined">글 작성하기</Button>
     </Link>
   );

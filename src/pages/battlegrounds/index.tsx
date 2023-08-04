@@ -8,11 +8,11 @@ import EditCard from './EditCard';
 
 const Battlegrounds = () => {
   const location = useLocation();
-  const background = location.state && location.state.background;
+  const background = '/pubg';
 
   return (
     <>
-      <Routes location={background || location}>
+      <Routes location={background}>
         <Route path="/*" element={<Main />}>
           <Route path="new" element={<CreateCard />} />
           <Route path=":id" element={<CardDetail />} />

@@ -37,6 +37,7 @@ import { verifyOWNickname, loadOWPlayerInfoInDB } from 'apis/api/overwatch';
 import { chatroomActions } from 'store/chatroom-slice';
 import { createCard, deleteCard } from 'apis/api/common';
 import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -247,12 +248,16 @@ const CreateCard = () => {
         notiToken || '',
       );
 
-      console.log(currentGame);
-
       dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
-      closeModal();
       navigate(`/overwatch/${boardId}`, { replace: true });
-      navigate(0);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 작성에 성공했습니다.',
+          severity: 'success',
+        }),
+      );
+      dispatch(refreshActions.REFRESH_CARD());
+      dispatch(refreshActions.FORCE_REFRESH());
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
