@@ -41,6 +41,7 @@ const GameMenu = () => {
             key={game.id}
             underline="none"
             to={`/${game.id}`}
+            state={{ background: `/${game.id}` }}
             color="white"
             onClick={() => {
               dispatch(cardActions.SET_CURRENT_PAGE(0));

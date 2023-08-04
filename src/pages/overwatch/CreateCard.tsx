@@ -249,8 +249,13 @@ const CreateCard = () => {
       );
 
       dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
-      closeModal();
       navigate(`/overwatch/${boardId}`, { replace: true });
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '게시글 작성에 성공했습니다.',
+          severity: 'success',
+        }),
+      );
       dispatch(refreshActions.REFRESH_CARD());
     } catch (error) {
       dispatch(

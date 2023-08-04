@@ -50,10 +50,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   // author info
-  const authorNickname = memberInfo.name.substring(
-    0,
-    memberInfo.name.indexOf('#'),
-  );
+  const authorNickname = memberInfo.name.split('#')[0];
 
   type calcedInfo = {
     value: number;
