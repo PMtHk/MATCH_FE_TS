@@ -56,7 +56,7 @@ const FinishBtn = () => {
       );
     } finally {
       setIsPending(false);
-      navigate(`/${currentGame}/${id}`);
+      navigate(`/${currentGame}/${id}/review`);
     }
   };
 
@@ -65,8 +65,7 @@ const FinishBtn = () => {
       variant="outlined"
       size="small"
       onClick={handleFinishBtn}
-      // disabled={!isLogin || !nickname || isPending || finished === 'true'}
-      disabled
+      disabled={!isLogin || !nickname || isPending || finished === 'true'}
     >
       모집 완료
     </Button>

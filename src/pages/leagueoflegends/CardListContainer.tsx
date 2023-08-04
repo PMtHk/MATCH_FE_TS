@@ -13,6 +13,10 @@ const CardListContainer = () => {
   const location = useLocation();
   const { lolCards } = useSelector((state: RootState) => state.card);
 
+  const { lol: registeredLolNickname } = useSelector(
+    (state: RootState) => state.user.games,
+  );
+
   let cardLength = 0;
 
   if (lolCards) {
@@ -30,7 +34,13 @@ const CardListContainer = () => {
           return (
             <Link
               key={aCard.id}
-              to={`${aCard.id}`}
+              // to={`${aCard.id}`}
+              to={
+                aCard.finished === 'true' &&
+                aCard.memberList.includes(registeredLolNickname)
+                  ? `${aCard.id}/review`
+                  : `${aCard.id}`
+              }
               state={{ background: location }}
               style={{ textDecoration: 'none', background: 'fixed' }}
             >
