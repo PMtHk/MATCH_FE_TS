@@ -43,7 +43,7 @@ const Notification = ({
 }: NotificationProps) => {
   const dispatch = useDispatch();
 
-  const { joinedChatRoomsId } = useSelector(
+  const { joinedChatRoomsId, detachedListener } = useSelector(
     (state: RootState) => state.chatroom,
   );
   const { oauth2Id } = useSelector((state: RootState) => state.user);
@@ -110,20 +110,23 @@ const Notification = ({
   useEffect(() => {
     // 메세지 각 채팅방의 메세지 리스너 추가
     const addFirebaseListener = async () => {
-      joinedChatRoomsId.forEach((chatRoomId) => {
-        onChildAdded(child(messagesRef, chatRoomId), (datasnapshot) => {
-          const data = {
-            chatRoomId,
-            message: datasnapshot.val(),
-          };
-          // 각 채팅방의 메세지를 리덕스에 저장
-          dispatch(messageActions.SET_MESSAGES(data));
-        });
+      joinedChatRoomsId.forEach((chatRoomId: string) => {
+        if (!detachedListener.includes(chatRoomId)) {
+          onChildAdded(child(messagesRef, chatRoomId), (datasnapshot) => {
+            const data = {
+              chatRoomId,
+              message: datasnapshot.val(),
+            };
+            // 각 채팅방의 메세지를 리덕스에 저장
+            dispatch(messageActions.SET_MESSAGES(data));
+          });
+          dispatch(chatroomActions.ADD_DETACHEDLISTENER(chatRoomId));
+        }
       });
     };
 
     addFirebaseListener();
-  }, [dispatch]);
+  }, [dispatch, joinedChatRoomsId]);
 
   // accordion -> 한번에 하나만 열리도록
 

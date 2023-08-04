@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
-import { RootState } from 'store';
+import { useNavigate } from 'react-router-dom';
 
 // mui
 import { styled } from '@mui/system';
@@ -9,12 +8,14 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import { Button, OutlinedInput, CircularProgress } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+
+import { RootState } from 'store';
+import { refreshActions } from 'store/refresh-slice';
+import { snackbarActions } from 'store/snackbar-slice';
 import {
   loadSummonerInfoIntoDB,
   verifyLOLNickname,
 } from 'apis/api/leagueoflegends';
-import { useNavigate } from 'react-router-dom';
-import { snackbarActions } from 'store/snackbar-slice';
 import { addMemberToFirebaseDB } from 'apis/api/firebase';
 import { addPartyMemberWithName } from 'apis/api/common';
 
@@ -91,7 +92,7 @@ const EmptySlotForAuthor = () => {
 
       await addMemberToFirebaseDB(newMember, currentCard.chatRoomId, dispatch);
 
-      await window.location.reload();
+      dispatch(refreshActions.REFRESH_CARD());
 
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
@@ -108,6 +109,8 @@ const EmptySlotForAuthor = () => {
       );
     } finally {
       setIsLoading(false);
+      setName('');
+      setIsEntering(false);
     }
   };
 

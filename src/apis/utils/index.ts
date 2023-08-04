@@ -68,20 +68,29 @@ authAxios.interceptors.response.use(
 
     if (status === 401) {
       if (error.response.data.message === '만료된 엑세스 토큰입니다.') {
-        const originalRequest = config;
-        const refreshToken = await localStorage.getItem('matchGG_refreshToken');
+        try {
+          const originalRequest = config;
+          const refreshToken = await localStorage.getItem(
+            'matchGG_refreshToken',
+          );
 
-        const { data } = await authAxios.post('/api/user/refresh');
+          const { data } = await authAxios.post('/api/user/refresh');
 
-        const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-          data;
+          const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+            data;
 
-        store.dispatch({ type: 'token/SET_TOKEN', payload: newAccessToken });
-        localStorage.setItem('matchGG_refreshToken', newRefreshToken);
+          store.dispatch({ type: 'token/SET_TOKEN', payload: newAccessToken });
+          localStorage.setItem('matchGG_refreshToken', newRefreshToken);
 
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-        return axios(originalRequest);
+          return axios(originalRequest);
+        } catch (error) {
+          store.dispatch({ type: 'token/DELETE_TOKEN' });
+          store.dispatch({ type: 'user/DELETE_USER' });
+          localStorage.removeItem('matchGG_refreshToken');
+          return Promise.reject(error);
+        }
       }
     }
     return Promise.reject(error);

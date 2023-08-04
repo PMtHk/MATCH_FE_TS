@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { child, get, getDatabase, ref, set } from 'firebase/database';
+import { useSelector, useDispatch } from 'react-redux';
+import { getDatabase, ref } from 'firebase/database';
 
 // mui
 import { styled } from '@mui/system';
@@ -18,6 +18,7 @@ import NotificationsActiveRounded from '@mui/icons-material/NotificationsActiveR
 
 import { RootState } from 'store';
 import { getAChatRoomInfo, updateALastRead } from 'apis/api/firebase';
+import { snackbarActions } from 'store/snackbar-slice';
 import NotiAccordionDetail from './NotiAccordionDetail';
 
 type Member = {
@@ -55,12 +56,13 @@ const NotiAccordion = ({
   expandHandler,
   handleNotiClose,
 }: NotiAccordionProps) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const currentChatRoomMessages = useSelector(
     (state: RootState) => state.message.messages[chatRoomId],
   );
-
-  const navigate = useNavigate();
 
   // 파이어베이스에서 채팅방 정보 가져오는 로딩
   const [isLoading, setIsLoading] = useState(true);
@@ -82,7 +84,13 @@ const NotiAccordion = ({
         );
         setChatRoomInfo(fetchedChatRoomInfo);
       } catch (error) {
-        console.log(error);
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '채팅방 정보를 가져오는 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.',
+            severity: 'error',
+          }),
+        );
       } finally {
         setIsLoading(false);
       }

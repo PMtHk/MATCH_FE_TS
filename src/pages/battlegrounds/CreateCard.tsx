@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { child, getDatabase, push, ref, set, update } from 'firebase/database';
 
-import { RootState } from 'store';
-
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
@@ -29,19 +27,19 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
+import { RootState } from 'store';
+import { chatroomActions } from 'store/chatroom-slice';
+import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
+import { CustomSwitch } from 'components/Swtich';
 import Modal from 'components/Modal';
-
 import { authAxios } from 'apis/utils';
 import { createCard, deleteCard } from 'apis/api/common';
-import { CustomSwitch } from 'components/Swtich';
 import {
   verifyPUBGNickname,
   loadPubgPlayerInfoIntoDB,
   checkPUBGUserPlatform,
 } from 'apis/api/pubg';
-import { chatroomActions } from 'store/chatroom-slice';
-import { snackbarActions } from 'store/snackbar-slice';
-
 import { typeList, tierList, platformList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -266,7 +264,8 @@ const CreateCard = () => {
           severity: 'success',
         }),
       );
-      navigate(0);
+      dispatch(refreshActions.REFRESH_CARD());
+      dispatch(refreshActions.FORCE_REFRESH());
     } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

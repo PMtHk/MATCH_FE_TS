@@ -1,7 +1,8 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
+import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import { fetchCardDetail } from 'apis/api/overwatch';
 
@@ -15,7 +16,14 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
 
   const { id: cardId } = params;
 
-  const cardDetail: any = fetchCardDetail(`/api/overwatch/boards/${cardId}`);
+  const { cardRefresh } = useSelector((state: RootState) => state.refresh);
+
+  const deps = [cardRefresh];
+
+  const cardDetail: any = fetchCardDetail(
+    `/api/overwatch/boards/${cardId}`,
+    deps,
+  );
 
   useEffect(() => {
     dispatch(cardActions.SET_CURRENT_CARD(cardDetail));

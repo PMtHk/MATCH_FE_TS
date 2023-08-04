@@ -10,7 +10,7 @@ import { RootState } from 'store';
 import Card from './Card';
 
 const CardListContainer = () => {
-  const location = useLocation();
+  const currentGame = window.location.pathname.split('/')[1];
   const { lolCards } = useSelector((state: RootState) => state.card);
 
   const { lol: registeredLolNickname } = useSelector(
@@ -34,14 +34,13 @@ const CardListContainer = () => {
           return (
             <Link
               key={aCard.id}
-              // to={`${aCard.id}`}
               to={
                 aCard.finished === 'true' &&
                 aCard.memberList.includes(registeredLolNickname)
                   ? `${aCard.id}/review`
                   : `${aCard.id}`
               }
-              state={{ background: location }}
+              state={{ background: `/${currentGame}` }}
               style={{ textDecoration: 'none', background: 'fixed' }}
             >
               <Card

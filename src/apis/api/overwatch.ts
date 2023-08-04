@@ -23,7 +23,7 @@ export function fetchCardList(url: string, config: any, deps: any[]) {
 }
 
 // 카드 디테일 가져오기 (카드 상세보기 가져오기)
-export function fetchCardDetail(url: string) {
+export function fetchCardDetail(url: string, deps: any[]) {
   const [resource, setResource] = useState(null);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function fetchCardDetail(url: string) {
     };
 
     getData();
-  }, []);
+  }, deps);
 
   return resource;
 }

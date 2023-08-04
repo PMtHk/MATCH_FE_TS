@@ -66,10 +66,7 @@ const Card = ({ item, expired }: CardProps) => {
   );
 
   // author info
-  const authorNickname = item.author.name.substring(
-    0,
-    item.author.name.indexOf('#'),
-  );
+  const authorNickname = item.author.name.split('#')[0];
 
   type calcedInfo = {
     value: number;
@@ -129,13 +126,15 @@ const Card = ({ item, expired }: CardProps) => {
     >
       <CardContainer expired={expired}>
         <CardTitleWrapper>
-          <img
-            src={position?.imageUrl || ''}
-            alt="game_img"
-            loading="lazy"
-            height="30px"
-            width="30px"
-          />
+          <ImgWrapper>
+            <img
+              src={position?.imageUrl || ''}
+              alt="game_img"
+              loading="lazy"
+              height="28px"
+              width="28px"
+            />
+          </ImgWrapper>
           <CardTitle>
             <TopInfo>
               <TopInfoTypo>#{queueType?.label || '모든큐'}</TopInfoTypo>
@@ -205,13 +204,15 @@ const Card = ({ item, expired }: CardProps) => {
             <WinRateSectionName>승률</WinRateSectionName>
             <ChildSectionContent>
               <MatchPlayed>
-                {item.author?.wins}승 {item.author?.losses}패
                 <WinRate
                   component="span"
-                  sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                  sx={{
+                    color: winRate >= 50 ? '#d31f45' : '#5383e8',
+                  }}
                 >
-                  ({winRate}%)
+                  {winRate}%
                 </WinRate>
+                ({item.author?.wins}승 {item.author?.losses}패)
               </MatchPlayed>
             </ChildSectionContent>
           </AuthorSection>
@@ -363,6 +364,14 @@ const Card = ({ item, expired }: CardProps) => {
 };
 
 export default Card;
+
+const ImgWrapper = styled(MuiBox)(() => ({
+  width: '36px',
+  height: '36px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
 
 const CardTitleWrapper = styled(MuiBox)(() => ({
   width: '100%',
@@ -524,19 +533,19 @@ const Author = styled(MuiTypography)(() => ({
 })) as typeof MuiTypography;
 
 const MatchPlayed = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
+  fontSize: '11px',
+  fontWeight: '400',
   color: '#000000',
 })) as typeof MuiTypography;
 
 const WinRate = styled(MuiTypography)(() => ({
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: '600',
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
 
 const KDTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: '600',
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
