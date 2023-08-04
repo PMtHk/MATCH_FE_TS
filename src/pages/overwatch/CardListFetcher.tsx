@@ -46,7 +46,7 @@ const CardListFetcher = ({
     },
   };
 
-  const deps = [position, queueType, tier, currentPage];
+  const deps = [position, queueType, tier, currentPage, refresh];
 
   const cardList: any = fetchCardList('/api/overwatch/boards', config, deps);
 
