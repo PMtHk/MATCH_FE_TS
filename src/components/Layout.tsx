@@ -8,12 +8,12 @@ import MuiBox from '@mui/material/Box';
 import MuiContainer from '@mui/material/Container';
 import MuiTypography from '@mui/material/Typography';
 
-import { RootState } from 'store';
-
 import { deleteToken, getToken } from 'firebase/messaging';
+
+import { RootState } from 'store';
+import { snackbarActions } from 'store/snackbar-slice';
 import { notificationActions } from 'store/notification-slice';
 import { messaging } from '../firebase';
-
 import Header from './header';
 import Footer from './Footer';
 
@@ -30,7 +30,14 @@ const Layout = () => {
       if (permission === 'granted') {
         const token: string | void = await getToken(messaging, {
           vapidKey: process.env.REACT_APP_FIREBASE_VAPID_KEY,
-        }).catch((error: any) => console.log(error));
+        }).catch((error: any) => {
+          dispatch(
+            snackbarActions.OPEN_SNACKBAR({
+              message: '현재 오류로 인해 알림을 받으실 수 없습니다.',
+              severity: 'error',
+            }),
+          );
+        });
 
         if (token) {
           dispatch(notificationActions.SET_NOTITOKEN(token));

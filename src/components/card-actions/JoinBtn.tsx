@@ -11,27 +11,26 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { joinParty } from 'apis/api/user';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '../../store';
+import { refreshActions } from '../../store/refresh-slice';
 
 const JoinBtn = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   // current game
   const currentGame = window.location.pathname.split('/')[1];
 
   const { currentCard } = useSelector((state: RootState) => state.card);
-
   const { notiToken } = useSelector((state: RootState) => state.notification);
-
   const nickname = useSelector(
     (state: RootState) =>
       state.user.games[`${currentGame as 'overwatch' | 'pubg' | 'lol'}`],
   );
   const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
-
   const { chatRoomId, id } = useSelector(
     (state: RootState) => state.card.currentCard,
   );
+
+  const [isLoading, setIsLoading] = React.useState<boolean>(false);
 
   type Member = {
     nickname: string;
@@ -90,6 +89,7 @@ const JoinBtn = () => {
   };
 
   const JoinBtnHandler = async () => {
+    setIsLoading(true);
     // 파티가 마감된 경우
     if (currentCard.expired === 'true') {
       dispatch(
@@ -98,7 +98,7 @@ const JoinBtn = () => {
           severity: 'warning',
         }),
       );
-      navigate(0);
+
       return;
     }
     // 배틀그라운드의 경우 파티 참가 요청 시 파티의 플랫폼과 사용자(참가자) 계정의 플랫폼 비교
@@ -120,7 +120,7 @@ const JoinBtn = () => {
     if (!banned) {
       try {
         await joinParty(currentGame, id, chatRoomId, newMember, dispatch);
-        navigate(0);
+        dispatch(refreshActions.REFRESH_CARD());
       } catch (error) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
@@ -137,6 +137,8 @@ const JoinBtn = () => {
         }),
       );
     }
+
+    setIsLoading(false);
   };
 
   return (
@@ -144,10 +146,10 @@ const JoinBtn = () => {
       variant="outlined"
       size="small"
       onClick={JoinBtnHandler}
-      disabled={calcJoinBtn().disabled}
+      disabled={calcJoinBtn().disabled || isLoading}
     >
       {/* {!isLogin ? '로그인 후 참가하실 수 있습니다.' : '파티 참가'} */}
-      {calcJoinBtn().text}
+      {isLoading ? '파티에 참가하는 중입니다.' : calcJoinBtn().text}
     </Button>
   );
 };

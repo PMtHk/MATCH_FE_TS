@@ -14,6 +14,8 @@ import Send from '@mui/icons-material/Send';
 import { RootState } from 'store';
 import { updateALastRead } from 'apis/api/firebase';
 import { chatroomActions } from 'store/chatroom-slice';
+import { refreshActions } from 'store/refresh-slice';
+import { snackbarActions } from 'store/snackbar-slice';
 import ChatMessage from './ChatMessage';
 import SystemMessage from './SystemMessage';
 
@@ -82,7 +84,7 @@ const ChatRoom = () => {
     await get(child(chatRoomRef, chatRoomId)).then(async (datasnapshot) => {
       if (datasnapshot.val().isDeleted) {
         alert('종료된 파티입니다.');
-        navigate('/lol');
+        navigate(`${currentGame}`);
         return;
       }
 
@@ -108,13 +110,20 @@ const ChatRoom = () => {
               }
             }, 0);
           })
-          .catch((error) => console.log(error));
+          .catch((error) => {
+            dispatch(
+              snackbarActions.OPEN_SNACKBAR({
+                message: '비정상적인 접근입니다.',
+                severity: 'error',
+              }),
+            );
+          });
       } else {
         // 가입되어있지 않은 사용자 (탈퇴되었거나 스스로 나간 경우)
         alert('유효하지 않은 사용자 입니다.');
         dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-        navigate('/lol');
-        window.location.reload();
+        navigate(`${currentGame}`);
+        dispatch(refreshActions.REFRESH_CARD());
       }
     });
   };

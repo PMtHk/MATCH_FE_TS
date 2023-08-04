@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { authAxios, defaultAxios } from 'apis/utils';
+import { defaultAxios } from 'apis/utils';
 
 // mui
 import { styled } from '@mui/system';
@@ -17,6 +17,7 @@ import { RootState } from 'store';
 
 import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
 import { kickMemberFromParty } from 'apis/api/common';
 import { platformList, tierList, rankImage } from './data';
 
@@ -125,7 +126,11 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           setIsLoading(false);
         })
         .catch((error) => {
-          console.log(error);
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '플레이어 정보를 확인하는 중 문제가 발생했습니다. 새로고침 후 다시 시도해주세요.',
+            severity: 'error',
+          });
           setIsLoading(false);
         });
     };
@@ -160,9 +165,8 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
         }),
       );
 
-      window.location.reload();
+      dispatch(refreshActions.REFRESH_CARD());
     } catch (error: any) {
-      console.log(error);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '문제가 발생했습니다. 잠시 후 다시 시도해주세요.',

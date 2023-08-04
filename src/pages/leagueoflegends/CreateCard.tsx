@@ -40,6 +40,7 @@ import {
 import { chatroomActions } from 'store/chatroom-slice';
 import { createCard, deleteCard } from 'apis/api/common';
 import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -261,8 +262,8 @@ const CreateCard = () => {
           severity: 'success',
         }),
       );
-      navigate(0);
-    } catch (error) {
+      dispatch(refreshActions.REFRESH_CARD());
+    } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '게시글 작성에 실패했습니다.',

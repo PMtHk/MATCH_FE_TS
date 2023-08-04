@@ -104,7 +104,7 @@ export function fetchCardList(url: string, config: any, deps: any[]) {
  * @param url 요청 url
  * @returns 게시글 상세 정보
  */
-export function fetchCardDetail(url: string) {
+export function fetchCardDetail(url: string, deps: any[]) {
   const [resource, setResource] = useState(null);
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export function fetchCardDetail(url: string) {
     };
 
     getData();
-  }, []);
+  }, deps);
 
   return resource;
 }

@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import { authAxios, defaultAxios } from 'apis/utils';
-import { RootState } from 'store';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,8 +10,10 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import { Button, OutlinedInput, CircularProgress } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { useNavigate } from 'react-router-dom';
+
+import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
 import {
   verifyPUBGNickname,
   loadPubgPlayerInfoIntoDB,
@@ -59,7 +61,7 @@ const EmptySlotForAuthor = ({ platform }: any) => {
           severity: 'warning',
         }),
       );
-      navigate(0);
+      dispatch(refreshActions.REFRESH_CARD());
       return;
     }
     // 닉네임을 작성하지 않은 경우
@@ -139,7 +141,7 @@ const EmptySlotForAuthor = ({ platform }: any) => {
       // FB
       await addMemberToFirebaseDB(newMember, currentCard.chatRoomId, dispatch);
 
-      await window.location.reload();
+      dispatch(refreshActions.REFRESH_CARD());
 
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

@@ -2,12 +2,14 @@ import { createSlice } from '@reduxjs/toolkit';
 
 interface IState {
   remainingTime: number;
+  cardRefresh: number;
 }
 
 export const REFRESH_CYCLE = 60;
 
 const initialState: IState = {
   remainingTime: REFRESH_CYCLE,
+  cardRefresh: 0,
 };
 
 const refreshSlice = createSlice({
@@ -22,6 +24,9 @@ const refreshSlice = createSlice({
     },
     FORCE_REFRESH: (state) => {
       state.remainingTime = 0;
+    },
+    REFRESH_CARD: (state) => {
+      state.cardRefresh += 1;
     },
   },
 });
