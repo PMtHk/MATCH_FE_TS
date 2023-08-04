@@ -46,7 +46,7 @@ const CardListFetcher = ({
     },
   };
 
-  const deps = [platform, type, tier, currentPage];
+  const deps = [platform, type, tier, currentPage, refresh];
 
   const cardList: any = fetchCardList('/api/pubg/boards', config, deps);
 
