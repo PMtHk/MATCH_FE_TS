@@ -247,5 +247,6 @@ const MemberList = styled(MuiBox)(() => ({
   minWidth: 520,
   minHeight: '418px',
   maxHeight: '418px',
-  overflow: 'auto',
+  overflowY: 'auto',
+  overflowX: 'hidden',
 })) as typeof MuiBox;

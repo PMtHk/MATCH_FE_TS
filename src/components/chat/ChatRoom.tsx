@@ -142,6 +142,7 @@ const ChatRoom = () => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       updateALastRead(oauth2Id, chatRoomId, Date.now());
     }
+    dispatch(refreshActions.REFRESH_CARD());
   }, [currentChatRoomMessages]);
 
   return (
@@ -162,7 +163,6 @@ const ChatRoom = () => {
                 />
               );
             }
-            dispatch(refreshActions.REFRESH_CARD());
             return (
               <SystemMessage
                 key={message.timestamp + Math.random() * 10000}
