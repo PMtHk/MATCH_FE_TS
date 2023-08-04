@@ -162,6 +162,7 @@ const ChatRoom = () => {
                 />
               );
             }
+            dispatch(refreshActions.REFRESH_CARD());
             return (
               <SystemMessage
                 key={message.timestamp + Math.random() * 10000}

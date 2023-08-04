@@ -119,15 +119,6 @@ const Notification = ({
               chatRoomId,
               message: datasnapshot.val(),
             };
-            // 시스템 메세지인 경우 currentCard를 refresh
-            // 각 채팅방의 메세지를 리덕스에 저장
-            if (
-              currentCard !== null &&
-              datasnapshot.val().type === 'system' &&
-              currentCard.chatRoomId === chatRoomId
-            ) {
-              dispatch(refreshActions.REFRESH_CARD());
-            }
             dispatch(messageActions.SET_MESSAGES(data));
           });
           dispatch(chatroomActions.ADD_DETACHEDLISTENER(chatRoomId));
