@@ -109,11 +109,13 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
         }}
       />
       <GridItem item xs={6} sm={3} md={2} lg={1.5}>
-        <MuiButton fullWidth onClick={handleRefresh}>
-          {remainingTime === 0
-            ? '업데이트 중...'
-            : `${remainingTime}초 후 갱신`}
-        </MuiButton>
+        <MuiTooltip title="클릭하여 바로 갱신하기">
+          <MuiButton fullWidth onClick={handleRefresh}>
+            {remainingTime === 0
+              ? '업데이트 중...'
+              : `${remainingTime}초 후 갱신`}
+          </MuiButton>
+        </MuiTooltip>
       </GridItem>
       {isLogin && (
         <GridItem item xs={6} sm={3} md={2} lg={1.5}>

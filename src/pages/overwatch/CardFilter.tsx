@@ -12,6 +12,7 @@ import MuiSelect, { SelectChangeEvent } from '@mui/material/Select';
 import MuiMenuItem from '@mui/material/MenuItem';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import MuiToggleButton from '@mui/material/ToggleButton';
+import MuiTooltip from '@mui/material/Tooltip';
 
 import CreateCardButton from 'components/card-actions/CreateCardBtn';
 import { refreshActions } from 'store/refresh-slice';
@@ -149,11 +150,13 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
         }}
       />
       <GridItem item xs={6} md={2} lg={1.5}>
-        <MuiButton fullWidth onClick={handleRefresh}>
-          {remainingTime === 0
-            ? '업데이트 중...'
-            : `${remainingTime}초 후 갱신`}
-        </MuiButton>
+        <MuiTooltip title="클릭하여 바로 갱신하기">
+          <MuiButton fullWidth onClick={handleRefresh}>
+            {remainingTime === 0
+              ? '업데이트 중...'
+              : `${remainingTime}초 후 갱신`}
+          </MuiButton>
+        </MuiTooltip>
       </GridItem>
       {isLogin && (
         <GridItem item xs={6} md={2} lg={1.5}>
