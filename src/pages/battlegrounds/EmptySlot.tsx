@@ -158,6 +158,8 @@ const EmptySlotForAuthor = ({ platform }: any) => {
       );
     } finally {
       setIsLoading(false);
+      setName('');
+      setIsEntering(false);
     }
   };
 

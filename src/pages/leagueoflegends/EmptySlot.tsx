@@ -109,6 +109,8 @@ const EmptySlotForAuthor = () => {
       );
     } finally {
       setIsLoading(false);
+      setName('');
+      setIsEntering(false);
     }
   };
 
