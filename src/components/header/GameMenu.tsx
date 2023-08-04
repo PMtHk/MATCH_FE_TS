@@ -16,9 +16,10 @@ import MuiMenu from '@mui/material/Menu';
 import MuiMenuItem from '@mui/material/MenuItem';
 import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
-import GameIcon from 'components/GameIcon';
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
+import { refreshActions } from 'store/refresh-slice';
+import GameIcon from 'components/GameIcon';
 import { gameList, GAME, GAME_ID } from '../../assets/Games.data';
 
 const GameMenu = () => {
@@ -43,6 +44,7 @@ const GameMenu = () => {
             color="white"
             onClick={() => {
               dispatch(cardActions.SET_CURRENT_PAGE(0));
+              dispatch(refreshActions.INITIALIZE());
             }}
             sx={{
               borderBottom:

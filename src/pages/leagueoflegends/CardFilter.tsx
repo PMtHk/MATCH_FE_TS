@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import { RootState } from 'store';
 
@@ -7,12 +7,14 @@ import { RootState } from 'store';
 import { styled } from '@mui/system';
 import MuiGrid from '@mui/material/Grid';
 import MuiFormControl from '@mui/material/FormControl';
+import MuiButton from '@mui/material/Button';
 import MuiSelect, { SelectChangeEvent } from '@mui/material/Select';
 import MuiMenuItem from '@mui/material/MenuItem';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import MuiToggleButton from '@mui/material/ToggleButton';
 
 import CreateCardButton from 'components/card-actions/CreateCardBtn';
+import { refreshActions } from 'store/refresh-slice';
 import { positionList, queueTypeList, tierList } from './data';
 
 interface CardFilterProps {
@@ -27,10 +29,12 @@ interface CardFilterProps {
 }
 
 const CardFilter = ({ filterProps }: CardFilterProps) => {
-  const { isLogin } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
 
+  const { isLogin } = useSelector((state: RootState) => state.user);
   const { queueType, handleQueueType, tier, handleTier, lane, handleLane } =
     filterProps;
+  const { remainingTime } = useSelector((state: RootState) => state.refresh);
 
   const [scrollPosition, setScrollPosition] = React.useState<number>(0);
 
@@ -46,6 +50,10 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const handleRefresh = () => {
+    dispatch(refreshActions.FORCE_REFRESH());
+  };
 
   return (
     <GridContainer scrollPosition={scrollPosition} container spacing={1}>
@@ -113,14 +121,30 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
       </GridItem>
       <GridItem
         item
-        md={0.5}
-        lg={2.5}
+        md={2}
+        lg={1}
         sx={{
           display: { xs: 'none', md: 'flex' },
         }}
       />
+      <GridItem
+        item
+        xs={0}
+        md={8}
+        lg={9}
+        sx={{
+          display: { xs: 'none', md: 'flex', lg: 'none' },
+        }}
+      />
+      <GridItem item xs={6} md={2} lg={1.5}>
+        <MuiButton fullWidth onClick={handleRefresh}>
+          {remainingTime === 0
+            ? '업데이트 중...'
+            : `${remainingTime}초 후 갱신`}
+        </MuiButton>
+      </GridItem>
       {isLogin && (
-        <GridItem item xs={12} md={1.5}>
+        <GridItem item xs={6} md={2} lg={1.5}>
           <CreateCardButton />
         </GridItem>
       )}
