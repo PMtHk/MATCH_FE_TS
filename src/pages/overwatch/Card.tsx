@@ -205,13 +205,15 @@ const Card = ({ item, expired }: CardProps) => {
             <WinRateSectionName>승률</WinRateSectionName>
             <ChildSectionContent>
               <MatchPlayed>
-                {item.author?.wins}승 {item.author?.losses}패
                 <WinRate
                   component="span"
-                  sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                  sx={{
+                    color: winRate >= 50 ? '#d31f45' : '#5383e8',
+                  }}
                 >
-                  ({winRate}%)
+                  {winRate}%
                 </WinRate>
+                ({item.author?.wins}승 {item.author?.losses}패)
               </MatchPlayed>
             </ChildSectionContent>
           </AuthorSection>
@@ -524,19 +526,19 @@ const Author = styled(MuiTypography)(() => ({
 })) as typeof MuiTypography;
 
 const MatchPlayed = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
+  fontSize: '11px',
+  fontWeight: '400',
   color: '#000000',
 })) as typeof MuiTypography;
 
 const WinRate = styled(MuiTypography)(() => ({
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: '600',
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
 
 const KDTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
+  fontSize: '15px',
   fontWeight: '600',
   padding: '0 0 0 2px',
 })) as typeof MuiTypography;
