@@ -208,7 +208,7 @@ export const kickMemberFromParty = async (
   await set(push(child(messagesRef, chatRoomId)), {
     type: 'system',
     timestamp: Date.now(),
-    user: { nickname, oauth2Id: '', notiToken: '' },
+    user: { nickname: 'system', oauth2Id: '', notiToken: '' },
     content: `${nickname} 님이 퇴장하였습니다.`,
   });
 };

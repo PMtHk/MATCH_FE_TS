@@ -25,6 +25,7 @@ import { RootState } from 'store';
 import { updateLastReads } from 'apis/api/firebase';
 import { messageActions, Message } from 'store/message-slice';
 import { getUserChatRooms } from 'apis/api/user';
+import { refreshActions } from 'store/refresh-slice';
 import { chatroomActions } from 'store/chatroom-slice';
 import NotiAccordion from './NotiAccordion';
 
@@ -51,6 +52,7 @@ const Notification = ({
   const { badgeNum, timestamps } = useSelector(
     (state: RootState) => state.notification,
   );
+  const { currentCard } = useSelector((state: RootState) => state.card);
 
   // 파이어베이스의 lastRead 래퍼런스
   const lastReadRef = ref(getDatabase(), `lastRead/${oauth2Id}`);
@@ -117,7 +119,15 @@ const Notification = ({
               chatRoomId,
               message: datasnapshot.val(),
             };
+            // 시스템 메세지인 경우 currentCard를 refresh
             // 각 채팅방의 메세지를 리덕스에 저장
+            if (
+              currentCard !== null &&
+              datasnapshot.val().type === 'system' &&
+              currentCard.chatRoomId === chatRoomId
+            ) {
+              dispatch(refreshActions.REFRESH_CARD());
+            }
             dispatch(messageActions.SET_MESSAGES(data));
           });
           dispatch(chatroomActions.ADD_DETACHEDLISTENER(chatRoomId));

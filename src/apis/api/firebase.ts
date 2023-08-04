@@ -92,7 +92,11 @@ export const addMemberToFirebaseDB = async (
   await set(push(child(messagesRef, chatRoomId)), {
     type: 'system',
     timestamp: Date.now(),
-    user: newMember,
+    user: {
+      nickname: 'system',
+      oauth2Id: '',
+      notitoken: '',
+    },
     content: `${newMember.nickname} 님이 참가하였습니다.`,
   });
 
@@ -139,8 +143,8 @@ export const removeMemberFromFirebaseDB = async (
     type: 'system',
     timestamp: Date.now(),
     user: {
-      nickname: targetMember.nickname,
-      oauth2Id: targetMember.oauth2Id,
+      nickname: 'system',
+      oauth2Id: '',
       notiToken: '',
     },
     content: `${targetMember.nickname} 님이 퇴장하였습니다.`,
