@@ -20,13 +20,12 @@ import MuiMenu from '@mui/material/Menu';
 import NotificationsNone from '@mui/icons-material/NotificationsNone';
 import Delete from '@mui/icons-material/Delete';
 
-import { notificationActions } from 'store/notification-slice';
-import { RootState } from 'store';
 import { updateLastReads } from 'apis/api/firebase';
+import { RootState } from 'store';
+import { notificationActions } from 'store/notification-slice';
 import { messageActions, Message } from 'store/message-slice';
-import { getUserChatRooms } from 'apis/api/user';
-import { refreshActions } from 'store/refresh-slice';
 import { chatroomActions } from 'store/chatroom-slice';
+import { CHATROOM } from 'types/chats';
 import NotiAccordion from './NotiAccordion';
 
 interface NotificationProps {
@@ -61,14 +60,16 @@ const Notification = ({
     const handleBadge = async () => {
       let numOfAlarm = 0;
 
-      joinedChatRoomsId.map((aChatRoomId: string) => {
-        if (joinedChatRoomsId && messages[aChatRoomId]) {
-          Object.values(messages[aChatRoomId]).map((aMessage: Message) => {
-            if (aMessage.timestamp > timestamps[aChatRoomId]) {
-              numOfAlarm += 1;
-            }
-            return null;
-          });
+      joinedChatRoomsId.map((aChatRoom: CHATROOM) => {
+        if (joinedChatRoomsId && messages[aChatRoom.chatRoomId]) {
+          Object.values(messages[aChatRoom.chatRoomId]).map(
+            (aMessage: Message) => {
+              if (aMessage.timestamp > timestamps[aChatRoom.chatRoomId]) {
+                numOfAlarm += 1;
+              }
+              return null;
+            },
+          );
           return null;
         }
         return null;
@@ -112,16 +113,19 @@ const Notification = ({
   useEffect(() => {
     // 메세지 각 채팅방의 메세지 리스너 추가
     const addFirebaseListener = async () => {
-      joinedChatRoomsId.forEach((chatRoomId: string) => {
-        if (!detachedListener.includes(chatRoomId)) {
-          onChildAdded(child(messagesRef, chatRoomId), (datasnapshot) => {
-            const data = {
-              chatRoomId,
-              message: datasnapshot.val(),
-            };
-            dispatch(messageActions.SET_MESSAGES(data));
-          });
-          dispatch(chatroomActions.ADD_DETACHEDLISTENER(chatRoomId));
+      joinedChatRoomsId.forEach((aChatRoom: CHATROOM) => {
+        if (!detachedListener.includes(aChatRoom.chatRoomId)) {
+          onChildAdded(
+            child(messagesRef, aChatRoom.chatRoomId),
+            (datasnapshot) => {
+              const data = {
+                chatRoomId: aChatRoom.chatRoomId,
+                message: datasnapshot.val(),
+              };
+              dispatch(messageActions.SET_MESSAGES(data));
+            },
+          );
+          dispatch(chatroomActions.ADD_DETACHEDLISTENER(aChatRoom.chatRoomId));
         }
       });
     };
@@ -168,14 +172,14 @@ const Notification = ({
       >
         <ChatRoomsWrapper>
           {joinedChatRoomsId &&
-            joinedChatRoomsId.map((chatRoomId) => {
+            joinedChatRoomsId.map((aChatRoom) => {
               return (
                 <NotiAccordion
-                  expanded={expanded === chatRoomId}
+                  expanded={expanded === aChatRoom.chatRoomId}
                   expandHandler={handleAccordion}
-                  key={chatRoomId}
-                  chatRoomId={chatRoomId}
-                  timestamp={timestamps[chatRoomId]}
+                  key={aChatRoom.chatRoomId}
+                  chatRoomId={aChatRoom.chatRoomId}
+                  timestamp={timestamps[aChatRoom.chatRoomId]}
                   handleNotiClose={handleNotiClose}
                 />
               );

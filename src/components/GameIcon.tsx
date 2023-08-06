@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { GAME_ID, gameList, GAME } from 'assets/Games.data';
+import { GAME_ID, GAME } from 'types/games';
+import { gameList } from 'assets/Games.data';
 
 interface GameIconProps {
   item: string;

@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  useLocation,
-  useNavigate,
-  useParams,
-  Link as RouterLink,
-} from 'react-router-dom';
+import { useLocation, useNavigate, Link as RouterLink } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // mui
@@ -12,24 +7,18 @@ import { styled } from '@mui/system';
 import MuiLink from '@mui/material/Link';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
-import MuiMenu from '@mui/material/Menu';
-import MuiMenuItem from '@mui/material/MenuItem';
-import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 
-import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import { refreshActions } from 'store/refresh-slice';
-import GameIcon from 'components/GameIcon';
-import { gameList, GAME, GAME_ID } from '../../assets/Games.data';
+import { GAME, GAME_ID } from 'types/games';
+import { gameList } from 'assets/Games.data';
+import { getCurrentGame } from 'functions/commons';
 
 const GameMenu = () => {
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const location = useLocation();
 
-  const currentGame = window.location.pathname.split('/')[1];
-
-  const isMyPage = location.pathname === '/mypage';
+  const currentGame: GAME_ID = getCurrentGame();
 
   return (
     <GameMenuContainer>

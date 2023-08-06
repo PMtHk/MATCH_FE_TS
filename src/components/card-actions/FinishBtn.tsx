@@ -1,32 +1,31 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // mui
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import MuiButton from '@mui/material/Button';
 
-import { snackbarActions } from 'store/snackbar-slice';
-import { useNavigate } from 'react-router-dom';
 import { finishCard } from 'apis/api/common';
+import { RootState } from 'store';
+import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
-import { RootState } from '../../store';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 
 const FinishBtn = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // current game
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { currentCard } = useSelector((state: RootState) => state.card);
-
-  const { notiToken } = useSelector((state: RootState) => state.notification);
 
   const nickname = useSelector(
     (state: RootState) =>
       state.user.games[`${currentGame as 'overwatch' | 'pubg' | 'lol'}`],
   );
-  const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
+  const { isLogin } = useSelector((state: RootState) => state.user);
 
   const { id, finished } = useSelector(
     (state: RootState) => state.card.currentCard,

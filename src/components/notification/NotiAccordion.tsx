@@ -78,12 +78,9 @@ const NotiAccordion = ({
       setIsLoading(true);
 
       try {
-        const fetchedChatRoomInfo = await getAChatRoomInfo(
-          chatRoomId,
-          chatRoomsRef,
-        );
+        const fetchedChatRoomInfo = await getAChatRoomInfo(chatRoomId);
         setChatRoomInfo(fetchedChatRoomInfo);
-      } catch (error) {
+      } catch (error: any) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message:

@@ -63,7 +63,6 @@ const UserMenu = () => {
       <UserMenuBtn>
         <MuiTooltip title="사용자 메뉴">
           <MuiIconButton onClick={openUserMenu}>
-            <KakaoNickname>{nickname !== '' ? nickname : 'PORO'}</KakaoNickname>
             <ProfileImageWrapper>
               <img
                 src={
@@ -141,21 +140,10 @@ const UserMenuBtn = styled(MuiBox)(() => ({
   justifyContent: 'center',
 })) as typeof MuiBox;
 
-const KakaoNickname = styled(MuiTypography)(({ theme }) => ({
-  display: 'none',
-  [theme.breakpoints.up('md')]: {
-    display: 'inline-block',
-    color: '#ffffff',
-    fontSize: '14px',
-    fontWeight: '500',
-  },
-})) as typeof MuiTypography;
-
 const ProfileImageWrapper = styled(MuiBox)(() => ({
   width: '40px',
   height: '40px',
   borderRadius: '50%',
-  margin: '0 0 0 8px',
   overflow: 'hidden',
 })) as typeof MuiBox;
 

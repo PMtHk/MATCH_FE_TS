@@ -20,15 +20,17 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { RootState } from 'store';
 
 import GameIcon from 'components/GameIcon';
-import { GAME_ID } from 'assets/Games.data';
 import Notification from 'components/notification/Notification';
 import ChatRoomListFetcher from 'components/notification/ChatRoomListFetcher';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import UserMenu from './UserMenu';
 import GameMenu from './GameMenu';
 
 const Header = () => {
-  const currentGame = window.location.pathname.split('/')[1];
   const navigate = useNavigate();
+
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { isLogin, representative } = useSelector(
     (state: RootState) => state.user,
@@ -121,7 +123,6 @@ const Header = () => {
             <MatchGGLogo>MatchGG</MatchGGLogo>
           </MuiButton>
           <GameMenu />
-          {isLogin && <UserMenu />}
           {isLogin && (
             <ChatRoomListFetcher>
               {joinedChatRoomsId && (
@@ -134,6 +135,7 @@ const Header = () => {
               )}
             </ChatRoomListFetcher>
           )}
+          {isLogin && <UserMenu />}
           {!isLogin && (
             <LoginBtnWrapper
               onClick={() => {

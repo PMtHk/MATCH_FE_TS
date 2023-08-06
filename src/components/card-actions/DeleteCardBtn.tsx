@@ -4,15 +4,16 @@ import { ref, getDatabase, update } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
 // mui
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import MuiButton from '@mui/material/Button';
 
+import { deleteCard } from 'apis/api/common';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
-import { authAxios } from 'apis/utils';
-import { deleteCard } from 'apis/api/common';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 
 const DeleteCardBtn = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ const DeleteCardBtn = () => {
     (state: RootState) => state.card.currentCard,
   );
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   const deleteBtnHandler = async () => {
     try {
