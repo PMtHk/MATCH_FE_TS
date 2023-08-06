@@ -1,4 +1,5 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   ref,
   child,
@@ -9,19 +10,11 @@ import {
   push,
   DatabaseReference,
 } from 'firebase/database';
-import { notificationActions } from 'store/notification-slice';
-import { useEffect, useState } from 'react';
+
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
-import { RootState } from '../../store';
+import { notificationActions } from 'store/notification-slice';
+import { CHATROOM, MEMBER } from 'types/chats';
 
-import { chatroomActions } from '../../store/chatroom-slice';
-
-type Member = {
-  nickname: string;
-  oauth2Id: string;
-  notiToken: string;
-  isReviewed: boolean;
-};
 /** ------------------------------------------------------------
  * 채팅방 차단 여부 확인
  * @param {string} chatRoomId - 채팅방 아이디
@@ -42,7 +35,7 @@ export const isBanned = async (chatRoomId: string, oauth2Id: string) => {
       ? datasnapshot.val().bannedList
       : [];
     const bannedOauth2IdList = bannedList.map(
-      (member: Member) => member.oauth2Id,
+      (member: MEMBER) => member.oauth2Id,
     );
     if (bannedOauth2IdList.includes(oauth2Id)) {
       banned = true;
@@ -64,9 +57,8 @@ export const isBanned = async (chatRoomId: string, oauth2Id: string) => {
  */
 
 export const addMemberToFirebaseDB = async (
-  newMember: Member,
+  newMember: MEMBER,
   chatRoomId: string,
-  dispatch: ReturnType<typeof useDispatch>,
 ) => {
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   const messagesRef = ref(getDatabase(), 'messages');
@@ -100,8 +92,6 @@ export const addMemberToFirebaseDB = async (
     content: `${newMember.nickname} 님이 참가하였습니다.`,
   });
 
-  dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(chatRoomId));
-
   return null;
 };
 
@@ -120,19 +110,23 @@ export const addMemberToFirebaseDB = async (
  */
 
 export const removeMemberFromFirebaseDB = async (
-  targetMember: Member,
+  targetOauth2Id: string,
   chatRoomId: string,
-  chatRoomsRef: DatabaseReference,
-  messagesRef: DatabaseReference,
 ) => {
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const messagesRef = ref(getDatabase(), 'messages');
+
   const dataSnapshot = await get(
     child(chatRoomsRef, `${chatRoomId}/memberList`),
   );
 
   const prevMemberList = [...dataSnapshot.val()];
-  const newMemberList = prevMemberList.filter((member: Member) => {
-    return member.oauth2Id !== targetMember.oauth2Id;
+  const newMemberList = prevMemberList.filter((member: MEMBER) => {
+    return member.oauth2Id !== targetOauth2Id;
   });
+  const targetMember = prevMemberList.find(
+    (member: MEMBER) => member.oauth2Id === targetOauth2Id,
+  );
 
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
     memberList: newMemberList,
@@ -202,12 +196,15 @@ export const updateALastRead = async (
 
 export const updateLastReads = async (
   oauth2Id: string,
-  joinedChatRoomsId: string[],
+  joinedChatRoomsId: CHATROOM[],
 ) => {
   const lastReadRef = ref(getDatabase(), 'lastRead');
 
-  joinedChatRoomsId.forEach(async (chatRoomId) => {
-    await set(child(lastReadRef, `${oauth2Id}/${chatRoomId}`), Date.now());
+  joinedChatRoomsId.forEach(async (aChatRoom) => {
+    await set(
+      child(lastReadRef, `${oauth2Id}/${aChatRoom.chatRoomId}`),
+      Date.now(),
+    );
   });
 
   return null;
@@ -222,10 +219,8 @@ export const updateLastReads = async (
  * 채팅방 정보를 가져온다.
  */
 
-export const getAChatRoomInfo = async (
-  chatRoomId: string,
-  chatRoomsRef: DatabaseReference,
-) => {
+export const getAChatRoomInfo = async (chatRoomId: string) => {
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   const dataSnapshot = await get(child(chatRoomsRef, chatRoomId));
 
   return dataSnapshot.val();
@@ -264,7 +259,7 @@ export const getIsReviewed = (oauth2Id: string, chatRoomId: string) => {
     const getData = async () => {
       const promise = get(child(chatRoomsRef, chatRoomId)).then(
         (dataSnapshot) => {
-          return dataSnapshot.val().memberList.find((member: Member) => {
+          return dataSnapshot.val().memberList.find((member: MEMBER) => {
             return member.oauth2Id === oauth2Id;
           }).isReviewed;
         },
@@ -289,12 +284,12 @@ export const asyncGetIsReviewed = async (
     (dataSnapshot) => {
       const member = dataSnapshot
         .val()
-        .memberList.find((aMember: Member) => aMember.oauth2Id === oauth2Id);
+        .memberList.find((aMember: MEMBER) => aMember.oauth2Id === oauth2Id);
 
       if (member) {
         return dataSnapshot
           .val()
-          .memberList.find((member: Member) => member.oauth2Id === oauth2Id)
+          .memberList.find((member: MEMBER) => member.oauth2Id === oauth2Id)
           .isReviewed;
       }
 
@@ -318,7 +313,7 @@ export const doReview = async (oauth2Id: string, chatRoomId: string) => {
   );
 
   const prevMemberList = [...dataSnapshot.val()];
-  const newMemberList = prevMemberList.map((member: Member) => {
+  const newMemberList = prevMemberList.map((member: MEMBER) => {
     if (member.oauth2Id === oauth2Id) {
       const temp = member;
       temp.isReviewed = true;

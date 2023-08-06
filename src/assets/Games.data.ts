@@ -1,14 +1,4 @@
-export type GAME_ID = 'lol' | 'pubg' | 'overwatch' | 'valorant';
-
-export type GAME = {
-  id: GAME_ID;
-  name: string;
-  name_kor: string;
-  image_url: string;
-  labelText: string;
-  helperText: string;
-  available: boolean;
-};
+import { GAME } from 'types/games';
 
 export const gameList: GAME[] = [
   {
