@@ -7,10 +7,13 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 
 import { RootState } from 'store';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import Card from './Card';
 
 const CardListContainer = () => {
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
+
   const { overwatchCards } = useSelector((state: RootState) => state.card);
 
   const { overwatch: registeredOverwatchNickname } = useSelector(

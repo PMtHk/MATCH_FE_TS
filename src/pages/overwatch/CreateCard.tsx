@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { child, getDatabase, push, ref, set, update } from 'firebase/database';
 
-import { RootState } from 'store';
-
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
@@ -29,22 +27,25 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
-import Modal from 'components/Modal';
-
-import { authAxios } from 'apis/utils';
-import { CustomSwitch } from 'components/Swtich';
 import { verifyOWNickname, loadOWPlayerInfoInDB } from 'apis/api/overwatch';
+import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
-import { createCard, deleteCard } from 'apis/api/common';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
+import Modal from 'components/Modal';
+import { CustomSwitch } from 'components/Swtich';
+import { createCard, deleteCard } from 'apis/api/common';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = window.location.pathname.split(
+    '/',
+  )[1] as GAME_ID;
 
   const { overwatch: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -248,7 +249,12 @@ const CreateCard = () => {
         notiToken || '',
       );
 
-      dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
+      dispatch(
+        chatroomActions.ADD_JOINED_CHATROOMS_ID({
+          chatRoomId: key as string,
+          game: currentGame,
+        }),
+      );
       navigate(`/overwatch/${boardId}`, { replace: true });
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

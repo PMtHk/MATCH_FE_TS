@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { authAxios, defaultAxios } from 'apis/utils';
+import { defaultAxios } from 'apis/utils';
 
 // mui
 import { styled } from '@mui/system';
@@ -28,7 +28,6 @@ interface MemberSlotProps {
 
 const MemberSlot = ({ name }: MemberSlotProps) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
@@ -49,8 +48,6 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
     mostHero: [],
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
-  // author info
-  const authorNickname = memberInfo.name.split('#')[0];
 
   type calcedInfo = {
     value: number;
@@ -171,7 +168,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
         <Member>
           <SectionInMember>
             <SectionTitleInMember>닉네임</SectionTitleInMember>
-            <Nickname>{authorNickname}</Nickname>
+            <Nickname>{memberInfo.name.split('#')[0]}</Nickname>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>승률</SectionTitleInMember>
