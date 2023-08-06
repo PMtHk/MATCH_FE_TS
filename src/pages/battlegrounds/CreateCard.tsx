@@ -2,7 +2,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { child, getDatabase, push, ref, set, update } from 'firebase/database';
 
 // mui
 import { styled } from '@mui/system';
@@ -11,7 +10,6 @@ import MuiButton from '@mui/material/Button';
 import MuiIconButton from '@mui/material/IconButton';
 import MuiTypography from '@mui/material/Typography';
 import MuiDivider from '@mui/material/Divider';
-import MuiSwitch, { SwitchProps } from '@mui/material/Switch';
 import MuiOutlinedInput from '@mui/material/OutlinedInput';
 import MuiCircularProgress from '@mui/material/CircularProgress';
 import MuiToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -27,26 +25,23 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
+import { createCard } from 'apis/api/common';
+import { loadPubgPlayerInfoIntoDB, checkPUBGUserPlatform } from 'apis/api/pubg';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { CustomSwitch } from 'components/Swtich';
 import Modal from 'components/Modal';
-import { authAxios } from 'apis/utils';
-import { createCard, deleteCard } from 'apis/api/common';
-import {
-  verifyPUBGNickname,
-  loadPubgPlayerInfoIntoDB,
-  checkPUBGUserPlatform,
-} from 'apis/api/pubg';
+import { GAME_ID } from 'types/games';
+import { getCurrentGame } from 'functions/commons';
 import { typeList, tierList, platformList, expiredTimeList } from './data';
 
 const CreateCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { pubg: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -256,7 +251,12 @@ const CreateCard = () => {
         notiToken || '',
       );
 
-      dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
+      dispatch(
+        chatroomActions.ADD_JOINED_CHATROOMS_ID({
+          chatRoomId: key as string,
+          game: currentGame as GAME_ID,
+        }),
+      );
       navigate(`/pubg/${boardId}`, { replace: true });
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

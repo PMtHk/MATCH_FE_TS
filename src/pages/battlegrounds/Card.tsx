@@ -11,7 +11,8 @@ import CheckIcon from '@mui/icons-material/Check';
 import MicIcon from '@mui/icons-material/Mic';
 
 import CardContainer from 'components/CardContainer';
-import Timer, { EXPIRE_TYPE } from 'components/CountDownTimer';
+import Timer from 'components/CountDownTimer';
+import { EXPIRE_TIME } from 'types/commons';
 import { Stack } from '@mui/material';
 
 import { platformList, typeList, tierList, rankImage } from './data';
@@ -26,9 +27,10 @@ interface CardProps {
     platform: string;
     voice: 'Y' | 'N';
     content: string;
-    expire: EXPIRE_TYPE;
-    expired: true | false;
+    expire: EXPIRE_TIME;
+    expired: string;
     created: string;
+    finished: string;
     author: {
       id: number;
       name: string;
