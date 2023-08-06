@@ -100,7 +100,7 @@ const UserMenu = () => {
               display: 'block',
               position: 'absolute',
               top: 0,
-              right: 20,
+              right: 22,
               width: 10,
               height: 10,
               bgcolor: 'background.paper',
@@ -120,7 +120,7 @@ const UserMenu = () => {
           }}
         >
           <AccountCircleIcon />
-          <MenuItemText>내 정보</MenuItemText>
+          <MenuItemText>{nickname}</MenuItemText>
         </MuiMenuItem>
         <MuiDivider />
         <MuiMenuItem onClick={logoutBtnHandler}>
