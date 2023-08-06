@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -13,7 +13,8 @@ import { RootState } from 'store';
 import { verifyLOLNickname } from 'apis/api/leagueoflegends';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-import { GAME, gameList } from '../../assets/Games.data';
+import { gameList } from 'assets/Games.data';
+import { GAME_ID, GAME } from 'types/games';
 
 const InputLol = () => {
   const { games } = useSelector((state: RootState) => state.register);

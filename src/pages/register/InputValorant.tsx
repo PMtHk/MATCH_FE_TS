@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { styled } from '@mui/material/styles';
+// mui
+import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
@@ -13,7 +14,8 @@ import { RootState } from 'store';
 import { verifyVLRTNickname } from 'apis/api/valorant';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-import { gameList, GAME } from '../../assets/Games.data';
+import { gameList } from 'assets/Games.data';
+import { GAME } from 'types/games';
 
 const InputValorant = () => {
   const { games } = useSelector((state: RootState) => state.register);

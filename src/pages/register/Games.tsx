@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // mui
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
 import MuiTypography from '@mui/material/Typography';
