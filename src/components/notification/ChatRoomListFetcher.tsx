@@ -33,8 +33,6 @@ const ChatRoomListFetcher = ({ children }: ChatRoomListFetcherProps) => {
           dataSnapshot.game &&
           dataSnapshot.isDeleted === false &&
           dataSnapshot.isFinished === false
-          // ||
-          // dataSnapshot.isFinished === undefined
         ) {
           dispatch(
             chatroomActions.ADD_JOINED_CHATROOMS_ID({

@@ -53,13 +53,11 @@ const Notification = ({
     (state: RootState) => state.notification,
   );
 
-  const [alarm, setAlarm] = React.useState<boolean>(false);
-
   // 파이어베이스의 lastRead 래퍼런스
   const lastReadRef = ref(getDatabase(), `lastRead/${oauth2Id}`);
 
   useEffect(() => {
-    const handleBadge = async () => {
+    const handleBadge = () => {
       let numOfAlarm = 0;
 
       joinedChatRoomsId.map((aChatRoom: CHATROOM) => {
@@ -84,7 +82,7 @@ const Notification = ({
       }
     };
     handleBadge();
-  }, [messages, joinedChatRoomsId, dispatch, timestamps]);
+  }, [messages, dispatch, timestamps]);
 
   // 모든 채팅방에 lastRead 업데이트
 
@@ -118,7 +116,6 @@ const Notification = ({
 
     const addLastReadListener = async () => {
       joinedChatRoomsId.forEach((aChatRoom: CHATROOM) => {
-        console.log(aChatRoom.chatRoomId);
         if (!detachedLastRead.includes(aChatRoom.chatRoomId)) {
           onValue(
             child(lastReadRef, aChatRoom.chatRoomId),
@@ -187,7 +184,6 @@ const Notification = ({
                   messages[aChatRoom.chatRoomId],
                 ).slice(-1)[0];
                 if (lastMessages.timestamp > timestamps[aChatRoom.chatRoomId]) {
-                  setAlarm(true);
                   return (
                     <NotiAccordion
                       expanded={expanded === aChatRoom.chatRoomId}
@@ -202,18 +198,18 @@ const Notification = ({
               }
               return null;
             })}
-          {!alarm && (
+          {badgeNum === 0 ? (
             <NoAlaram>
               <NoAlaramTypo>새로운 알림이 없습니다.</NoAlaramTypo>
             </NoAlaram>
-          )}
+          ) : null}
         </ChatRoomsWrapper>
-        {alarm && (
+        {badgeNum !== 0 ? (
           <MenuItem onClick={deleteAllNotiHandler}>
             <Delete sx={{ color: 'orangered' }} />
             <DeleteAllTypo>모든 알림 지우기</DeleteAllTypo>
           </MenuItem>
-        )}
+        ) : null}
       </Menu>
     </>
   );
