@@ -1,10 +1,7 @@
 /* eslint-disable no-alert */
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { child, getDatabase, push, ref, set, update } from 'firebase/database';
-
-import { RootState } from 'store';
 
 // mui
 import { styled } from '@mui/system';
@@ -13,7 +10,6 @@ import MuiButton from '@mui/material/Button';
 import MuiIconButton from '@mui/material/IconButton';
 import MuiTypography from '@mui/material/Typography';
 import MuiDivider from '@mui/material/Divider';
-import MuiSwitch, { SwitchProps } from '@mui/material/Switch';
 import MuiOutlinedInput from '@mui/material/OutlinedInput';
 import MuiCircularProgress from '@mui/material/CircularProgress';
 import MuiToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -29,25 +25,26 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
-import Modal from 'components/Modal';
-
-import { authAxios } from 'apis/utils';
-import { CustomSwitch } from 'components/Swtich';
 import {
   verifyLOLNickname,
   loadSummonerInfoIntoDB,
 } from 'apis/api/leagueoflegends';
+import { createCard } from 'apis/api/common';
+import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
-import { createCard, deleteCard } from 'apis/api/common';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
+import Modal from 'components/Modal';
+import { CustomSwitch } from 'components/Swtich';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { lol: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -254,7 +251,12 @@ const CreateCard = () => {
         notiToken,
       );
 
-      dispatch(chatroomActions.ADD_JOINED_CHATROOMS_ID(key));
+      dispatch(
+        chatroomActions.ADD_JOINED_CHATROOMS_ID({
+          chatRoomId: key as string,
+          game: currentGame as GAME_ID,
+        }),
+      );
       navigate(`/lol/${boardId}`, { replace: true });
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
