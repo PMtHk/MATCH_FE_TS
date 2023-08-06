@@ -69,9 +69,6 @@ const NotiAccordion = ({
   // 파이어베이스에서 가져온 chatRoomInfo의 state
   const [chatRoomInfo, setChatRoomInfo] = useState<TChatRoomInfo>();
 
-  // firebase
-  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
-
   // 채팅방 정보 가져오기
   useEffect(() => {
     const getChatRoomInfo = async () => {

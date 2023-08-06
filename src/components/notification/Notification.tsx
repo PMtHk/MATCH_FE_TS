@@ -6,6 +6,7 @@ import {
   set,
   child,
   onChildChanged,
+  onValue,
   onChildAdded,
 } from 'firebase/database';
 
@@ -48,10 +49,9 @@ const Notification = ({
   );
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { messages } = useSelector((state: RootState) => state.message);
-  const { badgeNum, timestamps } = useSelector(
+  const { badgeNum, timestamps, detachedLastRead } = useSelector(
     (state: RootState) => state.notification,
   );
-  const { currentCard } = useSelector((state: RootState) => state.card);
 
   // 파이어베이스의 lastRead 래퍼런스
   const lastReadRef = ref(getDatabase(), `lastRead/${oauth2Id}`);
@@ -91,22 +91,6 @@ const Notification = ({
     handleNotiClose();
   };
 
-  useEffect(() => {
-    // chatRoom의 마지막 접근시간을 받는 리스너 함수
-    const addLastReadListener = async () => {
-      onChildChanged(lastReadRef, (datasnapshot) => {
-        dispatch(
-          notificationActions.SET_TIMESTAMPS({
-            chatRoomId: datasnapshot.key,
-            timestamp: datasnapshot.val(),
-          }),
-        );
-      });
-    };
-
-    addLastReadListener();
-  }, []);
-
   // 파이어베이스 messagesRef
   const messagesRef = ref(getDatabase(), 'messages');
 
@@ -130,7 +114,30 @@ const Notification = ({
       });
     };
 
+    const addLastReadListener = async () => {
+      joinedChatRoomsId.forEach((aChatRoom: CHATROOM) => {
+        console.log(aChatRoom.chatRoomId);
+        if (!detachedLastRead.includes(aChatRoom.chatRoomId)) {
+          onValue(
+            child(lastReadRef, aChatRoom.chatRoomId),
+            (datasnapshot: any) => {
+              dispatch(
+                notificationActions.SET_TIMESTAMPS({
+                  chatRoomId: datasnapshot.key,
+                  timestamp: datasnapshot.val(),
+                }),
+              );
+            },
+          );
+          dispatch(
+            notificationActions.ADD_DETACHED_LASTREAD(aChatRoom.chatRoomId),
+          );
+        }
+      });
+    };
+
     addFirebaseListener();
+    addLastReadListener();
   }, [dispatch, joinedChatRoomsId]);
 
   // accordion -> 한번에 하나만 열리도록
@@ -173,16 +180,24 @@ const Notification = ({
         <ChatRoomsWrapper>
           {joinedChatRoomsId &&
             joinedChatRoomsId.map((aChatRoom) => {
-              return (
-                <NotiAccordion
-                  expanded={expanded === aChatRoom.chatRoomId}
-                  expandHandler={handleAccordion}
-                  key={aChatRoom.chatRoomId}
-                  chatRoomId={aChatRoom.chatRoomId}
-                  timestamp={timestamps[aChatRoom.chatRoomId]}
-                  handleNotiClose={handleNotiClose}
-                />
-              );
+              if (messages[aChatRoom.chatRoomId]) {
+                const lastMessages = Object.values(
+                  messages[aChatRoom.chatRoomId],
+                ).slice(-1)[0];
+                if (lastMessages.timestamp > timestamps[aChatRoom.chatRoomId]) {
+                  return (
+                    <NotiAccordion
+                      expanded={expanded === aChatRoom.chatRoomId}
+                      expandHandler={handleAccordion}
+                      key={aChatRoom.chatRoomId}
+                      chatRoomId={aChatRoom.chatRoomId}
+                      timestamp={timestamps[aChatRoom.chatRoomId]}
+                      handleNotiClose={handleNotiClose}
+                    />
+                  );
+                }
+              }
+              return null;
             })}
         </ChatRoomsWrapper>
         <MenuItem onClick={deleteAllNotiHandler}>
