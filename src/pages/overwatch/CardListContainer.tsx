@@ -44,7 +44,11 @@ const CardListContainer = () => {
                   : `${aCard.id}`
               }
               state={{ background: `/${currentGame}` }}
-              style={{ textDecoration: 'none', background: 'fixed' }}
+              style={{
+                textDecoration: 'none',
+                background: 'fixed',
+                margin: '0 8px 8px 0',
+              }}
             >
               <Card
                 item={aCard}

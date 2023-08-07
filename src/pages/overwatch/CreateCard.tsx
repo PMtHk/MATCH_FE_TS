@@ -253,6 +253,7 @@ const CreateCard = () => {
         chatroomActions.ADD_JOINED_CHATROOMS_ID({
           chatRoomId: key as string,
           game: currentGame,
+          id: boardId,
         }),
       );
       navigate(`/overwatch/${boardId}`, { replace: true });

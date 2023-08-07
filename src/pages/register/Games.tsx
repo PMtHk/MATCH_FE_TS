@@ -12,7 +12,7 @@ import { RootState } from 'store';
 import InputLol from './InputLol';
 import InputPubg from './InputPubg';
 import InputOverwatch from './InputOverwatch';
-import InputValorant from './InputValorant';
+// import InputValorant from './InputValorant';
 
 const Games = () => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const Games = () => {
         <InputLol />
         <InputPubg />
         <InputOverwatch />
-        <InputValorant />
+        {/* <InputValorant /> */}
       </Wrapper>
       <NextButton disabled={!atLeastOne} onClick={handleNextBtn}>
         다음

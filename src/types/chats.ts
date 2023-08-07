@@ -17,4 +17,17 @@ export type FETCHED_CHATROOM = {
 export type CHATROOM = {
   chatRoomId: string;
   game: GAME_ID;
+  id: number;
+};
+
+export type FETCHED_CHATROOMINFO_FB = {
+  content: string;
+  createdBy: string;
+  game: GAME_ID;
+  isDeleted: boolean;
+  key: string;
+  maxMember: number;
+  members: MEMBER[];
+  roomId: string;
+  timestamp: number | Date;
 };

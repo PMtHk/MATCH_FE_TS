@@ -1,4 +1,4 @@
-import { authAxios } from 'apis/utils';
+import { authAxios, defaultAxios } from 'apis/utils';
 import {
   getDatabase,
   push,
@@ -249,4 +249,10 @@ export const leaveParty: (
   await removeMemberFromFirebaseDB(oauth2Id, chatRoomId);
 
   return null;
+};
+
+export const fetchBoardInfo = async (game: GAME_ID, boardId: number) => {
+  const response = await defaultAxios.get(`/api/${game}/boards/${boardId}`);
+
+  return response.data;
 };

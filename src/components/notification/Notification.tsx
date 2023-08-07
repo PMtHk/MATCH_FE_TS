@@ -162,8 +162,6 @@ const Notification = ({
             sx={{
               color: '#dddddd',
               fontSize: '30px',
-              paddingBottom: notiOpen ? '1px' : 'none',
-              borderBottom: notiOpen ? '1px solid #dddddd' : 'none',
             }}
           />
         </Badge>
@@ -176,6 +174,7 @@ const Notification = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+        <HeaderTypo>받은 알림</HeaderTypo>
         <ChatRoomsWrapper>
           {joinedChatRoomsId &&
             joinedChatRoomsId.map((aChatRoom) => {
@@ -234,12 +233,27 @@ const ChatRoomsWrapper = styled(MuiBox)(() => ({
   gap: '4px',
 })) as typeof MuiBox;
 
-const Menu = styled(MuiMenu)(() => ({
+const Menu = styled(MuiMenu)(({ theme }) => ({
+  padding: '0',
   margin: '20px 0 0 0',
+  '& .MuiMenu-paper': {
+    backgroundColor: theme.palette.background.paper,
+    border: '1px solid #ececec',
+    borderRadius: '4px',
+    padding: '0',
+    margin: '0',
+  },
+  '& .MuiList-root': {
+    padding: '0',
+    margin: '0',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 })) as typeof MuiMenu;
 
 const MenuItem = styled(MuiMenuItem)(() => ({
-  margin: '8px 4px 0 4px',
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'center',
@@ -249,6 +263,7 @@ const DeleteAllTypo = styled(MuiTypography)(() => ({
   fontSize: '12px',
   fontWeight: 'bold',
   color: 'orangered',
+  padding: '8px 0 8px 0',
 })) as typeof MuiTypography;
 
 const NoAlaram = styled(MuiBox)(() => ({
@@ -263,4 +278,11 @@ const NoAlaramTypo = styled(MuiTypography)(({ theme }) => ({
   fontSize: '14px',
   fontWeight: 'bold',
   color: theme.palette.primary.main,
+})) as typeof MuiTypography;
+
+const HeaderTypo = styled(MuiTypography)(({ theme }) => ({
+  fontSize: '15px',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+  padding: '8px',
 })) as typeof MuiTypography;

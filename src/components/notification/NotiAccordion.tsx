@@ -21,25 +21,8 @@ import { getAChatRoomInfo, updateALastRead } from 'apis/api/firebase';
 import { snackbarActions } from 'store/snackbar-slice';
 import GameIcon from 'components/GameIcon';
 import { GAME_ID } from 'types/games';
+import { FETCHED_CHATROOMINFO_FB } from 'types/chats';
 import NotiAccordionDetail from './NotiAccordionDetail';
-
-type Member = {
-  nickname: string;
-  oauth2Id: string;
-  notiToken: string | null;
-};
-
-type TChatRoomInfo = {
-  content: string;
-  createdBy: string;
-  game: 'lol' | 'pubg' | 'overwatch';
-  isDeleted: boolean;
-  key: string;
-  maxMember: number;
-  members: Member[];
-  roomId: string;
-  timestamp: number | Date;
-};
 
 interface NotiAccordionProps {
   chatRoomId: string;
@@ -69,7 +52,7 @@ const NotiAccordion = ({
   // 파이어베이스에서 채팅방 정보 가져오는 로딩
   const [isLoading, setIsLoading] = useState(true);
   // 파이어베이스에서 가져온 chatRoomInfo의 state
-  const [chatRoomInfo, setChatRoomInfo] = useState<TChatRoomInfo>();
+  const [chatRoomInfo, setChatRoomInfo] = useState<FETCHED_CHATROOMINFO_FB>();
 
   // 채팅방 정보 가져오기
   useEffect(() => {
@@ -107,7 +90,6 @@ const NotiAccordion = ({
         onChange={expandHandler(`${chatRoomId}`)}
         sx={{
           border: '1px solid #e0e0e0',
-          borderTop: 'none',
           borderBottomLeftRadius: '4px',
           borderBottomRightRadius: '4px',
         }}

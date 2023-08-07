@@ -255,6 +255,7 @@ const CreateCard = () => {
         chatroomActions.ADD_JOINED_CHATROOMS_ID({
           chatRoomId: key as string,
           game: currentGame as GAME_ID,
+          id: boardId,
         }),
       );
       navigate(`/pubg/${boardId}`, { replace: true });

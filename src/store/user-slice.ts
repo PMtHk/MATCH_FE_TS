@@ -1,16 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-type representative = 'lol' | 'pubg' | 'overwatch';
+import { GAME_ID } from 'types/games';
 
 interface IState {
   nickname: string;
   oauth2Id: string;
   profileImage: string;
-  representative: representative | '';
+  representative: GAME_ID;
   games: {
     lol: string;
     pubg: string;
     overwatch: string;
+    // valorant: string;
   };
   isLogin: boolean;
   isAdmin: boolean;
@@ -21,13 +21,13 @@ interface ISet_User {
     nickname: string;
     oauth2Id: string;
     profileImage: string;
-    representative: representative;
+    representative: GAME_ID;
   };
 }
 
 interface ISet_Representative {
   payload: {
-    representative: representative;
+    representative: GAME_ID;
   };
 }
 
@@ -37,13 +37,14 @@ interface ISet_Games {
       lol: string;
       pubg: string;
       overwatch: string;
+      // valorant: string;
     };
   };
 }
 
 interface ISet_Games_With_Id {
   payload: {
-    id: 'lol' | 'pubg' | 'overwatch';
+    id: GAME_ID;
     value: string;
   };
 }
@@ -52,11 +53,12 @@ const initialState: IState = {
   nickname: '', // 카카오톡 닉네임
   oauth2Id: '', // kakao oauth id
   profileImage: '', // 카카오톡 프로필 이미지
-  representative: '', // 대표게임
+  representative: 'lol', // 대표게임
   games: {
     lol: '', // 롤 소환사명
     pubg: '', // 배틀그라운드 유저네임
     overwatch: '', // 오버워치 닉네임 + 배틀태그?
+    // valorant: '', // 발로란트 닉네임
   },
   isLogin: false,
   isAdmin: false,
@@ -86,11 +88,12 @@ const userSlice = createSlice({
       state.nickname = '';
       state.oauth2Id = '';
       state.profileImage = '';
-      state.representative = '';
+      state.representative = 'lol';
       state.games = {
         lol: '',
         pubg: '',
         overwatch: '',
+        // valorant: '',
       };
       state.isLogin = false;
     },

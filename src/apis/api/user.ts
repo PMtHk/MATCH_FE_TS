@@ -281,6 +281,7 @@ export const joinParty = async (
     chatroomActions.ADD_JOINED_CHATROOMS_ID({
       chatRoomId,
       game: game as GAME_ID,
+      id: boardId,
     }),
   );
 

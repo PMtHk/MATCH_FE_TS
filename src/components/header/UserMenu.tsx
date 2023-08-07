@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 // redux
 import { RootState } from 'store';
@@ -113,8 +113,8 @@ const UserMenu = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MuiMenuItem
-          component={Link}
-          href="/mypage"
+          component={RouterLink}
+          to="/mypage"
           onClick={() => {
             closeUserMenu();
           }}

@@ -39,6 +39,7 @@ const ChatRoomListFetcher = ({ children }: ChatRoomListFetcherProps) => {
             chatroomActions.ADD_JOINED_CHATROOMS_ID({
               chatRoomId: aChatRoomId,
               game: dataSnapshot.game as GAME_ID,
+              id: dataSnapshot.roomId,
             }),
           );
           const lastRead: any = await getALastRead(oauth2Id, aChatRoomId);

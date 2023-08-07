@@ -24,6 +24,7 @@ import Notification from 'components/notification/Notification';
 import ChatRoomListFetcher from 'components/notification/ChatRoomListFetcher';
 import { getCurrentGame } from 'functions/commons';
 import { GAME_ID } from 'types/games';
+import JoinedPartyList from 'components/chat/JoinedPartyList';
 import UserMenu from './UserMenu';
 import GameMenu from './GameMenu';
 
@@ -57,6 +58,16 @@ const Header = () => {
   };
   const handleNotiClose = () => {
     setNotiAnchorEl(null);
+  };
+
+  // joinedParyList
+  const [partyListAnchorEl, setPartyListAnchorEl] = useState<any>(null);
+  const partyListOpen = Boolean(partyListAnchorEl);
+  const handlePartyListOpen = (e: any) => {
+    setPartyListAnchorEl(e.currentTarget);
+  };
+  const handlePartyListClose = () => {
+    setPartyListAnchorEl(null);
   };
 
   return (
@@ -134,6 +145,14 @@ const Header = () => {
                 />
               )}
             </ChatRoomListFetcher>
+          )}
+          {isLogin && joinedChatRoomsId && (
+            <JoinedPartyList
+              partyListAnchorEl={partyListAnchorEl}
+              partyListOpen={partyListOpen}
+              handlePartyListOpen={handlePartyListOpen}
+              handlePartyListClose={handlePartyListClose}
+            />
           )}
           {isLogin && <UserMenu />}
           {!isLogin && (
