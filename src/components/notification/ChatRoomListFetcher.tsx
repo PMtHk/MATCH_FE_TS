@@ -5,10 +5,11 @@ import { getUserChatRooms } from 'apis/api/user';
 import { chatroomActions } from 'store/chatroom-slice';
 import { messageActions } from 'store/message-slice';
 
-import { getAChatRoomInfo, getAllLastReads } from 'apis/api/firebase';
+import { getAChatRoomInfo, getALastRead } from 'apis/api/firebase';
 
 import { RootState } from 'store';
 import { GAME_ID } from 'types/games';
+import { notificationActions } from 'store/notification-slice';
 
 interface ChatRoomListFetcherProps {
   children: React.ReactNode;
@@ -40,11 +41,15 @@ const ChatRoomListFetcher = ({ children }: ChatRoomListFetcherProps) => {
               game: dataSnapshot.game as GAME_ID,
             }),
           );
+          const lastRead: any = await getALastRead(oauth2Id, aChatRoomId);
+          dispatch(
+            notificationActions.SET_TIMESTAMPS({
+              chatRoomId: aChatRoomId,
+              timestamp: lastRead,
+            }),
+          );
         }
       });
-    }
-    if (Array.isArray(chatRoomList) && typeof chatRoomList[0] === 'string') {
-      getAllLastReads(oauth2Id, chatRoomList, dispatch);
     }
   }, [chatRoomList, dispatch]);
 

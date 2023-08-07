@@ -226,6 +226,8 @@ export const getAChatRoomInfo = async (chatRoomId: string) => {
   return dataSnapshot.val();
 };
 
+// wont be used
+// 아래 하나의 채팅방의 lastReads를 가져오는 함수 사용하자
 export const getAllLastReads = async (
   oauth2Id: string,
   chatRoomList: string[],
@@ -247,6 +249,14 @@ export const getAllLastReads = async (
   });
 
   return null;
+};
+
+export const getALastRead = async (oauth2Id: string, chatRoomId: string) => {
+  const lastReadRef = ref(getDatabase(), 'lastRead');
+  const dataSnapshot = await get(
+    child(lastReadRef, `${oauth2Id}/${chatRoomId}`),
+  );
+  return dataSnapshot.val();
 };
 
 // 추가됨
