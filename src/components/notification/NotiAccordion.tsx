@@ -19,6 +19,8 @@ import NotificationsActiveRounded from '@mui/icons-material/NotificationsActiveR
 import { RootState } from 'store';
 import { getAChatRoomInfo, updateALastRead } from 'apis/api/firebase';
 import { snackbarActions } from 'store/snackbar-slice';
+import GameIcon from 'components/GameIcon';
+import { GAME_ID } from 'types/games';
 import NotiAccordionDetail from './NotiAccordionDetail';
 
 type Member = {
@@ -112,6 +114,16 @@ const NotiAccordion = ({
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <AccordionSummaryContent>
+            <GameIconWrapper>
+              <GameIcon
+                item={chatRoomInfo.game}
+                id={chatRoomInfo.game as GAME_ID}
+                size={{
+                  width: '34px',
+                  height: '34px',
+                }}
+              />
+            </GameIconWrapper>
             <AccordionSummaryHeader>
               <MuiTypography
                 noWrap
@@ -121,19 +133,21 @@ const NotiAccordion = ({
                 }}
               >
                 {`[${chatRoomInfo?.createdBy}] 님의 파티`}
+                {currentChatRoomMessages?.length > 0 &&
+                  isLoading === false &&
+                  currentChatRoomMessages[currentChatRoomMessages.length - 1]
+                    .timestamp > timestamp && (
+                    <NotificationsActiveRounded
+                      sx={{
+                        color: 'orange',
+                        marginLeft: '4px',
+                        fontSize: '15px',
+                      }}
+                    />
+                  )}
               </MuiTypography>
-              {currentChatRoomMessages?.length > 0 &&
-                isLoading === false &&
-                currentChatRoomMessages[currentChatRoomMessages.length - 1]
-                  .timestamp > timestamp && (
-                  <NotificationsActiveRounded
-                    sx={{ color: 'orange', marginLeft: '4px' }}
-                  />
-                )}
+              <ContentsPreview noWrap>{chatRoomInfo?.content}</ContentsPreview>
             </AccordionSummaryHeader>
-            <MuiTypography noWrap sx={{ fontSize: '13px' }}>
-              {chatRoomInfo?.content}
-            </MuiTypography>
           </AccordionSummaryContent>
         </AccordionSummary>
         <AccordionDetails sx={{ maxHeight: '240px', overflow: 'auto' }}>
@@ -176,14 +190,33 @@ const NotiAccordion = ({
 export default NotiAccordion;
 
 const AccordionSummaryContent = styled(MuiBox)(() => ({
-  display: 'block',
+  display: 'flex',
   maxWidth: '280px',
 })) as typeof MuiBox;
 
 const AccordionSummaryHeader = styled(MuiBox)(() => ({
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'flex-start',
+  flexDirection: 'column',
+  maxWidth: '250px',
 })) as typeof MuiBox;
+
+const GameIconWrapper = styled(MuiBox)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '40px',
+  height: '40px',
+  padding: '0 4px 0 0',
+})) as typeof MuiBox;
+
+const ContentsPreview = styled(MuiTypography)(() => ({
+  width: '100%',
+  fontSize: '13px',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+})) as typeof MuiTypography;
 
 const ButtonWrapper = styled(MuiBox)(() => ({
   width: '100%',
