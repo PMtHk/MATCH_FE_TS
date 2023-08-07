@@ -2,11 +2,9 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 
 // mui
+import { styled } from '@mui/system';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
-
-// mui styled components
-import { styled } from '@mui/material/styles';
 
 const Wrapper = styled(Container)(({ theme }) => ({
   display: 'flex',

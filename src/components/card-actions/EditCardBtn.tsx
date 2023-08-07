@@ -1,14 +1,17 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 // mui
-import styled from '@emotion/styled';
+import { styled } from '@mui/system';
 import MuiButton from '@mui/material/Button';
-import { useSelector } from 'react-redux';
+
 import { RootState } from 'store';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 
 const EditCardBtn = () => {
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { currentCard } = useSelector((state: RootState) => state.card);
   const { expired, finished } = currentCard;

@@ -4,13 +4,19 @@ interface IState {
   notiToken: string;
   badgeNum: number;
   timestamps: { [key: string]: number };
+  detachedLastRead: string[];
 }
 
 const initialState: IState = {
   notiToken: '',
   badgeNum: 0,
   timestamps: {},
+  detachedLastRead: [],
 };
+
+interface I_ADD_DETACHEDLASTREAD {
+  payload: string;
+}
 
 const notificationSlice = createSlice({
   name: 'notification',
@@ -36,6 +42,9 @@ const notificationSlice = createSlice({
       state.notiToken = '';
       state.badgeNum = 0;
       state.timestamps = {};
+    },
+    ADD_DETACHED_LASTREAD: (state, action: I_ADD_DETACHEDLASTREAD) => {
+      state.detachedLastRead.push(action.payload);
     },
   },
 });

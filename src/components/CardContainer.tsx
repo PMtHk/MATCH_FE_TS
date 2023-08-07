@@ -31,7 +31,6 @@ const CardLayout = styled(MuiCard)(() => ({
   borderRadius: '8px',
   boxShadow: 'none',
   border: '1px solid #dddddd',
-  margin: '0 8px 8px 0',
   '&:hover': {
     boxShadow: '0 0 0 1px #dddddd',
     transform: 'translateY(-1px)',

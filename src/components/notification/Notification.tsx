@@ -6,6 +6,7 @@ import {
   set,
   child,
   onChildChanged,
+  onValue,
   onChildAdded,
 } from 'firebase/database';
 
@@ -17,16 +18,16 @@ import MuiMenuItem from '@mui/material/MenuItem';
 import MuiTooltip from '@mui/material/Tooltip';
 import MuiBadge from '@mui/material/Badge';
 import MuiMenu from '@mui/material/Menu';
+import MuiIconButton from '@mui/material/Button';
 import NotificationsNone from '@mui/icons-material/NotificationsNone';
 import Delete from '@mui/icons-material/Delete';
 
-import { notificationActions } from 'store/notification-slice';
-import { RootState } from 'store';
 import { updateLastReads } from 'apis/api/firebase';
+import { RootState } from 'store';
+import { notificationActions } from 'store/notification-slice';
 import { messageActions, Message } from 'store/message-slice';
-import { getUserChatRooms } from 'apis/api/user';
-import { refreshActions } from 'store/refresh-slice';
 import { chatroomActions } from 'store/chatroom-slice';
+import { CHATROOM } from 'types/chats';
 import NotiAccordion from './NotiAccordion';
 
 interface NotificationProps {
@@ -49,26 +50,27 @@ const Notification = ({
   );
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { messages } = useSelector((state: RootState) => state.message);
-  const { badgeNum, timestamps } = useSelector(
+  const { badgeNum, timestamps, detachedLastRead } = useSelector(
     (state: RootState) => state.notification,
   );
-  const { currentCard } = useSelector((state: RootState) => state.card);
 
   // 파이어베이스의 lastRead 래퍼런스
   const lastReadRef = ref(getDatabase(), `lastRead/${oauth2Id}`);
 
   useEffect(() => {
-    const handleBadge = async () => {
+    const handleBadge = () => {
       let numOfAlarm = 0;
 
-      joinedChatRoomsId.map((aChatRoomId: string) => {
-        if (joinedChatRoomsId && messages[aChatRoomId]) {
-          Object.values(messages[aChatRoomId]).map((aMessage: Message) => {
-            if (aMessage.timestamp > timestamps[aChatRoomId]) {
-              numOfAlarm += 1;
-            }
-            return null;
-          });
+      joinedChatRoomsId.map((aChatRoom: CHATROOM) => {
+        if (joinedChatRoomsId && messages[aChatRoom.chatRoomId]) {
+          Object.values(messages[aChatRoom.chatRoomId]).map(
+            (aMessage: Message) => {
+              if (aMessage.timestamp > timestamps[aChatRoom.chatRoomId]) {
+                numOfAlarm += 1;
+              }
+              return null;
+            },
+          );
           return null;
         }
         return null;
@@ -81,7 +83,7 @@ const Notification = ({
       }
     };
     handleBadge();
-  }, [messages, joinedChatRoomsId, dispatch, timestamps]);
+  }, [messages, dispatch, timestamps]);
 
   // 모든 채팅방에 lastRead 업데이트
 
@@ -90,43 +92,52 @@ const Notification = ({
     handleNotiClose();
   };
 
-  useEffect(() => {
-    // chatRoom의 마지막 접근시간을 받는 리스너 함수
-    const addLastReadListener = async () => {
-      onChildChanged(lastReadRef, (datasnapshot) => {
-        dispatch(
-          notificationActions.SET_TIMESTAMPS({
-            chatRoomId: datasnapshot.key,
-            timestamp: datasnapshot.val(),
-          }),
-        );
-      });
-    };
-
-    addLastReadListener();
-  }, []);
-
   // 파이어베이스 messagesRef
   const messagesRef = ref(getDatabase(), 'messages');
 
   useEffect(() => {
     // 메세지 각 채팅방의 메세지 리스너 추가
     const addFirebaseListener = async () => {
-      joinedChatRoomsId.forEach((chatRoomId: string) => {
-        if (!detachedListener.includes(chatRoomId)) {
-          onChildAdded(child(messagesRef, chatRoomId), (datasnapshot) => {
-            const data = {
-              chatRoomId,
-              message: datasnapshot.val(),
-            };
-            dispatch(messageActions.SET_MESSAGES(data));
-          });
-          dispatch(chatroomActions.ADD_DETACHEDLISTENER(chatRoomId));
+      joinedChatRoomsId.forEach((aChatRoom: CHATROOM) => {
+        if (!detachedListener.includes(aChatRoom.chatRoomId)) {
+          onChildAdded(
+            child(messagesRef, aChatRoom.chatRoomId),
+            (datasnapshot) => {
+              const data = {
+                chatRoomId: aChatRoom.chatRoomId,
+                message: datasnapshot.val(),
+              };
+              dispatch(messageActions.SET_MESSAGES(data));
+            },
+          );
+          dispatch(chatroomActions.ADD_DETACHEDLISTENER(aChatRoom.chatRoomId));
+        }
+      });
+    };
+
+    const addLastReadListener = async () => {
+      joinedChatRoomsId.forEach((aChatRoom: CHATROOM) => {
+        if (!detachedLastRead.includes(aChatRoom.chatRoomId)) {
+          onValue(
+            child(lastReadRef, aChatRoom.chatRoomId),
+            (datasnapshot: any) => {
+              dispatch(
+                notificationActions.SET_TIMESTAMPS({
+                  chatRoomId: datasnapshot.key,
+                  timestamp: datasnapshot.val(),
+                }),
+              );
+            },
+          );
+          dispatch(
+            notificationActions.ADD_DETACHED_LASTREAD(aChatRoom.chatRoomId),
+          );
         }
       });
     };
 
     addFirebaseListener();
+    addLastReadListener();
   }, [dispatch, joinedChatRoomsId]);
 
   // accordion -> 한번에 하나만 열리도록
@@ -141,22 +152,20 @@ const Notification = ({
   return (
     <>
       <MuiTooltip title="알림">
-        <Badge
-          badgeContent={badgeNum}
+        <MuiIconButton
           onClick={(event: React.MouseEvent<HTMLElement>) => {
             handleNotiClick(event);
           }}
-          color="warning"
         >
-          <NotificationsNone
-            sx={{
-              color: '#dddddd',
-              fontSize: '30px',
-              paddingBottom: notiOpen ? '1px' : 'none',
-              borderBottom: notiOpen ? '1px solid #dddddd' : 'none',
-            }}
-          />
-        </Badge>
+          <Badge badgeContent={badgeNum} color="warning">
+            <NotificationsNone
+              sx={{
+                color: '#dddddd',
+                fontSize: '30px',
+              }}
+            />
+          </Badge>
+        </MuiIconButton>
       </MuiTooltip>
       <Menu
         anchorEl={notiAnchorEl}
@@ -166,25 +175,41 @@ const Notification = ({
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
+        <HeaderTypo>받은 알림</HeaderTypo>
         <ChatRoomsWrapper>
           {joinedChatRoomsId &&
-            joinedChatRoomsId.map((chatRoomId) => {
-              return (
-                <NotiAccordion
-                  expanded={expanded === chatRoomId}
-                  expandHandler={handleAccordion}
-                  key={chatRoomId}
-                  chatRoomId={chatRoomId}
-                  timestamp={timestamps[chatRoomId]}
-                  handleNotiClose={handleNotiClose}
-                />
-              );
+            joinedChatRoomsId.map((aChatRoom) => {
+              if (messages[aChatRoom.chatRoomId]) {
+                const lastMessages = Object.values(
+                  messages[aChatRoom.chatRoomId],
+                ).slice(-1)[0];
+                if (lastMessages.timestamp > timestamps[aChatRoom.chatRoomId]) {
+                  return (
+                    <NotiAccordion
+                      expanded={expanded === aChatRoom.chatRoomId}
+                      expandHandler={handleAccordion}
+                      key={aChatRoom.chatRoomId}
+                      chatRoomId={aChatRoom.chatRoomId}
+                      timestamp={timestamps[aChatRoom.chatRoomId]}
+                      handleNotiClose={handleNotiClose}
+                    />
+                  );
+                }
+              }
+              return null;
             })}
+          {badgeNum === 0 ? (
+            <NoAlaram>
+              <NoAlaramTypo>새로운 알림이 없습니다.</NoAlaramTypo>
+            </NoAlaram>
+          ) : null}
         </ChatRoomsWrapper>
-        <MenuItem onClick={deleteAllNotiHandler}>
-          <Delete sx={{ color: 'orangered' }} />
-          <DeleteAllTypo>모든 알림 지우기</DeleteAllTypo>
-        </MenuItem>
+        {badgeNum !== 0 ? (
+          <MenuItem onClick={deleteAllNotiHandler}>
+            <Delete sx={{ color: 'orangered' }} />
+            <DeleteAllTypo>모든 알림 지우기</DeleteAllTypo>
+          </MenuItem>
+        ) : null}
       </Menu>
     </>
   );
@@ -209,12 +234,27 @@ const ChatRoomsWrapper = styled(MuiBox)(() => ({
   gap: '4px',
 })) as typeof MuiBox;
 
-const Menu = styled(MuiMenu)(() => ({
+const Menu = styled(MuiMenu)(({ theme }) => ({
+  padding: '0',
   margin: '20px 0 0 0',
+  '& .MuiMenu-paper': {
+    backgroundColor: theme.palette.background.paper,
+    border: '1px solid #ececec',
+    borderRadius: '4px',
+    padding: '0',
+    margin: '0',
+  },
+  '& .MuiList-root': {
+    padding: '0',
+    margin: '0',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 })) as typeof MuiMenu;
 
 const MenuItem = styled(MuiMenuItem)(() => ({
-  margin: '8px 4px 0 4px',
   display: 'flex',
   flexDirection: 'row',
   justifyContent: 'center',
@@ -224,4 +264,26 @@ const DeleteAllTypo = styled(MuiTypography)(() => ({
   fontSize: '12px',
   fontWeight: 'bold',
   color: 'orangered',
+  padding: '8px 0 8px 0',
+})) as typeof MuiTypography;
+
+const NoAlaram = styled(MuiBox)(() => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  height: '100%',
+  padding: '40px 0',
+})) as typeof MuiBox;
+
+const NoAlaramTypo = styled(MuiTypography)(({ theme }) => ({
+  fontSize: '14px',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+})) as typeof MuiTypography;
+
+const HeaderTypo = styled(MuiTypography)(({ theme }) => ({
+  fontSize: '15px',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+  padding: '8px',
 })) as typeof MuiTypography;

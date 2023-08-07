@@ -2,17 +2,14 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // mui
+import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-// own-components
 import GameIcon from 'components/GameIcon';
-
-// mui styled components
-import { styled } from '@mui/system';
-
-import { GAME, gameList } from '../../assets/Games.data';
+import { gameList } from 'assets/Games.data';
+import { GAME } from 'types/games';
 
 const GameSupport = () => {
   const navigate = useNavigate();
@@ -21,7 +18,7 @@ const GameSupport = () => {
     <Wrapper>
       <Text>지원게임 목록</Text>
       <GameList>
-        {gameList.map((game) => {
+        {gameList.map((game: GAME) => {
           if (game.available) {
             return (
               <Button key={game.id} onClick={() => navigate(`/${game.id}`)}>

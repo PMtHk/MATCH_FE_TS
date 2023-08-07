@@ -4,25 +4,17 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
+import { promiseWrapper } from 'apis/utils/promiseWrapper';
+import { addMemberToFirebaseDB } from 'apis/api/firebase';
 import store from 'store/index';
 import { tokenActions } from 'store/token-slice';
 import { userActions } from 'store/user-slice';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-
-import { GAME_ID } from 'assets/Games.data';
-import { promiseWrapper } from 'apis/utils/promiseWrapper';
 import { chatroomActions } from 'store/chatroom-slice';
 import { notificationActions } from 'store/notification-slice';
-import { addMemberToFirebaseDB } from './firebase';
-
-// types
-type ChatRoom = {
-  id: number;
-  chatRoomId: string;
-  nickname: string;
-  oauth2Id: string;
-};
+import { GAME_ID } from 'types/games';
+import { FETCHED_CHATROOM, MEMBER } from 'types/chats';
 
 // interfaces
 interface IAccessTokenPayload {
@@ -246,9 +238,11 @@ export const getUserChatRooms = () => {
   useEffect(() => {
     const getData = async () => {
       const promise = authAxios.get('/api/chat/rooms').then((response) => {
-        const list = response.data.chatRoomList.map((chatRoom: ChatRoom) => {
-          return chatRoom.chatRoomId;
-        });
+        const list = response.data.chatRoomList.map(
+          (chatRoom: FETCHED_CHATROOM) => {
+            return chatRoom.chatRoomId;
+          },
+        );
         return list;
       });
       setResource(promiseWrapper(promise));
@@ -272,23 +266,24 @@ export const getUserChatRooms = () => {
  * 파티 참가에 성공하면, 해당 firebase 정보도 갱신한다.
  */
 
-type Member = {
-  nickname: string;
-  oauth2Id: string;
-  notiToken: string;
-  isReviewed: boolean;
-};
-
 export const joinParty = async (
   game: string,
   boardId: number,
   chatRoomId: string,
-  newMember: Member,
+  newMember: MEMBER,
   dispatch: ReturnType<typeof useDispatch>,
 ) => {
   const response = await authAxios.post(`/api/chat/${game}/${boardId}/member`);
 
-  await addMemberToFirebaseDB(newMember, chatRoomId, dispatch);
+  await addMemberToFirebaseDB(newMember, chatRoomId);
+
+  dispatch(
+    chatroomActions.ADD_JOINED_CHATROOMS_ID({
+      chatRoomId,
+      game: game as GAME_ID,
+      id: boardId,
+    }),
+  );
 
   return null;
 };

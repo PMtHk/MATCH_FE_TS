@@ -5,7 +5,7 @@ interface IState {
   cardRefresh: number;
 }
 
-export const REFRESH_CYCLE = 60;
+export const REFRESH_CYCLE = 60 * 5;
 
 const initialState: IState = {
   remainingTime: REFRESH_CYCLE,

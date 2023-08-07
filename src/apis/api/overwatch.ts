@@ -52,13 +52,7 @@ export const loadOWPlayerInfoInDB = async (
   nickname: string,
   battleTag: string,
 ) => {
-  const response = await defaultAxios.get(
-    `/api/overwatch/user/${nickname}%23${battleTag}`,
-  );
-
-  if (response.status === 200) {
-    return 'success';
-  }
+  await defaultAxios.get(`/api/overwatch/user/${nickname}%23${battleTag}`);
 
   return null;
 };

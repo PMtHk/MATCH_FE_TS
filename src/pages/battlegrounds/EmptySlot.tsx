@@ -2,8 +2,6 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { authAxios, defaultAxios } from 'apis/utils';
-
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
@@ -20,7 +18,6 @@ import {
   checkPUBGUserPlatform,
 } from 'apis/api/pubg';
 import { addPartyMemberWithName } from 'apis/api/common';
-import { addMemberToFirebaseDB } from 'apis/api/firebase';
 
 // 방장이 아닌 유저
 const DefaultEmptySlot = () => {
@@ -137,9 +134,12 @@ const EmptySlotForAuthor = ({ platform }: any) => {
       await loadPubgPlayerInfoIntoDB(nickname, currentCard.platform);
       // 파티에 해당 멤버 추가
       // (Server)
-      await addPartyMemberWithName(currentCard?.id, name, 'pubg');
-      // FB
-      await addMemberToFirebaseDB(newMember, currentCard.chatRoomId, dispatch);
+      await addPartyMemberWithName(
+        currentCard?.id,
+        currentCard.chatRoomId,
+        name,
+        'pubg',
+      );
 
       dispatch(refreshActions.REFRESH_CARD());
 

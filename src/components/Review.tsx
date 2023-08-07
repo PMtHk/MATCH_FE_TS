@@ -9,38 +9,30 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiButton from '@mui/material/Button';
-import MuiDivider from '@mui/material/Divider';
-import MuiIconButton from '@mui/material/IconButton';
-import MuiClose from '@mui/icons-material/Close';
-import MuiThumbUpIcon from '@mui/icons-material/ThumbUp';
-import MuiThumbUpOffAltIcon from '@mui/icons-material/ThumbUpOffAlt';
-import MuiThumbDownIcon from '@mui/icons-material/ThumbDown';
-import MuiThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
-import { fetchCardDetail } from 'apis/api/leagueoflegends';
 import HelpOutline from '@mui/icons-material/HelpOutline';
 
-import { snackbarActions } from 'store/snackbar-slice';
 import {
   asyncGetIsReviewed,
   doReview,
   getFilteredMemberListForReview,
-  getIsReviewed,
 } from 'apis/api/firebase';
 import { authAxios, defaultAxios } from 'apis/utils';
+import { RootState } from 'store';
+import { snackbarActions } from 'store/snackbar-slice';
 import { cardActions } from 'store/card-slice';
-import { RootState } from '../store';
+import { GAME_ID } from 'types/games';
+import { getCurrentGame } from 'functions/commons';
 import Modal from './Modal';
 
 const Review = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
   const roomId: string = window.location.pathname.split('/')[2];
 
   const { currentCard } = useSelector((state: RootState) => state.card);
   const { oauth2Id } = useSelector((state: RootState) => state.user);
-  const { games } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const getRoomInfo = async () => {

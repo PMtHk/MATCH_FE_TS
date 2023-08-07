@@ -12,9 +12,10 @@ import CheckIcon from '@mui/icons-material/Check';
 import MicIcon from '@mui/icons-material/Mic';
 
 import CardContainer from 'components/CardContainer';
-import Timer, { EXPIRE_TYPE } from 'components/CountDownTimer';
-
-import { positionList, positionValue, queueTypeList, tierList } from './data';
+import Timer from 'components/CountDownTimer';
+import { EXPIRE_TIME } from 'types/commons';
+import { LOL_POSITIONS_ID } from 'types/games';
+import { positionList, queueTypeList, tierList } from './data';
 
 interface CardProps {
   item: {
@@ -23,11 +24,13 @@ interface CardProps {
     name: string;
     type: string;
     tier: string;
-    position: positionValue;
+    position: LOL_POSITIONS_ID;
     voice: 'Y' | 'N';
     content: string;
-    expire: EXPIRE_TYPE;
+    expire: EXPIRE_TIME;
+    expired: string;
     created: string;
+    finished: string;
     author: {
       queueType: string;
       summonerName: string;

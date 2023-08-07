@@ -19,25 +19,10 @@ import NotificationsActiveRounded from '@mui/icons-material/NotificationsActiveR
 import { RootState } from 'store';
 import { getAChatRoomInfo, updateALastRead } from 'apis/api/firebase';
 import { snackbarActions } from 'store/snackbar-slice';
+import GameIcon from 'components/GameIcon';
+import { GAME_ID } from 'types/games';
+import { FETCHED_CHATROOMINFO_FB } from 'types/chats';
 import NotiAccordionDetail from './NotiAccordionDetail';
-
-type Member = {
-  nickname: string;
-  oauth2Id: string;
-  notiToken: string | null;
-};
-
-type TChatRoomInfo = {
-  content: string;
-  createdBy: string;
-  game: 'lol' | 'pubg' | 'overwatch';
-  isDeleted: boolean;
-  key: string;
-  maxMember: number;
-  members: Member[];
-  roomId: string;
-  timestamp: number | Date;
-};
 
 interface NotiAccordionProps {
   chatRoomId: string;
@@ -67,10 +52,7 @@ const NotiAccordion = ({
   // 파이어베이스에서 채팅방 정보 가져오는 로딩
   const [isLoading, setIsLoading] = useState(true);
   // 파이어베이스에서 가져온 chatRoomInfo의 state
-  const [chatRoomInfo, setChatRoomInfo] = useState<TChatRoomInfo>();
-
-  // firebase
-  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const [chatRoomInfo, setChatRoomInfo] = useState<FETCHED_CHATROOMINFO_FB>();
 
   // 채팅방 정보 가져오기
   useEffect(() => {
@@ -78,12 +60,9 @@ const NotiAccordion = ({
       setIsLoading(true);
 
       try {
-        const fetchedChatRoomInfo = await getAChatRoomInfo(
-          chatRoomId,
-          chatRoomsRef,
-        );
+        const fetchedChatRoomInfo = await getAChatRoomInfo(chatRoomId);
         setChatRoomInfo(fetchedChatRoomInfo);
-      } catch (error) {
+      } catch (error: any) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message:
@@ -111,13 +90,22 @@ const NotiAccordion = ({
         onChange={expandHandler(`${chatRoomId}`)}
         sx={{
           border: '1px solid #e0e0e0',
-          borderTop: 'none',
           borderBottomLeftRadius: '4px',
           borderBottomRightRadius: '4px',
         }}
       >
         <AccordionSummary expandIcon={<ExpandMore />}>
           <AccordionSummaryContent>
+            <GameIconWrapper>
+              <GameIcon
+                item={chatRoomInfo.game}
+                id={chatRoomInfo.game as GAME_ID}
+                size={{
+                  width: '34px',
+                  height: '34px',
+                }}
+              />
+            </GameIconWrapper>
             <AccordionSummaryHeader>
               <MuiTypography
                 noWrap
@@ -127,24 +115,26 @@ const NotiAccordion = ({
                 }}
               >
                 {`[${chatRoomInfo?.createdBy}] 님의 파티`}
+                {currentChatRoomMessages?.length > 0 &&
+                  isLoading === false &&
+                  currentChatRoomMessages[currentChatRoomMessages.length - 1]
+                    .timestamp > timestamp && (
+                    <NotificationsActiveRounded
+                      sx={{
+                        color: 'orange',
+                        marginLeft: '4px',
+                        fontSize: '15px',
+                      }}
+                    />
+                  )}
               </MuiTypography>
-              {currentChatRoomMessages?.length > 0 &&
-                isLoading === false &&
-                currentChatRoomMessages[currentChatRoomMessages.length - 1]
-                  .timestamp > timestamp && (
-                  <NotificationsActiveRounded
-                    sx={{ color: 'orange', marginLeft: '4px' }}
-                  />
-                )}
+              <ContentsPreview noWrap>{chatRoomInfo?.content}</ContentsPreview>
             </AccordionSummaryHeader>
-            <MuiTypography noWrap sx={{ fontSize: '13px' }}>
-              {chatRoomInfo?.content}
-            </MuiTypography>
           </AccordionSummaryContent>
         </AccordionSummary>
         <AccordionDetails sx={{ maxHeight: '240px', overflow: 'auto' }}>
           {currentChatRoomMessages &&
-            [...currentChatRoomMessages].reverse().map((message) => {
+            [...currentChatRoomMessages].map((message) => {
               if (message.timestamp < timestamp) return null;
               return (
                 <NotiAccordionDetail
@@ -182,14 +172,33 @@ const NotiAccordion = ({
 export default NotiAccordion;
 
 const AccordionSummaryContent = styled(MuiBox)(() => ({
-  display: 'block',
+  display: 'flex',
   maxWidth: '280px',
 })) as typeof MuiBox;
 
 const AccordionSummaryHeader = styled(MuiBox)(() => ({
   display: 'flex',
-  alignItems: 'center',
+  alignItems: 'flex-start',
+  flexDirection: 'column',
+  maxWidth: '250px',
 })) as typeof MuiBox;
+
+const GameIconWrapper = styled(MuiBox)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '40px',
+  height: '40px',
+  padding: '0 4px 0 0',
+})) as typeof MuiBox;
+
+const ContentsPreview = styled(MuiTypography)(() => ({
+  width: '100%',
+  fontSize: '13px',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+  textOverflow: 'ellipsis',
+})) as typeof MuiTypography;
 
 const ButtonWrapper = styled(MuiBox)(() => ({
   width: '100%',

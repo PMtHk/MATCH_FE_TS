@@ -70,7 +70,19 @@ export function fetchCardDetail(url: string, deps: any[]) {
  */
 
 export const loadSummonerInfoIntoDB = async (summonerName: string) => {
-  const response = await defaultAxios.get(`/api/lol/user/${summonerName}`);
+  await defaultAxios.get(`/api/lol/user/${summonerName}`);
 
   return null;
+};
+
+/**
+ * 리그오브레전드 파티원 정보 가져오기
+ */
+
+export const fetchSummonerInfo = async (summonerName: string, type: string) => {
+  const response = await defaultAxios.get(
+    `/api/lol/summoner/${summonerName}/${type}`,
+  );
+
+  return response.data;
 };
