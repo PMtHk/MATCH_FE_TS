@@ -138,7 +138,7 @@ const NotiAccordion = ({
         </AccordionSummary>
         <AccordionDetails sx={{ maxHeight: '240px', overflow: 'auto' }}>
           {currentChatRoomMessages &&
-            [...currentChatRoomMessages].reverse().map((message) => {
+            [...currentChatRoomMessages].map((message) => {
               if (message.timestamp < timestamp) return null;
               return (
                 <NotiAccordionDetail
