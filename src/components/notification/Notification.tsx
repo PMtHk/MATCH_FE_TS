@@ -18,6 +18,7 @@ import MuiMenuItem from '@mui/material/MenuItem';
 import MuiTooltip from '@mui/material/Tooltip';
 import MuiBadge from '@mui/material/Badge';
 import MuiMenu from '@mui/material/Menu';
+import MuiIconButton from '@mui/material/Button';
 import NotificationsNone from '@mui/icons-material/NotificationsNone';
 import Delete from '@mui/icons-material/Delete';
 
@@ -151,20 +152,20 @@ const Notification = ({
   return (
     <>
       <MuiTooltip title="알림">
-        <Badge
-          badgeContent={badgeNum}
+        <MuiIconButton
           onClick={(event: React.MouseEvent<HTMLElement>) => {
             handleNotiClick(event);
           }}
-          color="warning"
         >
-          <NotificationsNone
-            sx={{
-              color: '#dddddd',
-              fontSize: '30px',
-            }}
-          />
-        </Badge>
+          <Badge badgeContent={badgeNum} color="warning">
+            <NotificationsNone
+              sx={{
+                color: '#dddddd',
+                fontSize: '30px',
+              }}
+            />
+          </Badge>
+        </MuiIconButton>
       </MuiTooltip>
       <Menu
         anchorEl={notiAnchorEl}

@@ -78,10 +78,13 @@ const JoinedPartyList = ({
                   item={aGame.id}
                   id={aGame.id}
                   size={{
-                    width: '30px',
-                    height: '28px',
+                    width: '24px',
+                    height: '22px',
                   }}
                 />
+                <GameTypo selected={selectedGame === aGame.id}>
+                  {aGame.name_kor}
+                </GameTypo>
               </GameSelectorItem>
             );
           })}
@@ -120,7 +123,7 @@ export default JoinedPartyList;
 
 const Menu = styled(MuiMenu)(({ theme }) => ({
   padding: '0',
-  margin: '14px 0 0 0',
+  margin: '20px 0 0 0',
   '& .MuiMenu-paper': {
     width: '383px',
     backgroundColor: theme.palette.background.paper,
@@ -141,7 +144,7 @@ const Menu = styled(MuiMenu)(({ theme }) => ({
 
 const PartyListContainer = styled(MuiBox)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
-  maxHeight: '60vh',
+  maxHeight: '50vh',
   overflowY: 'auto',
   overflowX: 'hidden',
   scrollbarWidth: 'thin',
@@ -167,7 +170,9 @@ const GameSelector = styled(MuiBox)(({ theme }) => ({
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
-  justifyContent: 'flex-start',
+  justifyContent: 'space-around',
+  gap: '6px',
+  padding: '0 4px 0 4px',
 })) as typeof MuiBox;
 
 interface GameSelectorItem {
@@ -177,11 +182,11 @@ interface GameSelectorItem {
 const GameSelectorItem = styled(MuiBox, {
   shouldForwardProp: (prop) => prop !== 'selected',
 })<GameSelectorItem>(({ selected }) => ({
-  width: '25%',
   height: '40px',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  gap: '4px',
   '&:hover': {
     cursor: 'pointer',
   },
@@ -204,3 +209,15 @@ const NoPartyTypo = styled(MuiTypography)(({ theme }) => ({
   fontWeight: 'bold',
   color: theme.palette.primary.main,
 })) as typeof MuiTypography;
+
+interface GameTypoProps {
+  selected: boolean;
+}
+
+const GameTypo = styled(MuiTypography, {
+  shouldForwardProp: (prop) => prop !== 'selected',
+})<GameTypoProps>(({ selected }) => ({
+  fontSize: selected ? '13px' : '12px',
+  fontWeight: selected ? '600' : '400',
+  color: selected ? '' : 'grey',
+}));
