@@ -1,7 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+import { CHATROOM } from 'types/chats';
+
 interface IState {
-  joinedChatRoomsId: string[];
+  joinedChatRoomsId: CHATROOM[];
   detachedListener: string[];
 }
 
@@ -10,25 +12,34 @@ const initialChatroomState: IState = {
   detachedListener: [],
 };
 
+interface I_ADD_JOINED_CHATROOMS_ID {
+  payload: CHATROOM;
+}
+
+interface I_LEAVE_JOINED_CHATROOMS_ID {
+  payload: string;
+}
+
+interface I_ADD_DETACHEDLISTENER {
+  payload: string;
+}
+
 const chatroomSlice = createSlice({
   name: 'chatroom',
   initialState: initialChatroomState,
   reducers: {
-    SET_JOINED_CHATROOMS_ID: (state, action) => {
-      state.joinedChatRoomsId = action.payload;
+    ADD_JOINED_CHATROOMS_ID: (state, action: I_ADD_JOINED_CHATROOMS_ID) => {
+      state.joinedChatRoomsId.unshift(action.payload);
     },
-    ADD_JOINED_CHATROOMS_ID: (state, action) => {
-      state.joinedChatRoomsId = [...state.joinedChatRoomsId, action.payload];
-    },
-    LEAVE_JOINED_CHATROOMS_ID: (state, action) => {
+    LEAVE_JOINED_CHATROOMS_ID: (state, action: I_LEAVE_JOINED_CHATROOMS_ID) => {
       state.joinedChatRoomsId = state.joinedChatRoomsId.filter(
-        (chatroomId: string) => chatroomId !== action.payload,
+        (chatroom: CHATROOM) => chatroom.chatRoomId !== action.payload,
       );
     },
     REMOVE_ALL_JOINED_CHATROOMS_ID: (state) => {
       state.joinedChatRoomsId = [];
     },
-    ADD_DETACHEDLISTENER: (state, action) => {
+    ADD_DETACHEDLISTENER: (state, action: I_ADD_DETACHEDLISTENER) => {
       state.detachedListener.push(action.payload);
     },
   },

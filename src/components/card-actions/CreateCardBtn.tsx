@@ -1,12 +1,15 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // mui
 import { styled } from '@mui/system';
 import MuiButton from '@mui/material/Button';
 
+import { GAME_ID } from 'types/games';
+import { getCurrentGame } from 'functions/commons';
+
 const CreateCardBtn = () => {
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   return (
     <Link to="new" state={{ background: `/${currentGame}` }}>

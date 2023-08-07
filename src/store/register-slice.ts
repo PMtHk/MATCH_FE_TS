@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { GAME_ID } from 'assets/Games.data';
+import { GAME_ID } from 'types/games';
 
 interface IState {
   representative: GAME_ID | '';

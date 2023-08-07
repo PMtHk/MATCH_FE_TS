@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // mui
@@ -7,10 +7,13 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 
 import { RootState } from 'store';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import Card from './Card';
 
 const CardListContainer = () => {
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
+
   const { pubgCards } = useSelector((state: RootState) => state.card);
   const { pubg: registeredPubgNickname } = useSelector(
     (state: RootState) => state.user.games,
@@ -39,7 +42,11 @@ const CardListContainer = () => {
                   : `${aCard.id}`
               }
               state={{ background: `/${currentGame}` }}
-              style={{ textDecoration: 'none', background: 'fixed' }}
+              style={{
+                textDecoration: 'none',
+                background: 'fixed',
+                margin: '0 8px 8px 0',
+              }}
             >
               <Card
                 item={aCard}

@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { cardActions } from 'store/card-slice';
+import { asyncGetIsReviewed, getIsReviewed } from 'apis/api/firebase';
 import { fetchCardDetail } from 'apis/api/leagueoflegends';
 import { RootState } from 'store';
-import { asyncGetIsReviewed, getIsReviewed } from 'apis/api/firebase';
-import { current } from '@reduxjs/toolkit';
+import { cardActions } from 'store/card-slice';
+import { getIsJoined } from 'functions/commons';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;
@@ -38,7 +38,7 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
     };
 
     if (currentCard) {
-      if (joinedChatRoomsId.includes(currentCard.chatRoomId)) {
+      if (getIsJoined(currentCard.chatRoomId, joinedChatRoomsId)) {
         getIsReviewed2();
       }
     }

@@ -12,14 +12,15 @@ import Close from '@mui/icons-material/Close';
 import MuiStack from '@mui/material/Stack';
 
 import { RootState } from 'store';
-import Timer from 'components/CountDownTimer';
 import { cardActions } from 'store/card-slice';
+import Timer from 'components/CountDownTimer';
 import EditCardBtn from 'components/card-actions/EditCardBtn';
 import LeaveBtn from 'components/card-actions/LeaveBtn';
 import JoinBtn from 'components/card-actions/JoinBtn';
 import DeleteCardBtn from 'components/card-actions/DeleteCardBtn';
 import Circular from 'components/loading/Circular';
 import FinishBtn from 'components/card-actions/FinishBtn';
+import { getIsJoined } from 'functions/commons';
 import { positionList, queueTypeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
@@ -112,7 +113,8 @@ const CardDetailContainer = () => {
                 ))}
               </MemberList>
             </MemberListWrapper>
-            {isLogin && joinedChatRoomsId.includes(currentCard.chatRoomId) ? (
+            {isLogin &&
+            getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) ? (
               oauth2Id === currentCard.oauth2Id ? (
                 <MuiStack direction="row" spacing="2%" mt={1}>
                   <DeleteCardBtn />
@@ -129,7 +131,7 @@ const CardDetailContainer = () => {
             )}
           </CardInfo>
           {isLogin &&
-            joinedChatRoomsId.includes(currentCard.chatRoomId) &&
+            getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
             currentCard.finished !== 'true' && (
               <Suspense
                 fallback={<Circular text="채팅방 불러오는 중" height="100%" />}

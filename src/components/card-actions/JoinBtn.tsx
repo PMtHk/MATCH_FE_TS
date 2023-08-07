@@ -5,19 +5,19 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
-import { checkPUBGUserPlatform } from 'apis/api/pubg';
-import { isBanned } from 'apis/api/firebase';
-import { snackbarActions } from 'store/snackbar-slice';
 import { joinParty } from 'apis/api/user';
-import { useNavigate } from 'react-router-dom';
-import { RootState } from '../../store';
-import { refreshActions } from '../../store/refresh-slice';
+import { isBanned } from 'apis/api/firebase';
+import { checkPUBGUserPlatform } from 'apis/api/pubg';
+import { RootState } from 'store';
+import { snackbarActions } from 'store/snackbar-slice';
+import { refreshActions } from 'store/refresh-slice';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 
 const JoinBtn = () => {
   const dispatch = useDispatch();
 
-  // current game
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { currentCard } = useSelector((state: RootState) => state.card);
   const { notiToken } = useSelector((state: RootState) => state.notification);
