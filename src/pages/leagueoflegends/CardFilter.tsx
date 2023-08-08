@@ -79,21 +79,24 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
         <FormControl size="small" disabled={queueType === 'ARAM'}>
           <MuiSelect id="tier-type-select" value={tier} onChange={handleTier}>
             {tierList.map((item, index) => {
-              if (queueType === 'DUO_RANK') {
-                if (index > 3 || index === 0) {
-                  return (
-                    <MuiMenuItem key={item.value} value={item.value}>
-                      {item.label}
-                    </MuiMenuItem>
-                  );
+              if (index < tierList.length - 1) {
+                if (queueType === 'DUO_RANK') {
+                  if (index > 3) {
+                    return (
+                      <MuiMenuItem key={item.value} value={item.value}>
+                        {item.label}
+                      </MuiMenuItem>
+                    );
+                  }
+                  return null;
                 }
-                return null;
+                return (
+                  <MuiMenuItem key={item.value} value={item.value}>
+                    {item.label}
+                  </MuiMenuItem>
+                );
               }
-              return (
-                <MuiMenuItem key={item.value} value={item.value}>
-                  {item.label}
-                </MuiMenuItem>
-              );
+              return null;
             })}
           </MuiSelect>
         </FormControl>

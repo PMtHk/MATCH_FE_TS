@@ -90,12 +90,15 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
       <GridItem item xs={12} sm={6} md={2} lg={1.5}>
         <FormControl size="small">
           <MuiSelect id="tier-select" value={tier} onChange={handleTier}>
-            {tierList.map((item) => {
-              return (
-                <MuiMenuItem key={item.value} value={item.value}>
-                  {item.label}
-                </MuiMenuItem>
-              );
+            {tierList.map((item, index) => {
+              if (index < tierList.length - 1) {
+                return (
+                  <MuiMenuItem key={item.value} value={item.value}>
+                    {item.label}
+                  </MuiMenuItem>
+                );
+              }
+              return null;
             })}
           </MuiSelect>
         </FormControl>
