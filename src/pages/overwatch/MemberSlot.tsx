@@ -16,8 +16,7 @@ import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
-import { kickMemberFromParty } from 'apis/api/common';
-import { fetchPlayerInfo } from 'apis/api/overwatch';
+import { fetchPlayerInfo, kickMemberFromParty } from 'apis/api/overwatch';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -136,8 +135,8 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
       await kickMemberFromParty(
         currentCard?.id,
         currentCard?.chatRoomId,
-        `${nickAndTag[0]}%23${nickAndTag[1]}`,
-        'overwatch',
+        nickAndTag[0],
+        nickAndTag[1],
       );
 
       dispatch(
@@ -329,12 +328,10 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
               <MuiIconButton
                 size="small"
                 onClick={handleKickBtn}
-                // disabled={
-                //   currentCard.expired === 'true' ||
-                //   currentCard.finished === 'true'
-                // }
-                // 강퇴 api 서버 오류로 인한 disabled
-                disabled
+                disabled={
+                  currentCard.expired === 'true' ||
+                  currentCard.finished === 'true'
+                }
               >
                 <Close />
               </MuiIconButton>

@@ -12,9 +12,12 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { RootState } from 'store';
 import { refreshActions } from 'store/refresh-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-import { loadOWPlayerInfoInDB, verifyOWNickname } from 'apis/api/overwatch';
+import {
+  loadOWPlayerInfoInDB,
+  verifyOWNickname,
+  addPartyMemberWithName,
+} from 'apis/api/overwatch';
 import { addMemberToFirebaseDB } from 'apis/api/firebase';
-import { addPartyMemberWithName } from 'apis/api/common';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -63,11 +66,9 @@ const EmptySlotForAuthor = () => {
       );
 
       // 닉네임 인증
-      const nickAndTag = name.trim().split('#');
-      const exactNickname = await verifyOWNickname(
-        nickAndTag[0],
-        nickAndTag[1],
-      );
+      const nickname = name.trim().split('#')[0];
+      const battleTag = name.trim().split('#')[1];
+      const exactNickname = await verifyOWNickname(nickname, battleTag);
       if (exactNickname && currentCard.banList.includes(name.trim())) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
@@ -87,13 +88,13 @@ const EmptySlotForAuthor = () => {
         return;
       }
       // 전적 받아오기 -> DB
-      await loadOWPlayerInfoInDB(nickAndTag[0], nickAndTag[1]);
+      await loadOWPlayerInfoInDB(nickname, battleTag);
       // 파티에 해당 멤버 추가
       await addPartyMemberWithName(
         currentCard?.id,
         currentCard.chatRoomId,
-        `${nickAndTag[0]}%23${nickAndTag[1]}`,
-        'overwatch',
+        nickname,
+        battleTag,
       );
 
       dispatch(refreshActions.REFRESH_CARD());
