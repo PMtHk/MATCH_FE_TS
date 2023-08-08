@@ -3,6 +3,7 @@ import CountDown from 'react-countdown';
 
 // mui
 import MuiTypography from '@mui/material/Typography';
+import { EXPIRE_TIME } from 'types/commons';
 
 const expiredTime = {
   FIFTEEN_M: 15 * 60 * 1000,
@@ -15,19 +16,9 @@ const expiredTime = {
   TWENTY_FOUR_H: 24 * 60 * 60 * 1000,
 };
 
-export type EXPIRE_TYPE =
-  | 'FIFTEEN_M'
-  | 'THIRTY_M'
-  | 'ONE_H'
-  | 'TWO_H'
-  | 'THREE_H'
-  | 'SIX_H'
-  | 'TWELVE_H'
-  | 'TWENTY_FOUR_H';
-
 interface TimerProps {
   created: string;
-  expire: EXPIRE_TYPE;
+  expire: EXPIRE_TIME;
 }
 
 const CountDownTimer = ({ created, expire }: TimerProps) => {

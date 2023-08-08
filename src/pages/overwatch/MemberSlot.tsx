@@ -167,7 +167,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
         <Member>
           <SectionInMember>
             <SectionTitleInMember>닉네임</SectionTitleInMember>
-            <Nickname>{authorNickname}</Nickname>
+            <Nickname>{memberInfo.name.split('#')[0]}</Nickname>
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>승률</SectionTitleInMember>

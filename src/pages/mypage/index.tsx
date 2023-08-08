@@ -5,7 +5,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { RootState } from 'store';
 
 // components
-import Layout from 'components/Layout';
 import ErrorFallback from 'components/errorFallback/ErrorFallback';
 import Circular from 'components/loading/Circular';
 import UserInfoFetcher from './UserInfoFetcher';

@@ -45,6 +45,7 @@ const EmptySlotForAuthor = () => {
   // 닉네임 인증 요청시 인증중(loading) 상태를 관리하는 state
   const [isLoading, setIsLoading] = useState(false);
 
+  // 추가할 멤버의 닉네임 입력 후 추가하기 버튼 클릭시 호출할 함수
   const hanldeAddPartyMember = async () => {
     const newMember = {
       nickname: name,
@@ -52,7 +53,6 @@ const EmptySlotForAuthor = () => {
       notiToken: '',
       isReviewed: false,
     };
-
     try {
       setIsLoading(true);
       dispatch(

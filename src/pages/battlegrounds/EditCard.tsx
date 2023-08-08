@@ -27,11 +27,11 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
-import Modal from 'components/Modal';
-
-import { authAxios } from 'apis/utils';
 import { updateCard } from 'apis/api/common';
 import { snackbarActions } from 'store/snackbar-slice';
+import Modal from 'components/Modal';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import { typeList, tierList, platformList, expiredTimeList } from './data';
 
 const EditCard = () => {
@@ -48,7 +48,7 @@ const EditCard = () => {
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   // 파티가 마감된 경우 뒤로가기
   useEffect(() => {

@@ -20,15 +20,18 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import { RootState } from 'store';
 
 import GameIcon from 'components/GameIcon';
-import { GAME_ID } from 'assets/Games.data';
 import Notification from 'components/notification/Notification';
 import ChatRoomListFetcher from 'components/notification/ChatRoomListFetcher';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
+import JoinedPartyList from 'components/chat/JoinedPartyList';
 import UserMenu from './UserMenu';
 import GameMenu from './GameMenu';
 
 const Header = () => {
-  const currentGame = window.location.pathname.split('/')[1];
   const navigate = useNavigate();
+
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { isLogin, representative } = useSelector(
     (state: RootState) => state.user,
@@ -55,6 +58,16 @@ const Header = () => {
   };
   const handleNotiClose = () => {
     setNotiAnchorEl(null);
+  };
+
+  // joinedParyList
+  const [partyListAnchorEl, setPartyListAnchorEl] = useState<any>(null);
+  const partyListOpen = Boolean(partyListAnchorEl);
+  const handlePartyListOpen = (e: any) => {
+    setPartyListAnchorEl(e.currentTarget);
+  };
+  const handlePartyListClose = () => {
+    setPartyListAnchorEl(null);
   };
 
   return (
@@ -121,7 +134,6 @@ const Header = () => {
             <MatchGGLogo>MatchGG</MatchGGLogo>
           </MuiButton>
           <GameMenu />
-          {isLogin && <UserMenu />}
           {isLogin && (
             <ChatRoomListFetcher>
               {joinedChatRoomsId && (
@@ -134,6 +146,15 @@ const Header = () => {
               )}
             </ChatRoomListFetcher>
           )}
+          {isLogin && joinedChatRoomsId && (
+            <JoinedPartyList
+              partyListAnchorEl={partyListAnchorEl}
+              partyListOpen={partyListOpen}
+              handlePartyListOpen={handlePartyListOpen}
+              handlePartyListClose={handlePartyListClose}
+            />
+          )}
+          {isLogin && <UserMenu />}
           {!isLogin && (
             <LoginBtnWrapper
               onClick={() => {

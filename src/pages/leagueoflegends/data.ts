@@ -1,3 +1,5 @@
+import { LOL_POSITION } from 'types/games';
+
 export const queueTypeList = [
   { value: 'ALL', label: '모든 큐', maxMember: 5 },
   { value: 'DUO_RANK', label: '솔로랭크', maxMember: 2 }, // RANKED_SOLO_5x5
@@ -105,21 +107,7 @@ export const tierList = [
   },
 ];
 
-export type positionValue =
-  | 'ALL'
-  | 'TOP'
-  | 'JUNGLE'
-  | 'MIDDLE'
-  | 'BOTTOM'
-  | 'UTILITY';
-
-export type Position = {
-  value: positionValue;
-  label: string;
-  imageUrl: string;
-};
-
-export const positionList: Position[] = [
+export const positionList: LOL_POSITION[] = [
   {
     value: 'ALL',
     label: '전체',

@@ -15,12 +15,6 @@ export const platformList = [
     imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/platform/kakao.png',
   },
 ];
-export type platformValue = 'ALL' | 'KAKAO' | 'STEAM';
-export type Platform = {
-  value: platformValue;
-  label: string;
-  imageUrl: string;
-};
 
 export const typeList = [
   { value: 'ALL', label: '모든 타입', maxMember: 4 },
