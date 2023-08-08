@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,10 +11,13 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { RootState } from 'store';
 import { refreshActions } from 'store/refresh-slice';
-import { authAxios, defaultAxios } from 'apis/utils';
 import { snackbarActions } from 'store/snackbar-slice';
-import { loadOWPlayerInfoInDB, verifyOWNickname } from 'apis/api/overwatch';
-import { addPartyMemberWithName } from 'apis/api/common';
+import {
+  loadOWPlayerInfoInDB,
+  verifyOWNickname,
+  addPartyMemberWithName,
+} from 'apis/api/overwatch';
+import { addMemberToFirebaseDB } from 'apis/api/firebase';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -28,6 +32,8 @@ const DefaultEmptySlot = () => {
 // 방장의 경우
 const EmptySlotForAuthor = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { currentCard } = useSelector((state: RootState) => state.card);
   // 추가하기 버튼과 닉네임 입력창을 전환할 state
   const [isEntering, setIsEntering] = useState(false);
@@ -43,23 +49,27 @@ const EmptySlotForAuthor = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 추가할 멤버의 닉네임 입력 후 추가하기 버튼 클릭시 호출할 함수
-
-  const handleAddPartyMember = async () => {
+  const hanldeAddPartyMember = async () => {
+    const newMember = {
+      nickname: name,
+      oauth2Id: '',
+      notiToken: '',
+      isReviewed: false,
+    };
     try {
       setIsLoading(true);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '플레이어 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          message: '사용자 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
           severity: 'info',
         }),
       );
 
+      // 닉네임 인증
       const nickname = name.trim().split('#')[0];
       const battleTag = name.trim().split('#')[1];
-
-      await verifyOWNickname(nickname, battleTag);
-
-      if (currentCard.banList.includes(name)) {
+      const exactNickname = await verifyOWNickname(nickname, battleTag);
+      if (exactNickname && currentCard.banList.includes(name.trim())) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '파티에서 강제퇴장 당한 사용자입니다.',
@@ -68,7 +78,7 @@ const EmptySlotForAuthor = () => {
         );
         return;
       }
-      if (currentCard.memberList.includes(name)) {
+      if (currentCard.memberList.includes(exactNickname)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '이미 파티에 참여한 사용자입니다.',
@@ -77,14 +87,23 @@ const EmptySlotForAuthor = () => {
         );
         return;
       }
-
+      // 전적 받아오기 -> DB
       await loadOWPlayerInfoInDB(nickname, battleTag);
-
+      // 파티에 해당 멤버 추가
       await addPartyMemberWithName(
-        currentCard.id,
+        currentCard?.id,
         currentCard.chatRoomId,
-        name,
-        'overwatch',
+        nickname,
+        battleTag,
+      );
+
+      dispatch(refreshActions.REFRESH_CARD());
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `파티에 "${name.trim()}" 님을 추가했습니다.`,
+          severity: 'success',
+        }),
       );
     } catch (error: any) {
       dispatch(
@@ -95,16 +114,20 @@ const EmptySlotForAuthor = () => {
       );
     } finally {
       setIsLoading(false);
-      setIsEntering(false);
       setName('');
+      setIsEntering(false);
     }
   };
 
   return (
-    <EmptySlotWrapper>
+    <EmptySlotWrapper
+      sx={{
+        backgroundColor: isEntering ? '#fff' : '#ececec',
+      }}
+    >
       {isEntering ? (
         <OutlinedInput
-          placeholder="소환사 명을 입력하세요"
+          placeholder="닉네임과 배틀태그를 입력하세요"
           autoFocus
           sx={{
             width: '100%',
@@ -117,7 +140,7 @@ const EmptySlotForAuthor = () => {
             isLoading ? (
               <CircularProgress size={24} />
             ) : (
-              <Button size="small" onClick={handleAddPartyMember}>
+              <Button size="small" onClick={hanldeAddPartyMember}>
                 추가하기
               </Button>
             )
