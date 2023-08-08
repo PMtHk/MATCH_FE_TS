@@ -145,10 +145,22 @@ const CardDetailContainer = () => {
       </>
     );
   }
-  return <div />;
+  return (
+    <LoadingWrapper>
+      <Circular text="게시글을 불러오는 중입니다." height="100%" />
+    </LoadingWrapper>
+  );
 };
 
 export default CardDetailContainer;
+
+const LoadingWrapper = styled(MuiBox)(() => ({
+  width: '520px',
+  height: '360px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+})) as typeof MuiBox;
 
 const ModalHeader = styled(MuiBox)(() => ({
   width: '100%',

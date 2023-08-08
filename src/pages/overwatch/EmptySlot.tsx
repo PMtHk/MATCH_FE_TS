@@ -91,11 +91,10 @@ const EmptySlotForAuthor = () => {
       // 파티에 해당 멤버 추가
       await addPartyMemberWithName(
         currentCard?.id,
+        currentCard.chatRoomId,
         `${nickAndTag[0]}%23${nickAndTag[1]}`,
         'overwatch',
       );
-
-      await addMemberToFirebaseDB(newMember, currentCard.chatRoomId, dispatch);
 
       dispatch(refreshActions.REFRESH_CARD());
 
