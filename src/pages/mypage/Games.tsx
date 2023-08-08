@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 // mui
@@ -9,10 +9,50 @@ import MuiTextField from '@mui/material/TextField';
 import MuiButton from '@mui/material/Button';
 import MuiToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import MuiToggleButton from '@mui/material/ToggleButton';
+import MuiSelect, { SelectChangeEvent } from '@mui/material/Select';
+import MuiMenuItem from '@mui/material/MenuItem';
+
 import MuiOutlinedInput from '@mui/material/OutlinedInput';
 import { RootState } from 'store';
+import { Button, ButtonGroup, Divider } from '@mui/material';
+import GameIcon from 'components/GameIcon';
+import { gameList } from 'assets/Games.data';
 
-import { gameList } from './data';
+type GameFilterProps = {
+  selectedGame: string;
+  setSelectedGame: Dispatch<SetStateAction<string>>;
+};
+
+const GameFilterBar = ({ selectedGame, setSelectedGame }: GameFilterProps) => {
+  return (
+    <>
+      <GameSelector>
+        {gameList.map((aGame) => {
+          return (
+            <GameSelectorItem
+              key={aGame.id}
+              onClick={() => setSelectedGame(aGame.id)}
+              selected={selectedGame === aGame.id}
+            >
+              <GameIcon
+                item={aGame.id}
+                id={aGame.id}
+                size={{
+                  width: '24px',
+                  height: '22px',
+                }}
+              />
+              <GameTypo selected={selectedGame === aGame.id}>
+                {aGame.name_kor}
+              </GameTypo>
+            </GameSelectorItem>
+          );
+        })}
+      </GameSelector>
+      <Divider />
+    </>
+  );
+};
 
 type GameProps = {
   label: string;
@@ -72,16 +112,91 @@ const Game = ({ label, value }: GameProps) => {
 };
 
 const Games = () => {
+  const { representative } = useSelector((state: RootState) => state.user);
+  const [selectedGame, setSelectedGame] = useState<string>(representative);
+
   return (
     <>
+      <GameFilterBar
+        selectedGame={selectedGame}
+        setSelectedGame={setSelectedGame}
+      />
       {gameList.map((game) => (
-        <Game key={game.id} label={game.label} value={game.value} />
+        <Game key={game.id} label={game.name_kor} value={game.id} />
       ))}
     </>
   );
 };
 
 export default Games;
+
+const GameSelector = styled(MuiBox)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+  gap: '6px',
+  padding: '0 4px 0 4px',
+})) as typeof MuiBox;
+
+interface GameSelectorItem {
+  selected: boolean;
+}
+
+const GameSelectorItem = styled(MuiBox, {
+  shouldForwardProp: (prop) => prop !== 'selected',
+})<GameSelectorItem>(({ selected }) => ({
+  height: '40px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '4px',
+  '&:hover': {
+    cursor: 'pointer',
+  },
+  '& > img': {
+    filter: selected ? '' : 'contrast(10%) opacity(50%)',
+    webkitFilter: selected ? '' : 'contrast(10%) opacity(50%)',
+  },
+}));
+
+const HeaderTypo = styled(MuiTypography)(({ theme }) => ({
+  padding: '8px',
+  fontSize: '15px',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+})) as typeof MuiTypography;
+
+const NoPartyTypo = styled(MuiTypography)(({ theme }) => ({
+  padding: '8px',
+  fontSize: '14px',
+  fontWeight: 'bold',
+  color: theme.palette.primary.main,
+})) as typeof MuiTypography;
+
+interface GameTypoProps {
+  selected: boolean;
+}
+
+const GameTypo = styled(MuiTypography, {
+  shouldForwardProp: (prop) => prop !== 'selected',
+})<GameTypoProps>(({ selected }) => ({
+  fontSize: selected ? '13px' : '12px',
+  fontWeight: selected ? '600' : '400',
+  color: selected ? '' : 'grey',
+}));
+
+const GameFilterTypo = styled(MuiTypography)(() => ({
+  fontSize: '24px',
+}));
+
+const GameFilterBarWrapper = styled(MuiBox)(() => ({
+  width: '50%',
+  padding: '12px',
+  display: 'flex',
+  flexDirection: 'row',
+}));
 
 const Container = styled(MuiBox)(({ theme }) => ({
   width: '100%',
