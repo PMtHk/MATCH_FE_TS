@@ -81,7 +81,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
             {tierList.map((item, index) => {
               if (index < tierList.length - 1) {
                 if (queueType === 'DUO_RANK') {
-                  if (index > 3) {
+                  if (index > 3 || index === 0) {
                     return (
                       <MuiMenuItem key={item.value} value={item.value}>
                         {item.label}
