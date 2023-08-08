@@ -102,28 +102,33 @@ const CardDetailContainer = () => {
                   currentCard?.memberList?.map((member: string) => {
                     return <MemberSlot key={member} name={member} />;
                   })}
-                {Array(totalMember - currentMember)
-                  .fill(0)
-                  .map((num, idx) => {
-                    // eslint-disable-next-line react/no-array-index-key
-                    return <EmptySlot key={idx} />;
-                  })}
+                {currentCard.finished === 'false' &&
+                  Array(totalMember - currentMember)
+                    .fill(0)
+                    .map((num, idx) => {
+                      // eslint-disable-next-line react/no-array-index-key
+                      return <EmptySlot key={idx} />;
+                    })}
               </MemberList>
             </MemberListWrapper>
-            {isLogin &&
-            getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) ? (
-              oauth2Id === currentCard.oauth2Id ? (
-                <MuiStack direction="row" spacing={2} mt={1}>
-                  <DeleteCardBtn />
-                  <EditCardBtn />
-                  <FinishBtn />
-                </MuiStack>
-              ) : (
-                <LeaveBtn />
-              )
-            ) : (
-              <JoinBtn />
+            {isLogin && oauth2Id === currentCard.oauth2Id && (
+              <MuiStack direction="row" spacing="2%" mt={1}>
+                <DeleteCardBtn />
+                <EditCardBtn />
+                <FinishBtn />
+              </MuiStack>
             )}
+            {isLogin &&
+              oauth2Id !== currentCard.oauth2Id &&
+              getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
+              currentCard.expired === 'false' &&
+              currentCard.finished === 'false' && <LeaveBtn />}
+            {isLogin &&
+              oauth2Id !== currentCard.oauth2Id &&
+              !getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
+              currentCard.expired === 'false' &&
+              currentCard.finished === 'false' && <JoinBtn />}
+            {!isLogin && <JoinBtn />}
           </CardInfo>
           {isLogin &&
             getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
@@ -192,6 +197,7 @@ const SectionContent = styled(MuiTypography)(() => ({
   fontSize: '14px',
   fontWeight: '400',
   wordBreak: 'break-all',
+  height: '80px',
 })) as typeof MuiTypography;
 
 const HashTagWrapper = styled(MuiBox)(() => ({
@@ -223,7 +229,7 @@ const MemberList = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   minWidth: 520,
-  minHeight: '438px',
-  maxHeight: '440px',
+  minHeight: '340px',
+  maxHeight: '340px',
   overflow: 'auto',
 })) as typeof MuiBox;

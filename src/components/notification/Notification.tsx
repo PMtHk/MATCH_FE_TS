@@ -152,7 +152,7 @@ const Notification = ({
   return (
     <>
       <MuiTooltip title="알림">
-        <MuiIconButton
+        <IconButton
           onClick={(event: React.MouseEvent<HTMLElement>) => {
             handleNotiClick(event);
           }}
@@ -162,10 +162,11 @@ const Notification = ({
               sx={{
                 color: '#dddddd',
                 fontSize: '30px',
+                p: 0,
               }}
             />
           </Badge>
-        </MuiIconButton>
+        </IconButton>
       </MuiTooltip>
       <Menu
         anchorEl={notiAnchorEl}
@@ -220,8 +221,6 @@ export default Notification;
 const Badge = styled(MuiBadge)(() => ({
   cursor: 'pointer',
   '& .MuiBadge-dot': {
-    width: 12,
-    height: 12,
     borderRadius: '100%',
   },
 })) as typeof MuiBadge;
@@ -287,3 +286,11 @@ const HeaderTypo = styled(MuiTypography)(({ theme }) => ({
   color: theme.palette.primary.main,
   padding: '8px',
 })) as typeof MuiTypography;
+
+const IconButton = styled(MuiIconButton)(({ theme }) => ({
+  padding: '0',
+  margin: '0',
+  '& .MuiButtonBase-root': {
+    padding: '0',
+  },
+})) as typeof MuiIconButton;
