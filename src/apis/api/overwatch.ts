@@ -184,6 +184,6 @@ export const kickMemberFromParty = async (
     type: 'system',
     timestamp: Date.now(),
     user: { nickname: 'system', oauth2Id: '', notiToken: '' },
-    content: `${nickname} 님이 퇴장하였습니다.`,
+    content: `${nickname}#${battleTag} 님이 퇴장하였습니다.`,
   });
 };
