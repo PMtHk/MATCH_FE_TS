@@ -149,11 +149,15 @@ export const updateCard = async (
   return null;
 };
 
-export const finishCard = async (currentGame: string, boardId: number) => {
+export const finishCard = async (
+  currentGame: string,
+  boardId: number,
+  chatRoomId: string,
+) => {
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   await authAxios.post(`/api/chat/${currentGame}/${boardId}/finish`);
 
-  await update(child(chatRoomsRef, `${boardId}`), {
+  await update(child(chatRoomsRef, `${chatRoomId}`), {
     isFinished: true,
   });
 
