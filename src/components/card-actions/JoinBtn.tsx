@@ -57,7 +57,10 @@ const JoinBtn = () => {
     let disabled = false;
     if (!isLogin) {
       disabled = true;
-    } else if (currentCard.expired === 'true') {
+    } else if (
+      currentCard.expired === 'true' ||
+      currentCard.finished === 'true'
+    ) {
       disabled = true;
     } else if (nickname === '' || nickname === null) {
       disabled = true;
@@ -77,7 +80,10 @@ const JoinBtn = () => {
           severity: 'info',
         }),
       );
-    } else if (currentCard.expired === 'true') {
+    } else if (
+      currentCard.expired === 'true' ||
+      currentCard.finished === 'true'
+    ) {
       text = '파티가 마감되었습니다.';
     } else {
       text = '파티 참가';
