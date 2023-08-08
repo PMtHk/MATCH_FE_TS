@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,7 +11,13 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 import { RootState } from 'store';
 import { refreshActions } from 'store/refresh-slice';
-import { authAxios, defaultAxios } from 'apis/utils';
+import { snackbarActions } from 'store/snackbar-slice';
+import {
+  loadOWPlayerInfoInDB,
+  verifyOWNickname,
+  addPartyMemberWithName,
+} from 'apis/api/overwatch';
+import { addMemberToFirebaseDB } from 'apis/api/firebase';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -25,6 +32,8 @@ const DefaultEmptySlot = () => {
 // 방장의 경우
 const EmptySlotForAuthor = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { currentCard } = useSelector((state: RootState) => state.card);
   // 추가하기 버튼과 닉네임 입력창을 전환할 state
   const [isEntering, setIsEntering] = useState(false);
@@ -40,55 +49,85 @@ const EmptySlotForAuthor = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   // 추가할 멤버의 닉네임 입력 후 추가하기 버튼 클릭시 호출할 함수
-  const addPartyMember = async () => {
-    setIsLoading(true);
+  const hanldeAddPartyMember = async () => {
+    const newMember = {
+      nickname: name,
+      oauth2Id: '',
+      notiToken: '',
+      isReviewed: false,
+    };
+    try {
+      setIsLoading(true);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '사용자 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          severity: 'info',
+        }),
+      );
 
-    const nickAndTag = name.trim().split('#');
-
-    await defaultAxios
-      // 오버워치 계정 존재 여부 전송
-      .get(`/api/overwatch/user/exist/${nickAndTag[0]}%23${nickAndTag[1]}`)
-      .then(async (response) => {
-        if (response.status === 200) {
-          await defaultAxios
-            // 오버워치계정 정보 최신화 및 DB 저장
-            .get(`/api/overwatch/user/${nickAndTag[0]}%23${nickAndTag[1]}`)
-            .then(async (response) => {
-              if (response.status === 200) {
-                await authAxios
-                  // 채팅방? 파티? 입장 요청
-                  .post(
-                    `/api/chat/overwatch/${currentCard?.id}/${nickAndTag[0]}%23${nickAndTag[1]}`,
-                  )
-                  .then((response) => {
-                    if (response.status === 200) {
-                      // 최종 성공
-                      setIsLoading(false);
-                      setIsEntering(false);
-                      setName('');
-                      dispatch(refreshActions.REFRESH_CARD());
-                    }
-                  });
-              }
-            });
-        }
-      })
-      .catch((error: any) => {
-        // eslint-disable-next-line no-alert
-        alert(
-          '파티원을 추가하는 과정에서 문제가 발생하였습니다. \n 잠시 후 다시 시도해주시기 바랍니다.',
+      // 닉네임 인증
+      const nickname = name.trim().split('#')[0];
+      const battleTag = name.trim().split('#')[1];
+      const exactNickname = await verifyOWNickname(nickname, battleTag);
+      if (exactNickname && currentCard.banList.includes(name.trim())) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '파티에서 강제퇴장 당한 사용자입니다.',
+            severity: 'warning',
+          }),
         );
-        setName('');
-        setIsEntering(false);
-        setIsLoading(false);
-      });
+        return;
+      }
+      if (currentCard.memberList.includes(exactNickname)) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: '이미 파티에 참여한 사용자입니다.',
+            severity: 'warning',
+          }),
+        );
+        return;
+      }
+      // 전적 받아오기 -> DB
+      await loadOWPlayerInfoInDB(nickname, battleTag);
+      // 파티에 해당 멤버 추가
+      await addPartyMemberWithName(
+        currentCard?.id,
+        currentCard.chatRoomId,
+        nickname,
+        battleTag,
+      );
+
+      dispatch(refreshActions.REFRESH_CARD());
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `파티에 "${name.trim()}" 님을 추가했습니다.`,
+          severity: 'success',
+        }),
+      );
+    } catch (error: any) {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: error.response.data.message,
+          severity: 'error',
+        }),
+      );
+    } finally {
+      setIsLoading(false);
+      setName('');
+      setIsEntering(false);
+    }
   };
 
   return (
-    <EmptySlotWrapper>
+    <EmptySlotWrapper
+      sx={{
+        backgroundColor: isEntering ? '#fff' : '#ececec',
+      }}
+    >
       {isEntering ? (
         <OutlinedInput
-          placeholder="소환사 명을 입력하세요"
+          placeholder="닉네임과 배틀태그를 입력하세요"
           autoFocus
           sx={{
             width: '100%',
@@ -101,7 +140,7 @@ const EmptySlotForAuthor = () => {
             isLoading ? (
               <CircularProgress size={24} />
             ) : (
-              <Button size="small" onClick={addPartyMember}>
+              <Button size="small" onClick={hanldeAddPartyMember}>
                 추가하기
               </Button>
             )

@@ -7,10 +7,13 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 
 import { RootState } from 'store';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import Card from './Card';
 
 const CardListContainer = () => {
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
+
   const { lolCards } = useSelector((state: RootState) => state.card);
 
   const { lol: registeredLolNickname } = useSelector(
@@ -41,7 +44,11 @@ const CardListContainer = () => {
                   : `${aCard.id}`
               }
               state={{ background: `/${currentGame}` }}
-              style={{ textDecoration: 'none', background: 'fixed' }}
+              style={{
+                textDecoration: 'none',
+                background: 'fixed',
+                margin: '0 8px 8px 0',
+              }}
             >
               <Card
                 item={aCard}

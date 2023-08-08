@@ -28,11 +28,10 @@ import Edit from '@mui/icons-material/Edit';
 import Modal from 'components/Modal';
 
 import { RootState } from 'store';
-import { authAxios, defaultAxios } from 'apis/utils';
-import { cardActions } from 'store/card-slice';
-import { get, child, ref, getDatabase, update } from 'firebase/database';
 import { updateCard } from 'apis/api/common';
 import { snackbarActions } from 'store/snackbar-slice';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
 
 const CreateCard = () => {
@@ -42,7 +41,7 @@ const CreateCard = () => {
 
   const { id: cardId } = params;
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
 
   const { lol: registeredNickname } = useSelector(
     (state: RootState) => state.user.games,

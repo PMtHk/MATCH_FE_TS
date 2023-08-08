@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 // mui
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
 import MuiTypography from '@mui/material/Typography';
@@ -12,7 +12,7 @@ import { RootState } from 'store';
 import InputLol from './InputLol';
 import InputPubg from './InputPubg';
 import InputOverwatch from './InputOverwatch';
-import InputValorant from './InputValorant';
+// import InputValorant from './InputValorant';
 
 const Games = () => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const Games = () => {
         <InputLol />
         <InputPubg />
         <InputOverwatch />
-        <InputValorant />
+        {/* <InputValorant /> */}
       </Wrapper>
       <NextButton disabled={!atLeastOne} onClick={handleNextBtn}>
         다음

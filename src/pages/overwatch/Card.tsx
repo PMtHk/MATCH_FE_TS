@@ -7,15 +7,14 @@ import MuiTypography from '@mui/material/Typography';
 import MuiDivider from '@mui/material/Divider';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-
-// mui icons
 import CheckIcon from '@mui/icons-material/Check';
 import MicIcon from '@mui/icons-material/Mic';
 
 import CardContainer from 'components/CardContainer';
-import Timer, { EXPIRE_TYPE } from 'components/CountDownTimer';
-
-import { positionList, positionValue, queueTypeList, tierList } from './data';
+import Timer from 'components/CountDownTimer';
+import { EXPIRE_TIME } from 'types/commons';
+import { OVERWATCH_POSITIONS_ID } from 'types/games';
+import { positionList, queueTypeList, tierList } from './data';
 
 interface CardProps {
   item: {
@@ -24,10 +23,12 @@ interface CardProps {
     name: string;
     type: string;
     tier: string;
-    position: positionValue;
+    position: OVERWATCH_POSITIONS_ID;
     voice: 'Y' | 'N';
     content: string;
-    expire: EXPIRE_TYPE;
+    expired: string;
+    finished: string;
+    expire: EXPIRE_TIME;
     created: string;
     author: {
       name: string;

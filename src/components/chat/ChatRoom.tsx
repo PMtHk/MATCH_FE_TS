@@ -16,6 +16,8 @@ import { updateALastRead } from 'apis/api/firebase';
 import { chatroomActions } from 'store/chatroom-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { snackbarActions } from 'store/snackbar-slice';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import ChatMessage from './ChatMessage';
 import SystemMessage from './SystemMessage';
 
@@ -23,7 +25,8 @@ const ChatRoom = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
+
   const nickname = useSelector(
     (state: RootState) =>
       state.user.games[`${currentGame as 'overwatch' | 'pubg' | 'lol'}`],
@@ -122,7 +125,6 @@ const ChatRoom = () => {
         // 가입되어있지 않은 사용자 (탈퇴되었거나 스스로 나간 경우)
         alert('유효하지 않은 사용자 입니다.');
         dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
-        navigate(`${currentGame}`);
         dispatch(refreshActions.REFRESH_CARD());
       }
     });
@@ -142,7 +144,6 @@ const ChatRoom = () => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
       updateALastRead(oauth2Id, chatRoomId, Date.now());
     }
-    dispatch(refreshActions.REFRESH_CARD());
   }, [currentChatRoomMessages]);
 
   return (

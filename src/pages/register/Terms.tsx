@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 // mui
+import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -10,14 +11,11 @@ import Checkbox from '@mui/material/Checkbox';
 import CircleCheckedFilled from '@mui/icons-material/CheckCircle';
 import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
 
-// mui styled components
-import { styled } from '@mui/material/styles';
-
 // data
 import {
   collectionAndUseOfPersonalInformation,
   termOfUse,
-} from '../../assets/Terms.data';
+} from 'assets/Terms.data';
 
 const Wrapper = styled(Box)(() => ({
   width: '100%',

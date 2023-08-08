@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
 // redux
 import { RootState } from 'store';
@@ -63,7 +63,6 @@ const UserMenu = () => {
       <UserMenuBtn>
         <MuiTooltip title="사용자 메뉴">
           <MuiIconButton onClick={openUserMenu}>
-            <KakaoNickname>{nickname !== '' ? nickname : 'PORO'}</KakaoNickname>
             <ProfileImageWrapper>
               <img
                 src={
@@ -101,7 +100,7 @@ const UserMenu = () => {
               display: 'block',
               position: 'absolute',
               top: 0,
-              right: 20,
+              right: 22,
               width: 10,
               height: 10,
               bgcolor: 'background.paper',
@@ -114,14 +113,14 @@ const UserMenu = () => {
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
         <MuiMenuItem
-          component={Link}
-          href="/mypage"
+          component={RouterLink}
+          to="/mypage"
           onClick={() => {
             closeUserMenu();
           }}
         >
           <AccountCircleIcon />
-          <MenuItemText>내 정보</MenuItemText>
+          <MenuItemText>{nickname}</MenuItemText>
         </MuiMenuItem>
         <MuiDivider />
         <MuiMenuItem onClick={logoutBtnHandler}>
@@ -141,21 +140,10 @@ const UserMenuBtn = styled(MuiBox)(() => ({
   justifyContent: 'center',
 })) as typeof MuiBox;
 
-const KakaoNickname = styled(MuiTypography)(({ theme }) => ({
-  display: 'none',
-  [theme.breakpoints.up('md')]: {
-    display: 'inline-block',
-    color: '#ffffff',
-    fontSize: '14px',
-    fontWeight: '500',
-  },
-})) as typeof MuiTypography;
-
 const ProfileImageWrapper = styled(MuiBox)(() => ({
   width: '40px',
   height: '40px',
   borderRadius: '50%',
-  margin: '0 0 0 8px',
   overflow: 'hidden',
 })) as typeof MuiBox;
 

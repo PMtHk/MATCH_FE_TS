@@ -7,10 +7,13 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 
 import { RootState } from 'store';
+import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 import Card from './Card';
 
 const CardListContainer = () => {
-  const currentGame = window.location.pathname.split('/')[1];
+  const currentGame: GAME_ID = getCurrentGame();
+
   const { overwatchCards } = useSelector((state: RootState) => state.card);
 
   const { overwatch: registeredOverwatchNickname } = useSelector(
@@ -41,7 +44,11 @@ const CardListContainer = () => {
                   : `${aCard.id}`
               }
               state={{ background: `/${currentGame}` }}
-              style={{ textDecoration: 'none', background: 'fixed' }}
+              style={{
+                textDecoration: 'none',
+                background: 'fixed',
+                margin: '0 8px 8px 0',
+              }}
             >
               <Card
                 item={aCard}
@@ -67,7 +74,7 @@ const CardsWrapper = styled(MuiBox)(() => ({
   justifyContent: 'center',
   alignItems: 'flex-start',
   flexWrap: 'wrap',
-  padding: '16px 0 0 8px',
+  padding: '60px 0 20px 0',
   overflowY: 'auto',
 })) as typeof MuiBox;
 

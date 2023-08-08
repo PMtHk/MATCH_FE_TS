@@ -1,9 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-
-import { authAxios, defaultAxios } from 'apis/utils';
 
 // mui
 import { styled } from '@mui/system';
@@ -20,6 +17,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
+import { fetchSummonerInfo } from 'apis/api/leagueoflegends';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -28,7 +26,6 @@ interface MemberSlotProps {
 
 const MemberSlot = ({ summonerName }: MemberSlotProps) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
@@ -66,29 +63,26 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
   };
 
   useEffect(() => {
-    const fetchSummonerInfo = async () => {
-      await defaultAxios
-        .get(
-          `/api/lol/summoner/${summonerName}/${
-            currentCard.type === 'FREE_RANK' ? 'free_rank' : 'duo_rank'
-          }`,
-        )
-        .then((res) => {
-          setMemberInfo(res.data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          dispatch(
-            snackbarActions.OPEN_SNACKBAR({
-              message: '소환사 정보를 불러오는 중 문제가 발생했습니다.',
-              severity: 'error',
-            }),
-          );
-          setIsLoading(false);
-        });
+    const getData = async () => {
+      try {
+        const fetchedSummonerInfo = await fetchSummonerInfo(
+          summonerName,
+          currentCard.type === 'FREE_RANK' ? 'free_rank' : 'duo_rank',
+        );
+
+        setMemberInfo(fetchedSummonerInfo);
+        setIsLoading(false);
+      } catch (error: any) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: `${summonerName}님의 정보를 불러오는 중 문제가 발생했습니다.`,
+            severity: 'error',
+          }),
+        );
+      }
     };
 
-    fetchSummonerInfo();
+    getData();
   }, []);
 
   const handleKickBtn = async () => {

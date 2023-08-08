@@ -1,4 +1,4 @@
-import { authAxios } from 'apis/utils';
+import { authAxios, defaultAxios } from 'apis/utils';
 import {
   getDatabase,
   push,
@@ -8,6 +8,8 @@ import {
   set,
   get,
 } from 'firebase/database';
+import { GAME_ID } from 'types/games';
+import { addMemberToFirebaseDB, removeMemberFromFirebaseDB } from './firebase';
 
 /**
  * 게시글 생성
@@ -59,6 +61,7 @@ export const createCard = async (
     const newChatRoom: any = {
       game,
       isDeleted: false,
+      isFinished: false,
       key,
       roomId: boardId,
       createdBy: userInput.name,
@@ -146,8 +149,17 @@ export const updateCard = async (
   return null;
 };
 
-export const finishCard = async (currentGame: string, boardId: number) => {
+export const finishCard = async (
+  currentGame: string,
+  boardId: number,
+  chatRoomId: string,
+) => {
+  const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   await authAxios.post(`/api/chat/${currentGame}/${boardId}/finish`);
+
+  await update(child(chatRoomsRef, `${chatRoomId}`), {
+    isFinished: true,
+  });
 
   return null;
 };
@@ -155,16 +167,24 @@ export const finishCard = async (currentGame: string, boardId: number) => {
 /**
  * 파티장이 직접 파티원 추가
  * @param cardId 게시글id
+ * @param chatRoomId 채팅방 id
  * @param nicknameToAdd 추가하려는 사용자 닉네임
+ * @param game 해당 게임
  * @returns null
  */
 
 export const addPartyMemberWithName = async (
   cardId: number,
+  chatRoomId: string,
   nicknameToAdd: string,
   game: string,
 ) => {
   await authAxios.post(`/api/chat/${game}/${cardId}/${nicknameToAdd}`);
+
+  await addMemberToFirebaseDB(
+    { nickname: nicknameToAdd, oauth2Id: '', notiToken: '', isReviewed: false },
+    chatRoomId,
+  );
 
   return null;
 };
@@ -211,4 +231,32 @@ export const kickMemberFromParty = async (
     user: { nickname: 'system', oauth2Id: '', notiToken: '' },
     content: `${nickname} 님이 퇴장하였습니다.`,
   });
+};
+
+/**
+ * 스스로 파티 나가기
+ */
+
+export const leaveParty: (
+  oauth2Id: string,
+  game: GAME_ID,
+  cardId: number,
+  chatRoomId: string,
+) => Promise<null> = async (
+  oauth2Id: string,
+  game: GAME_ID,
+  cardId: number,
+  chatRoomId,
+) => {
+  await authAxios.delete(`/api/chat/${game}/${cardId}/member`);
+
+  await removeMemberFromFirebaseDB(oauth2Id, chatRoomId);
+
+  return null;
+};
+
+export const fetchBoardInfo = async (game: GAME_ID, boardId: number) => {
+  const response = await defaultAxios.get(`/api/${game}/boards/${boardId}`);
+
+  return response.data;
 };

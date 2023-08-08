@@ -1,3 +1,5 @@
+import { OVERWATCH_POSITION } from 'types/games';
+
 export const queueTypeList = [
   { value: 'ALL', label: '모든 큐', maxMember: 5 },
   { value: 'NORMAL', label: '일반전', maxMember: 5 },
@@ -80,15 +82,7 @@ export const tierList = [
   },
 ];
 
-export type positionValue = 'ALL' | 'TANK' | 'DAMAGE' | 'SUPPORT';
-
-export type Position = {
-  value: positionValue;
-  label: string;
-  imageUrl: string;
-};
-
-export const positionList: Position[] = [
+export const positionList: OVERWATCH_POSITION[] = [
   {
     value: 'ALL',
     label: '전체',

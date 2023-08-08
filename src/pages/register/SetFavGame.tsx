@@ -3,18 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 // mui
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/system';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 
+import { signup } from 'apis/api/user';
 import { RootState } from 'store';
 import { registerActions } from 'store/register-slice';
-import GameIcon from 'components/GameIcon';
-import { signup } from 'apis/api/user';
 import { snackbarActions } from 'store/snackbar-slice';
-import { GAME, GAME_ID, gameList } from '../../assets/Games.data';
+import GameIcon from 'components/GameIcon';
+import { gameList } from 'assets/Games.data';
+import { GAME, GAME_ID } from 'types/games';
 
 const SetFavGame = () => {
   const dispatch = useDispatch();

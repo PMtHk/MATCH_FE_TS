@@ -13,8 +13,14 @@ import { snackbarActions } from 'store/snackbar-slice';
 
 // firebase
 import './firebase';
+
 import NotFound from 'components/errorFallback/NotFound';
 import Layout from 'components/Layout';
+
+import LeagueOfLegends from 'pages/leagueoflegends';
+import Battlegrounds from 'pages/battlegrounds';
+import Overwatch from 'pages/overwatch';
+import MyPage from 'pages/mypage';
 
 // lazy loading
 const LandingPage = lazy(() => import('pages/landing'));
@@ -27,10 +33,10 @@ const Terms = lazy(() => import('pages/register/Terms'));
 const Games = lazy(() => import('pages/register/Games'));
 const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
 
-const MyPage = lazy(() => import('pages/mypage'));
-const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
-const Battlegrounds = lazy(() => import('pages/battlegrounds'));
-const Overwatch = lazy(() => import('pages/overwatch'));
+// const MyPage = lazy(() => import('pages/mypage'));
+// const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
+// const Battlegrounds = lazy(() => import('pages/battlegrounds'));
+// const Overwatch = lazy(() => import('pages/overwatch'));
 
 const App = () => {
   const dispatch = useDispatch();

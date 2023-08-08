@@ -5,9 +5,11 @@ import { getUserChatRooms } from 'apis/api/user';
 import { chatroomActions } from 'store/chatroom-slice';
 import { messageActions } from 'store/message-slice';
 
-import { getAllLastReads } from 'apis/api/firebase';
+import { getAChatRoomInfo, getALastRead } from 'apis/api/firebase';
 
 import { RootState } from 'store';
+import { GAME_ID } from 'types/games';
+import { notificationActions } from 'store/notification-slice';
 
 interface ChatRoomListFetcherProps {
   children: React.ReactNode;
@@ -18,14 +20,37 @@ const ChatRoomListFetcher = ({ children }: ChatRoomListFetcherProps) => {
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
 
-  const chatRoomList = getUserChatRooms();
+  const chatRoomList: any = getUserChatRooms();
 
   React.useEffect(() => {
     dispatch(messageActions.REMOVE_MESSAGES());
     dispatch(chatroomActions.REMOVE_ALL_JOINED_CHATROOMS_ID());
-    dispatch(chatroomActions.SET_JOINED_CHATROOMS_ID(chatRoomList));
-    if (Array.isArray(chatRoomList) && typeof chatRoomList[0] === 'string') {
-      getAllLastReads(oauth2Id, chatRoomList, dispatch);
+    if (chatRoomList && chatRoomList.length > 0) {
+      chatRoomList.map(async (aChatRoomId: string) => {
+        const dataSnapshot: any = await getAChatRoomInfo(aChatRoomId);
+
+        if (
+          dataSnapshot &&
+          dataSnapshot.game &&
+          dataSnapshot.isDeleted === false &&
+          dataSnapshot.isFinished === false
+        ) {
+          dispatch(
+            chatroomActions.ADD_JOINED_CHATROOMS_ID({
+              chatRoomId: aChatRoomId,
+              game: dataSnapshot.game as GAME_ID,
+              id: dataSnapshot.roomId,
+            }),
+          );
+          const lastRead: any = await getALastRead(oauth2Id, aChatRoomId);
+          dispatch(
+            notificationActions.SET_TIMESTAMPS({
+              chatRoomId: aChatRoomId,
+              timestamp: lastRead,
+            }),
+          );
+        }
+      });
     }
   }, [chatRoomList, dispatch]);
 
