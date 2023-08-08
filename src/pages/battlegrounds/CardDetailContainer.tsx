@@ -197,6 +197,7 @@ const SectionContent = styled(MuiTypography)(() => ({
   fontSize: '14px',
   fontWeight: '400',
   wordBreak: 'break-all',
+  height: '80px',
 })) as typeof MuiTypography;
 
 const HashTagWrapper = styled(MuiBox)(() => ({
@@ -228,7 +229,7 @@ const MemberList = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   minWidth: 520,
-  minHeight: '438px',
-  maxHeight: '440px',
+  minHeight: '340px',
+  maxHeight: '340px',
   overflow: 'auto',
 })) as typeof MuiBox;
