@@ -1,9 +1,6 @@
 /* eslint-disable no-restricted-globals */
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-
-import { authAxios, defaultAxios } from 'apis/utils';
 
 // mui
 import { styled } from '@mui/system';
@@ -20,6 +17,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
+import { fetchPlayerInfo } from 'apis/api/overwatch';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -28,7 +26,6 @@ interface MemberSlotProps {
 
 const MemberSlot = ({ name }: MemberSlotProps) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
@@ -51,6 +48,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   // author info
   const authorNickname = memberInfo.name.split('#')[0];
+  const nickAndTag = name.trim().split('#');
 
   type calcedInfo = {
     value: number;
@@ -99,29 +97,27 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const isAuthor = oauth2Id === currentCard?.oauth2Id;
 
   useEffect(() => {
-    const fetchSummonerInfo = async () => {
-      const nickAndTag = name.trim().split('#');
+    const getData = async () => {
+      try {
+        const fetchedPlayerInfo = await fetchPlayerInfo(
+          nickAndTag[0],
+          nickAndTag[1],
+          currentCard.type,
+        );
 
-      await defaultAxios
-        .get(
-          `/api/overwatch/player/${nickAndTag[0]}%23${nickAndTag[1]}/${currentCard.type}`,
-        )
-        .then((res) => {
-          setMemberInfo(res.data);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          dispatch(
-            snackbarActions.OPEN_SNACKBAR({
-              message: '플레이어 정보를 불러오는 중 문제가 발생했습니다.',
-              severity: 'error',
-            }),
-          );
-          setIsLoading(false);
-        });
+        setMemberInfo(fetchedPlayerInfo);
+        setIsLoading(false);
+      } catch (error: any) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: `${authorNickname}님의 정보를 불러오는 중 문제가 발생했습니다.`,
+            severity: 'error',
+          }),
+        );
+      }
     };
 
-    fetchSummonerInfo();
+    getData();
   }, []);
 
   const handleKickBtn = async () => {
@@ -140,7 +136,7 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
       await kickMemberFromParty(
         currentCard?.id,
         currentCard?.chatRoomId,
-        name,
+        `${nickAndTag[0]}%23${nickAndTag[1]}`,
         'overwatch',
       );
 
