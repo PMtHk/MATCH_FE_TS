@@ -69,7 +69,7 @@ authAxios.interceptors.response.use(
     if (status === 401) {
       try {
         const originalRequest = config;
-        await localStorage.getItem('matchGG_refreshToken');
+        localStorage.getItem('matchGG_refreshToken');
 
         const { data } = await authAxios.post('/api/user/refresh');
 
