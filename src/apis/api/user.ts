@@ -275,13 +275,14 @@ export const joinParty = async (
 ) => {
   const response = await authAxios.post(`/api/chat/${game}/${boardId}/member`);
 
-  await addMemberToFirebaseDB(newMember, chatRoomId);
+  const { firstRead } = await addMemberToFirebaseDB(newMember, chatRoomId);
 
   dispatch(
     chatroomActions.ADD_JOINED_CHATROOMS_ID({
       chatRoomId,
       game: game as GAME_ID,
       id: boardId,
+      firstRead,
     }),
   );
 

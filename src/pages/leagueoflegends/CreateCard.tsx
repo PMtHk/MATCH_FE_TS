@@ -243,7 +243,7 @@ const CreateCard = () => {
   const createCardBtnHandler = async () => {
     setIsPosting(true);
     try {
-      const { key, boardId } = await createCard(
+      const { key, boardId, firstRead } = await createCard(
         currentGame,
         userInput,
         oauth2Id,
@@ -256,6 +256,7 @@ const CreateCard = () => {
           chatRoomId: key as string,
           game: currentGame as GAME_ID,
           id: boardId,
+          firstRead,
         }),
       );
       navigate(`/lol/${boardId}`, { replace: true });

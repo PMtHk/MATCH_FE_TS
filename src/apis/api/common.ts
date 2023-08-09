@@ -37,6 +37,7 @@ export const createCard = async (
 ) => {
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   const lastReadRef = ref(getDatabase(), 'lastRead');
+  const firstReadRef = ref(getDatabase(), 'firstRead');
 
   // 1. 서버 내 게시글 생성 요청
   const boardResponse = await authAxios.post(`/api/${game}/board`, userInput);
@@ -46,6 +47,8 @@ export const createCard = async (
   // 서버에 전송할 데이터 생성
   // 1. 키 생성
   const { key } = push(chatRoomsRef);
+
+  let firstRead = 0;
 
   if (key) {
     // 2. 데이터 생성
@@ -80,11 +83,17 @@ export const createCard = async (
     // 파이어베이스에 게시글 생성
     await update(child(chatRoomsRef, key), newChatRoom);
     await set(child(lastReadRef, `${oauth2Id}/${key}`), Date.now());
+    await set(child(firstReadRef, `${oauth2Id}/${key}`), Date.now());
+
+    firstRead = await get(child(firstReadRef, `${oauth2Id}/${key}`)).then(
+      (dataSnapshot) => dataSnapshot.val(),
+    );
   }
 
   const result = {
     key,
     boardId,
+    firstRead,
   };
 
   return result;
@@ -202,10 +211,11 @@ export const kickMemberFromParty = async (
   nickname: string,
   game: string,
 ) => {
-  await authAxios.delete(`/api/chat/${game}/${cardId}/${nickname}/ban`);
-
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   const messagesRef = ref(getDatabase(), 'messages');
+
+  await authAxios.delete(`/api/chat/${game}/${cardId}/${nickname}/ban`);
+
   const dataSnapshot: any = await get(child(chatRoomsRef, chatRoomId));
 
   const prevMemberList = [...dataSnapshot.val().memberList];

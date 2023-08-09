@@ -62,6 +62,7 @@ export const addMemberToFirebaseDB = async (
 ) => {
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   const messagesRef = ref(getDatabase(), 'messages');
+  const firstReadRef = ref(getDatabase(), 'firstRead');
 
   const dataSnapshot = await get(child(chatRoomsRef, chatRoomId));
 
@@ -92,7 +93,18 @@ export const addMemberToFirebaseDB = async (
     content: `${newMember.nickname} 님이 참가하였습니다.`,
   });
 
-  return null;
+  await set(
+    child(firstReadRef, `${newMember.oauth2Id}/${chatRoomId}`),
+    Date.now(),
+  );
+
+  const firstRead = await getFirstRead(newMember.oauth2Id, chatRoomId);
+
+  const result = {
+    chatRoomId,
+    firstRead,
+  };
+  return result;
 };
 
 /**
@@ -115,6 +127,7 @@ export const removeMemberFromFirebaseDB = async (
 ) => {
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
   const messagesRef = ref(getDatabase(), 'messages');
+  const firstReadRef = ref(getDatabase(), 'firstRead');
 
   const dataSnapshot = await get(
     child(chatRoomsRef, `${chatRoomId}/memberList`),
@@ -142,6 +155,11 @@ export const removeMemberFromFirebaseDB = async (
     },
     content: `${targetMember.nickname} 님이 퇴장하였습니다.`,
   });
+
+  await set(
+    child(firstReadRef, `${targetOauth2Id}/${chatRoomId}`),
+    9999999999999,
+  );
 
   return null;
 };
@@ -358,4 +376,12 @@ export const getFilteredMemberListForReview = async (
 
   const result = filteredMemberList.map((member) => member.nickname);
   return result;
+};
+
+export const getFirstRead = async (oauth2Id: string, chatRoomId: string) => {
+  const firstReadRef = ref(getDatabase(), 'firstRead');
+  const dataSnapshot = await get(
+    child(firstReadRef, `${oauth2Id}/${chatRoomId}`),
+  );
+  return dataSnapshot.val();
 };

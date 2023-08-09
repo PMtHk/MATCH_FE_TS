@@ -241,7 +241,7 @@ const CreateCard = () => {
   const createCardBtnHandler = async () => {
     setIsPosting(true);
     try {
-      const { key, boardId } = await createCard(
+      const { key, boardId, firstRead } = await createCard(
         currentGame,
         userInput,
         oauth2Id,
@@ -254,6 +254,7 @@ const CreateCard = () => {
           chatRoomId: key as string,
           game: currentGame,
           id: boardId,
+          firstRead,
         }),
       );
       navigate(`/overwatch/${boardId}`, { replace: true });
