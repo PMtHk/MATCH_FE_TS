@@ -208,10 +208,10 @@ export const finishCard = async (
 /**
  * (공통) 작성자가 닉네임으로 파티 인원 추가
  *
- * @param game 해당 게임
- * @param boardId 게시글id
- * @param chatRoomId 채팅방 id
- * @param nicknameToAdd 추가하려는 사용자 닉네임
+ * @param {GAME_ID} game 해당 게임
+ * @param {number} boardId 게시글id
+ * @param {string} chatRoomId 채팅방 id
+ * @param {string} nicknameToAdd 추가하려는 사용자 닉네임
  * @returns null
  *
  * @example
@@ -221,13 +221,15 @@ export const finishCard = async (
  */
 
 export const addPartyMemberWithName = async (
-  game: string,
+  game: GAME_ID,
   boardId: number,
   chatRoomId: string,
   nicknameToAdd: string,
 ) => {
   // 작성자가 닉네임으로 파티 인원 추가 요청 전송
-  await authAxios.post(`/api/chat/${game}/${boardId}/${nicknameToAdd}`);
+  await authAxios.post(
+    `/api/chat/${game}/${boardId}/${nicknameToAdd.replace('#', '%23')}`,
+  );
 
   // FB realtimeDB에 추가할 파티원 정보 생성
   const newMember: MEMBER = {

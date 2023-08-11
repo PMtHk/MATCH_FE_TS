@@ -171,31 +171,22 @@ const CreateCard = () => {
     try {
       setIsLoading(true);
 
-      const exactSummonerName = await verifyNickname(userInput.name);
-
-      if (exactSummonerName) {
-        setUserInput({ ...userInput, name: exactSummonerName });
-      }
-
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '소환사 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          message: '소환사 정보를 확인하는 중입니다. 잠시만 기다려 주세요.',
           severity: 'info',
         }),
       );
 
-      await loadHistory(exactSummonerName);
+      const exactSummonerName = await verifyNickname(userInput.name);
 
+      setIsLoading(false);
+      setUserInput({ ...userInput, name: exactSummonerName });
       setIsNewNicknameCertified(true);
+
+      await loadHistory(exactSummonerName);
     } catch (error: any) {
-      if (
-        error.response.status === 404 &&
-        error.response.data.message ===
-          '아직 랭크정보를 보유하고 있지 않습니다.'
-      ) {
-        setIsNewNicknameCertified(true);
-      } else {
-        setIsNewNicknameCertified(false);
+      if (error.response.status === 404) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '입력하신 정보와 일치하는 소환사를 찾을 수 없습니다.',
@@ -204,7 +195,6 @@ const CreateCard = () => {
         );
       }
     } finally {
-      setIsLoading(false);
       setIsChanged(true);
     }
   };

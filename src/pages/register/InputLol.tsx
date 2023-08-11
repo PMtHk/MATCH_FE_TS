@@ -14,7 +14,7 @@ import { loadHistory, verifyNickname } from 'apis/api/leagueoflegends';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { gameList } from 'assets/Games.data';
-import { GAME_ID, GAME } from 'types/games';
+import { GAME } from 'types/games';
 
 const InputLol = () => {
   const { games } = useSelector((state: RootState) => state.register);
@@ -38,27 +38,42 @@ const InputLol = () => {
     try {
       setIsPending(true);
       dispatch(registerActions.SET_GAMES_WITH_ID({ id: 'lol', value: '' }));
-      const exactNickname = await verifyNickname(nickname);
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '소환사 정보를 확인하는 중입니다.',
+          severity: 'info',
+        }),
+      );
+
+      const exactNickname = await verifyNickname(nickname.trim());
+
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
           id: 'lol',
           value: exactNickname as string,
         }),
       );
+
+      dispatch(snackbarActions.CLOSE_SNACKBAR());
+
       setNickname(exactNickname as string);
       setWarning(false);
       setIsPending(false);
-
-      await loadHistory(exactNickname as string);
-    } catch (error) {
-      setWarning(true);
+    } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '입력하신 정보와 일치하는 소환사를 찾을 수 없습니다.',
+          message: '존재하지 않는 소환사명입니다. 확인 후 다시 시도해주세요.',
           severity: 'error',
         }),
       );
+      setNickname('');
+      setWarning(true);
       setIsPending(false);
+    } finally {
+      if (nickname !== '') {
+        await loadHistory(nickname);
+      }
     }
   };
 

@@ -27,7 +27,7 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
-import { verifyOWNickname, loadOWPlayerInfoInDB } from 'apis/api/overwatch';
+import { verifyNickname, loadHistory } from 'apis/api/overwatch';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
 import { snackbarActions } from 'store/snackbar-slice';
@@ -168,13 +168,9 @@ const CreateCard = () => {
     try {
       setIsLoading(true);
 
-      const nickAndTag = userInput.name.trim().split('#');
-      const exactNickname = await verifyOWNickname(
-        nickAndTag[0],
-        nickAndTag[1],
-      );
+      const isExist = await verifyNickname(userInput.name.trim());
 
-      if (exactNickname) {
+      if (isExist) {
         setUserInput({ ...userInput, name: userInput.name });
       }
 
@@ -184,10 +180,11 @@ const CreateCard = () => {
           severity: 'info',
         }),
       );
-
-      await loadOWPlayerInfoInDB(nickAndTag[0], nickAndTag[1]);
-
+      setIsLoading(false);
+      setIsChanged(true);
       setIsNewNicknameCertified(true);
+
+      await loadHistory(userInput.name.trim());
     } catch (error: any) {
       if (
         error.response.status === 404 &&
@@ -204,7 +201,6 @@ const CreateCard = () => {
           }),
         );
       }
-    } finally {
       setIsLoading(false);
       setIsChanged(true);
     }

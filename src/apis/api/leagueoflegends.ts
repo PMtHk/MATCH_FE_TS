@@ -61,9 +61,9 @@ export const fetchMemberHistory = async (
   summonerName: string,
   type: string,
 ) => {
-  const response = await defaultAxios
+  const fetchedHistory = await defaultAxios
     .get(`/api/lol/summoner/${summonerName}/${type}`)
     .then((res) => res.data);
 
-  return response;
+  return fetchedHistory;
 };

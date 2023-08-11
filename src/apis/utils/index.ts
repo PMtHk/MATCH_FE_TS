@@ -95,3 +95,16 @@ authAxios.interceptors.response.use(
 );
 
 export const kakaoAxios = axiosKakaoInstance('https://kauth.kakao.com');
+
+const axiosPubgInstance = (url: string) => {
+  const instance = axios.create({
+    baseURL: url,
+    headers: {
+      Authorization: `Bearer ${process.env.REACT_APP_PUBG_API_KEY}`,
+      Accept: 'application/vnd.api+json',
+    },
+  });
+  return instance;
+};
+
+export const pubgAxios = axiosPubgInstance('https://api.pubg.com');
