@@ -142,7 +142,7 @@ const ChatRoom = () => {
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-      updateALastRead(oauth2Id, chatRoomId, Date.now());
+      updateALastRead(oauth2Id, chatRoomId);
     }
   }, [currentChatRoomMessages]);
 

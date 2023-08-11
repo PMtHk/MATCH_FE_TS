@@ -261,9 +261,6 @@ export const getUserChatRooms = () => {
  * @param {string} chatRoomId - 채팅방 아이디
  * @param {Member} newMember - 새로 참가하는 멤버
  * @returns {null}
- *
- * 조회 중인 파티의 종류와 번호를 이용해 해당 게시글에 참가한다.
- * 파티 참가에 성공하면, 해당 firebase 정보도 갱신한다.
  */
 
 export const joinParty = async (
@@ -275,7 +272,7 @@ export const joinParty = async (
 ) => {
   const response = await authAxios.post(`/api/chat/${game}/${boardId}/member`);
 
-  const { firstRead } = await addMemberToFirebaseDB(newMember, chatRoomId);
+  const { firstRead } = await addMemberToFirebaseDB(chatRoomId, newMember);
 
   dispatch(
     chatroomActions.ADD_JOINED_CHATROOMS_ID({

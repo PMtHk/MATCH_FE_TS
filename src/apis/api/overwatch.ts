@@ -126,15 +126,12 @@ export const addPartyMemberWithName = async (
     `/api/chat/overwatch/${cardId}/${nickname}%23${battleTag}`,
   );
 
-  await addMemberToFirebaseDB(
-    {
-      nickname: `${nickname}#${battleTag}`,
-      oauth2Id: '',
-      notiToken: '',
-      isReviewed: false,
-    },
-    chatRoomId,
-  );
+  await addMemberToFirebaseDB(chatRoomId, {
+    nickname: `${nickname}#${battleTag}`,
+    oauth2Id: '',
+    notiToken: '',
+    isReviewed: false,
+  });
 
   return null;
 };

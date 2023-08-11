@@ -81,7 +81,7 @@ export const createCard = async (
       content: userInput.content,
     };
 
-    // FB realtimeDB에 채팅방 정보 갱신
+    // FB realtimeDB에 채팅방 정보 업데이트
     await update(child(chatRoomsRef, key), newChatRoom);
 
     // 게시글 작성자의 firstRead 및 lastRead 시간 기록
@@ -157,7 +157,7 @@ export const updateCard = async (
   // 게시글 업데이트 요청 전송
   await authAxios.put(`/api/${game}/board/${boardId}`, { ...userInput });
 
-  // FB realtimeDB에 채팅방 정보 갱신
+  // FB realtimeDB에 채팅방 정보 업데이트
   await update(ref(getDatabase(), `chatRooms/${chatRoomId}`), {
     content: userInput.content,
     maxMember: updatedMaxMember,
@@ -195,7 +195,7 @@ export const finishCard = async (
   // 게시글 모집완료 처리 요청 전송
   await authAxios.post(`/api/chat/${game}/${boardId}/finish`);
 
-  // FB realtimeDB에 해당 채팅방 isFinished 정보 갱신
+  // FB realtimeDB에 해당 채팅방 isFinished 정보 업데이트
   await update(child(chatRoomsRef, `${chatRoomId}`), {
     isFinished: true,
   });
@@ -236,7 +236,7 @@ export const addPartyMemberWithName = async (
   };
 
   // FB realtimeDB의 해당 채팅방 정보에 파티원 추가
-  await addMemberToFirebaseDB(newMember, chatRoomId);
+  await addMemberToFirebaseDB(chatRoomId, newMember);
 
   return null;
 };
@@ -289,7 +289,7 @@ export const kickMemberFromParty = async (
   );
   const newBannedList = [...prevBannedList, targetToKick];
 
-  // FB realtimeDB의 해당 채팅방의 멤버리스트와 밴리스트 갱신
+  // FB realtimeDB의 해당 채팅방의 멤버리스트와 밴리스트 업데이트
   await update(child(chatRoomsRef, chatRoomId), {
     memberList: newMemberList,
     bannedList: newBannedList,
