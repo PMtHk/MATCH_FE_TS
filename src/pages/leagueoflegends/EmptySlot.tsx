@@ -80,10 +80,10 @@ const EmptySlotForAuthor = () => {
       await loadSummonerInfoIntoDB(exactNickname);
       // 파티에 해당 멤버 추가
       await addPartyMemberWithName(
+        'lol',
         currentCard?.id,
         currentCard?.chatRoomId,
         exactNickname,
-        'lol',
       );
 
       dispatch(refreshActions.REFRESH_CARD());

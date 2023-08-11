@@ -135,10 +135,10 @@ const EmptySlotForAuthor = ({ platform }: any) => {
       // 파티에 해당 멤버 추가
       // (Server)
       await addPartyMemberWithName(
+        'pubg',
         currentCard?.id,
         currentCard.chatRoomId,
         name,
-        'pubg',
       );
 
       dispatch(refreshActions.REFRESH_CARD());

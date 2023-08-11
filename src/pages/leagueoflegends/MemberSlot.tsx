@@ -99,10 +99,10 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
   const handleKick = async () => {
     try {
       await kickMemberFromParty(
+        'lol',
         currentCard?.id,
         currentCard?.chatRoomId,
         summonerName,
-        'lol',
       );
 
       dispatch(

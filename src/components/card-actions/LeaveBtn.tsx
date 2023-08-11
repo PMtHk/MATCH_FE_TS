@@ -27,7 +27,7 @@ const LeaveBtn = () => {
 
   const handleLeaveBtn = async () => {
     try {
-      await leaveParty(oauth2Id, currentGame, id, chatRoomId);
+      await leaveParty(currentGame, id, chatRoomId, oauth2Id);
       dispatch(chatroomActions.LEAVE_JOINED_CHATROOMS_ID(chatRoomId));
       dispatch(refreshActions.REFRESH_CARD());
       dispatch(

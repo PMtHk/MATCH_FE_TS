@@ -16,7 +16,8 @@ import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
-import { fetchPlayerInfo, kickMemberFromParty } from 'apis/api/overwatch';
+import { fetchPlayerInfo } from 'apis/api/overwatch';
+import { kickMemberFromParty } from 'apis/api/common';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -133,10 +134,10 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const handleKick = async () => {
     try {
       await kickMemberFromParty(
+        'overwatch',
         currentCard?.id,
         currentCard?.chatRoomId,
-        nickAndTag[0],
-        nickAndTag[1],
+        name,
       );
 
       dispatch(
