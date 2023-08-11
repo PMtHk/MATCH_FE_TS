@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { asyncGetIsReviewed } from 'apis/api/firebase';
-import { fetchCardDetail } from 'apis/api/leagueoflegends';
+import { fetchCardDetail } from 'apis/api/common';
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import { getIsJoined } from 'functions/commons';

@@ -10,7 +10,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import MuiTypography from '@mui/material/Typography';
 
 import { RootState } from 'store';
-import { verifyLOLNickname } from 'apis/api/leagueoflegends';
+import { loadHistory, verifyNickname } from 'apis/api/leagueoflegends';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { gameList } from 'assets/Games.data';
@@ -38,14 +38,18 @@ const InputLol = () => {
     try {
       setIsPending(true);
       dispatch(registerActions.SET_GAMES_WITH_ID({ id: 'lol', value: '' }));
-      const exactNickname = await verifyLOLNickname(nickname);
+      const exactNickname = await verifyNickname(nickname);
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
           id: 'lol',
           value: exactNickname as string,
         }),
       );
+      setNickname(exactNickname as string);
       setWarning(false);
+      setIsPending(false);
+
+      await loadHistory(exactNickname as string);
     } catch (error) {
       setWarning(true);
       dispatch(
@@ -54,11 +58,7 @@ const InputLol = () => {
           severity: 'error',
         }),
       );
-    } finally {
       setIsPending(false);
-      //  defaultAxios.get(`/api/lol/user/${games.lol}`);
-      //  여기서 인증 이후 사용자에게 따로 표시 이후 DB에 사용자 랭크정보를 저장하는 API 호출
-      //  추가 작업 필요
     }
   };
 

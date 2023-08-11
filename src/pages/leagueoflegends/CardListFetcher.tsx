@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import { refreshActions } from 'store/refresh-slice';
-import { fetchCardList } from 'apis/api/leagueoflegends';
+import { fetchCardList } from 'apis/api/common';
 import { useInterval } from 'hooks/useInterval';
 
 interface CardListFetcherProps {

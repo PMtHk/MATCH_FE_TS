@@ -25,10 +25,7 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
-import {
-  verifyLOLNickname,
-  loadSummonerInfoIntoDB,
-} from 'apis/api/leagueoflegends';
+import { verifyNickname, loadHistory } from 'apis/api/leagueoflegends';
 import { createCard } from 'apis/api/common';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
@@ -174,7 +171,7 @@ const CreateCard = () => {
     try {
       setIsLoading(true);
 
-      const exactSummonerName = await verifyLOLNickname(userInput.name);
+      const exactSummonerName = await verifyNickname(userInput.name);
 
       if (exactSummonerName) {
         setUserInput({ ...userInput, name: exactSummonerName });
@@ -187,7 +184,7 @@ const CreateCard = () => {
         }),
       );
 
-      await loadSummonerInfoIntoDB(exactSummonerName);
+      await loadHistory(exactSummonerName);
 
       setIsNewNicknameCertified(true);
     } catch (error: any) {

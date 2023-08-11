@@ -10,55 +10,7 @@ import {
   get,
 } from 'firebase/database';
 
-import { promiseWrapper } from 'apis/utils/promiseWrapper';
-
-import { addMemberToFirebaseDB, removeMemberFromFirebaseDB } from './firebase';
-
-/**
- * 오버워치 게시글 불러오기
- * @param url 요청 url
- * @param config 요청 config
- * @param deps useEffect deps
- * @returns - 오버워치 게시글 목록
- *
- * 오버워치 게시글을 불러온다.
- */
-export function fetchCardList(url: string, config: any, deps: any[]) {
-  const [resource, setResource] = useState(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const promise = defaultAxios
-        .get(url, config)
-        .then((response) => response.data);
-      setResource(promiseWrapper(promise));
-    };
-
-    getData();
-  }, deps);
-
-  return resource;
-}
-
-/**
- * 오버워치 게시글 상세보기 불러오기
- * @param url
- * @returns - 오버워치 게시글 상세보기
- */
-export function fetchCardDetail(url: string, deps: any[]) {
-  const [resource, setResource] = useState(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const promise = defaultAxios.get(url).then((response) => response.data);
-      setResource(promiseWrapper(promise));
-    };
-
-    getData();
-  }, deps);
-
-  return resource;
-}
+import { addMemberToFirebaseDB } from './firebase';
 
 /**
  * 오버워치 사용자명 존재 여부 확인 및 true나 false 반환

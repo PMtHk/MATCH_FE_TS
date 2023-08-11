@@ -76,50 +76,6 @@ export const verifyPUBGNickname = async (
 };
 
 /**
- *배틀그라운드 게시글들 불러오기
- * @param url 요청 url
- * @param config 요청 config
- * @param deps useEffect deps
- * @returns 배틀그라운드 게시글 목록
- */
-export function fetchCardList(url: string, config: any, deps: any[]) {
-  const [resource, setResource] = useState(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const promise = defaultAxios
-        .get(url, config)
-        .then((response) => response.data);
-      setResource(promiseWrapper(promise));
-    };
-
-    getData();
-  }, deps);
-
-  return resource;
-}
-
-/**
- * 배틀그라운드 게시글 상세정보 불러오기
- * @param url 요청 url
- * @returns 게시글 상세 정보
- */
-export function fetchCardDetail(url: string, deps: any[]) {
-  const [resource, setResource] = useState(null);
-
-  useEffect(() => {
-    const getData = async () => {
-      const promise = defaultAxios.get(url).then((response) => response.data);
-      setResource(promiseWrapper(promise));
-    };
-
-    getData();
-  }, deps);
-
-  return resource;
-}
-
-/**
  * 배틀그라운드 플레이어 전적 불러오기 trigger
  * @param name 배틀그라운드 닉네임
  * @param platform 배틀그라운드 플랫폼

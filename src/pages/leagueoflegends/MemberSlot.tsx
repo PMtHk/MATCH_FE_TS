@@ -17,7 +17,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
-import { fetchSummonerInfo } from 'apis/api/leagueoflegends';
+import { fetchMemberHistory } from 'apis/api/leagueoflegends';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -65,7 +65,7 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const fetchedSummonerInfo = await fetchSummonerInfo(
+        const fetchedSummonerInfo = await fetchMemberHistory(
           summonerName,
           currentCard.type === 'FREE_RANK' ? 'free_rank' : 'duo_rank',
         );

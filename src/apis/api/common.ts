@@ -10,6 +10,8 @@ import {
 } from 'firebase/database';
 import { GAME_ID } from 'types/games';
 import { MEMBER } from 'types/chats';
+import { useEffect, useState } from 'react';
+import { promiseWrapper } from 'apis/utils/promiseWrapper';
 import { addMemberToFirebaseDB, removeMemberFromFirebaseDB } from './firebase';
 
 /**
@@ -357,3 +359,64 @@ export const fetchBoardInfo = async (game: GAME_ID, boardId: number) => {
 
   return fetchedBoardInfo;
 };
+
+/**
+ * 게시글 목록 불러오기
+ *
+ * @param url 요청 url
+ * @param config 요청 config
+ * @param deps useEffect deps
+ * @returns - 게시글 목록
+ *
+ * @example
+ * ```typescript
+ * const cardList = fetchCardList('/api/lol/boards', config, deps);
+ * console.log(cardList); // [{id: 1, title: '게시글', ... }, ... ]
+ * ```
+ */
+
+export function fetchCardList(url: string, config: any, deps: any[]) {
+  const [resource, setResource] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const promise = defaultAxios
+        .get(url, config)
+        .then((response) => response.data);
+      setResource(promiseWrapper(promise));
+    };
+
+    getData();
+  }, deps);
+
+  return resource;
+}
+
+/**
+ * 게시글 상세보기 불러오기
+ *
+ * @param url 요청 url
+ * @param deps useEffect deps
+ * @returns - 게시글 상세보기
+ *
+ * @example
+ * ```typescript
+ * const cardDetail = fetchCardDetail('/api/lol/boards/1', deps);
+ * console.log(cardDetail); // {id: 1, title: '해당 게임 게시글', ... }
+ * ```
+ */
+
+export function fetchCardDetail(url: string, deps: any[]) {
+  const [resource, setResource] = useState(null);
+
+  useEffect(() => {
+    const getData = async () => {
+      const promise = defaultAxios.get(url).then((response) => response.data);
+      setResource(promiseWrapper(promise));
+    };
+
+    getData();
+  }, deps);
+
+  return resource;
+}
