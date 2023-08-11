@@ -58,12 +58,14 @@ const SetFavGame = () => {
     if (code) {
       try {
         await signup(code, representative as GAME_ID, games);
+
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '회원가입이 완료되었습니다. 이제 로그인 하실 수 있습니다.',
             severity: 'success',
           }),
         );
+
         navigate('/login');
       } catch (error: any) {
         if (

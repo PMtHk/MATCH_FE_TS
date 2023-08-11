@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import Linear from 'components/loading/Linear';
@@ -50,6 +50,9 @@ const App = () => {
   const SEVERITY = useSelector(
     (state: RootState) => state.snackbar.snackbarSeverity,
   );
+  const { isLogin, representative } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   const snackbarClose = () => {
     dispatch(snackbarActions.CLOSE_SNACKBAR());
@@ -58,7 +61,12 @@ const App = () => {
   return (
     <Suspense fallback={<Linear height="100vh" text="MatchGG 불러오는 중" />}>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
+        <Route
+          path="/"
+          element={
+            isLogin ? <Navigate to={`/${representative}`} /> : <LandingPage />
+          }
+        />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/kakao/login" element={<LoginRedirect />} />
         <Route path="/kakao/register/*" element={<Register />}>

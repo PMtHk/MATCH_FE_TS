@@ -311,6 +311,35 @@ export const kickMemberFromParty = async (
 };
 
 /**
+ * (공통) 채팅방 참가하기
+ *
+ * @param {string} game  파티의 게임 종류
+ * @param {number} id  파티 번호
+ * @param {string} chatRoomId  채팅방 아이디
+ * @param {Member} newMember  새로 참가하는 멤버
+ * @returns {number} 채팅방 최초 접근 시간
+ *
+ * @example
+ * ```typescript
+ * const firstRead = await joinParty('lol', 123, 'fb-chatRoomId', newMember);
+ * console.log(firstRead); // 123456789
+ * ```
+ */
+
+export const joinParty = async (
+  game: string,
+  boardId: number,
+  chatRoomId: string,
+  newMember: MEMBER,
+) => {
+  await authAxios.post(`/api/chat/${game}/${boardId}/member`);
+
+  const { firstRead } = await addMemberToFirebaseDB(chatRoomId, newMember);
+
+  return firstRead;
+};
+
+/**
  * (공통) 파티 떠나기
  *
  * @param {GAME_ID} game 해당 게임
@@ -335,7 +364,7 @@ export const leaveParty = async (
   await authAxios.delete(`/api/chat/${game}/${boardId}/member`);
 
   // FB realtimeDB의 해당 채팅방에서 파티원 삭제
-  await removeMemberFromFirebaseDB(oauth2Id, chatRoomId);
+  await removeMemberFromFirebaseDB(chatRoomId, oauth2Id);
 
   return null;
 };

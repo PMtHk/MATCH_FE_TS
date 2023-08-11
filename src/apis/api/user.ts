@@ -1,18 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { defaultAxios, authAxios, kakaoAxios } from 'apis/utils';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 
 import { promiseWrapper } from 'apis/utils/promiseWrapper';
-import { addMemberToFirebaseDB } from 'apis/api/firebase';
-import store from 'store/index';
-import { tokenActions } from 'store/token-slice';
-import { userActions } from 'store/user-slice';
-import { registerActions } from 'store/register-slice';
-import { snackbarActions } from 'store/snackbar-slice';
-import { chatroomActions } from 'store/chatroom-slice';
-import { notificationActions } from 'store/notification-slice';
+
 import { GAME_ID } from 'types/games';
 import { FETCHED_CHATROOM, MEMBER } from 'types/chats';
 
@@ -27,34 +18,24 @@ interface IAccessTokenPayload {
   exp: number;
 }
 
-/** ------------------------------------------------------------
- * 로그인 (카카오 연동)
+/**
+ * (사용자) 로그인
  *
- * @param {string} code - 카카오 인가코드
- * @param {ReturnType<typeof useNavigate>} navigate - react-router-dom의 useNavigate
- * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
+ * @param {string} code 카카오 인가코드
  * @returns {null}
  *
- * 카카오 로그인을 통해 받은 code (카카오 인가코드) 로 카카오 액세스 토큰을 발급받고,
- * 발급받은 카카오 액세스 토큰으로 백엔드에 로그인 요청을 보낸다.
+ * @description
+ * 카카오 로그인을 통해 받은 카카오 인가코드로 Kakao_AccessToken을 발급받고,
+ * 발급받은 Kakao_AccessToken으로 서버에 로그인을 요청한다.
  *
- * 백엔드에서 카카오 액세스 토큰으로 사용자 정보를 조회하고,
- * 해당 사용자가 DB에 없으면 404 응답을,
- * 해당 사용자가 있다면 200 응답과 accessToken과 refreshToken 을 받는다.
- * accessToken과 refreshToken을 각각 리덕스와 로컬 스토리지에 저장한다.
+ * 해당 요청의 결과로 사용자가 존재하지 않으면 404,
+ * 사용자가 존재하면 200 응답으로 accessToken과 refreshToken을 받는다.
  *
- * 이후, accessToken decode 해 사용자 정보를 조회하고, 이를 리덕스에 저장한다.
- * 사용자의 게임 닉네임 정보를 조회하고, 이를 리덕스에 저장한다.
- *
- * snackbar 열고, 사용자 지정 선호게임 페이지로 이동시킨다.
+ * 추가로, 받은 accessToken의 payload를 디코딩하여 사용자 정보를 추출하고,
+ * accessToken과 refreshToken 및 사용자 정보를 반환한다.
  */
 
-export const login = async (
-  code: string,
-  navigate: ReturnType<typeof useNavigate>,
-  dispatch: ReturnType<typeof useDispatch>,
-) => {
-  // 인가코드로 카카오 액세스 토큰 발급
+export const login = async (code: string) => {
   const {
     data: { access_token: kakaoAccessToken },
   } = await kakaoAxios.get('/oauth/token', {
@@ -64,108 +45,63 @@ export const login = async (
     },
   });
 
-  // 액세스 토큰을 담아서 백엔드로 로그인 요청
   const response = await defaultAxios.post('/api/user/signin', {
     oauth2AccessToken: kakaoAccessToken,
   });
 
-  // 요청의 결과로 받은 액세스 및 리프레시 토큰을 각각 리덕스와 로컬 스토리지에 저장
   const { accessToken, refreshToken } = response.data;
-  dispatch(tokenActions.SET_TOKEN({ accessToken }));
-  localStorage.setItem('matchGG_refreshToken', refreshToken);
 
   const jwtPayload: IAccessTokenPayload =
     jwtDecode<IAccessTokenPayload>(accessToken);
   const { nickname, oAuth2Id, imageUrl, representative } = jwtPayload;
 
-  dispatch(
-    userActions.SET_USER({
-      nickname,
-      oauth2Id: oAuth2Id,
-      profileImage: imageUrl,
-      representative: representative.toLowerCase() as 'lol' | 'pubg',
-    }),
-  );
+  const result = {
+    accessToken,
+    refreshToken,
+    nickname,
+    oauth2Id: oAuth2Id,
+    profileImage: imageUrl,
+    representative: representative.toLowerCase() as GAME_ID,
+  };
 
-  // 사용자 게임 닉네임 정보 조회 후 리덕스에 저장
-  await getUserGameInfo(dispatch);
-
-  // snackbar 열기
-  dispatch(
-    snackbarActions.OPEN_SNACKBAR({
-      message: '로그인에 성공했습니다.',
-      severity: 'success',
-    }),
-  );
-
-  // 사용자 지정 선호게임 페이지로 이동
-  const redirectToRepresentative = store.getState().user.representative;
-  navigate(`/${redirectToRepresentative || 'lol'}`);
-
-  return null;
+  return result;
 };
 
-/** ------------------------------------------------------------
- * 로그아웃
- * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
- * @returns {null}
+/**
+ * (사용자) 로그아웃
  *
- * 로그아웃 요청을 보내고, 로그아웃 성공시 리덕스에 저장된 사용자 정보를 삭제한다.
+ * @returns null
  */
 
-export const logout = async (dispatch: ReturnType<typeof useDispatch>) => {
+export const logout = async () => {
   const response = await authAxios.post('/api/user/logout');
 
-  if (response.status === 200) {
-    dispatch(userActions.DELETE_USER());
-    dispatch(notificationActions.DELETE_NOTIFICATION());
-    dispatch(tokenActions.DELETE_TOKEN());
-    dispatch(chatroomActions.REMOVE_ALL_JOINED_CHATROOMS_ID());
-    dispatch(
-      snackbarActions.OPEN_SNACKBAR({
-        message: '로그아웃 되었습니다.',
-        severity: 'success',
-      }),
-    );
-  }
-
   return null;
 };
 
-/** ------------------------------------------------------------
- * 사용자 게임 닉네임 정보 조회
+/**
+ * (사용자) 등록된 게임 닉네임 가져오기
  *
- * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
- * @returns {null}
- *
- * 백엔드에서 사용자의 게임별 닉네임 정보를 조회하고
- * 이들을 리덕스에 저장한다.
+ * @returns {Promise<{lol: string, pubg: string, overwatch: string}>} 사용자의 게임 닉네임
  */
 
-export const getUserGameInfo = async (
-  dispatch: ReturnType<typeof useDispatch>,
-) => {
-  const response = await authAxios.get('/api/user/info');
+export const getUserGameInfo = async () => {
+  const { lol, pubg, overwatch } = await authAxios
+    .get('/api/user/info')
+    .then((res) => res.data);
 
-  const { lol, pubg, overwatch } = response.data;
-  const games = { lol, pubg, overwatch };
-  dispatch(userActions.SET_GAMES({ games }));
+  return { lol, pubg, overwatch };
 };
 
-/** ------------------------------------------------------------
- * 회원가입
+/**
+ * (사용자) 회원가입
  *
- * @param {string} code - 카카오 인가코드
- * @param {ReturnType<typeof useNavigate>} navigate - react-router-dom의 useNavigate
- * @param {ReturnType<typeof useDispatch>} dispatch - react-redux의 useDispatch
- * @returns {void}
+ * @param {string} code 카카오 인가코드
+ * @returns null
  *
- * 인자로 넘겨받은 code (카카오 인가코드) 로 카카오 액세스 토큰을 발급받고,
- * 발급받은 토큰과 회원가입시 사용자가 작성한 내용으로 백엔드에 로그인 요청을 보낸다.
- *
- * 백엔드에서 이미 가입한 사용자, 새로 가입하는 사용자를 구분하여 처리한다.
- *
- * 이후, register-slice를 비우고, 로그인 페이지로 이동시킨다.
+ * @description
+ * 카카오 로그인을 통해 받은 카카오 인가코드로 Kakao_AccessToken을 발급받고,
+ * 발급받은 Kakao_AccessToken으로 서버에 회원가입을 요청한다.
  */
 
 export const signup = async (
@@ -175,10 +111,9 @@ export const signup = async (
     lol: string;
     pubg: string;
     overwatch: string;
-    valorant: string;
+    // valorant: string;
   },
 ) => {
-  // 인가코드로 카카오 액세스 토큰 발급
   const {
     data: { access_token: kakaoAccessToken },
   } = await kakaoAxios.get('/oauth/token', {
@@ -188,7 +123,6 @@ export const signup = async (
     },
   });
 
-  // 백엔드에 회원가입 요청
   await defaultAxios.post('/api/user/signup', {
     oauth2AccessToken: kakaoAccessToken,
     representative: representative.toUpperCase(),
@@ -198,14 +132,13 @@ export const signup = async (
     // valorant: games.valorant,
   });
 
-  // 발로란트로 수정해야함 나중에
+  return null;
 };
 
-/** ------------------------------------------------------------
- * 마이페이지 - 사용자 정보 조회
- * @returns {Resource} - 사용자 정보 Promise
+/**
+ * (사용자) 마이페이지에서의 사용자 조회
  *
- * 백엔드에서 사용자 정보를 조회하고, 이를 리덕스에 저장한다.
+ * @returns {Resource} - 사용자 정보 Promise
  */
 
 export const getUserInfo = () => {
@@ -225,11 +158,10 @@ export const getUserInfo = () => {
   return resource;
 };
 
-/** ------------------------------------------------------------
- * 사용자의 채팅방 목록 가져오기
- * @returns {void}
+/**
+ * (사용자) 사용자의 가입된 채팅방
  *
- * 백엔드에서 사용자가 참여한 채팅방 목록을 조회하고, 이를 리덕스에 저장한다.
+ * @returns {Resource} - 사용자가 가입한 채팅방 목록 Promise
  */
 
 export const getUserChatRooms = () => {
@@ -252,36 +184,4 @@ export const getUserChatRooms = () => {
   }, []);
 
   return resource;
-};
-
-/** ------------------------------------------------------------
- * 채팅방 참가
- * @param {string} game - 파티의 게임 종류
- * @param {number} id - 파티 번호
- * @param {string} chatRoomId - 채팅방 아이디
- * @param {Member} newMember - 새로 참가하는 멤버
- * @returns {null}
- */
-
-export const joinParty = async (
-  game: string,
-  boardId: number,
-  chatRoomId: string,
-  newMember: MEMBER,
-  dispatch: ReturnType<typeof useDispatch>,
-) => {
-  const response = await authAxios.post(`/api/chat/${game}/${boardId}/member`);
-
-  const { firstRead } = await addMemberToFirebaseDB(chatRoomId, newMember);
-
-  dispatch(
-    chatroomActions.ADD_JOINED_CHATROOMS_ID({
-      chatRoomId,
-      game: game as GAME_ID,
-      id: boardId,
-      firstRead,
-    }),
-  );
-
-  return null;
 };

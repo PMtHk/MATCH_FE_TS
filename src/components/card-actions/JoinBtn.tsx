@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
-import { joinParty } from 'apis/api/user';
+import { joinParty } from 'apis/api/common';
 import { isBanned } from 'apis/api/firebase';
 import { getPlatform } from 'apis/api/pubg';
 import { RootState } from 'store';
@@ -13,6 +13,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { getCurrentGame } from 'functions/commons';
 import { GAME_ID } from 'types/games';
+import { chatroomActions } from 'store/chatroom-slice';
 
 const JoinBtn = () => {
   const dispatch = useDispatch();
@@ -125,7 +126,22 @@ const JoinBtn = () => {
     const banned = await isBanned(chatRoomId, oauth2Id);
     if (!banned) {
       try {
-        await joinParty(currentGame, id, chatRoomId, newMember, dispatch);
+        const firstRead = await joinParty(
+          currentGame,
+          id,
+          chatRoomId,
+          newMember,
+        );
+
+        dispatch(
+          chatroomActions.ADD_JOINED_CHATROOMS_ID({
+            chatRoomId,
+            game: currentGame,
+            id,
+            firstRead,
+          }),
+        );
+
         dispatch(refreshActions.REFRESH_CARD());
       } catch (error) {
         dispatch(
