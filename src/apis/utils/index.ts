@@ -34,22 +34,6 @@ export const interceptors = (instance: AxiosInstance) => {
   return instance;
 };
 
-const axiosKakaoInstance = (url: string) => {
-  const instance = axios.create({
-    baseURL: url,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-    },
-    params: {
-      grant_type: 'authorization_code',
-      client_id: process.env.REACT_APP_REST_API_KEY,
-      // redirect_uri  - login or register
-      // code - 카카오 인가코드
-    },
-  });
-  return instance;
-};
-
 export const defaultAxios = axiosInstance(
   process.env.REACT_APP_API_BASE_URL as string,
 );
@@ -94,8 +78,26 @@ authAxios.interceptors.response.use(
   },
 );
 
+// for KAKAO APIs
+const axiosKakaoInstance = (url: string) => {
+  const instance = axios.create({
+    baseURL: url,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+    },
+    params: {
+      grant_type: 'authorization_code',
+      client_id: process.env.REACT_APP_REST_API_KEY,
+      // redirect_uri  - login or register
+      // code - 카카오 인가코드
+    },
+  });
+  return instance;
+};
+
 export const kakaoAxios = axiosKakaoInstance('https://kauth.kakao.com');
 
+// for PUBG APIs
 const axiosPubgInstance = (url: string) => {
   const instance = axios.create({
     baseURL: url,
