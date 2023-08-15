@@ -287,3 +287,16 @@ export const joinParty = async (
 
   return null;
 };
+
+/**
+ * 사용자 정보의 대표게임을 변경하는 함수
+ * @param game 대표게임으로 설정할 게임
+ * @returns 성공시 true / 실패시 false
+ */
+export const handleRepresentativeGame = async (game: string) => {
+  const response = await authAxios.put(
+    `/api/user/${game.toUpperCase()}/representative`,
+  );
+  if (response.status === 200) return true;
+  return false;
+};
