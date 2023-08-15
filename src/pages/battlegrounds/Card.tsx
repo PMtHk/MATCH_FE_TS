@@ -104,7 +104,12 @@ const Card = ({ item, expired }: CardProps) => {
     const kd: number =
       item.author.kills === 0 || item.author.deaths === 0
         ? 0
-        : Number((item.author.kills / item.author.deaths).toFixed(1));
+        : Number(
+            (
+              (item.author.kills * 100) / item.author.deaths +
+              item.author.kills
+            ).toFixed(1),
+          );
     let color = '#000';
     if (kd >= 4) {
       color = 'red';
