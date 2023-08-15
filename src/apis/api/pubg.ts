@@ -7,7 +7,7 @@ import { promiseWrapper } from 'apis/utils/promiseWrapper';
 /**
  * 배틀그라운드 닉네임으로 플랫폼 인증하기
  * @param nickname 배틀그라운드 닉네임
- * @returns 배틀그라운드 플랫폼
+ * @returns 닉네임, 플랫폼을 객체로 반환
  */
 export const checkPUBGUserPlatform = async (nickname: string) => {
   // 스팀 요청
@@ -136,4 +136,15 @@ export const loadPubgPlayerInfoIntoDB = async (
   }
 
   return null;
+};
+
+export const fetchPubgPlayerInfo = async (
+  name: string,
+  platform: string,
+  type: string,
+) => {
+  const response = await defaultAxios.get(
+    `/api/pubg/player/${name}/${platform}/${type}`,
+  );
+  return response.data;
 };
