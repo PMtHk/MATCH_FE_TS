@@ -83,7 +83,7 @@ const LolInfo = ({ data }: any) => {
           <CommonTitleTypo
             sx={{ fontSize: '14px', fontWeight: '700', color: 'gray' }}
           >
-            주 포지 션
+            주 포지션
           </CommonTitleTypo>
           {commonData.mostLane !== '정보 없음' && (
             <FlexRow
