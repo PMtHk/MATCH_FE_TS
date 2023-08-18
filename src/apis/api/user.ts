@@ -185,3 +185,48 @@ export const getUserChatRooms = () => {
 
   return resource;
 };
+
+/**
+ * (사용자) 게임별 인증된 닉네임 변경
+ *
+ * @param game 닉네임을 변경할 게임
+ * @param nickname 변경할 닉네임
+ * @returns 성공시 true 실패시 false
+ *
+ * @example
+ * ```typescript
+ * const result = await changeNickname('lol', '완도수산새우도둑');
+ * console.log(result); // true
+ * ```
+ */
+
+export const changeNickname = async (game: string, nickname: string) => {
+  const response = await authAxios.put(
+    `/api/user/${game.toUpperCase()}/${nickname.replace('#', '%23')}/nickname`,
+  );
+
+  if (response.status === 200) return true;
+  return false;
+};
+
+/**
+ * (사용자) 대표게임을 변경하는 함수
+ *
+ * @param game 변경될 게임
+ * @returns 성공시 true 실패시 false
+ *
+ * @example
+ * ```typescript
+ * const result = await changeRepresentative('lol');
+ * console.log(result); // true
+ * ```
+ */
+
+export const changeRepresentative = async (game: string) => {
+  const response = await authAxios.put(
+    `/api/user/${game.toUpperCase()}/representative`,
+  );
+
+  if (response.status === 200) return true;
+  return false;
+};

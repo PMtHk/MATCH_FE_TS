@@ -1,9 +1,12 @@
 import React from 'react';
-import { Box, ImageList, ImageListItem, Typography } from '@mui/material';
-import Circular from 'components/loading/Circular';
+
+// mui
 import { styled } from '@mui/system';
+import { Box, ImageList, ImageListItem, Typography } from '@mui/material';
 import MuiDivider from '@mui/material/Divider';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
+import Circular from 'components/loading/Circular';
 import { positionList, tierList } from 'pages/overwatch/data';
 import Nickname from './Nickname';
 

@@ -99,7 +99,22 @@ export const loadHistory = async (name: string, platform: string) => {
   return null;
 };
 
-export const fetchPubgPlayerInfo = async (
+/**
+ * (배틀그라운드) 멤버의 전적 가져오기
+ *
+ * @param name 배틀그라운드 닉네임
+ * @param platform 배틀그라운드 플랫폼
+ * @param type 전적 종류 (NORMAL | RANKED)
+ * @returns 해당 멤버의 전적
+ *
+ * @example
+ * ```typescript
+ * const memberHistory = await fetchMemberHistory('Dsquad2', 'STEAM', 'NORMAL');
+ * console.log(memberHistory); // { "name": "Dsquad2", "type": "NORMAL", "tier": "none", ... }
+ * ```
+ */
+
+export const fetchMemberHistory = async (
   name: string,
   platform: string,
   type: string,

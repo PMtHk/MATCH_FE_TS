@@ -1,6 +1,8 @@
+// mui
+import { styled } from '@mui/system';
 import { InfoOutlined } from '@mui/icons-material';
 import { Box, Typography } from '@mui/material';
-import { styled } from '@mui/system';
+
 import Nickname from './Nickname';
 
 const AddGame = ({ game }: any) => {
