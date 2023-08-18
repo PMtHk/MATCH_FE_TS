@@ -206,7 +206,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                       height="24px"
                     />
                   </RankEmblemWrapper>
-                  <SectionContentText sx={{ color: authorTier?.darkColor }}>
+                  <SectionContentText
+                    sx={{ color: authorTier?.darkColor, paddingTop: '4px' }}
+                  >
                     {getRank().value}
                   </SectionContentText>
                 </>
