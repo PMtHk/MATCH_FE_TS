@@ -248,7 +248,7 @@ const Card = ({ item, expired }: CardProps) => {
                   정보없음
                 </SectionContentText>
               ) : (
-                <>
+                <RPSection>
                   <RankEmblemWrapper>
                     <img
                       src={getRank().imageUrl}
@@ -257,10 +257,12 @@ const Card = ({ item, expired }: CardProps) => {
                       height="28px"
                     />
                   </RankEmblemWrapper>
-                  <SectionContentText sx={{ color: authorTier?.darkColor }}>
+                  <SectionContentText
+                    sx={{ color: authorTier?.darkColor, paddingTop: '8px' }}
+                  >
                     {getRank().value}
                   </SectionContentText>
-                </>
+                </RPSection>
               )}
             </SectionContent>
           </AuthorSection>
@@ -319,11 +321,13 @@ const CardTitleWrapper = styled(MuiBox)(() => ({
   justifyContent: 'flex-start',
 })) as typeof MuiBox;
 
-// const ImgMixBlendMode = styled(MuiBox)(() => ({
-//   '& > img': {
-//     mixBlendMode: 'exclusion',
-//   },
-// })) as typeof MuiBox;
+const RPSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'row',
+  // justifyContent: 'flex-end',
+  // alignItems: 'flex-end',
+  // border: '1px solid red',
+})) as typeof MuiBox;
 
 const CardTitle = styled(MuiBox)(() => ({
   display: 'flex',
