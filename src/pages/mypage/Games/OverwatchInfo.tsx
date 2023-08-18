@@ -238,7 +238,6 @@ const Container = styled(Box)(() => ({
   flexDirection: 'column',
   height: '100%',
   maxHeight: '360px',
-  justifyContent: 'center',
 })) as typeof Box;
 
 const TitleTypo = styled(Typography)(() => ({
