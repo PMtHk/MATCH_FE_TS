@@ -115,7 +115,7 @@ const GameDataUpdateButton = ({ game }: any) => {
       onClick={handleUpdate}
       disabled={isLoading}
     >
-      {isLoading ? '갱신중...' : '정보 갱신하기'}
+      {isLoading ? '갱신중...' : '전적 갱신'}
     </Button>
   );
 };
@@ -151,7 +151,7 @@ const HandleRepresentativeButton = ({ game, representative }: any) => {
       variant="outlined"
       disabled={game === representative}
     >
-      이 게임으로 대표게임을 변경하기
+      대표 게임으로 설정
     </UpdateButton>
   );
 };
