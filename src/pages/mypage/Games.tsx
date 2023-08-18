@@ -162,89 +162,46 @@ const Games = () => {
 
   const { games } = useSelector((state: RootState) => state.user);
 
-  const [lolData, setLolData] = useState<object | null>(null);
-  const [pubgData, setPubgData] = useState<object | null>(null);
-  const [overwatchData, setOverwatchData] = useState<object | null>(null);
+  const {
+    lolInfo: lolData,
+    pubgInfo: pubgData,
+    overwatchInfo: overwatchData,
+  } = useSelector((state: RootState) => state.mypage);
 
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    setIsLoading(true);
-    const getDatas = async () => {
-      if (games.lol) {
-        const duoRankInfo = await fetchSummonerInfo(games.lol, 'DUO_RANK');
-        const freeRankInfo = await fetchSummonerInfo(games.lol, 'FREE_RANK');
-        setLolData({ duoRankInfo, freeRankInfo });
-      }
-      if (games.pubg) {
-        const { nickname, platform } = await checkPUBGUserPlatform(games.pubg);
-
-        const duoInfo = await fetchPubgPlayerInfo(nickname, platform, 'DUO');
-        const squadInfo = await fetchPubgPlayerInfo(
-          nickname,
-          platform,
-          'SQUAD',
-        );
-        const rankedSquadInfo = await fetchPubgPlayerInfo(
-          nickname,
-          platform,
-          'RANKED_SQUAD',
-        );
-        setPubgData({ duoInfo, squadInfo, rankedSquadInfo });
-      }
-      if (games.overwatch) {
-        const [name, battleTag] = games.overwatch.split('#');
-
-        const rankInfo = await fetchPlayerInfo(name, battleTag, 'RANKED');
-        const normalInfo = await fetchPlayerInfo(name, battleTag, 'NORMAL');
-        setOverwatchData({ rankInfo, normalInfo });
-      }
-      setIsLoading(false);
-    };
-    getDatas();
-  }, [games]);
-
-  if (!isLoading) {
-    return (
-      <Container sx={{ height: '100%' }}>
-        <MenuTitle>연결한 게임</MenuTitle>
-        <GameFilterBar
-          selectedGame={selectedGame}
-          setSelectedGame={setSelectedGame}
-          representative={representative}
-        />
+  return (
+    <Container sx={{ height: '100%' }}>
+      <MenuTitle>연결한 게임</MenuTitle>
+      <GameFilterBar
+        selectedGame={selectedGame}
+        setSelectedGame={setSelectedGame}
+        representative={representative}
+      />
+      {
         {
-          {
-            lol: games.lol ? (
-              <LolInfo data={lolData} />
-            ) : (
-              <AddGame game="lol" />
-            ),
-            pubg: games.pubg ? (
-              <PubgInfo data={pubgData} />
-            ) : (
-              <AddGame game="pubg" />
-            ),
-            overwatch: games.overwatch ? (
-              <OverwatchInfo data={overwatchData} />
-            ) : (
-              <AddGame game="overwatch" />
-            ),
-          }[selectedGame]
-        }
-        {games[selectedGame as 'lol' | 'pubg' | 'overwatch'] && (
-          <ButtonSection>
-            <GameDataUpdateButton game={selectedGame} />
-            <HandleRepresentativeButton
-              game={selectedGame}
-              representative={representative}
-            />
-          </ButtonSection>
-        )}
-      </Container>
-    );
-  }
-  return <Circular height="500px" text="게임 정보를 가져오는 중입니다." />;
+          lol: games.lol ? <LolInfo data={lolData} /> : <AddGame game="lol" />,
+          pubg: games.pubg ? (
+            <PubgInfo data={pubgData} />
+          ) : (
+            <AddGame game="pubg" />
+          ),
+          overwatch: games.overwatch ? (
+            <OverwatchInfo data={overwatchData} />
+          ) : (
+            <AddGame game="overwatch" />
+          ),
+        }[selectedGame]
+      }
+      {games[selectedGame as 'lol' | 'pubg' | 'overwatch'] && (
+        <ButtonSection>
+          <GameDataUpdateButton game={selectedGame} />
+          <HandleRepresentativeButton
+            game={selectedGame}
+            representative={representative}
+          />
+        </ButtonSection>
+      )}
+    </Container>
+  );
 };
 export default Games;
 
