@@ -98,3 +98,14 @@ export const loadHistory = async (name: string, platform: string) => {
 
   return null;
 };
+
+export const fetchPubgPlayerInfo = async (
+  name: string,
+  platform: string,
+  type: string,
+) => {
+  const response = await defaultAxios.get(
+    `/api/pubg/player/${name}/${platform}/${type}`,
+  );
+  return response.data;
+};
