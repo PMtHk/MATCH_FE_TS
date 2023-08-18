@@ -134,7 +134,7 @@ const Info = ({ data }: any) => {
               width="28px"
               height="28px"
             />
-            <SubTitleTypo sx={{ color: calcTierColor() }}>
+            <SubTitleTypo sx={{ color: calcTierColor(), marginLeft: '4px' }}>
               {getRank().value}
             </SubTitleTypo>
           </FlexRow>
