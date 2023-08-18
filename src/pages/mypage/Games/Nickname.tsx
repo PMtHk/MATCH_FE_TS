@@ -31,8 +31,11 @@ const Nickname = ({ name, game, isNew }: any) => {
 
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
+  const [error, setError] = useState<boolean>(false);
+
   const toggleEdit = () => {
     setIsEdit(!isEdit);
+    setNickname(name);
   };
 
   const getTypo = () => {
@@ -41,9 +44,9 @@ const Nickname = ({ name, game, isNew }: any) => {
   };
 
   const getButtonText = () => {
-    if (isNew) return '불러오기';
-    if (isEdit) return '취소하기';
-    return '변경하기';
+    if (isNew) return '저장';
+    if (isEdit) return '취소';
+    return '변경';
   };
 
   const certifyNickname = async () => {
@@ -77,15 +80,16 @@ const Nickname = ({ name, game, isNew }: any) => {
         }
       }
     } catch (error) {
+      setError(true);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: `입력하신 정보와 일치하는 ${getTypo}를 찾을 수 없습니다.`,
+          message: `입력하신 정보와 일치하는 ${getTypo()}을 찾을 수 없습니다.`,
           severity: 'warning',
         }),
       );
-      setIsEdit(false);
+      // setIsEdit(false);
       setIsPosting(false);
-      setNickname(name);
+      // setNickname(name);
     }
 
     return isCertified;
@@ -109,28 +113,21 @@ const Nickname = ({ name, game, isNew }: any) => {
           }),
         );
         setIsEdit(false);
+        setIsPosting(false);
+        setError(false);
       }
       // 닉네임 변경에 실패한 경우
       else {
+        setError(true);
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '변경중에 오류가 발생하였습니다.',
             severity: 'error',
           }),
         );
+        setNickname(name);
       }
     }
-    // 닉네임 인증에 실패한 경우
-    else {
-      dispatch(
-        snackbarActions.OPEN_SNACKBAR({
-          message: '유효하지 않은 닉네임 입니다.',
-          severity: 'error',
-        }),
-      );
-    }
-
-    setIsPosting(false);
   };
 
   return (
@@ -138,6 +135,7 @@ const Nickname = ({ name, game, isNew }: any) => {
       <Container>
         <SectionTypo>{getTypo()}</SectionTypo>
         <NicknameInput
+          error={error}
           value={nickname}
           disabled={!isNew && !isEdit}
           placeholder={`${getTypo()}을 입력해 주세요.`}
@@ -148,7 +146,7 @@ const Nickname = ({ name, game, isNew }: any) => {
               <CircularProgress size={14} />
             ) : (
               <ChangeButton onClick={requestChangeNickname}>
-                불러오기
+                인증하기
               </ChangeButton>
             ))
           }
