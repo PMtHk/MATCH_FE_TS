@@ -16,7 +16,8 @@ import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
-import { fetchPlayerInfo, kickMemberFromParty } from 'apis/api/overwatch';
+import { fetchMemberHistory } from 'apis/api/overwatch';
+import { kickMemberFromParty } from 'apis/api/common';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -47,7 +48,6 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   // author info
   const authorNickname = memberInfo.name.split('#')[0];
-  const nickAndTag = name.trim().split('#');
 
   type calcedInfo = {
     value: number;
@@ -98,9 +98,8 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const fetchedPlayerInfo = await fetchPlayerInfo(
-          nickAndTag[0],
-          nickAndTag[1],
+        const fetchedPlayerInfo = await fetchMemberHistory(
+          name,
           currentCard.type,
         );
 
@@ -133,10 +132,10 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const handleKick = async () => {
     try {
       await kickMemberFromParty(
+        'overwatch',
         currentCard?.id,
         currentCard?.chatRoomId,
-        nickAndTag[0],
-        nickAndTag[1],
+        name,
       );
 
       dispatch(

@@ -13,10 +13,9 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { RootState } from 'store';
-import { checkPUBGUserPlatform } from 'apis/api/pubg';
+import { getPlatform, loadHistory } from 'apis/api/pubg';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-import { defaultAxios } from 'apis/utils';
 import { gameList } from 'assets/Games.data';
 import { GAME } from 'types/games';
 
@@ -32,7 +31,7 @@ const InputPubg = () => {
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNickname(event.target.value.trim());
+    setNickname(event.target.value);
   };
 
   const gameResult: GAME | undefined = gameList.find(
@@ -43,6 +42,7 @@ const InputPubg = () => {
 
   const handleVerify = async () => {
     try {
+      setIsPending(true);
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
           id: 'pubg',
@@ -52,47 +52,34 @@ const InputPubg = () => {
 
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '사용자 정보를 확인하는 중입니다.',
+          message: '플레이어 정보를 확인하는 중입니다.',
           severity: 'info',
         }),
       );
-      const result = await checkPUBGUserPlatform(nickname);
 
+      const fetchedPlatform = await getPlatform(nickname.trim());
+
+      dispatch(snackbarActions.CLOSE_SNACKBAR());
+
+      setPlatform(fetchedPlatform);
+      setNickname(nickname.trim());
       setWarning(false);
-      if (result.platform === '') {
-        dispatch(
-          snackbarActions.OPEN_SNACKBAR({
-            message:
-              '플랫폼 정보를 가져올 수 없습니다. 해당 계정으로 최소 1판 플레이하셔야 합니다.',
-            severity: 'error',
-          }),
-        );
-      } else {
-        setPlatform(result.platform as 'STEAM' | 'KAKAO');
-        setIsPlatformChanged(false);
-        dispatch(
-          registerActions.SET_GAMES_WITH_ID({
-            id: 'pubg',
-            value: result.nickname,
-          }),
-        );
-
-        dispatch(snackbarActions.CLOSE_SNACKBAR());
-
-        defaultAxios.get(
-          `/api/pubg/user/${games[gameInfo.id]}/${result.platform}`,
-        );
-      }
-    } catch (error) {
-      setWarning(true);
+      setIsPending(false);
+    } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '입력하신 정보와 일치하는 플레이어를 찾을 수 없습니다.',
+          message: error.message,
           severity: 'error',
         }),
       );
-    } finally {
+      setNickname('');
+      setPlatform('STEAM');
+      setWarning(true);
       setIsPending(false);
+    } finally {
+      if (nickname !== '') {
+        await loadHistory(nickname, platform);
+      }
     }
   };
 

@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
-import { fetchCardDetail } from 'apis/api/pubg';
+import { fetchCardDetail } from 'apis/api/common';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;

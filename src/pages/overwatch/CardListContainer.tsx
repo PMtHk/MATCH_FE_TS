@@ -79,6 +79,6 @@ const CardsWrapper = styled(MuiBox)(() => ({
 })) as typeof MuiBox;
 
 const DummyCard = styled(MuiBox)(() => ({
-  width: '360px',
-  height: '270px',
+  width: '368px',
+  height: '272px',
 })) as typeof MuiBox;

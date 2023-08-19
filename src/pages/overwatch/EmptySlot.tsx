@@ -12,12 +12,8 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { RootState } from 'store';
 import { refreshActions } from 'store/refresh-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-import {
-  loadOWPlayerInfoInDB,
-  verifyOWNickname,
-  addPartyMemberWithName,
-} from 'apis/api/overwatch';
-import { addMemberToFirebaseDB } from 'apis/api/firebase';
+import { addPartyMemberWithName } from 'apis/api/common';
+import { loadHistory, verifyNickname } from 'apis/api/overwatch';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -32,7 +28,6 @@ const DefaultEmptySlot = () => {
 // 방장의 경우
 const EmptySlotForAuthor = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const { currentCard } = useSelector((state: RootState) => state.card);
   // 추가하기 버튼과 닉네임 입력창을 전환할 state
@@ -66,10 +61,8 @@ const EmptySlotForAuthor = () => {
       );
 
       // 닉네임 인증
-      const nickname = name.trim().split('#')[0];
-      const battleTag = name.trim().split('#')[1];
-      const exactNickname = await verifyOWNickname(nickname, battleTag);
-      if (exactNickname && currentCard.banList.includes(name.trim())) {
+      const isExist = await verifyNickname(name.trim());
+      if (isExist && currentCard.banList.includes(name.trim())) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '파티에서 강제퇴장 당한 사용자입니다.',
@@ -78,7 +71,7 @@ const EmptySlotForAuthor = () => {
         );
         return;
       }
-      if (currentCard.memberList.includes(exactNickname)) {
+      if (currentCard.memberList.includes(name.trim())) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '이미 파티에 참여한 사용자입니다.',
@@ -88,13 +81,13 @@ const EmptySlotForAuthor = () => {
         return;
       }
       // 전적 받아오기 -> DB
-      await loadOWPlayerInfoInDB(nickname, battleTag);
+      await loadHistory(name.trim());
       // 파티에 해당 멤버 추가
       await addPartyMemberWithName(
+        'overwatch',
         currentCard?.id,
         currentCard.chatRoomId,
-        nickname,
-        battleTag,
+        name.trim(),
       );
 
       dispatch(refreshActions.REFRESH_CARD());

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { asyncGetIsReviewed, getIsReviewed } from 'apis/api/firebase';
-import { fetchCardDetail } from 'apis/api/leagueoflegends';
+import { asyncGetIsReviewed } from 'apis/api/firebase';
+import { fetchCardDetail } from 'apis/api/common';
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import { getIsJoined } from 'functions/commons';
@@ -32,14 +32,14 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
   useEffect(() => {
     dispatch(cardActions.SET_CURRENT_CARD(cardDetail));
 
-    const getIsReviewed2 = async () => {
+    const getIsReviewed = async () => {
       const review = await asyncGetIsReviewed(oauth2Id, currentCard.chatRoomId);
       dispatch(cardActions.SET_IS_REVIEWED(review));
     };
 
     if (currentCard) {
       if (getIsJoined(currentCard.chatRoomId, joinedChatRoomsId)) {
-        getIsReviewed2();
+        getIsReviewed();
       }
     }
   }, [cardDetail, dispatch]);

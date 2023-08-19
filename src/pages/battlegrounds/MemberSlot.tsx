@@ -152,10 +152,10 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const handleKick = async () => {
     try {
       await kickMemberFromParty(
+        'pubg',
         currentCard?.id,
         currentCard?.chatRoomId,
         name,
-        'pubg',
       );
 
       dispatch(

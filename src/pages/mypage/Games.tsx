@@ -1,41 +1,32 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
-import {
-  fetchSummonerInfo,
-  loadSummonerInfoIntoDB,
-} from 'apis/api/leagueoflegends';
-import {
-  checkPUBGUserPlatform,
-  fetchPubgPlayerInfo,
-  loadPubgPlayerInfoIntoDB,
-} from 'apis/api/pubg';
-import { fetchPlayerInfo, loadOWPlayerInfoInDB } from 'apis/api/overwatch';
-import Circular from 'components/loading/Circular';
+import { Button, Divider, Tooltip } from '@mui/material';
 import GradeIcon from '@mui/icons-material/Grade';
 
+import { changeRepresentative } from 'apis/api/user';
+import { loadHistory as lolLoadHistory } from 'apis/api/leagueoflegends';
+import { getPlatform, loadHistory as pubgLoadHistory } from 'apis/api/pubg';
+import { loadHistory as owLoadHistory } from 'apis/api/overwatch';
 import { RootState } from 'store';
-import { Button, Divider, Tooltip } from '@mui/material';
-import GameIcon from 'components/GameIcon';
-import { gameList } from 'assets/Games.data';
 import { snackbarActions } from 'store/snackbar-slice';
-
 import { userActions } from 'store/user-slice';
-import { handleRepresentativeGame } from 'apis/api/user';
+import { gameList } from 'assets/Games.data';
+import GameIcon from 'components/GameIcon';
 import LolInfo from './Games/LolInfo';
 import PubgInfo from './Games/PubgInfo';
 import OverwatchInfo from './Games/OverwatchInfo';
 import AddGame from './Games/AddGame';
 
-type GameFilterProps = {
+interface GameFilterProps {
   selectedGame: string;
   setSelectedGame: Dispatch<SetStateAction<string>>;
   representative: string;
-};
+}
 
 const GameFilterBar = ({
   selectedGame,
@@ -87,16 +78,15 @@ const GameDataUpdateButton = ({ game }: any) => {
   const handleUpdate = async () => {
     const nickname = games[game as 'lol' | 'pubg' | 'overwatch'];
     setIsLoading(true);
-    if (game === 'lol') await loadSummonerInfoIntoDB(nickname);
+    if (game === 'lol') await lolLoadHistory(nickname);
     if (game === 'pubg') {
-      const response = await checkPUBGUserPlatform(nickname);
-      if (response.platform && response.nickname) {
-        await loadPubgPlayerInfoIntoDB(response.nickname, response.platform);
+      const platform = await getPlatform(nickname);
+      if (platform) {
+        await pubgLoadHistory(nickname, platform);
       }
     }
     if (game === 'overwatch') {
-      const [name, battleTag] = nickname.split('#');
-      await loadOWPlayerInfoInDB(name, battleTag);
+      await owLoadHistory(nickname);
     }
     setIsLoading(false);
     dispatch(
@@ -123,7 +113,7 @@ const GameDataUpdateButton = ({ game }: any) => {
 const HandleRepresentativeButton = ({ game, representative }: any) => {
   const dispatch = useDispatch();
   const handleRepresentative = async () => {
-    const response = await handleRepresentativeGame(game);
+    const response = await changeRepresentative(game);
     if (response) {
       // 대표게임 변경 성공
       dispatch(userActions.SET_REPRESENTATIVE({ representative: game }));

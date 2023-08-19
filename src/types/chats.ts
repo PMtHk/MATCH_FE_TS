@@ -18,6 +18,7 @@ export type CHATROOM = {
   chatRoomId: string;
   game: GAME_ID;
   id: number;
+  firstRead: number;
 };
 
 export type FETCHED_CHATROOMINFO_FB = {

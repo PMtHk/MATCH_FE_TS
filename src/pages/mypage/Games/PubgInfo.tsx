@@ -1,10 +1,12 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import Circular from 'components/loading/Circular';
-import { styled } from '@mui/system';
-import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
-import { rankImage, tierList } from 'pages/battlegrounds/data';
 
+// mui
+import { styled } from '@mui/system';
+import { Box, Typography } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
+import Circular from 'components/loading/Circular';
+import { rankImage, tierList } from 'pages/battlegrounds/data';
 import Nickname from './Nickname';
 
 const Info = ({ data }: any) => {

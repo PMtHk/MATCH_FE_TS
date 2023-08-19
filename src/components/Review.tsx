@@ -14,7 +14,7 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import {
   asyncGetIsReviewed,
   doReview,
-  getFilteredMemberListForReview,
+  getMemberListForReview,
 } from 'apis/api/firebase';
 import { authAxios, defaultAxios } from 'apis/utils';
 import { RootState } from 'store';
@@ -114,7 +114,7 @@ const Review = () => {
 
   if (currentCard) {
     const getFilteredMemberList = async () => {
-      const result = await getFilteredMemberListForReview(
+      const result = await getMemberListForReview(
         currentCard.chatRoomId,
         oauth2Id,
       );

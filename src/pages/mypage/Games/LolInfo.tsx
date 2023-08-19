@@ -1,3 +1,5 @@
+// mui
+import { styled } from '@mui/system';
 import {
   Box,
   Divider,
@@ -5,10 +7,9 @@ import {
   ImageListItem,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/system';
+
 import Circular from 'components/loading/Circular';
 import { positionList, tierList } from 'pages/leagueoflegends/data';
-
 import Nickname from './Nickname';
 
 const TierInfo = ({ info, type }: any) => {

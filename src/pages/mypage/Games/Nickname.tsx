@@ -1,3 +1,8 @@
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+// mui
+import { styled } from '@mui/system';
 import {
   Box,
   Button,
@@ -6,18 +11,22 @@ import {
   OutlinedInput,
   Typography,
 } from '@mui/material';
-import { styled } from '@mui/system';
+
+import { changeNickname } from 'apis/api/user';
 import {
-  loadSummonerInfoIntoDB,
-  verifyLOLNickname,
+  verifyNickname as verifyLOLNickname,
+  loadHistory as loadLOLHistory,
 } from 'apis/api/leagueoflegends';
-import React, { useState } from 'react';
-import { changeNickname } from 'apis/api/common';
-import { useDispatch } from 'react-redux';
-import { snackbarActions } from 'store/snackbar-slice';
-import { checkPUBGUserPlatform, loadPubgPlayerInfoIntoDB } from 'apis/api/pubg';
-import { loadOWPlayerInfoInDB, verifyOWNickname } from 'apis/api/overwatch';
+import {
+  getPlatform as checkPUBGPlatform,
+  loadHistory as loadPUBGHistory,
+} from 'apis/api/pubg';
+import {
+  verifyNickname as verifyOWNickname,
+  loadHistory as loadOWHistory,
+} from 'apis/api/overwatch';
 import { userActions } from 'store/user-slice';
+import { snackbarActions } from 'store/snackbar-slice';
 
 const Nickname = ({ name, game, isNew }: any) => {
   const dispatch = useDispatch();
@@ -58,25 +67,23 @@ const Nickname = ({ name, game, isNew }: any) => {
           setNickname(existNickname);
           isCertified = true;
           // DB쌓기
-          await loadSummonerInfoIntoDB(existNickname);
+          await loadLOLHistory(existNickname);
         }
       }
       if (game === 'pubg') {
-        const { nickname: existNickname, platform } =
-          await checkPUBGUserPlatform(nickname);
+        const platform = await checkPUBGPlatform(nickname);
         if (platform) {
           isCertified = true;
           // DB쌓기
-          await loadPubgPlayerInfoIntoDB(existNickname, platform);
+          await loadPUBGHistory(nickname, platform);
         }
       }
       if (game === 'overwatch') {
-        const [name, battleTag] = nickname.split('#');
-        const response = await verifyOWNickname(name, battleTag);
+        const response = await verifyOWNickname(nickname);
         if (response) {
           isCertified = true;
           // DB쌓기
-          await loadOWPlayerInfoInDB(name, battleTag);
+          await loadOWHistory(nickname);
         }
       }
     } catch (error) {

@@ -107,7 +107,9 @@ const Notification = ({
                 chatRoomId: aChatRoom.chatRoomId,
                 message: datasnapshot.val(),
               };
-              dispatch(messageActions.SET_MESSAGES(data));
+              if (data.message.timestamp > aChatRoom.firstRead) {
+                dispatch(messageActions.SET_MESSAGES(data));
+              }
             },
           );
           dispatch(chatroomActions.ADD_DETACHEDLISTENER(aChatRoom.chatRoomId));

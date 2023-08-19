@@ -3,16 +3,12 @@ import React, { useEffect, useState } from 'react';
 import { getUserInfo } from 'apis/api/user';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { fetchMemberHistory as getSummonerInfo } from 'apis/api/leagueoflegends';
 import {
-  fetchSummonerInfo,
-  loadSummonerInfoIntoDB,
-} from 'apis/api/leagueoflegends';
-import {
-  checkPUBGUserPlatform,
-  fetchPubgPlayerInfo,
-  loadPubgPlayerInfoIntoDB,
+  fetchMemberHistory as getPubgPlayerInfo,
+  getPlatform,
 } from 'apis/api/pubg';
-import { fetchPlayerInfo, loadOWPlayerInfoInDB } from 'apis/api/overwatch';
+import { fetchMemberHistory as getOWPlayerInfo } from 'apis/api/overwatch';
 
 import { mypageActions } from 'store/mypage-slice';
 import { RootState } from 'store';
@@ -35,8 +31,8 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
 
   useEffect(() => {
     const getLolData = async () => {
-      const duoRankInfo = await fetchSummonerInfo(games.lol, 'DUO_RANK');
-      const freeRankInfo = await fetchSummonerInfo(games.lol, 'FREE_RANK');
+      const duoRankInfo = await getSummonerInfo(games.lol, 'DUO_RANK');
+      const freeRankInfo = await getSummonerInfo(games.lol, 'FREE_RANK');
       dispatch(mypageActions.SET_LOLINFO({ duoRankInfo, freeRankInfo }));
     };
 
@@ -47,11 +43,11 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
 
   useEffect(() => {
     const getPubgData = async () => {
-      const { nickname, platform } = await checkPUBGUserPlatform(games.pubg);
-      const duoInfo = await fetchPubgPlayerInfo(nickname, platform, 'DUO');
-      const squadInfo = await fetchPubgPlayerInfo(nickname, platform, 'SQUAD');
-      const rankedSquadInfo = await fetchPubgPlayerInfo(
-        nickname,
+      const platform = await getPlatform(games.pubg);
+      const duoInfo = await getPubgPlayerInfo(games.pubg, platform, 'DUO');
+      const squadInfo = await getPubgPlayerInfo(games.pubg, platform, 'SQUAD');
+      const rankedSquadInfo = await getPubgPlayerInfo(
+        games.pubg,
         platform,
         'RANKED_SQUAD',
       );
@@ -67,10 +63,8 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
 
   useEffect(() => {
     const getOverwatchData = async () => {
-      const [name, battleTag] = games.overwatch.split('#');
-
-      const rankInfo = await fetchPlayerInfo(name, battleTag, 'RANKED');
-      const normalInfo = await fetchPlayerInfo(name, battleTag, 'NORMAL');
+      const rankInfo = await getOWPlayerInfo(games.overwatch, 'RANKED');
+      const normalInfo = await getOWPlayerInfo(games.overwatch, 'NORMAL');
       dispatch(mypageActions.SET_OVERWATCHINFO({ rankInfo, normalInfo }));
     };
 

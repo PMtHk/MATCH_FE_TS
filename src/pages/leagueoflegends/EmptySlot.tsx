@@ -12,10 +12,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import { RootState } from 'store';
 import { refreshActions } from 'store/refresh-slice';
 import { snackbarActions } from 'store/snackbar-slice';
-import {
-  loadSummonerInfoIntoDB,
-  verifyLOLNickname,
-} from 'apis/api/leagueoflegends';
+import { loadHistory, verifyNickname } from 'apis/api/leagueoflegends';
 import { addPartyMemberWithName } from 'apis/api/common';
 
 // 방장이 아닌 사용자의 경우
@@ -57,7 +54,7 @@ const EmptySlotForAuthor = () => {
       );
 
       // 닉네임 인증
-      const exactNickname = await verifyLOLNickname(name.trim());
+      const exactNickname = await verifyNickname(name.trim());
       if (currentCard.banList.includes(exactNickname)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
@@ -77,13 +74,13 @@ const EmptySlotForAuthor = () => {
         return;
       }
       // 전적 받아오기 -> DB
-      await loadSummonerInfoIntoDB(exactNickname);
+      await loadHistory(exactNickname);
       // 파티에 해당 멤버 추가
       await addPartyMemberWithName(
+        'lol',
         currentCard?.id,
         currentCard?.chatRoomId,
         exactNickname,
-        'lol',
       );
 
       dispatch(refreshActions.REFRESH_CARD());

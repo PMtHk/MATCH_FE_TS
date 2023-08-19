@@ -5,14 +5,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
-import { joinParty } from 'apis/api/user';
+import { joinParty } from 'apis/api/common';
 import { isBanned } from 'apis/api/firebase';
-import { checkPUBGUserPlatform } from 'apis/api/pubg';
+import { getPlatform } from 'apis/api/pubg';
 import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { getCurrentGame } from 'functions/commons';
 import { GAME_ID } from 'types/games';
+import { chatroomActions } from 'store/chatroom-slice';
 
 const JoinBtn = () => {
   const dispatch = useDispatch();
@@ -94,6 +95,7 @@ const JoinBtn = () => {
     };
   };
 
+  // TODO: try-catch
   const JoinBtnHandler = async () => {
     setIsLoading(true);
     // 파티가 마감된 경우
@@ -109,12 +111,11 @@ const JoinBtn = () => {
     }
     // 배틀그라운드의 경우 파티 참가 요청 시 파티의 플랫폼과 사용자(참가자) 계정의 플랫폼 비교
     if (currentGame === 'pubg') {
-      const { platform: myPlatform } = await checkPUBGUserPlatform(nickname);
-      if (myPlatform !== currentCard?.platform) {
+      const platform = await getPlatform(nickname);
+      if (platform !== currentCard?.platform) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
-            message:
-              '해당 파티와의 플랫폼 정보가 일치하지 않습니다. 플랫폼 확인 후 다시 시도하여 주시기 바랍니다.',
+            message: '해당 파티와의 플랫폼이 달라 참가하실 수 없습니다.',
             severity: 'error',
           }),
         );
@@ -125,7 +126,22 @@ const JoinBtn = () => {
     const banned = await isBanned(chatRoomId, oauth2Id);
     if (!banned) {
       try {
-        await joinParty(currentGame, id, chatRoomId, newMember, dispatch);
+        const firstRead = await joinParty(
+          currentGame,
+          id,
+          chatRoomId,
+          newMember,
+        );
+
+        dispatch(
+          chatroomActions.ADD_JOINED_CHATROOMS_ID({
+            chatRoomId,
+            game: currentGame,
+            id,
+            firstRead,
+          }),
+        );
+
         dispatch(refreshActions.REFRESH_CARD());
       } catch (error) {
         dispatch(
