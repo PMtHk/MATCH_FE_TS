@@ -12,7 +12,7 @@ import { SectionId } from './Content';
 
 const Wrapper = styled(Box)(() => ({
   width: '100%',
-  backgroundColor: '#d5d5d6',
+  background: 'linear-gradient(#3c393950, #ffffff)',
 })) as typeof Box;
 
 const ContentWrapper = styled(Box)(() => ({
