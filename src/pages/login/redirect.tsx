@@ -39,9 +39,9 @@ const Redirect = () => {
         }),
       );
 
-      const { lol, pubg, overwatch } = await getUserGameInfo();
+      const { lol, pubg, overwatch, valorant } = await getUserGameInfo();
 
-      const games = { lol, pubg, overwatch };
+      const games = { lol, pubg, overwatch, valorant };
 
       dispatch(userActions.SET_GAMES({ games }));
 

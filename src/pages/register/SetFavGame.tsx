@@ -21,10 +21,7 @@ const SetFavGame = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const params = new URL(document.URL).searchParams;
-  const code = params.get('code');
-
-  const { games, representative } = useSelector(
+  const { games, representative, kakaoCode } = useSelector(
     (state: RootState) => state.register,
   );
 
@@ -55,9 +52,9 @@ const SetFavGame = () => {
   const handleNextBtn = async () => {
     setIsPending(true);
 
-    if (code) {
+    if (kakaoCode) {
       try {
-        await signup(code, representative as GAME_ID, games);
+        await signup(kakaoCode, representative as GAME_ID, games);
 
         dispatch(
           snackbarActions.OPEN_SNACKBAR({

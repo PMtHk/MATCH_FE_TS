@@ -1,4 +1,4 @@
-export type GAME_ID = 'lol' | 'pubg' | 'overwatch';
+export type GAME_ID = 'lol' | 'pubg' | 'overwatch' | 'valorant';
 
 export type GAME = {
   id: GAME_ID;
