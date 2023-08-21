@@ -22,7 +22,7 @@ const ValorantSignButton = () => {
       </ImgWrapper>
       <ButtonWrapper>
         <Button
-          href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI}&response_type=code&scope=openid+offline_access`}
+          href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI_REGISTER}&response_type=code&scope=openid+offline_access`}
         >
           <img
             src="https://d18ghgbbpc0qi2.cloudfront.net/assets/riot_games_icon.png"
