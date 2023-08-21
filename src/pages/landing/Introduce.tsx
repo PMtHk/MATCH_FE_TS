@@ -16,50 +16,6 @@ import { styled } from '@mui/system';
 import { SectionId } from './Content';
 import GameSupport from './GameSupport';
 
-const Wrapper = styled(Box)(() => ({
-  width: '100%',
-  background: 'linear-gradient(#ffffff, #3c393956)',
-})) as typeof Box;
-
-const ContentWrapper = styled(Box)(() => ({
-  width: '100%',
-  height: '100vh',
-  padding: '300px 0 0',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  alignItems: 'center',
-})) as typeof Box;
-
-const TitleTypo = styled(Typography)(({ theme }) => ({
-  fontSize: 28,
-  fontWeight: 700,
-  margin: '20px 0 50px',
-  [theme.breakpoints.up('md')]: {
-    fontSize: 48,
-  },
-  [theme.breakpoints.up('lg')]: {
-    fontSize: 60,
-  },
-})) as typeof Typography;
-
-const LookAround = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  minWidth: '300px',
-  color: '#5e6064',
-  fontSize: 20,
-  [theme.breakpoints.up('md')]: {
-    fontSize: 30,
-  },
-  [theme.breakpoints.up('lg')]: {
-    fontSize: 40,
-  },
-  fontWeight: 600,
-  '&:hover': {},
-})) as typeof Box;
-
 interface ArrowDownBtnProps {
   children: React.ReactNode;
   onClick: () => void;
@@ -138,3 +94,47 @@ const Introduce = ({ addSectionRef, moveToSection }: IIntroduceProps) => {
 };
 
 export default Introduce;
+
+const Wrapper = styled(Box)(() => ({
+  width: '100%',
+  background: 'linear-gradient(#ffffff, #3c393950)',
+})) as typeof Box;
+
+const ContentWrapper = styled(Box)(() => ({
+  width: '100%',
+  height: '100vh',
+  padding: '30vh 0 0',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'flex-start',
+  alignItems: 'center',
+})) as typeof Box;
+
+const TitleTypo = styled(Typography)(({ theme }) => ({
+  fontSize: 28,
+  fontWeight: 700,
+  margin: '20px 0 50px',
+  [theme.breakpoints.up('md')]: {
+    fontSize: 48,
+  },
+  [theme.breakpoints.up('lg')]: {
+    fontSize: 60,
+  },
+})) as typeof Typography;
+
+const LookAround = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  minWidth: '300px',
+  color: '#5e6064',
+  fontSize: 20,
+  [theme.breakpoints.up('md')]: {
+    fontSize: 30,
+  },
+  [theme.breakpoints.up('lg')]: {
+    fontSize: 40,
+  },
+  fontWeight: 600,
+  '&:hover': {},
+})) as typeof Box;
