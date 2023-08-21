@@ -47,6 +47,7 @@ const InputLol = () => {
       );
 
       const exactNickname = await verifyNickname(nickname.trim());
+      await loadHistory(nickname);
 
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
@@ -70,10 +71,6 @@ const InputLol = () => {
       setNickname('');
       setWarning(true);
       setIsPending(false);
-    } finally {
-      if (nickname !== '') {
-        await loadHistory(nickname);
-      }
     }
   };
 

@@ -196,7 +196,7 @@ const CreateCard = () => {
         setIsNewNicknameCertified(false);
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
-            message: '입력하신 정보와 일치하는 소환사를 찾을 수 없습니다.',
+            message: '입력하신 정보와 일치하는 플레이어를 찾을 수 없습니다.',
             severity: 'error',
           }),
         );

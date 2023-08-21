@@ -13,7 +13,7 @@ import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 import { RootState } from 'store';
-import { getPlatform, loadHistory } from 'apis/api/pubg';
+import { getPlatform, fetchMemberHistory, loadHistory } from 'apis/api/pubg';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { gameList } from 'assets/Games.data';
@@ -59,6 +59,8 @@ const InputPubg = () => {
 
       const fetchedPlatform = await getPlatform(nickname.trim());
 
+      await loadHistory(nickname.trim(), fetchedPlatform);
+
       dispatch(snackbarActions.CLOSE_SNACKBAR());
 
       dispatch(
@@ -84,10 +86,6 @@ const InputPubg = () => {
       setPlatform('STEAM');
       setWarning(true);
       setIsPending(false);
-    } finally {
-      if (nickname !== '') {
-        await loadHistory(nickname, platform);
-      }
     }
   };
 
