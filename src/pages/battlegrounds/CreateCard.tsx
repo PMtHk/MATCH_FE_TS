@@ -26,7 +26,7 @@ import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
 import { createCard } from 'apis/api/common';
-import { loadPubgPlayerInfoIntoDB, checkPUBGUserPlatform } from 'apis/api/pubg';
+import { loadHistory, getPlatform } from 'apis/api/pubg';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
 import { snackbarActions } from 'store/snackbar-slice';
@@ -76,16 +76,14 @@ const CreateCard = () => {
 
   // 게시글 생성 모달 렌더 시 리덕스의 닉네임으로 플랫폼 정보 가져오기
   useEffect(() => {
-    const getPlatform = async () => {
-      const { platform: myPlatform } = await checkPUBGUserPlatform(
-        registeredNickname,
-      );
-      setUserInput({ ...userInput, platform: myPlatform });
+    const checkPlatform = async () => {
+      const platform = await getPlatform(registeredNickname);
+      setUserInput({ ...userInput, platform });
     };
     if (registeredNickname) {
-      getPlatform();
+      checkPlatform();
     }
-  }, [registeredNickname]);
+  }, []);
 
   // 게시글 생성 요청 상태
   const [isPosting, setIsPosting] = React.useState<boolean>(false);
@@ -171,12 +169,10 @@ const CreateCard = () => {
       setIsLoading(true);
 
       // 닉네임, 플랫폼 정보 가져오기
-      const { nickname, platform } = await checkPUBGUserPlatform(
-        userInput.name.trim(),
-      );
+      const platform = await getPlatform(userInput.name.trim());
+
       setUserInput({
         ...userInput,
-        name: nickname,
         platform,
       });
 
@@ -187,7 +183,7 @@ const CreateCard = () => {
         }),
       );
 
-      await loadPubgPlayerInfoIntoDB(nickname, platform);
+      await loadHistory(userInput.name, platform);
 
       setIsNewNicknameCertified(true);
     } catch (error: any) {
@@ -243,7 +239,7 @@ const CreateCard = () => {
   const createCardBtnHandler = async () => {
     setIsPosting(true);
     try {
-      const { key, boardId } = await createCard(
+      const { key, boardId, firstRead } = await createCard(
         currentGame,
         userInput,
         oauth2Id,
@@ -256,6 +252,7 @@ const CreateCard = () => {
           chatRoomId: key as string,
           game: currentGame as GAME_ID,
           id: boardId,
+          firstRead,
         }),
       );
       navigate(`/pubg/${boardId}`, { replace: true });

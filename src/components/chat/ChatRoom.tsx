@@ -142,7 +142,7 @@ const ChatRoom = () => {
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-      updateALastRead(oauth2Id, chatRoomId, Date.now());
+      updateALastRead(oauth2Id, chatRoomId);
     }
   }, [currentChatRoomMessages]);
 
@@ -212,8 +212,8 @@ const ChatRoomHeader = styled(MuiTypography)(() => ({
 const ChatMessageWrapper = styled(MuiBox)(() => ({
   backgroundColor: 'rgba(236, 236, 236, 0.5)',
   width: 400,
-  minHeight: 520,
-  maxHeight: 520,
+  minHeight: 'calc(100% - 67.5px)',
+  maxHeight: 'calc(100% - 67.5px)',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',

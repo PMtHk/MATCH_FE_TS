@@ -113,27 +113,30 @@ const CardDetailContainer = () => {
                     currentCard?.memberList?.map((member: string) => {
                       return <MemberSlot key={member} summonerName={member} />;
                     })}
-                  {arrayForEmptySlot.map((value, index) => (
-                    <EmptySlot key={value} />
-                  ))}
+                  {currentCard.finished === 'false' &&
+                    arrayForEmptySlot.map((value, index) => (
+                      <EmptySlot key={value} />
+                    ))}
                 </MemberList>
               </MemberListWrapper>
-              {isLogin &&
-              getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) ? (
-                oauth2Id === currentCard.oauth2Id ? (
-                  <MuiStack direction="row" spacing="2%" mt={1}>
-                    <DeleteCardBtn />
-                    <EditCardBtn />
-                    <FinishBtn />
-                  </MuiStack>
-                ) : (
-                  <LeaveBtn />
-                )
-              ) : currentCard.expired === 'true' ? (
-                <div />
-              ) : (
-                <JoinBtn />
+              {isLogin && oauth2Id === currentCard.oauth2Id && (
+                <MuiStack direction="row" spacing="2%" mt={1}>
+                  <DeleteCardBtn />
+                  <EditCardBtn />
+                  <FinishBtn />
+                </MuiStack>
               )}
+              {isLogin &&
+                oauth2Id !== currentCard.oauth2Id &&
+                getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
+                currentCard.expired === 'false' &&
+                currentCard.finished === 'false' && <LeaveBtn />}
+              {isLogin &&
+                oauth2Id !== currentCard.oauth2Id &&
+                !getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
+                currentCard.expired === 'false' &&
+                currentCard.finished === 'false' && <JoinBtn />}
+              {!isLogin && <JoinBtn />}
             </CardInfo>
             {isLogin &&
               getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) && (
@@ -218,7 +221,7 @@ const SectionContent = styled(MuiTypography)(() => ({
   fontSize: '14px',
   fontWeight: '400',
   wordBreak: 'break-all',
-  height: '42px',
+  height: '80px',
 })) as typeof MuiTypography;
 
 const HashTagWrapper = styled(MuiBox)(() => ({
@@ -250,8 +253,8 @@ const MemberList = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   minWidth: 520,
-  minHeight: '418px',
-  maxHeight: '418px',
+  minHeight: '430px',
+  maxHeight: '430px',
   overflowY: 'auto',
   overflowX: 'hidden',
 })) as typeof MuiBox;

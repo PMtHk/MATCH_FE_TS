@@ -15,6 +15,7 @@ import MyInfo from './MyInfo';
 import Games from './Games';
 import Follow from './Follow';
 import Withdrawal from './Withdrawal';
+import { menuList } from './data';
 
 const UserInfoContainer = () => {
   const dispatch = useDispatch();
@@ -49,87 +50,41 @@ const UserInfoContainer = () => {
           </UserImageWrapper>
           <Username>{nickname}</Username>
           <Menubar component="nav" position="relative">
-            <Toolbar disableGutters>
-              <MenuButton fullWidth onClick={() => setCurrentMenu('myInfo')}>
-                <MenuTypo
-                  sx={{
-                    borderBottom:
-                      currentMenu === 'myInfo' ? '2px solid #3d3939' : 'none',
-                  }}
-                >
-                  내 정보
-                </MenuTypo>
-              </MenuButton>
-            </Toolbar>
-            <Toolbar disableGutters>
-              <MenuButton fullWidth onClick={() => setCurrentMenu('games')}>
-                <MenuTypo
-                  sx={{
-                    borderBottom:
-                      currentMenu === 'games' ? '2px solid #3d3939' : 'none',
-                  }}
-                >
-                  연결한 게임
-                </MenuTypo>
-              </MenuButton>
-            </Toolbar>
-            <Toolbar disableGutters>
-              <MenuButton
-                disabled
-                fullWidth
-                onClick={() => setCurrentMenu('follow')}
-              >
-                <MenuTypo
-                  sx={{
-                    borderBottom:
-                      currentMenu === 'follow' ? '2px solid #3d3939' : 'none',
-                  }}
-                >
-                  팔로우 목록
-                </MenuTypo>
-              </MenuButton>
-            </Toolbar>
-            <Toolbar disableGutters>
-              <MenuButton
-                fullWidth
-                disabled
-                onClick={() => setCurrentMenu('withdrawal')}
-              >
-                <MenuTypo
-                  sx={{
-                    borderBottom:
-                      currentMenu === 'withdrawal'
-                        ? '2px solid #3d3939'
-                        : 'none',
-                  }}
-                >
-                  서비스 탈퇴
-                </MenuTypo>
-              </MenuButton>
-            </Toolbar>
+            {menuList.map((menu) => {
+              return (
+                <Toolbar key={menu.id} disableGutters>
+                  <MenuButton
+                    disabled={!menu.available}
+                    fullWidth
+                    onClick={() => setCurrentMenu(menu.value)}
+                  >
+                    <MenuTypo
+                      sx={{
+                        borderBottom:
+                          currentMenu === menu.value
+                            ? '2px solid #3d3939'
+                            : 'none',
+                      }}
+                    >
+                      {menu.label}
+                    </MenuTypo>
+                  </MenuButton>
+                </Toolbar>
+              );
+            })}
           </Menubar>
         </UserProfileWrapper>
       </SidebarWrapper>
-      {currentMenu === 'myInfo' && (
-        <MenuWrapper>
-          <MyInfo />
-        </MenuWrapper>
-      )}
-      {currentMenu === 'games' && (
-        <MenuWrapper>
-          <Games />
-        </MenuWrapper>
-      )}
-      {currentMenu === 'follow' && (
-        <MenuWrapper>
-          <Follow />
-        </MenuWrapper>
-      )}
-      {currentMenu === 'withdrawal' && (
-        <MenuWrapper>
-          <Withdrawal />
-        </MenuWrapper>
-      )}
+      <MenuWrapper>
+        {
+          {
+            myInfo: <MyInfo />,
+            games: <Games />,
+            follow: <Follow />,
+            withdrawal: <Withdrawal />,
+          }[currentMenu]
+        }
+      </MenuWrapper>
     </Container>
   );
 };

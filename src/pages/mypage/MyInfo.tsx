@@ -7,6 +7,7 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 
 import { RootState } from 'store';
+import { Divider } from '@mui/material';
 
 const MyInfo = () => {
   const { email, created, likeCount, dislikeCount, matchCount } = useSelector(
@@ -16,6 +17,7 @@ const MyInfo = () => {
   return (
     <Container>
       <MenuTitle>내 정보</MenuTitle>
+      <Divider />
       <Section>
         <SectionTitle>이메일 및 가입 일자</SectionTitle>
         <SectionContentTypo>이메일 : {email}</SectionContentTypo>
@@ -46,8 +48,7 @@ const Container = styled(MuiBox)(({ theme }) => ({
 
 const MenuTitle = styled(MuiTypography)(() => ({
   width: '100%',
-  borderBottom: '1px solid #969393',
-  fontSize: '22px',
+  fontSize: '18px',
   fontWeight: '700',
   padding: '0 0 0 8px',
 })) as typeof MuiTypography;

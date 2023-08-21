@@ -49,7 +49,7 @@ const FinishBtn = () => {
   const handleFinish = async () => {
     try {
       setIsPending(true);
-      await finishCard(currentGame, id);
+      await finishCard(currentGame, id, currentCard.chatRoomId);
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

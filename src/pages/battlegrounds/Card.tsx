@@ -104,7 +104,12 @@ const Card = ({ item, expired }: CardProps) => {
     const kd: number =
       item.author.kills === 0 || item.author.deaths === 0
         ? 0
-        : Number((item.author.kills / item.author.deaths).toFixed(1));
+        : Number(
+            (
+              (item.author.kills * 100) / item.author.deaths +
+              item.author.kills
+            ).toFixed(1),
+          );
     let color = '#000';
     if (kd >= 4) {
       color = 'red';
@@ -243,7 +248,7 @@ const Card = ({ item, expired }: CardProps) => {
                   정보없음
                 </SectionContentText>
               ) : (
-                <>
+                <RPSection>
                   <RankEmblemWrapper>
                     <img
                       src={getRank().imageUrl}
@@ -252,10 +257,12 @@ const Card = ({ item, expired }: CardProps) => {
                       height="28px"
                     />
                   </RankEmblemWrapper>
-                  <SectionContentText sx={{ color: authorTier?.darkColor }}>
+                  <SectionContentText
+                    sx={{ color: authorTier?.darkColor, paddingTop: '8px' }}
+                  >
                     {getRank().value}
                   </SectionContentText>
-                </>
+                </RPSection>
               )}
             </SectionContent>
           </AuthorSection>
@@ -314,11 +321,13 @@ const CardTitleWrapper = styled(MuiBox)(() => ({
   justifyContent: 'flex-start',
 })) as typeof MuiBox;
 
-// const ImgMixBlendMode = styled(MuiBox)(() => ({
-//   '& > img': {
-//     mixBlendMode: 'exclusion',
-//   },
-// })) as typeof MuiBox;
+const RPSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'row',
+  // justifyContent: 'flex-end',
+  // alignItems: 'flex-end',
+  // border: '1px solid red',
+})) as typeof MuiBox;
 
 const CardTitle = styled(MuiBox)(() => ({
   display: 'flex',

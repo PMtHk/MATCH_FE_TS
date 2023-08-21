@@ -2,12 +2,8 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 
-// redux
-import { RootState } from 'store';
-
 // mui
 import { styled } from '@mui/system';
-import Link from '@mui/material/Link';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiTooltip from '@mui/material/Tooltip';
@@ -15,12 +11,16 @@ import MuiIconButton from '@mui/material/IconButton';
 import MuiMenu from '@mui/material/Menu';
 import MuiMenuItem from '@mui/material/MenuItem';
 import MuiDivider from '@mui/material/Divider';
-
-// mui-icons
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
+
 import { logout } from 'apis/api/user';
+import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
+import { chatroomActions } from 'store/chatroom-slice';
+import { tokenActions } from 'store/token-slice';
+import { notificationActions } from 'store/notification-slice';
+import { userActions } from 'store/user-slice';
 
 const UserMenu = () => {
   const navigate = useNavigate();
@@ -44,7 +44,19 @@ const UserMenu = () => {
 
   const logoutBtnHandler = async () => {
     try {
-      await logout(dispatch);
+      await logout();
+
+      dispatch(userActions.DELETE_USER());
+      dispatch(notificationActions.DELETE_NOTIFICATION());
+      dispatch(tokenActions.DELETE_TOKEN());
+      dispatch(chatroomActions.REMOVE_ALL_JOINED_CHATROOMS_ID());
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '로그아웃 되었습니다.',
+          severity: 'success',
+        }),
+      );
+
       navigate('/login');
     } catch (error: any) {
       dispatch(

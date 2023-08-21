@@ -5,7 +5,11 @@ import { getUserChatRooms } from 'apis/api/user';
 import { chatroomActions } from 'store/chatroom-slice';
 import { messageActions } from 'store/message-slice';
 
-import { getAChatRoomInfo, getALastRead } from 'apis/api/firebase';
+import {
+  getAChatRoomInfo,
+  getALastRead,
+  getFirstRead,
+} from 'apis/api/firebase';
 
 import { RootState } from 'store';
 import { GAME_ID } from 'types/games';
@@ -25,9 +29,12 @@ const ChatRoomListFetcher = ({ children }: ChatRoomListFetcherProps) => {
   React.useEffect(() => {
     dispatch(messageActions.REMOVE_MESSAGES());
     dispatch(chatroomActions.REMOVE_ALL_JOINED_CHATROOMS_ID());
+
     if (chatRoomList && chatRoomList.length > 0) {
       chatRoomList.map(async (aChatRoomId: string) => {
         const dataSnapshot: any = await getAChatRoomInfo(aChatRoomId);
+
+        const firstRead = await getFirstRead(oauth2Id, aChatRoomId);
 
         if (
           dataSnapshot &&
@@ -40,6 +47,7 @@ const ChatRoomListFetcher = ({ children }: ChatRoomListFetcherProps) => {
               chatRoomId: aChatRoomId,
               game: dataSnapshot.game as GAME_ID,
               id: dataSnapshot.roomId,
+              firstRead: firstRead || 9999999999999,
             }),
           );
           const lastRead: any = await getALastRead(oauth2Id, aChatRoomId);

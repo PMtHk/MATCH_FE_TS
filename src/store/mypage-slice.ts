@@ -14,6 +14,9 @@ interface IState {
   dislikeCount: number;
   matchCount: number;
   created: string;
+  lolInfo: object | null;
+  pubgInfo: object | null;
+  overwatchInfo: object | null;
 }
 
 const initialState: IState = {
@@ -30,6 +33,9 @@ const initialState: IState = {
   dislikeCount: 0,
   matchCount: 0,
   created: '',
+  lolInfo: null,
+  pubgInfo: null,
+  overwatchInfo: null,
 };
 
 const mypageSlice = createSlice({
@@ -65,6 +71,18 @@ const mypageSlice = createSlice({
       state.dislikeCount = 0;
       state.matchCount = 0;
       state.created = '';
+      state.lolInfo = null;
+      state.pubgInfo = null;
+      state.overwatchInfo = null;
+    },
+    SET_LOLINFO: (state, action) => {
+      state.lolInfo = action.payload;
+    },
+    SET_PUBGINFO: (state, action) => {
+      state.pubgInfo = action.payload;
+    },
+    SET_OVERWATCHINFO: (state, action) => {
+      state.overwatchInfo = action.payload;
     },
   },
 });

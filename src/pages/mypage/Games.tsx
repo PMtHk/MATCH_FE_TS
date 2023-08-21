@@ -1,236 +1,261 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { Dispatch, SetStateAction, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
-import MuiTextField from '@mui/material/TextField';
-import MuiButton from '@mui/material/Button';
-import MuiToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import MuiToggleButton from '@mui/material/ToggleButton';
+import { Button, Divider, Tooltip } from '@mui/material';
+import GradeIcon from '@mui/icons-material/Grade';
 
+import { changeRepresentative } from 'apis/api/user';
+import { loadHistory as lolLoadHistory } from 'apis/api/leagueoflegends';
+import { getPlatform, loadHistory as pubgLoadHistory } from 'apis/api/pubg';
+import { loadHistory as owLoadHistory } from 'apis/api/overwatch';
 import { RootState } from 'store';
+import { snackbarActions } from 'store/snackbar-slice';
+import { userActions } from 'store/user-slice';
+import { gameList } from 'assets/Games.data';
+import GameIcon from 'components/GameIcon';
+import LolInfo from './Games/LolInfo';
+import PubgInfo from './Games/PubgInfo';
+import OverwatchInfo from './Games/OverwatchInfo';
+import AddGame from './Games/AddGame';
 
-const Games = () => {
-  const {
-    lol: initialLol,
-    pubg: initialPubg,
-    overwatch,
-  } = useSelector((state: RootState) => state.mypage);
+interface GameFilterProps {
+  selectedGame: string;
+  setSelectedGame: Dispatch<SetStateAction<string>>;
+  representative: string;
+}
 
-  // 롤
-  const [lol, setLol] = React.useState<string>(initialLol);
-  const [isLolChanged, setIsLolChanged] = React.useState<boolean>(false);
-  const [isLolCertified, setIsLolCertified] = React.useState<boolean>(false);
+const GameFilterBar = ({
+  selectedGame,
+  setSelectedGame,
+  representative,
+}: GameFilterProps) => {
+  return (
+    <>
+      <GameSelector>
+        {gameList.map((aGame) => {
+          return (
+            <GameSelectorItem
+              key={aGame.id}
+              onClick={() => setSelectedGame(aGame.id)}
+              selected={selectedGame === aGame.id}
+            >
+              <GameIcon
+                item={aGame.id}
+                id={aGame.id}
+                size={{
+                  width: '24px',
+                  height: '22px',
+                }}
+              />
+              <GameTypo selected={selectedGame === aGame.id}>
+                {aGame.name_kor}
+              </GameTypo>
+              {aGame.id === representative && (
+                <Tooltip title={`현재 대표게임 : ${representative}`}>
+                  <GradeIcon sx={{ color: '#ffc939' }} />
+                </Tooltip>
+              )}
+            </GameSelectorItem>
+          );
+        })}
+      </GameSelector>
+      <Divider />
+    </>
+  );
+};
 
-  const lolHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setLol(e.target.value);
-    setIsLolChanged(true);
-  };
+const GameDataUpdateButton = ({ game }: any) => {
+  const dispatch = useDispatch();
 
-  // 배그
-  const initialPlatform = initialPubg.split('_')[0];
-  const initialNickname = initialPubg.split('_')[1];
-  const [pubgPlatform, setPubgPlatform] =
-    React.useState<string>(initialPlatform);
-  const [pubg, setPubg] = React.useState<string>(initialNickname);
-  const [isPubgChanged, setIsPubgChanged] = React.useState<boolean>(false);
-  const [isPubgCertified, setIsPubgCertified] = React.useState<boolean>(false);
+  const { games } = useSelector((state: RootState) => state.user);
 
-  const pubgHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPubg(e.target.value);
-    setIsPubgChanged(true);
-  };
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // 오버워치
-  const [ow, setOw] = React.useState<string>(overwatch);
-  const [isOwChanged, setIsOwChanged] = React.useState<boolean>(false);
-  const [isOwCertified, setIsOwCertified] = React.useState<boolean>(false);
-
-  const owHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setOw(e.target.value);
-    setIsOwChanged(true);
+  const handleUpdate = async () => {
+    const nickname = games[game as 'lol' | 'pubg' | 'overwatch'];
+    setIsLoading(true);
+    if (game === 'lol') await lolLoadHistory(nickname);
+    if (game === 'pubg') {
+      const platform = await getPlatform(nickname);
+      if (platform) {
+        await pubgLoadHistory(nickname, platform);
+      }
+    }
+    if (game === 'overwatch') {
+      await owLoadHistory(nickname);
+    }
+    setIsLoading(false);
+    dispatch(
+      snackbarActions.OPEN_SNACKBAR({
+        message: '정보 갱신이 완료되었습니다.',
+        severity: 'success',
+      }),
+    );
   };
 
   return (
-    <Container>
+    <Button
+      fullWidth
+      variant="outlined"
+      sx={{ marginRight: '12px' }}
+      onClick={handleUpdate}
+      disabled={isLoading}
+    >
+      {isLoading ? '갱신중...' : '전적 갱신'}
+    </Button>
+  );
+};
+
+const HandleRepresentativeButton = ({ game, representative }: any) => {
+  const dispatch = useDispatch();
+  const handleRepresentative = async () => {
+    const response = await changeRepresentative(game);
+    if (response) {
+      // 대표게임 변경 성공
+      dispatch(userActions.SET_REPRESENTATIVE({ representative: game }));
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '대표게임 변경이 완료되었습니다.',
+          severity: 'success',
+        }),
+      );
+    }
+    // 대표게임 변경 실패
+    else {
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '대표게임 변경에 실패하였습니다.',
+          severity: 'error',
+        }),
+      );
+    }
+  };
+  return (
+    <UpdateButton
+      fullWidth
+      onClick={handleRepresentative}
+      variant="outlined"
+      disabled={game === representative}
+    >
+      대표 게임으로 설정
+    </UpdateButton>
+  );
+};
+
+const Games = () => {
+  const { representative } = useSelector((state: RootState) => state.user);
+  const [selectedGame, setSelectedGame] = useState<string>(representative);
+
+  const { games } = useSelector((state: RootState) => state.user);
+
+  const {
+    lolInfo: lolData,
+    pubgInfo: pubgData,
+    overwatchInfo: overwatchData,
+  } = useSelector((state: RootState) => state.mypage);
+
+  return (
+    <Container sx={{ height: '100%' }}>
       <MenuTitle>연결한 게임</MenuTitle>
-      <Section>
-        <SectionTitle>리그오브레전드</SectionTitle>
-        <InputWrapper>
-          <LolTextField
-            id="lol"
-            value={lol}
-            size="small"
-            onChange={lolHandler}
+      <GameFilterBar
+        selectedGame={selectedGame}
+        setSelectedGame={setSelectedGame}
+        representative={representative}
+      />
+      {
+        {
+          lol: games.lol ? <LolInfo data={lolData} /> : <AddGame game="lol" />,
+          pubg: games.pubg ? (
+            <PubgInfo data={pubgData} />
+          ) : (
+            <AddGame game="pubg" />
+          ),
+          overwatch: games.overwatch ? (
+            <OverwatchInfo data={overwatchData} />
+          ) : (
+            <AddGame game="overwatch" />
+          ),
+        }[selectedGame]
+      }
+      {games[selectedGame as 'lol' | 'pubg' | 'overwatch'] && (
+        <ButtonSection>
+          <GameDataUpdateButton game={selectedGame} />
+          <HandleRepresentativeButton
+            game={selectedGame}
+            representative={representative}
           />
-          <CertifyButton
-            disabled={!isLolChanged}
-            onClick={() => {
-              setIsLolCertified(true);
-            }}
-          >
-            인증하기
-          </CertifyButton>
-          <UpdateButton disabled={!isLolCertified || !isLolChanged}>
-            변경하기
-          </UpdateButton>
-        </InputWrapper>
-      </Section>
-      <Section>
-        <SectionTitle>배틀그라운드</SectionTitle>
-        <InputWrapper>
-          <PubgPlatformToggle exclusive value={pubgPlatform}>
-            <Platform
-              value="STEAM"
-              onClick={() => {
-                setPubgPlatform('STEAM');
-                setIsPubgChanged(true);
-              }}
-            >
-              Steam
-            </Platform>
-            <Platform
-              value="KAKAO"
-              onClick={() => {
-                setPubgPlatform('KAKAO');
-                setIsPubgChanged(true);
-              }}
-            >
-              Kakao
-            </Platform>
-          </PubgPlatformToggle>
-          <LolTextField
-            id="pubg"
-            value={initialPubg}
-            size="small"
-            onChange={pubgHandler}
-          />
-          <CertifyButton
-            disabled={!isPubgChanged}
-            onClick={() => {
-              setIsPubgCertified(true);
-            }}
-          >
-            인증하기
-          </CertifyButton>
-          <UpdateButton disabled={!isPubgCertified || !isPubgChanged}>
-            변경하기
-          </UpdateButton>
-        </InputWrapper>
-      </Section>
-      <Section>
-        <SectionTitle>오버워치</SectionTitle>
-        <InputWrapper>
-          <LolTextField
-            id="overwatch"
-            value={ow}
-            size="small"
-            onChange={owHandler}
-          />
-          <CertifyButton
-            disabled={!isOwChanged}
-            onClick={() => {
-              setIsOwCertified(true);
-            }}
-          >
-            인증하기
-          </CertifyButton>
-          <UpdateButton disabled={!isOwCertified || !isOwChanged}>
-            변경하기
-          </UpdateButton>
-        </InputWrapper>
-      </Section>
+        </ButtonSection>
+      )}
     </Container>
   );
 };
 export default Games;
 
-const Container = styled(MuiBox)(({ theme }) => ({
-  width: '100%',
+const Container = styled(MuiBox)(() => ({
   height: '100%',
+})) as typeof MuiBox;
+
+const ButtonSection = styled(MuiBox)(() => ({
   display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  justifyContent: 'flex-start',
-  gap: '16px',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+})) as typeof MuiBox;
+
+const UpdateButton = styled(Button)(() => ({
+  whiteSpace: 'nowrap',
+  marginRight: '12px',
+})) as typeof Button;
+
+const GameSelector = styled(MuiBox)(({ theme }) => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+  gap: '6px',
+  padding: '0 4px 0 4px',
+  marginTop: '12px',
+})) as typeof MuiBox;
+
+interface GameSelectorItem {
+  selected: boolean;
+}
+
+const GameSelectorItem = styled(MuiBox, {
+  shouldForwardProp: (prop) => prop !== 'selected',
+})<GameSelectorItem>(({ selected }) => ({
+  height: '40px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '4px',
+  '&:hover': {
+    cursor: 'pointer',
+  },
+  '& > img': {
+    filter: selected ? '' : 'contrast(10%) opacity(50%)',
+    webkitFilter: selected ? '' : 'contrast(10%) opacity(50%)',
+  },
+}));
+
+interface GameTypoProps {
+  selected: boolean;
+}
+
+const GameTypo = styled(MuiTypography, {
+  shouldForwardProp: (prop) => prop !== 'selected',
+})<GameTypoProps>(({ selected }) => ({
+  fontSize: selected ? '13px' : '12px',
+  fontWeight: selected ? '600' : '400',
+  color: selected ? '' : 'grey',
 }));
 
 const MenuTitle = styled(MuiTypography)(() => ({
-  width: '100%',
-  borderBottom: '1px solid #969393',
-  fontSize: '22px',
-  fontWeight: '700',
-  padding: '0 0 0 8px',
-})) as typeof MuiTypography;
-
-const Section = styled(MuiBox)(({ theme }) => ({
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  justifyContent: 'center',
-  padding: '8px 0 0 16px',
-  gap: '8px',
-}));
-
-const SectionTitle = styled(MuiTypography)(() => ({
   fontSize: '18px',
   fontWeight: 'bold',
-  marginBottom: '8px',
 }));
-
-const SectionContentTypo = styled(MuiTypography)(() => ({
-  fontSize: '16px',
-  fontWeight: '500',
-  padding: '0 0 0 16px',
-}));
-
-const LolTextField = styled(MuiTextField)(() => ({
-  maxWidth: '280px',
-  minWidth: '200px',
-  '& .MuiInputBase-root': {
-    height: '40px',
-    padding: '0',
-  },
-})) as typeof MuiTextField;
-
-const CertifyButton = styled(MuiButton)(() => ({
-  height: '40px',
-  width: '80px',
-  fontSize: '14px',
-  fontWeight: 'bold',
-  borderRadius: '0',
-  padding: '0',
-})) as typeof MuiButton;
-
-const InputWrapper = styled(MuiBox)(({ theme }) => ({
-  width: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: '0 8px 0 0',
-  gap: '4px',
-})) as typeof MuiBox;
-
-const UpdateButton = styled(MuiButton)(() => ({
-  height: '40px',
-  width: '80px',
-  fontSize: '14px',
-  fontWeight: 'bold',
-  borderRadius: '0',
-  padding: '0',
-})) as typeof MuiButton;
-
-const PubgPlatformToggle = styled(MuiToggleButtonGroup)(() => ({
-  '& .MuiToggleButton-root': {
-    height: '40px',
-    fontSize: '14px',
-    fontWeight: 'bold',
-    borderRadius: '4px',
-    padding: '0 8px',
-  },
-})) as typeof MuiToggleButtonGroup;
-
-const Platform = styled(MuiToggleButton)(() => ({})) as typeof MuiToggleButton;

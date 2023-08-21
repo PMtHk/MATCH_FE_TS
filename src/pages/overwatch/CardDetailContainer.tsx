@@ -108,27 +108,30 @@ const CardDetailContainer = () => {
                   currentCard?.memberList?.map((member: string) => {
                     return <MemberSlot key={member} name={member} />;
                   })}
-                {arrayForEmptySlot.map((value, index) => (
-                  <EmptySlot key={value} />
-                ))}
+                {currentCard.finished === 'false' &&
+                  arrayForEmptySlot.map((value, index) => (
+                    <EmptySlot key={value} />
+                  ))}
               </MemberList>
             </MemberListWrapper>
-            {isLogin &&
-            getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) ? (
-              oauth2Id === currentCard.oauth2Id ? (
-                <MuiStack direction="row" spacing="2%" mt={1}>
-                  <DeleteCardBtn />
-                  <EditCardBtn />
-                  <FinishBtn />
-                </MuiStack>
-              ) : (
-                <LeaveBtn />
-              )
-            ) : currentCard.expired === 'true' ? (
-              <div />
-            ) : (
-              <JoinBtn />
+            {isLogin && oauth2Id === currentCard.oauth2Id && (
+              <MuiStack direction="row" spacing="2%" mt={1}>
+                <DeleteCardBtn />
+                <EditCardBtn />
+                <FinishBtn />
+              </MuiStack>
             )}
+            {isLogin &&
+              oauth2Id !== currentCard.oauth2Id &&
+              getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
+              currentCard.expired === 'false' &&
+              currentCard.finished === 'false' && <LeaveBtn />}
+            {isLogin &&
+              oauth2Id !== currentCard.oauth2Id &&
+              !getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
+              currentCard.expired === 'false' &&
+              currentCard.finished === 'false' && <JoinBtn />}
+            {!isLogin && <JoinBtn />}
           </CardInfo>
           {isLogin &&
             getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
@@ -145,10 +148,22 @@ const CardDetailContainer = () => {
       </>
     );
   }
-  return <div />;
+  return (
+    <LoadingWrapper>
+      <Circular text="게시글을 불러오는 중입니다." height="100%" />
+    </LoadingWrapper>
+  );
 };
 
 export default CardDetailContainer;
+
+const LoadingWrapper = styled(MuiBox)(() => ({
+  width: '520px',
+  height: '360px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+})) as typeof MuiBox;
 
 const ModalHeader = styled(MuiBox)(() => ({
   width: '100%',
@@ -197,7 +212,7 @@ const SectionContent = styled(MuiTypography)(() => ({
   fontSize: '14px',
   fontWeight: '400',
   wordBreak: 'break-all',
-  height: '42px',
+  height: '80px',
 })) as typeof MuiTypography;
 
 const HashTagWrapper = styled(MuiBox)(() => ({
@@ -229,8 +244,8 @@ const MemberList = styled(MuiBox)(() => ({
   flexDirection: 'column',
   justifyContent: 'flex-start',
   minWidth: 600,
-  minHeight: '418px',
-  maxHeight: '418px',
+  minHeight: '480px',
+  maxHeight: '480px',
   overflowY: 'auto',
   overflowX: 'hidden',
 })) as typeof MuiBox;

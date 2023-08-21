@@ -1,11 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { login } from 'apis/api/user';
-
-import Linear from 'components/loading/Linear';
+import { login, getUserGameInfo } from 'apis/api/user';
+import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
+import { userActions } from 'store/user-slice';
+import { tokenActions } from 'store/token-slice';
+import Linear from 'components/loading/Linear';
 
 const Redirect = () => {
   const navigate = useNavigate();
@@ -16,7 +18,41 @@ const Redirect = () => {
 
   const loginHandler = async (code: string) => {
     try {
-      await login(code, navigate, dispatch);
+      const {
+        accessToken,
+        refreshToken,
+        nickname,
+        oauth2Id,
+        profileImage,
+        representative,
+      } = await login(code);
+
+      dispatch(tokenActions.SET_TOKEN({ accessToken }));
+      localStorage.setItem('matchGG_refreshToken', refreshToken);
+
+      dispatch(
+        userActions.SET_USER({
+          nickname,
+          oauth2Id,
+          profileImage,
+          representative,
+        }),
+      );
+
+      const { lol, pubg, overwatch, valorant } = await getUserGameInfo();
+
+      const games = { lol, pubg, overwatch, valorant };
+
+      dispatch(userActions.SET_GAMES({ games }));
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '로그인에 성공했습니다.',
+          severity: 'success',
+        }),
+      );
+
+      navigate(`/${representative}`);
     } catch (error: any) {
       if (error.response.status === 404) {
         dispatch(
@@ -42,7 +78,7 @@ const Redirect = () => {
     if (code) {
       loginHandler(code);
     }
-  });
+  }, []);
 
   return (
     <Linear height="100vh" text="로그인 중입니다. 잠시만 기다려 주세요." />

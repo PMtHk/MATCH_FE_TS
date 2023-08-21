@@ -10,17 +10,17 @@ import CheckIcon from '@mui/icons-material/Check';
 import MuiTypography from '@mui/material/Typography';
 
 import { RootState } from 'store';
-import { verifyLOLNickname } from 'apis/api/leagueoflegends';
+import { loadHistory, verifyNickname } from 'apis/api/leagueoflegends';
 import { registerActions } from 'store/register-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { gameList } from 'assets/Games.data';
-import { GAME_ID, GAME } from 'types/games';
+import { GAME } from 'types/games';
 
 const InputLol = () => {
   const { games } = useSelector((state: RootState) => state.register);
   const dispatch = useDispatch();
 
-  const [nickname, setNickname] = React.useState<string>('');
+  const [nickname, setNickname] = React.useState<string>(games.lol || '');
   const [warning, setWarning] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
@@ -38,27 +38,42 @@ const InputLol = () => {
     try {
       setIsPending(true);
       dispatch(registerActions.SET_GAMES_WITH_ID({ id: 'lol', value: '' }));
-      const exactNickname = await verifyLOLNickname(nickname);
+
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '소환사 정보를 확인하는 중입니다.',
+          severity: 'info',
+        }),
+      );
+
+      const exactNickname = await verifyNickname(nickname.trim());
+
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
           id: 'lol',
           value: exactNickname as string,
         }),
       );
+
+      dispatch(snackbarActions.CLOSE_SNACKBAR());
+
+      setNickname(exactNickname as string);
       setWarning(false);
-    } catch (error) {
-      setWarning(true);
+      setIsPending(false);
+    } catch (error: any) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '입력하신 정보와 일치하는 소환사를 찾을 수 없습니다.',
+          message: '존재하지 않는 소환사명입니다. 확인 후 다시 시도해주세요.',
           severity: 'error',
         }),
       );
-    } finally {
+      setNickname('');
+      setWarning(true);
       setIsPending(false);
-      //  defaultAxios.get(`/api/lol/user/${games.lol}`);
-      //  여기서 인증 이후 사용자에게 따로 표시 이후 DB에 사용자 랭크정보를 저장하는 API 호출
-      //  추가 작업 필요
+    } finally {
+      if (nickname !== '') {
+        await loadHistory(nickname);
+      }
     }
   };
 
@@ -117,6 +132,7 @@ const GameWrapper = styled(Box)(() => ({
 })) as typeof Box;
 
 const ImgWrapper = styled(Box)(({ theme }) => ({
+  height: '100%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

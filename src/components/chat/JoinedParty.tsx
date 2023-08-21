@@ -126,7 +126,7 @@ const JoinedParty = ({
     }
   }
 
-  return <p>게임 정보가 없습니다.</p>;
+  return <div />;
 };
 
 export default JoinedParty;

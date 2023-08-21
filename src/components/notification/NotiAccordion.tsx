@@ -79,7 +79,7 @@ const NotiAccordion = ({
   }, []);
 
   const deleteNotification = async () => {
-    await updateALastRead(oauth2Id, chatRoomId, Date.now());
+    await updateALastRead(oauth2Id, chatRoomId);
   };
 
   if (chatRoomInfo) {

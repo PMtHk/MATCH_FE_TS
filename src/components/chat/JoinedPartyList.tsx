@@ -44,7 +44,7 @@ const JoinedPartyList = ({
   return (
     <>
       <MuiTooltip title="참가한 파티 목록">
-        <MuiIconButton
+        <IconButton
           onClick={(event: React.MouseEvent<HTMLElement>) => {
             handlePartyListOpen(event);
           }}
@@ -55,7 +55,7 @@ const JoinedPartyList = ({
               fontSize: '30px',
             }}
           />
-        </MuiIconButton>
+        </IconButton>
       </MuiTooltip>
       <Menu
         anchorEl={partyListAnchorEl}
@@ -221,3 +221,11 @@ const GameTypo = styled(MuiTypography, {
   fontWeight: selected ? '600' : '400',
   color: selected ? '' : 'grey',
 }));
+
+const IconButton = styled(MuiIconButton)(({ theme }) => ({
+  padding: '0 8px 0 0',
+  margin: '0',
+  '& .MuiButtonBase-root': {
+    padding: '0',
+  },
+})) as typeof MuiIconButton;

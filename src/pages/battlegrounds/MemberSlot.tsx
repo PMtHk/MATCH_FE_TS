@@ -152,10 +152,10 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const handleKick = async () => {
     try {
       await kickMemberFromParty(
+        'pubg',
         currentCard?.id,
         currentCard?.chatRoomId,
         name,
-        'pubg',
       );
 
       dispatch(
@@ -206,7 +206,9 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                       height="24px"
                     />
                   </RankEmblemWrapper>
-                  <SectionContentText sx={{ color: authorTier?.darkColor }}>
+                  <SectionContentText
+                    sx={{ color: authorTier?.darkColor, paddingTop: '4px' }}
+                  >
                     {getRank().value}
                   </SectionContentText>
                 </>

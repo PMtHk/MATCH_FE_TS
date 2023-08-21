@@ -74,11 +74,11 @@ const CardsWrapper = styled(MuiBox)(() => ({
   justifyContent: 'center',
   alignItems: 'flex-start',
   flexWrap: 'wrap',
-  padding: '16px 0 0 8px',
+  padding: '60px 0 20px 0',
   overflowY: 'auto',
 })) as typeof MuiBox;
 
 const DummyCard = styled(MuiBox)(() => ({
-  width: '360px',
-  height: '270px',
+  width: '368px',
+  height: '272px',
 })) as typeof MuiBox;
