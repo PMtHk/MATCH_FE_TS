@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { GAME_ID } from 'types/games';
 
 interface IState {
+  kakaoCode: string;
   representative: GAME_ID | '';
   games: {
     lol: string;
@@ -25,6 +26,7 @@ interface ISet_Games_With_Id {
 }
 
 const initialState: IState = {
+  kakaoCode: '',
   representative: '',
   games: {
     lol: '',
@@ -45,6 +47,7 @@ const registerSlice = createSlice({
       state.games[action.payload.id] = action.payload.value;
     },
     DELETE_REGISTER: (state, _) => {
+      state.kakaoCode = '';
       state.representative = '';
       state.games = {
         lol: '',
@@ -52,6 +55,9 @@ const registerSlice = createSlice({
         overwatch: '',
         valorant: '',
       };
+    },
+    SET_KAKAO_CODE: (state, action) => {
+      state.kakaoCode = action.payload;
     },
   },
 });

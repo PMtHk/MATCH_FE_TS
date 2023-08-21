@@ -26,7 +26,7 @@ const InputPubg = () => {
   const [platform, setPlatform] = React.useState<'STEAM' | 'KAKAO'>('STEAM');
   const [isPlatformChanged, setIsPlatformChanged] =
     React.useState<boolean>(false);
-  const [nickname, setNickname] = React.useState<string>('');
+  const [nickname, setNickname] = React.useState<string>(games.pubg || '');
   const [warning, setWarning] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
@@ -61,6 +61,14 @@ const InputPubg = () => {
 
       dispatch(snackbarActions.CLOSE_SNACKBAR());
 
+      dispatch(
+        registerActions.SET_GAMES_WITH_ID({
+          id: 'pubg',
+          value: nickname.trim(),
+        }),
+      );
+
+      setIsPlatformChanged(false);
       setPlatform(fetchedPlatform);
       setNickname(nickname.trim());
       setWarning(false);
@@ -101,16 +109,6 @@ const InputPubg = () => {
     );
   };
 
-  const handlePlatform = (
-    event: React.MouseEvent<HTMLElement>,
-    newAlignment: string,
-  ) => {
-    if (newAlignment === 'STEAM' || newAlignment === 'KAKAO') {
-      setPlatform(newAlignment);
-      setIsPlatformChanged(true);
-    }
-  };
-
   return (
     <GameWrapper key={gameInfo.id}>
       <ImgWrapper>
@@ -121,7 +119,6 @@ const InputPubg = () => {
           color="primary"
           value={platform}
           exclusive
-          onChange={handlePlatform}
           aria-label="Platform"
           sx={{
             height: '40px',
@@ -168,6 +165,7 @@ const GameWrapper = styled(Box)(() => ({
 })) as typeof Box;
 
 const ImgWrapper = styled(Box)(({ theme }) => ({
+  height: '100%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

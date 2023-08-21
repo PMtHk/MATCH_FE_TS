@@ -9,16 +9,31 @@ import MuiButton from '@mui/material/Button';
 import MuiTypography from '@mui/material/Typography';
 
 import { RootState } from 'store';
+import { defaultAxios } from 'apis/utils';
 import InputLol from './InputLol';
 import InputPubg from './InputPubg';
 import InputOverwatch from './InputOverwatch';
-// import InputValorant from './InputValorant';
+import InputValorant from './InputValorant';
 
 const Games = () => {
   const navigate = useNavigate();
 
   const params = new URL(document.URL).searchParams;
-  const code = params.get('code');
+  const rsoAccessCode = params.get('code');
+
+  React.useEffect(() => {
+    const sendRsoAcessCode = async () => {
+      const response = await defaultAxios.post('/api/valorant/user/exist', {
+        code: rsoAccessCode as string,
+      });
+
+      console.log(response);
+    };
+
+    if (rsoAccessCode) {
+      sendRsoAcessCode();
+    }
+  }, [rsoAccessCode]);
 
   const { games } = useSelector((state: RootState) => state.register);
   const atLeastOne =
@@ -27,7 +42,6 @@ const Games = () => {
   const handleNextBtn = () => {
     navigate({
       pathname: '/kakao/register/favgame',
-      search: `?code=${code}`,
     });
   };
 
@@ -39,7 +53,7 @@ const Games = () => {
         <InputLol />
         <InputPubg />
         <InputOverwatch />
-        {/* <InputValorant /> */}
+        <InputValorant />
       </Wrapper>
       <NextButton disabled={!atLeastOne} onClick={handleNextBtn}>
         다음

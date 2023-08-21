@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
@@ -16,74 +17,18 @@ import {
   collectionAndUseOfPersonalInformation,
   termOfUse,
 } from 'assets/Terms.data';
-
-const Wrapper = styled(Box)(() => ({
-  width: '100%',
-  padding: '50px 20px 20px 20px',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  justifyContent: 'flex-start',
-  overflowY: 'auto',
-  height: '100%',
-})) as typeof Box;
-
-const FormControlLabelTypo = styled(Typography)(({ theme }) => ({
-  fontSize: '18px',
-  fontWeight: 600,
-  [theme.breakpoints.up('sm')]: {
-    fontSize: '22px',
-  },
-})) as typeof Typography;
-
-const InnerWrapper = styled(Box)(() => ({
-  margin: '15px 15px 20px 0',
-})) as typeof Box;
-
-const Description = styled(Typography)(({ theme }) => ({
-  margin: '0  20px  0 20px',
-  fontSize: '14px',
-  fontWeight: 400,
-  wordBreak: 'break-word',
-  [theme.breakpoints.up('sm')]: {
-    fontSize: '16px',
-  },
-})) as typeof Typography;
-
-const Contents = styled(Box)(() => ({
-  margin: '0  0  0 20px',
-  width: '100%',
-  height: '100%',
-  maxHeight: '160px',
-  padding: '10px 20px',
-  overflowY: 'scroll',
-  border: '1px solid #dddddd',
-  borderRadius: '8px',
-})) as typeof Box;
-
-const NextButton = styled(Button)(() => ({
-  position: 'relative',
-  bottom: '0',
-  margin: '0 20px 0 20px',
-  width: '95%',
-  height: '60px',
-  borderRadius: '4px',
-  backgroundColor: '#494b4e',
-  fontSize: '18px',
-  color: '#ffffff',
-  '&:hover': {
-    backgroundColor: '#7f8287',
-  },
-  '&.Mui-disabled': {
-    backgroundColor: '#d1d4db',
-  },
-})) as typeof Button;
+import { registerActions } from 'store/register-slice';
 
 const Terms = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const params = new URL(document.URL).searchParams;
   const code = params.get('code');
+
+  useEffect(() => {
+    dispatch(registerActions.SET_KAKAO_CODE(code as string));
+  }, [code]);
 
   const [firstTerm, setFirstTerm] = React.useState(false);
   const [secondTerm, setSecondTerm] = React.useState(false);
@@ -101,7 +46,6 @@ const Terms = () => {
   const hanldeNextBtn = () => {
     navigate({
       pathname: '/kakao/register/games',
-      search: `?code=${code}`,
     });
   };
 
@@ -165,3 +109,65 @@ const Terms = () => {
 };
 
 export default Terms;
+
+const Wrapper = styled(Box)(() => ({
+  width: '100%',
+  padding: '50px 20px 20px 20px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+  overflowY: 'auto',
+  height: '100%',
+})) as typeof Box;
+
+const FormControlLabelTypo = styled(Typography)(({ theme }) => ({
+  fontSize: '18px',
+  fontWeight: 600,
+  [theme.breakpoints.up('sm')]: {
+    fontSize: '22px',
+  },
+})) as typeof Typography;
+
+const InnerWrapper = styled(Box)(() => ({
+  margin: '15px 15px 20px 0',
+})) as typeof Box;
+
+const Description = styled(Typography)(({ theme }) => ({
+  margin: '0  20px  0 20px',
+  fontSize: '14px',
+  fontWeight: 400,
+  wordBreak: 'break-word',
+  [theme.breakpoints.up('sm')]: {
+    fontSize: '16px',
+  },
+})) as typeof Typography;
+
+const Contents = styled(Box)(() => ({
+  margin: '0  0  0 20px',
+  width: '100%',
+  height: '100%',
+  maxHeight: '160px',
+  padding: '10px 20px',
+  overflowY: 'scroll',
+  border: '1px solid #dddddd',
+  borderRadius: '8px',
+})) as typeof Box;
+
+const NextButton = styled(Button)(() => ({
+  position: 'relative',
+  bottom: '0',
+  margin: '0 20px 0 20px',
+  width: '95%',
+  height: '60px',
+  borderRadius: '4px',
+  backgroundColor: '#494b4e',
+  fontSize: '18px',
+  color: '#ffffff',
+  '&:hover': {
+    backgroundColor: '#7f8287',
+  },
+  '&.Mui-disabled': {
+    backgroundColor: '#d1d4db',
+  },
+})) as typeof Button;

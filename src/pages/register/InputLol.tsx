@@ -20,7 +20,7 @@ const InputLol = () => {
   const { games } = useSelector((state: RootState) => state.register);
   const dispatch = useDispatch();
 
-  const [nickname, setNickname] = React.useState<string>('');
+  const [nickname, setNickname] = React.useState<string>(games.lol || '');
   const [warning, setWarning] = React.useState<boolean>(false);
   const [isPending, setIsPending] = React.useState<boolean>(false);
 
@@ -132,6 +132,7 @@ const GameWrapper = styled(Box)(() => ({
 })) as typeof Box;
 
 const ImgWrapper = styled(Box)(({ theme }) => ({
+  height: '100%',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',

@@ -10,7 +10,7 @@ interface IState {
     lol: string;
     pubg: string;
     overwatch: string;
-    // valorant: string;
+    valorant: string;
   };
   isLogin: boolean;
   isAdmin: boolean;
@@ -37,7 +37,7 @@ interface ISet_Games {
       lol: string;
       pubg: string;
       overwatch: string;
-      // valorant: string;
+      valorant: string;
     };
   };
 }
@@ -58,7 +58,7 @@ const initialState: IState = {
     lol: '', // 롤 소환사명
     pubg: '', // 배틀그라운드 유저네임
     overwatch: '', // 오버워치 닉네임 + 배틀태그?
-    // valorant: '', // 발로란트 닉네임
+    valorant: '', // 발로란트 닉네임
   },
   isLogin: false,
   isAdmin: false,
@@ -93,7 +93,7 @@ const userSlice = createSlice({
         lol: '',
         pubg: '',
         overwatch: '',
-        // valorant: '',
+        valorant: '',
       };
       state.isLogin = false;
     },

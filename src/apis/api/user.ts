@@ -86,11 +86,11 @@ export const logout = async () => {
  */
 
 export const getUserGameInfo = async () => {
-  const { lol, pubg, overwatch } = await authAxios
+  const { lol, pubg, overwatch, valorant } = await authAxios
     .get('/api/user/info')
     .then((res) => res.data);
 
-  return { lol, pubg, overwatch };
+  return { lol, pubg, overwatch, valorant };
 };
 
 /**
@@ -111,7 +111,7 @@ export const signup = async (
     lol: string;
     pubg: string;
     overwatch: string;
-    // valorant: string;
+    valorant: string;
   },
 ) => {
   const {
@@ -129,7 +129,9 @@ export const signup = async (
     lol: games.lol,
     pubg: games.pubg,
     overwatch: games.overwatch,
-    // valorant: games.valorant,
+    valorant: games.valorant,
+    // rsoAccessToken: '',
+    // rsoRefreshToken: '',
   });
 
   return null;
