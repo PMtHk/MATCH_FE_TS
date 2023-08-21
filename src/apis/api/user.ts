@@ -129,11 +129,7 @@ export const signup = async (
     lol: games.lol,
     pubg: games.pubg,
     overwatch: games.overwatch,
-    // valorant: games.valorant,
-    lostark: '',
-    maplestory: '',
-    // rsoAccessToken: '',
-    // rsoRefreshToken: '',
+    valorant: games.valorant,
   });
 
   return null;

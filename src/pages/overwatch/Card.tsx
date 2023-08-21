@@ -34,12 +34,12 @@ interface CardProps {
       name: string;
       battletag: number;
       type: string;
-      tank_tier: string;
-      tank_rank: string;
-      damage_tier: string;
-      damage_rank: string;
-      support_tier: string;
-      support_rank: string;
+      tank_tier: string | 'none';
+      tank_rank: string | 'none';
+      damage_tier: string | 'none';
+      damage_rank: string | 'none';
+      support_tier: string | 'none';
+      support_rank: string | 'none';
       wins: number;
       losses: number;
       kills: number;
@@ -204,23 +204,35 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <WinRateSectionName>승률</WinRateSectionName>
             <ChildSectionContent>
-              <MatchPlayed>
-                <WinRate
-                  component="span"
-                  sx={{
-                    color: winRate >= 50 ? '#d31f45' : '#5383e8',
-                  }}
-                >
-                  {winRate}%
-                </WinRate>
-                ({item.author?.wins}승 {item.author?.losses}패)
-              </MatchPlayed>
+              {item.author.wins + item.author.losses === 0 ? (
+                <MatchPlayed>
+                  <WinRate component="span">정보없음</WinRate>
+                </MatchPlayed>
+              ) : (
+                <MatchPlayed>
+                  <WinRate
+                    component="span"
+                    sx={{
+                      color: winRate >= 50 ? '#d31f45' : '#5383e8',
+                    }}
+                  >
+                    {winRate}%
+                  </WinRate>
+                  ({item.author?.wins}승 {item.author?.losses}패)
+                </MatchPlayed>
+              )}
             </ChildSectionContent>
           </AuthorSection>
           <AuthorSection>
             <KDSectionName>K/D</KDSectionName>
             <ChildSectionContent>
-              <KDTypo sx={{ color: calcKDInfo().color }}>{authorKDTypo}</KDTypo>
+              {item.author.kills + item.author.deaths === 0 ? (
+                <KDTypo>정보없음</KDTypo>
+              ) : (
+                <KDTypo sx={{ color: calcKDInfo().color }}>
+                  {authorKDTypo}
+                </KDTypo>
+              )}
             </ChildSectionContent>
           </AuthorSection>
           <AuthorSection>

@@ -48,7 +48,9 @@ const InputOverwatch = () => {
         }),
       );
 
-      const isExist = await verifyNickname(nickname.trim());
+      await verifyNickname(nickname.trim());
+
+      await loadHistory(nickname.trim());
 
       dispatch(
         registerActions.SET_GAMES_WITH_ID({
@@ -72,10 +74,6 @@ const InputOverwatch = () => {
       setNickname('');
       setWarning(true);
       setIsPending(false);
-    } finally {
-      if (nickname !== '') {
-        await loadHistory(nickname);
-      }
     }
   };
 

@@ -169,22 +169,36 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>승률</SectionTitleInMember>
-            <WinRateSection>
-              <WinRate
-                component="span"
-                sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-              >
-                {winRate}%
-              </WinRate>
-              <MatchPlayed>
-                {memberInfo.wins}승 {memberInfo.losses}패
-              </MatchPlayed>
-            </WinRateSection>
+            {memberInfo.wins + memberInfo.losses === 0 ? (
+              <WinRateSection>
+                <WinRate component="span" sx={{ fontSize: '14px' }}>
+                  정보없음
+                </WinRate>
+              </WinRateSection>
+            ) : (
+              <WinRateSection>
+                <WinRate
+                  component="span"
+                  sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                >
+                  {winRate}%
+                </WinRate>
+                <MatchPlayed>
+                  {memberInfo.wins}승 {memberInfo.losses}패
+                </MatchPlayed>
+              </WinRateSection>
+            )}
           </SectionInMember>
           <SectionInMember>
             <SectionTitleInMember>K/D</SectionTitleInMember>
             <KDSection>
-              <KDTypo sx={{ color: calcKDInfo().color }}>{authorKDTypo}</KDTypo>
+              {memberInfo.kills + memberInfo.deaths === 0 ? (
+                <KDTypo sx={{ fontSize: '14px' }}>정보없음</KDTypo>
+              ) : (
+                <KDTypo sx={{ color: calcKDInfo().color }}>
+                  {authorKDTypo}
+                </KDTypo>
+              )}
             </KDSection>
           </SectionInMember>
           <SectionInMember>
