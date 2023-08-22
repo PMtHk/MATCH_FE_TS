@@ -168,23 +168,22 @@ const CreateCard = () => {
     try {
       setIsLoading(true);
 
-      const isExist = await verifyNickname(userInput.name.trim());
-
-      if (isExist) {
-        setUserInput({ ...userInput, name: userInput.name });
-      }
-
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '사용자 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
           severity: 'info',
         }),
       );
+      const isExist = await verifyNickname(userInput.name.trim());
+      await loadHistory(userInput.name.trim());
+
+      if (isExist) {
+        setUserInput({ ...userInput, name: userInput.name });
+      }
+
       setIsLoading(false);
       setIsChanged(true);
       setIsNewNicknameCertified(true);
-
-      await loadHistory(userInput.name.trim());
     } catch (error: any) {
       if (
         error.response.status === 404 &&

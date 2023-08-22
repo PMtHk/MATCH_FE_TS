@@ -167,6 +167,12 @@ const CreateCard = () => {
   const certifyNewNickname = async () => {
     try {
       setIsLoading(true);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '플레이어 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
+          severity: 'info',
+        }),
+      );
 
       // 닉네임, 플랫폼 정보 가져오기
       const platform = await getPlatform(userInput.name.trim());
@@ -175,13 +181,6 @@ const CreateCard = () => {
         ...userInput,
         platform,
       });
-
-      dispatch(
-        snackbarActions.OPEN_SNACKBAR({
-          message: '플레이어 정보를 불러오는 중입니다. 잠시만 기다려 주세요.',
-          severity: 'info',
-        }),
-      );
 
       await loadHistory(userInput.name, platform);
 
