@@ -31,7 +31,7 @@ const TitleTypo = styled(Typography)(({ theme }) => ({
     fontSize: 22,
   },
   [theme.breakpoints.up('lg')]: {
-    fontSize: 28,
+    fontSize: 32,
   },
   fontWeight: 700,
   margin: '20px 0 50px',

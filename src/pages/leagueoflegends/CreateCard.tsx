@@ -179,12 +179,11 @@ const CreateCard = () => {
       );
 
       const exactSummonerName = await verifyNickname(userInput.name);
+      await loadHistory(exactSummonerName);
 
       setIsLoading(false);
       setUserInput({ ...userInput, name: exactSummonerName });
       setIsNewNicknameCertified(true);
-
-      await loadHistory(exactSummonerName);
     } catch (error: any) {
       if (error.response.status === 404) {
         dispatch(
