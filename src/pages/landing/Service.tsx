@@ -46,6 +46,16 @@ const Service = () => {
               </ColumnDescription>
             </ColumnText>
           </ColumnBox>
+          <ColumnBox>
+            <ColumnText>
+              <ColumnTitle>알림</ColumnTitle>
+              <ColumnDescription>
+                기약없는 기다림이 아닌
+                <br />
+                빠른 플레이를 위해
+              </ColumnDescription>
+            </ColumnText>
+          </ColumnBox>
         </ContentWrapper>
       </Container>
     </Wrapper>
