@@ -10,6 +10,9 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
 import MuiImageList from '@mui/material/ImageList';
+import MuiToolTip from '@mui/material/Tooltip';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
 import Close from '@mui/icons-material/Close';
 
@@ -29,7 +32,8 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { oauth2Id } = useSelector((state: RootState) => state.user);
+  const { oauth2Id, games } = useSelector((state: RootState) => state.user);
+  const myName = games.pubg;
   const { currentCard } = useSelector((state: RootState) => state.card);
 
   const [memberInfo, setMemberInfo] = React.useState<any>({});
@@ -237,9 +241,24 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
           </SectionInMember>
           <MemberControlPanel>
             {isAuthor && currentCard?.name !== name && (
-              <MuiIconButton onClick={handleKickBtn}>
-                <Close />
-              </MuiIconButton>
+              <MuiToolTip title="강제퇴장" placement="right">
+                <IconButton
+                  onClick={handleKickBtn}
+                  disabled={
+                    currentCard.expired === true ||
+                    currentCard.finished === true
+                  }
+                >
+                  <NotInterestedIcon />
+                </IconButton>
+              </MuiToolTip>
+            )}
+            {currentCard?.memberList.includes(myName) && name !== myName && (
+              <MuiToolTip title="팔로우" placement="right">
+                <IconButton>
+                  <PersonAdd />
+                </IconButton>
+              </MuiToolTip>
             )}
           </MemberControlPanel>
         </Member>
@@ -324,3 +343,9 @@ const SectionContentText = styled(MuiTypography)(() => ({
   overflow: 'hidden',
   textOverflow: 'ellipsis',
 })) as typeof MuiTypography;
+
+const IconButton = styled(MuiIconButton)(() => ({
+  '& .MuiIconButton-root': {
+    padding: '0',
+  },
+}));
