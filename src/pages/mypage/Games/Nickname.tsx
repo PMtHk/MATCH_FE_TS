@@ -60,11 +60,13 @@ const Nickname = ({ name, game, isNew }: any) => {
 
   const certifyNickname = async () => {
     let isCertified = false;
+    let certifiedNickname = nickname;
     try {
       if (game === 'lol') {
         const existNickname = await verifyLOLNickname(nickname);
         if (existNickname) {
           setNickname(existNickname);
+          certifiedNickname = existNickname;
           isCertified = true;
           // DB쌓기
           await loadLOLHistory(existNickname);
@@ -99,20 +101,22 @@ const Nickname = ({ name, game, isNew }: any) => {
       // setNickname(name);
     }
 
-    return isCertified;
+    return { isCertified, certifiedNickname };
   };
 
   const requestChangeNickname = async () => {
     // 닉네임 존재 인증 이후 닉네임 변경
     setIsPosting(true);
     // 닉네임 존재 여부 인증받기
-    const isCertified = await certifyNickname();
+    const { isCertified, certifiedNickname } = await certifyNickname();
     // 닉네임 인증에 성공한 경우
     if (isCertified) {
-      const response = await changeNickname(game, nickname);
+      const response = await changeNickname(game, certifiedNickname);
       // 닉네임 변경에 성공한 경우
       if (response) {
-        dispatch(userActions.SET_GAMES_WITH_ID({ id: game, value: nickname }));
+        dispatch(
+          userActions.SET_GAMES_WITH_ID({ id: game, value: certifiedNickname }),
+        );
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '변경이 완료되었습니다.',
