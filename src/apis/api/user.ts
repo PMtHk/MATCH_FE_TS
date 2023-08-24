@@ -230,3 +230,13 @@ export const changeRepresentative = async (game: string) => {
   if (response.status === 200) return true;
   return false;
 };
+
+/**
+ * (사용자) 팔로우 목록을 가져오는 함수
+ * @returns 팔로워들의 oauth2Id 및 각 게임별 닉네임 list
+ */
+
+export const getFollowList = async () => {
+  const response = await authAxios.get('/api/user/follow/list');
+  return response.data;
+};
