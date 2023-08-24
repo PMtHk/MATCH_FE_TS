@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import {
   ref,
@@ -8,47 +7,10 @@ import {
   update,
   set,
   push,
-  DatabaseReference,
 } from 'firebase/database';
 
-import { promiseWrapper } from 'apis/utils/promiseWrapper';
 import { notificationActions } from 'store/notification-slice';
 import { CHATROOM, MEMBER } from 'types/chats';
-
-/**
- * 해당 채팅방 차단 여부 확인
- *
- * @param {string} chatRoomId 채팅방 아이디
- * @param {string} oauth2Id 사용자 oauth2Id
- * @return {boolean} 해당 채팅방의 요청자 차단 여부
- *
- * @example
- * ```typescript
- * const isBanned = await isBanned('fb-chatRoomId', 'oauth2Id');
- * console.log(isBanned); // true or false
- * ```
- */
-
-export const isBanned = async (chatRoomId: string, oauth2Id: string) => {
-  const chatRoomRef = ref(getDatabase(), 'chatRooms');
-
-  const isBanned: boolean = await get(child(chatRoomRef, chatRoomId)).then(
-    (datasnapshot) => {
-      const bannedList = datasnapshot.val().bannedList
-        ? datasnapshot.val().bannedList
-        : [];
-      const bannedOauth2IdList = bannedList.map(
-        (member: MEMBER) => member.oauth2Id,
-      );
-      if (bannedOauth2IdList.includes(oauth2Id)) {
-        return true;
-      }
-      return false;
-    },
-  );
-
-  return isBanned;
-};
 
 /**
  * FB realtimeDB 내 해당 채팅방 멤버 추가

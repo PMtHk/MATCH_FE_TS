@@ -23,6 +23,7 @@ import FinishBtn from 'components/card-actions/FinishBtn';
 
 import { GAME } from 'types/games';
 import { getIsJoined } from 'functions/commons';
+import { MEMBER_FROM_SERVER } from 'types/commons';
 import { platformList, typeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
@@ -99,8 +100,14 @@ const CardDetailContainer = () => {
               </MemeberListTitle>
               <MemberList>
                 {currentCard &&
-                  currentCard?.memberList?.map((member: string) => {
-                    return <MemberSlot key={member} name={member} />;
+                  currentCard?.memberList?.map((member: MEMBER_FROM_SERVER) => {
+                    return (
+                      <MemberSlot
+                        key={member.nickname}
+                        name={member.nickname}
+                        oauth2Id={member.oauth2Id}
+                      />
+                    );
                   })}
                 {currentCard.finished === 'false' &&
                   Array(totalMember - currentMember)

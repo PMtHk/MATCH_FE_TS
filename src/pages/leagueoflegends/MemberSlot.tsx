@@ -18,17 +18,21 @@ import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
 import { fetchMemberHistory } from 'apis/api/leagueoflegends';
+import { isInParty } from 'functions/commons';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
   summonerName: string;
+  oauth2Id: string;
 }
 
-const MemberSlot = ({ summonerName }: MemberSlotProps) => {
+const MemberSlot = ({
+  summonerName,
+  oauth2Id: MemberOauth2Id,
+}: MemberSlotProps) => {
   const dispatch = useDispatch();
 
   const { oauth2Id, games } = useSelector((state: RootState) => state.user);
-  const myName = games.lol;
   const { currentCard } = useSelector((state: RootState) => state.card);
 
   const [memberInfo, setMemberInfo] = React.useState<any>({});
@@ -233,8 +237,8 @@ const MemberSlot = ({ summonerName }: MemberSlotProps) => {
                 </IconButton>
               </MuiToolTip>
             )}
-            {currentCard?.memberList.includes(myName) &&
-              summonerName !== myName && (
+            {isInParty(currentCard.memberList, oauth2Id) &&
+              oauth2Id !== MemberOauth2Id && (
                 <MuiToolTip title="팔로우" placement="right">
                   <IconButton>
                     <PersonAdd />

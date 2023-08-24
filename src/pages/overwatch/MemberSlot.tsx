@@ -20,17 +20,19 @@ import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
 import { fetchMemberHistory } from 'apis/api/overwatch';
 import { kickMemberFromParty } from 'apis/api/common';
+import { MEMBER_FROM_SERVER } from 'types/commons';
+import { isInParty } from 'functions/commons';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
   name: string;
+  oauth2Id: string;
 }
 
-const MemberSlot = ({ name }: MemberSlotProps) => {
+const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
   const dispatch = useDispatch();
 
-  const { oauth2Id, games } = useSelector((state: RootState) => state.user);
-  const myName = games.overwatch;
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
   const [memberInfo, setMemberInfo] = React.useState<any>({
@@ -353,13 +355,14 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </IconButton>
               </MuiToolTip>
             )}
-            {currentCard?.memberList.includes(myName) && name !== myName && (
-              <MuiToolTip title="팔로우" placement="right">
-                <IconButton>
-                  <PersonAdd />
-                </IconButton>
-              </MuiToolTip>
-            )}
+            {isInParty(currentCard.memberList, oauth2Id) &&
+              oauth2Id !== MemberOauth2Id && (
+                <MuiToolTip title="팔로우" placement="right">
+                  <IconButton>
+                    <PersonAdd />
+                  </IconButton>
+                </MuiToolTip>
+              )}
           </MemberControlPanel>
         </Member>
       )}

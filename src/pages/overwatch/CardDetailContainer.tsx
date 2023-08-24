@@ -21,6 +21,7 @@ import DeleteCardBtn from 'components/card-actions/DeleteCardBtn';
 import Circular from 'components/loading/Circular';
 import FinishBtn from 'components/card-actions/FinishBtn';
 import { getIsJoined } from 'functions/commons';
+import { MEMBER_FROM_SERVER } from 'types/commons';
 import { positionList, queueTypeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
@@ -105,8 +106,14 @@ const CardDetailContainer = () => {
               </MemeberListTitle>
               <MemberList>
                 {currentCard &&
-                  currentCard?.memberList?.map((member: string) => {
-                    return <MemberSlot key={member} name={member} />;
+                  currentCard?.memberList?.map((member: MEMBER_FROM_SERVER) => {
+                    return (
+                      <MemberSlot
+                        key={member.nickname}
+                        name={member.nickname}
+                        oauth2Id={member.oauth2Id}
+                      />
+                    );
                   })}
                 {currentCard.finished === 'false' &&
                   arrayForEmptySlot.map((value, index) => (

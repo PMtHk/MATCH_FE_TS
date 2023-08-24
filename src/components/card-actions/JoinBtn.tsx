@@ -6,12 +6,11 @@ import styled from '@emotion/styled';
 import MuiButton from '@mui/material/Button';
 
 import { joinParty } from 'apis/api/common';
-import { isBanned } from 'apis/api/firebase';
 import { getPlatform } from 'apis/api/pubg';
 import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
-import { getCurrentGame } from 'functions/commons';
+import { getCurrentGame, getIsBanned } from 'functions/commons';
 import { GAME_ID } from 'types/games';
 import { chatroomActions } from 'store/chatroom-slice';
 
@@ -123,7 +122,8 @@ const JoinBtn = () => {
       }
     }
 
-    const banned = await isBanned(chatRoomId, oauth2Id);
+    const banned = getIsBanned(currentCard.banList, oauth2Id);
+
     if (!banned) {
       try {
         const firstRead = await joinParty(
@@ -154,7 +154,7 @@ const JoinBtn = () => {
     } else {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: '차단된 사용자입니다.',
+          message: '해당 파티에 참여하실 수 없습니다. (사유: 강제퇴장)',
           severity: 'warning',
         }),
       );
