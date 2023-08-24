@@ -122,7 +122,7 @@ const JoinBtn = () => {
       }
     }
 
-    const banned = getIsBanned(currentCard.banList, oauth2Id);
+    const banned = getIsBanned(currentCard?.banList, oauth2Id);
 
     if (!banned) {
       try {
