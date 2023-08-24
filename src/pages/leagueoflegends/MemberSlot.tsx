@@ -19,6 +19,7 @@ import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
 import { fetchMemberHistory } from 'apis/api/leagueoflegends';
 import { isInParty } from 'functions/commons';
+import { followUser } from 'apis/api/user';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -130,6 +131,38 @@ const MemberSlot = ({
   const unranked =
     memberInfo?.tier === 'UNRANKED' && memberInfo?.rank === 'UNRANKED';
 
+  const handleFollow = async () => {
+    try {
+      await followUser(MemberOauth2Id);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `${summonerName} 님을 팔로우했습니다.`,
+          severity: 'success',
+        }),
+      );
+    } catch (error: any) {
+      if (
+        error.response.status === 400 &&
+        error.response.data.message === '이미 팔로우 하는 사용자입니다.'
+      ) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: error.response.data.message,
+            severity: 'error',
+          }),
+        );
+      } else {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '알 수 없는 오류로 작업을 수행할 수 없습니다. 잠시 후 다시 시도해주세요.',
+            severity: 'error',
+          }),
+        );
+      }
+    }
+  };
+
   return (
     <>
       {isLoading && (
@@ -240,7 +273,7 @@ const MemberSlot = ({
             {isInParty(currentCard.memberList, oauth2Id) &&
               oauth2Id !== MemberOauth2Id && (
                 <MuiToolTip title="팔로우" placement="right">
-                  <IconButton>
+                  <IconButton onClick={handleFollow}>
                     <PersonAdd />
                   </IconButton>
                 </MuiToolTip>

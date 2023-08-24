@@ -210,7 +210,7 @@ export const changeNickname = async (game: string, nickname: string) => {
 };
 
 /**
- * (사용자) 대표게임을 변경하는 함수
+ * (사용자) 대표게임을 변경
  *
  * @param game 변경될 게임
  * @returns 성공시 true 실패시 false
@@ -229,4 +229,22 @@ export const changeRepresentative = async (game: string) => {
 
   if (response.status === 200) return true;
   return false;
+};
+
+/**
+ * (사용자) 타 사용자 팔로우
+ *
+ * @param {string} oauth2Id 팔로우할 사용자의 oauth2Id
+ * @returns null
+ *
+ * @example
+ * ```typescript
+ * await followUser('kakao1234567890'); // 팔로우 성공
+ * ```
+ */
+
+export const followUser = async (oauth2Id: string) => {
+  await authAxios.post(`/api/user/follow?oauth2Id=${oauth2Id}`);
+
+  return null;
 };
