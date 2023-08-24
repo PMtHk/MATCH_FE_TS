@@ -7,12 +7,14 @@ import { fetchCardDetail } from 'apis/api/common';
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import { isInParty } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;
+  game: GAME_ID;
 }
 
-const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
+const CardDetailFetcher = ({ children, game }: CardDetailFetcherProps) => {
   const dispatch = useDispatch();
   const params = useParams();
 
@@ -24,7 +26,10 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
 
   const deps = [cardRefresh];
 
-  const cardDetail: any = fetchCardDetail(`/api/lol/boards/${cardId}`, deps);
+  const cardDetail: any = fetchCardDetail(
+    `/api/${game}/boards/${cardId}`,
+    deps,
+  );
 
   useEffect(() => {
     dispatch(cardActions.SET_CURRENT_CARD(cardDetail));
