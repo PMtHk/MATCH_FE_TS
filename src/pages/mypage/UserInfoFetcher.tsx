@@ -29,6 +29,10 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
 
   const { games } = useSelector((state: RootState) => state.user);
 
+  const { refreshLolInfo, refreshPubgInfo, refreshOverwatchInfo } = useSelector(
+    (state: RootState) => state.mypage,
+  );
+
   useEffect(() => {
     const getLolData = async () => {
       const duoRankInfo = await getSummonerInfo(games.lol, 'DUO_RANK');
@@ -39,7 +43,7 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     if (games.lol) {
       getLolData();
     }
-  }, [games.lol]);
+  }, [games.lol, refreshLolInfo]);
 
   useEffect(() => {
     const getPubgData = async () => {
@@ -59,7 +63,7 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     if (games.pubg) {
       getPubgData();
     }
-  }, [games.pubg]);
+  }, [games.pubg, refreshPubgInfo]);
 
   useEffect(() => {
     const getOverwatchData = async () => {
@@ -71,7 +75,7 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     if (games.overwatch) {
       getOverwatchData();
     }
-  }, [games.overwatch]);
+  }, [games.overwatch, refreshOverwatchInfo]);
 
   return <div>{children}</div>;
 };

@@ -7,6 +7,7 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import { Button, Divider, Tooltip } from '@mui/material';
 import GradeIcon from '@mui/icons-material/Grade';
+import { mypageActions } from 'store/mypage-slice';
 
 import { changeRepresentative } from 'apis/api/user';
 import { loadHistory as lolLoadHistory } from 'apis/api/leagueoflegends';
@@ -78,16 +79,23 @@ const GameDataUpdateButton = ({ game }: any) => {
   const handleUpdate = async () => {
     const nickname = games[game as 'lol' | 'pubg' | 'overwatch'];
     setIsLoading(true);
-    if (game === 'lol') await lolLoadHistory(nickname);
+    // DB에 전적 갱신하기
+    if (game === 'lol') {
+      await lolLoadHistory(nickname);
+      dispatch(mypageActions.TOGGLE_REFRESH_LOL());
+    }
     if (game === 'pubg') {
       const platform = await getPlatform(nickname);
       if (platform) {
         await pubgLoadHistory(nickname, platform);
+        dispatch(mypageActions.TOGGLE_REFRESH_PUBG());
       }
     }
     if (game === 'overwatch') {
       await owLoadHistory(nickname);
+      dispatch(mypageActions.TOGGLE_REFRESH_OVERWATCH());
     }
+
     setIsLoading(false);
     dispatch(
       snackbarActions.OPEN_SNACKBAR({
