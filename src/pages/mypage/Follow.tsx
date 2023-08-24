@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 
 import PersonOffIcon from '@mui/icons-material/PersonOff';
-import { getFollowList } from 'apis/api/user';
+import { deleteFollowList, getFollowList } from 'apis/api/user';
 
 const Follow = () => {
   const testArr = [
@@ -49,76 +49,86 @@ const Follow = () => {
     overwatch: string;
     valorant: string;
   };
-  const [followList, setFollowList] = useState<Follower[] | null>(null);
+  const [followList, setFollowList] = useState<Follower[]>([]);
 
   useEffect(() => {
-    // const initFollowList = async () => {
-    //   const response = await getFollowList();
-    //   setFollowList(response);
-    // };
-    // initFollowList();
+    const initFollowList = async () => {
+      const response = await getFollowList();
+      setFollowList(response);
+    };
+    initFollowList();
   }, []);
 
-  const cancelFollow = () => {
-    console.log('cancel');
+  const cancelFollow = async () => {
+    await deleteFollowList();
   };
-
-  return (
-    <Container>
-      <MenuTitle>팔로우 목록</MenuTitle>
-      <FollowListContainer>
-        <TableContainer>
-          <Table>
-            <TableHead sx={{ display: 'block' }}>
-              <TableRow>
-                <TableCell>{'   '}</TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap', fontSize: '16px' }}>
-                  리그오브레전드
-                </TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap', fontSize: '16px' }}>
-                  배틀그라운드
-                </TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap', fontSize: '16px' }}>
-                  오버워치
-                </TableCell>
-                <TableCell sx={{ whiteSpace: 'nowrap', fontSize: '16px' }}>
-                  발로란트
-                </TableCell>
-                <TableCell>{'  '}</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody
-              sx={{ display: 'block', overflowY: 'auto', maxHeight: '400px' }}
-            >
-              {testArr.map((user, idx) => {
-                return (
-                  <TableRow
-                    key={user.id}
-                    sx={{
-                      backgroundColor: idx % 2 === 0 ? '#c8c8c8' : 'none',
-                    }}
-                  >
-                    <TableCell
-                      sx={{ color: idx % 2 === 0 ? 'white' : 'gray' }}
-                    >{`#${user.id}`}</TableCell>
-                    <TableCell>{user.lol}</TableCell>
-                    <TableCell>{user.pubg}</TableCell>
-                    <TableCell>{user.overwatch}</TableCell>
-                    <TableCell>{user.valorant}</TableCell>
-                    <TableCell align="center">
-                      <IconButton onClick={cancelFollow}>
-                        <PersonOffIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </FollowListContainer>
-    </Container>
-  );
+  if (followList.length > 0)
+    return (
+      <Container>
+        <MenuTitle>팔로우 목록</MenuTitle>
+        <FollowListContainer>
+          <TableContainer>
+            <Table>
+              <TableHead sx={{ display: 'block' }}>
+                <TableRow>
+                  <TableIndexCell align="center">{'   '}</TableIndexCell>
+                  <TableNicknameCell align="center">
+                    리그오브레전드
+                  </TableNicknameCell>
+                  <TableNicknameCell align="center">
+                    배틀그라운드
+                  </TableNicknameCell>
+                  <TableNicknameCell align="center">오버워치</TableNicknameCell>
+                  <TableNicknameCell align="center">발로란트</TableNicknameCell>
+                  <TableCell>{'  '}</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody
+                sx={{ display: 'block', overflowY: 'auto', maxHeight: '400px' }}
+              >
+                {followList?.map((user, idx) => {
+                  return (
+                    <TableRow
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={idx}
+                      sx={{
+                        backgroundColor: idx % 2 === 0 ? '#c8c8c8' : 'none',
+                      }}
+                    >
+                      <TableIndexCell
+                        align="center"
+                        sx={{ color: idx % 2 === 0 ? 'white' : 'gray' }}
+                      >{`#${idx}`}</TableIndexCell>
+                      <TableNicknameCell align="center">
+                        {user.lol}
+                      </TableNicknameCell>
+                      <TableNicknameCell align="center">
+                        {user.pubg}
+                      </TableNicknameCell>
+                      <TableNicknameCell align="center">
+                        {user.overwatch}
+                      </TableNicknameCell>
+                      <TableNicknameCell align="center">
+                        {user.valorant}
+                      </TableNicknameCell>
+                      <TableCell
+                        align="center"
+                        sx={{ padding: '4px', height: '40px' }}
+                      >
+                        <IconButton onClick={cancelFollow}>
+                          <PersonOffIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </FollowListContainer>
+      </Container>
+    );
+  return <p>팔로우 없음ㅋ</p>;
 };
 export default Follow;
 
@@ -142,3 +152,25 @@ const MenuTitle = styled(MuiTypography)(() => ({
 const FollowListContainer = styled(MuiBox)(() => ({
   marginRight: '12px',
 })) as typeof MuiBox;
+
+const TableIndexCell = styled(TableCell)(() => ({
+  minWidth: '40px',
+  maxWidth: '40px',
+  padding: '0px',
+})) as typeof TableCell;
+
+const TableNicknameCell = styled(TableCell)(() => ({
+  minWidth: '110px',
+  maxWidth: '110px',
+  padding: '0px',
+  whiteSpace: 'normal',
+  fontSize: '15px',
+})) as typeof TableCell;
+
+const TablePubgCell = styled(TableCell)(() => ({
+  minWidth: '120px',
+  maxWidth: '120px',
+  padding: '0px',
+  whiteSpace: 'normal',
+  fontSize: '15px',
+})) as typeof TableCell;

@@ -240,3 +240,10 @@ export const getFollowList = async () => {
   const response = await authAxios.get('/api/user/follow/list');
   return response.data;
 };
+
+/**
+ * (사용자) 팔로우 취소 함수
+ */
+export const deleteFollowList = async () => {
+  const response = await authAxios.delete('/api/user/follow/list');
+};
