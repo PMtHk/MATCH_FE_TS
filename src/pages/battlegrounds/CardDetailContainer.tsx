@@ -22,8 +22,9 @@ import Circular from 'components/loading/Circular';
 import FinishBtn from 'components/card-actions/FinishBtn';
 
 import { GAME } from 'types/games';
-import { getIsJoined } from 'functions/commons';
+import { getIsJoined, isInParty } from 'functions/commons';
 import { MEMBER_FROM_SERVER } from 'types/commons';
+import CardControlPanel from 'components/card-actions/CardControlPanel';
 import { platformList, typeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
@@ -118,24 +119,7 @@ const CardDetailContainer = () => {
                     })}
               </MemberList>
             </MemberListWrapper>
-            {isLogin && oauth2Id === currentCard.oauth2Id && (
-              <MuiStack direction="row" spacing="2%" mt={1}>
-                <DeleteCardBtn />
-                <EditCardBtn />
-                <FinishBtn />
-              </MuiStack>
-            )}
-            {isLogin &&
-              oauth2Id !== currentCard.oauth2Id &&
-              getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
-              currentCard.expired === 'false' &&
-              currentCard.finished === 'false' && <LeaveBtn />}
-            {isLogin &&
-              oauth2Id !== currentCard.oauth2Id &&
-              !getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
-              currentCard.expired === 'false' &&
-              currentCard.finished === 'false' && <JoinBtn />}
-            {!isLogin && <JoinBtn />}
+            <CardControlPanel />
           </CardInfo>
           {isLogin &&
             getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
