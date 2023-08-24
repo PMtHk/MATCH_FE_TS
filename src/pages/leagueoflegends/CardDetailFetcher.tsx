@@ -6,7 +6,7 @@ import { asyncGetIsReviewed } from 'apis/api/firebase';
 import { fetchCardDetail } from 'apis/api/common';
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
-import { getIsJoined } from 'functions/commons';
+import { isInParty } from 'functions/commons';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;
@@ -20,9 +20,6 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
-  const { joinedChatRoomsId } = useSelector(
-    (state: RootState) => state.chatroom,
-  );
   const { cardRefresh } = useSelector((state: RootState) => state.refresh);
 
   const deps = [cardRefresh];
@@ -38,7 +35,7 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
     };
 
     if (currentCard) {
-      if (getIsJoined(currentCard.chatRoomId, joinedChatRoomsId)) {
+      if (isInParty(currentCard.memberList, oauth2Id)) {
         getIsReviewed();
       }
     }

@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import MuiStack from '@mui/material/Stack';
 
 import { RootState } from 'store';
-import { isInParty, getIsJoined } from 'functions/commons';
+import { isInParty } from 'functions/commons';
 import DeleteCardBtn from './DeleteCardBtn';
 import EditCardBtn from './EditCardBtn';
 import FinishBtn from './FinishBtn';

@@ -9,20 +9,16 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
 import Close from '@mui/icons-material/Close';
-import MuiStack from '@mui/material/Stack';
 
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import Timer from 'components/CountDownTimer';
-import EditCardBtn from 'components/card-actions/EditCardBtn';
-import LeaveBtn from 'components/card-actions/LeaveBtn';
-import JoinBtn from 'components/card-actions/JoinBtn';
-import DeleteCardBtn from 'components/card-actions/DeleteCardBtn';
 import Circular from 'components/loading/Circular';
-import FinishBtn from 'components/card-actions/FinishBtn';
-import { getIsJoined } from 'functions/commons';
+
 import { MEMBER_FROM_SERVER } from 'types/commons';
 import CardControlPanel from 'components/card-actions/CardControlPanel';
+import ChatRoomControl from 'components/chat/ChatRoomControl';
+import { isInParty } from 'functions/commons';
 import { positionList, queueTypeList, tierList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
@@ -60,7 +56,7 @@ const CardDetailContainer = () => {
   if (currentCard) {
     if (
       currentCard.finished === 'true' &&
-      getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) &&
+      isInParty(currentCard.memberList, oauth2Id) &&
       !isReviewed
     ) {
       navigate('review');
@@ -131,20 +127,7 @@ const CardDetailContainer = () => {
               </MemberListWrapper>
               <CardControlPanel />
             </CardInfo>
-            {isLogin &&
-              getIsJoined(currentCard.chatRoomId, joinedChatRoomsId) && (
-                <Suspense
-                  fallback={
-                    <Circular text="채팅방 불러오는 중" height="100%" />
-                  }
-                >
-                  {currentCard.finished !== 'true' && (
-                    <MuiBox sx={{ ml: 2 }}>
-                      <ChatRoom />
-                    </MuiBox>
-                  )}
-                </Suspense>
-              )}
+            <ChatRoomControl />
           </ModalContent>
         </>
       );

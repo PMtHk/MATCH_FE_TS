@@ -1,15 +1,5 @@
-import { CHATROOM } from 'types/chats';
 import { MEMBER_FROM_SERVER } from 'types/commons';
 import { GAME_ID } from 'types/games';
-
-export const getIsJoined = (
-  chatRoomId: string,
-  joinedChatRoomsId: CHATROOM[],
-) => {
-  return joinedChatRoomsId.some(
-    (joinedChatRoom: CHATROOM) => joinedChatRoom.chatRoomId === chatRoomId,
-  );
-};
 
 export const getCurrentGame: () => GAME_ID = () => {
   const currentGame: GAME_ID = window.location.pathname.split(
