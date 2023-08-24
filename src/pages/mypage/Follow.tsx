@@ -21,27 +21,6 @@ import PersonOffIcon from '@mui/icons-material/PersonOff';
 import { deleteFollowList, getFollowList } from 'apis/api/user';
 
 const Follow = () => {
-  const testArr = [
-    { id: 1, lol: '밍꾸라지', pubg: '배그킹', overwatch: '', valorant: '' },
-    {
-      id: 2,
-      lol: '완도수산새우도둑완도수산새우도둑',
-      pubg: '완도수산새우도둑완도수산새우도둑',
-      overwatch: '완도수산새우도둑완도수산새우도둑',
-      valorant: '완도수산새우도둑완도수산새우도둑',
-    },
-    { id: 3, lol: '수유욱', pubg: '', overwatch: '', valorant: '손 챙' },
-    { id: 4, lol: '밍꾸라지', pubg: '배그킹', overwatch: '', valorant: '' },
-    {
-      id: 5,
-      lol: '완도수산새우도둑완도수산새우도둑',
-      pubg: '완도수산새우도둑완도수산새우도둑',
-      overwatch: '완도수산새우도둑완도수산새우도둑',
-      valorant: '완도수산새우도둑완도수산새우도둑',
-    },
-    { id: 6, lol: '수유욱', pubg: '', overwatch: '', valorant: '손 챙' },
-  ];
-
   type Follower = {
     oauth2Id: string;
     lol: string;
@@ -53,15 +32,17 @@ const Follow = () => {
 
   useEffect(() => {
     const initFollowList = async () => {
-      const response = await getFollowList();
-      setFollowList(response);
+      const followers = await getFollowList();
+      console.log('called');
+      setFollowList(followers);
     };
     initFollowList();
   }, []);
 
   const cancelFollow = async () => {
-    await deleteFollowList();
+    // await deleteFollowList();
   };
+
   if (followList.length > 0)
     return (
       <Container>
@@ -90,7 +71,7 @@ const Follow = () => {
                   return (
                     <TableRow
                       // eslint-disable-next-line react/no-array-index-key
-                      key={idx}
+                      key={idx + 1}
                       sx={{
                         backgroundColor: idx % 2 === 0 ? '#c8c8c8' : 'none',
                       }}
@@ -98,7 +79,7 @@ const Follow = () => {
                       <TableIndexCell
                         align="center"
                         sx={{ color: idx % 2 === 0 ? 'white' : 'gray' }}
-                      >{`#${idx}`}</TableIndexCell>
+                      >{`#${idx + 1}`}</TableIndexCell>
                       <TableNicknameCell align="center">
                         {user.lol}
                       </TableNicknameCell>
@@ -128,7 +109,7 @@ const Follow = () => {
         </FollowListContainer>
       </Container>
     );
-  return <p>팔로우 없음ㅋ</p>;
+  return <p>팔로우 없음</p>;
 };
 export default Follow;
 

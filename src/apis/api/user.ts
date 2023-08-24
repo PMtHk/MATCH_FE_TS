@@ -238,7 +238,8 @@ export const changeRepresentative = async (game: string) => {
 
 export const getFollowList = async () => {
   const response = await authAxios.get('/api/user/follow/list');
-  return response.data;
+
+  return response.data.followers;
 };
 
 /**
