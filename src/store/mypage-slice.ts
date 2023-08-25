@@ -17,6 +17,9 @@ interface IState {
   lolInfo: object | null;
   pubgInfo: object | null;
   overwatchInfo: object | null;
+  refreshLolInfo: boolean;
+  refreshPubgInfo: boolean;
+  refreshOverwatchInfo: boolean;
 }
 
 const initialState: IState = {
@@ -36,6 +39,9 @@ const initialState: IState = {
   lolInfo: null,
   pubgInfo: null,
   overwatchInfo: null,
+  refreshLolInfo: false,
+  refreshPubgInfo: false,
+  refreshOverwatchInfo: false,
 };
 
 const mypageSlice = createSlice({
@@ -83,6 +89,15 @@ const mypageSlice = createSlice({
     },
     SET_OVERWATCHINFO: (state, action) => {
       state.overwatchInfo = action.payload;
+    },
+    TOGGLE_REFRESH_LOL: (state) => {
+      state.refreshLolInfo = !state.refreshLolInfo;
+    },
+    TOGGLE_REFRESH_PUBG: (state) => {
+      state.refreshPubgInfo = !state.refreshPubgInfo;
+    },
+    TOGGLE_REFRESH_OVERWATCH: (state) => {
+      state.refreshOverwatchInfo = !state.refreshOverwatchInfo;
     },
   },
 });

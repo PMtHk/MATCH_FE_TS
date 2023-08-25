@@ -1,17 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { asyncGetIsReviewed } from 'apis/api/firebase';
+import { fetchCardDetail } from 'apis/api/common';
 import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
-import { fetchCardDetail } from 'apis/api/common';
-import { asyncGetIsReviewed } from 'apis/api/firebase';
+import { isInParty } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 
 interface CardDetailFetcherProps {
   children: React.ReactNode;
+  game: GAME_ID;
 }
 
-const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
+const CardDetailFetcher = ({ children, game }: CardDetailFetcherProps) => {
   const dispatch = useDispatch();
   const params = useParams();
 
@@ -19,15 +22,12 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
-  const { joinedChatRoomsId } = useSelector(
-    (state: RootState) => state.chatroom,
-  );
   const { cardRefresh } = useSelector((state: RootState) => state.refresh);
 
   const deps = [cardRefresh];
 
   const cardDetail: any = fetchCardDetail(
-    `/api/overwatch/boards/${cardId}`,
+    `/api/${game}/boards/${cardId}`,
     deps,
   );
 
@@ -40,7 +40,7 @@ const CardDetailFetcher = ({ children }: CardDetailFetcherProps) => {
     };
 
     if (currentCard) {
-      if (joinedChatRoomsId.includes(currentCard.chatRoomId)) {
+      if (isInParty(currentCard.memberList, oauth2Id)) {
         getIsReviewed();
       }
     }

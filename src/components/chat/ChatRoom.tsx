@@ -212,6 +212,7 @@ const ChatRoomHeader = styled(MuiTypography)(() => ({
 const ChatMessageWrapper = styled(MuiBox)(() => ({
   backgroundColor: 'rgba(236, 236, 236, 0.5)',
   width: 400,
+  height: '0px',
   minHeight: 'calc(100% - 67.5px)',
   maxHeight: 'calc(100% - 67.5px)',
   display: 'flex',

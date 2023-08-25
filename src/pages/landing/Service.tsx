@@ -45,8 +45,14 @@ const Service = () => {
                 <br /> 미리 맞춰보기
               </ColumnDescription>
             </ColumnText>
+            <ChatImageWrapper>
+              <img
+                src="https://d18ghgbbpc0qi2.cloudfront.net/assets/landing/party-detail.png"
+                alt="chat_design"
+              />
+            </ChatImageWrapper>
           </ColumnBox>
-          <ColumnBox>
+          <ColumnBox sx={{ my: '180px' }}>
             <ColumnText>
               <ColumnTitle>알림</ColumnTitle>
               <ColumnDescription>
@@ -55,6 +61,12 @@ const Service = () => {
                 빠른 플레이를 위해
               </ColumnDescription>
             </ColumnText>
+            <NotiImageWrapper>
+              <img
+                src="https://d18ghgbbpc0qi2.cloudfront.net/assets/landing/foreground-alarm.png"
+                alt="noti_design"
+              />
+            </NotiImageWrapper>
           </ColumnBox>
         </ContentWrapper>
       </Container>
@@ -74,7 +86,7 @@ const ContentWrapper = styled(Box)(({ theme }) => ({
   padding: '100px 0 150px 0',
   display: 'flex',
   flexDirection: 'column',
-  gap: '160px',
+  gap: '100px',
 })) as typeof Box;
 
 const ColumnBox = styled(Box)(({ theme }) => ({
@@ -132,7 +144,6 @@ const CardUIImageWrapper = styled(Box)(({ theme }) => ({
 }));
 
 const UserUIImageWrapper = styled(Box)(({ theme }) => ({
-  width: '100%',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
@@ -143,5 +154,39 @@ const UserUIImageWrapper = styled(Box)(({ theme }) => ({
   },
   [theme.breakpoints.up('md')]: {
     justifyContent: 'flex-end',
+  },
+}));
+
+const ChatImageWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  '& > img': {
+    width: '100%',
+    cover: 'object-fit',
+    maxWidth: '640px',
+    filter: 'drop-shadow(10px 6px 6px #c3c3c3)',
+  },
+  [theme.breakpoints.up('lg')]: {
+    position: 'absolute',
+    top: '70px',
+    right: '0',
+  },
+}));
+
+const NotiImageWrapper = styled(Box)(({ theme }) => ({
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  '& > img': {
+    height: '100%',
+    cover: 'object-fit',
+    maxHeight: '320px',
+    filter: 'drop-shadow(10px 6px 6px #c3c3c3)',
+  },
+  [theme.breakpoints.up('md')]: {
+    position: 'absolute',
+    top: '70px',
+    right: '40px',
   },
 }));

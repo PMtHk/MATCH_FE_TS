@@ -10,7 +10,9 @@ import MuiIconButton from '@mui/material/IconButton';
 import MuiDivider from '@mui/material/Divider';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-import Close from '@mui/icons-material/Close';
+import MuiToolTip from '@mui/material/Tooltip';
+import PersonAdd from '@mui/icons-material/PersonAdd';
+import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
 import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
@@ -18,13 +20,17 @@ import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
 import { fetchMemberHistory } from 'apis/api/overwatch';
 import { kickMemberFromParty } from 'apis/api/common';
+import { MEMBER_FROM_SERVER } from 'types/commons';
+import { isInParty } from 'functions/commons';
+import { followUser } from 'apis/api/user';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
   name: string;
+  oauth2Id: string;
 }
 
-const MemberSlot = ({ name }: MemberSlotProps) => {
+const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
   const dispatch = useDispatch();
 
   const { oauth2Id } = useSelector((state: RootState) => state.user);
@@ -154,6 +160,39 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
       );
     }
   };
+
+  const handleFollow = async () => {
+    try {
+      await followUser(MemberOauth2Id);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `${name} 님을 팔로우했습니다.`,
+          severity: 'success',
+        }),
+      );
+    } catch (error: any) {
+      if (
+        error.response.status === 400 &&
+        error.response.data.message === '이미 팔로우 하는 사용자입니다.'
+      ) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: error.response.data.message,
+            severity: 'error',
+          }),
+        );
+      } else {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '알 수 없는 오류로 작업을 수행할 수 없습니다. 잠시 후 다시 시도해주세요.',
+            severity: 'error',
+          }),
+        );
+      }
+    }
+  };
+
   return (
     <>
       {isLoading && (
@@ -337,18 +376,27 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
             </ImageList>
           </SectionInMember>
           <MemberControlPanel>
-            {isAuthor && currentCard?.author.name !== name && (
-              <MuiIconButton
-                size="small"
-                onClick={handleKickBtn}
-                disabled={
-                  currentCard.expired === 'true' ||
-                  currentCard.finished === 'true'
-                }
-              >
-                <Close />
-              </MuiIconButton>
+            {isAuthor && currentCard?.name !== name && (
+              <MuiToolTip title="강제퇴장" placement="right">
+                <IconButton
+                  onClick={handleKickBtn}
+                  disabled={
+                    currentCard.expired === true ||
+                    currentCard.finished === true
+                  }
+                >
+                  <NotInterestedIcon />
+                </IconButton>
+              </MuiToolTip>
             )}
+            {isInParty(currentCard.memberList, oauth2Id) &&
+              oauth2Id !== MemberOauth2Id && (
+                <MuiToolTip title="팔로우" placement="right">
+                  <IconButton onClick={handleFollow}>
+                    <PersonAdd />
+                  </IconButton>
+                </MuiToolTip>
+              )}
           </MemberControlPanel>
         </Member>
       )}
@@ -469,3 +517,8 @@ const MemberControlPanel = styled(MuiBox)(() => ({
   alignItems: 'center',
   width: '30px',
 })) as typeof MuiBox;
+const IconButton = styled(MuiIconButton)(() => ({
+  '& .MuiIconButton-root': {
+    padding: '0',
+  },
+}));

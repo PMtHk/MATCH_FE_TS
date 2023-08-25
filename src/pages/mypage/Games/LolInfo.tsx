@@ -58,8 +58,9 @@ const TierInfo = ({ info, type }: any) => {
 };
 
 const LolInfo = ({ data }: any) => {
-  if (!data)
+  if (!data || !data.duoRankInfo || !data.freeRankInfo) {
     return <Circular height="500px" text="게임 정보를 불러오는 중입니다." />;
+  }
   // 솔로랭크 , 자유랭크 정보
   const { duoRankInfo, freeRankInfo } = data;
   // 공통 정보

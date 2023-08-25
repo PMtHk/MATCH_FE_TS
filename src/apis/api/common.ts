@@ -280,23 +280,14 @@ export const kickMemberFromParty = async (
   );
 
   const prevMemberList = [...chatRoomData.memberList];
-  const prevBannedList = chatRoomData.bannedList
-    ? [...chatRoomData.bannedList]
-    : [];
-
-  const targetToKick = prevMemberList.find(
-    (member) => member.nickname === nickname,
-  );
 
   const newMemberList = prevMemberList.filter(
     (member) => member.nickname !== nickname,
   );
-  const newBannedList = [...prevBannedList, targetToKick];
 
   // FB realtimeDB의 해당 채팅방의 멤버리스트와 밴리스트 업데이트
   await update(child(chatRoomsRef, chatRoomId), {
     memberList: newMemberList,
-    bannedList: newBannedList,
   });
 
   // 시스템 메시지 전송

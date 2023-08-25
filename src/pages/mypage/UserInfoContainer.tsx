@@ -52,22 +52,22 @@ const UserInfoContainer = () => {
           <Menubar component="nav" position="relative">
             {menuList.map((menu) => {
               return (
-                <Toolbar key={menu.id} disableGutters>
+                <Toolbar
+                  key={menu.id}
+                  disableGutters
+                  sx={{
+                    backgroundColor:
+                      currentMenu === menu.value ? 'lightgray' : 'none',
+                    borderRadius: currentMenu === menu.value ? '4px' : 'none',
+                    width: '180px',
+                  }}
+                >
                   <MenuButton
                     disabled={!menu.available}
                     fullWidth
                     onClick={() => setCurrentMenu(menu.value)}
                   >
-                    <MenuTypo
-                      sx={{
-                        borderBottom:
-                          currentMenu === menu.value
-                            ? '2px solid #3d3939'
-                            : 'none',
-                      }}
-                    >
-                      {menu.label}
-                    </MenuTypo>
+                    <MenuTypo>{menu.label}</MenuTypo>
                   </MenuButton>
                 </Toolbar>
               );
@@ -92,6 +92,7 @@ const UserInfoContainer = () => {
 export default UserInfoContainer;
 
 const Container = styled(MuiBox)(() => ({
+  padding: '4px',
   width: '100%',
   height: '100%',
   display: 'flex',
@@ -102,14 +103,14 @@ const Container = styled(MuiBox)(() => ({
 const SidebarWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   width: '200px',
-  height: '540px',
+  height: '600px',
   flexDirection: 'column',
   backgroundColor: '#eeeeee',
-  border: '1px solid #3d3939',
+  border: '1px solid lightgray',
   borderRight: 'none',
   borderTopLeftRadius: '8px',
   borderBottomLeftRadius: '8px',
-  padding: '32px 0',
+  padding: '32px 0 0 8px',
 })) as typeof MuiBox;
 
 const UserProfileWrapper = styled(MuiBox)(() => ({
@@ -169,11 +170,11 @@ const MenuTypo = styled(MuiTypography)(() => ({
 
 const MenuWrapper = styled(MuiBox)(() => ({
   display: 'flex',
-  width: '560px',
-  height: '540px',
+  width: '620px',
+  height: '600px',
   flexDirection: 'column',
   backgroundColor: '#eeeeee',
-  border: '1px solid #3d3939',
+  border: '1px solid lightgray',
   borderLeft: 'none',
   borderTopRightRadius: '8px',
   borderBottomRightRadius: '8px',

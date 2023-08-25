@@ -38,7 +38,7 @@ export const menuList = [
     id: 3,
     label: '팔로우 목록',
     value: 'follow',
-    available: false,
+    available: true,
   },
   {
     id: 4,
