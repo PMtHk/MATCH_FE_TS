@@ -13,16 +13,18 @@ import MuiButton from '@mui/material/Button';
 import ErrorIcon from '@mui/icons-material/Error';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import Layout from 'components/Layout';
 import Circular from 'components/loading/Circular';
 import { cardActions } from 'store/card-slice';
 import { RootState } from 'store';
+import FollowersCard from 'components/followersCard/FollowersCard';
 import CardFilter from './CardFilter';
-import CardListFetcher from './CardListFetcher';
+import CardListFetcher from '../../components/CardListFetcher';
 import CardListContainer from './CardListContainer';
 
 const Main = () => {
   const dispatch = useDispatch();
+
+  const { isLogin } = useSelector((state: RootState) => state.user);
 
   const [queueType, setQueueType] = React.useState('ALL');
   const [tier, setTier] = React.useState('ALL');
@@ -59,13 +61,6 @@ const Main = () => {
     }
   };
 
-  const filterInitializer = () => {
-    setQueueType('ALL');
-    setTier('ALL');
-    setPosition('ALL');
-    dispatch(cardActions.SET_CURRENT_PAGE(0));
-  };
-
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) => {
     dispatch(cardActions.SET_CURRENT_PAGE(value - 1));
     window.scrollTo(0, 0);
@@ -80,18 +75,28 @@ const Main = () => {
     handlePosition,
   };
 
-  const fetcherProps = {
+  const fetchParams = {
     position,
-    queueType,
+    type: queueType,
     tier,
   };
+
+  const gameDeps = [queueType, tier, position];
 
   return (
     <>
       <CardFilter filterProps={filterProps} />
-      <ErrorBoundary FallbackComponent={CardListErrorFallback}>
+      {isLogin && <FollowersCard />}
+      <ErrorBoundary
+        resetKeys={gameDeps}
+        FallbackComponent={CardListErrorFallback}
+      >
         <Suspense fallback={<CardListFetcherFallback />}>
-          <CardListFetcher fetcherProps={fetcherProps}>
+          <CardListFetcher
+            game="overwatch"
+            params={fetchParams}
+            gameDeps={gameDeps}
+          >
             <CardListContainer />
           </CardListFetcher>
         </Suspense>

@@ -17,7 +17,7 @@ import {
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
-import { deleteFollowList, getFollowList } from 'apis/api/user';
+import { unfollowUser, getFollowList } from 'apis/api/user';
 import { snackbarActions } from 'store/snackbar-slice';
 
 import { gameList } from './data';
@@ -45,7 +45,7 @@ const Follow = () => {
 
   const cancelFollow = async (oauth2Id: string) => {
     if (window.confirm('해당 유저의 팔로우를 취소하기겠습니까?')) {
-      await deleteFollowList(oauth2Id);
+      await unfollowUser(oauth2Id);
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
           message: '팔로우 취소가 완료되었습니다.',

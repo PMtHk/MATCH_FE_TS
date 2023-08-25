@@ -22,18 +22,20 @@ import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { kickMemberFromParty } from 'apis/api/common';
+import { isInParty } from 'functions/commons';
+import { followUser } from 'apis/api/user';
 import { platformList, tierList, rankImage } from './data';
 
 interface MemberSlotProps {
   name: string;
+  oauth2Id: string;
 }
 
-const MemberSlot = ({ name }: MemberSlotProps) => {
+const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { oauth2Id, games } = useSelector((state: RootState) => state.user);
-  const myName = games.pubg;
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
   const [memberInfo, setMemberInfo] = React.useState<any>({});
@@ -180,6 +182,38 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
     }
   };
 
+  const handleFollow = async () => {
+    try {
+      await followUser(MemberOauth2Id);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: `${name} 님을 팔로우했습니다.`,
+          severity: 'success',
+        }),
+      );
+    } catch (error: any) {
+      if (
+        error.response.status === 400 &&
+        error.response.data.message === '이미 팔로우 하는 사용자입니다.'
+      ) {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message: error.response.data.message,
+            severity: 'error',
+          }),
+        );
+      } else {
+        dispatch(
+          snackbarActions.OPEN_SNACKBAR({
+            message:
+              '알 수 없는 오류로 작업을 수행할 수 없습니다. 잠시 후 다시 시도해주세요.',
+            severity: 'error',
+          }),
+        );
+      }
+    }
+  };
+
   return (
     <>
       {isLoading && (
@@ -253,13 +287,14 @@ const MemberSlot = ({ name }: MemberSlotProps) => {
                 </IconButton>
               </MuiToolTip>
             )}
-            {currentCard?.memberList.includes(myName) && name !== myName && (
-              <MuiToolTip title="팔로우" placement="right">
-                <IconButton>
-                  <PersonAdd />
-                </IconButton>
-              </MuiToolTip>
-            )}
+            {isInParty(currentCard.memberList, oauth2Id) &&
+              oauth2Id !== MemberOauth2Id && (
+                <MuiToolTip title="팔로우" placement="right">
+                  <IconButton onClick={handleFollow}>
+                    <PersonAdd />
+                  </IconButton>
+                </MuiToolTip>
+              )}
           </MemberControlPanel>
         </Member>
       )}

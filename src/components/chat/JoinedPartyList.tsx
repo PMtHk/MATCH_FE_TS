@@ -68,25 +68,28 @@ const JoinedPartyList = ({
         <HeaderTypo component="span">참여한 파티 목록</HeaderTypo>
         <GameSelector>
           {gameList.map((aGame) => {
-            return (
-              <GameSelectorItem
-                key={aGame.id}
-                onClick={() => setSelectedGame(aGame.id)}
-                selected={selectedGame === aGame.id}
-              >
-                <GameIcon
-                  item={aGame.id}
-                  id={aGame.id}
-                  size={{
-                    width: '24px',
-                    height: '22px',
-                  }}
-                />
-                <GameTypo selected={selectedGame === aGame.id}>
-                  {aGame.name_kor}
-                </GameTypo>
-              </GameSelectorItem>
-            );
+            if (aGame.available) {
+              return (
+                <GameSelectorItem
+                  key={aGame.id}
+                  onClick={() => setSelectedGame(aGame.id)}
+                  selected={selectedGame === aGame.id}
+                >
+                  <GameIcon
+                    item={aGame.id}
+                    id={aGame.id}
+                    size={{
+                      width: '24px',
+                      height: '22px',
+                    }}
+                  />
+                  <GameTypo selected={selectedGame === aGame.id}>
+                    {aGame.name_kor}
+                  </GameTypo>
+                </GameSelectorItem>
+              );
+            }
+            return null;
           })}
           <GameSelectorItem
             key="test-valorant"

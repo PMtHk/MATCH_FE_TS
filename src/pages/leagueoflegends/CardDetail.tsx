@@ -11,7 +11,7 @@ import ErrorIcon from '@mui/icons-material/Error';
 
 import Modal from 'components/Modal';
 import Circular from 'components/loading/Circular';
-import CardDetailFetcher from './CardDetailFetcher';
+import CardDetailFetcher from '../../components/CardDetailFetcher';
 import CardDetailContainer from './CardDetailContainer';
 
 const CardDetail = () => {
@@ -23,7 +23,7 @@ const CardDetail = () => {
             <Circular text="게시글을 불러오는 중입니다." height="568px" />
           }
         >
-          <CardDetailFetcher>
+          <CardDetailFetcher game="lol">
             <CardDetailContainer />
           </CardDetailFetcher>
         </Suspense>

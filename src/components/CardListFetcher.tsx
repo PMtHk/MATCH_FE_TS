@@ -6,23 +6,30 @@ import { cardActions } from 'store/card-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { fetchCardList } from 'apis/api/common';
 import { useInterval } from 'hooks/useInterval';
+import { GAME_ID } from 'types/games';
 
 interface CardListFetcherProps {
-  fetcherProps: {
-    position: string;
-    queueType: string;
+  game: GAME_ID;
+  params: {
+    position?: string;
+    platform?: string;
+    type: string;
     tier: string;
   };
+  gameDeps: any[];
   children: React.ReactNode;
 }
 
 const CardListFetcher = ({
   children,
-  fetcherProps: { position, queueType, tier },
+  params,
+  game,
+  gameDeps,
 }: CardListFetcherProps) => {
   const dispatch = useDispatch();
-
-  const { currentPage } = useSelector((state: RootState) => state.card);
+  const { currentPage, followCurrentPage } = useSelector(
+    (state: RootState) => state.card,
+  );
   const { remainingTime } = useSelector((state: RootState) => state.refresh);
 
   const [refresh, setRefresh] = React.useState<number>(0);
@@ -40,21 +47,17 @@ const CardListFetcher = ({
     params: {
       size: 12,
       page: currentPage || 0,
-      position,
-      type: queueType,
-      tier,
+      ...params,
     },
   };
 
-  const deps = [position, queueType, tier, currentPage, refresh];
+  const deps = [...gameDeps, currentPage, refresh];
 
-  const cardList: any = fetchCardList('/api/overwatch/boards', config, deps);
+  const cardList: any = fetchCardList(`/api/${game}/boards`, config, deps);
 
   useEffect(() => {
     dispatch(cardActions.SET_TOTAL_PAGE(cardList?.totalPage));
-    dispatch(
-      cardActions.SET_CARDS({ game: 'overwatch', cardList: cardList?.content }),
-    );
+    dispatch(cardActions.SET_CARDS({ game, cardList: cardList?.content }));
   }, [cardList, dispatch]);
 
   return <div>{children}</div>;
