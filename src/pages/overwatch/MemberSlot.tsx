@@ -390,7 +390,8 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
               </MuiToolTip>
             )}
             {isInParty(currentCard.memberList, oauth2Id) &&
-              oauth2Id !== MemberOauth2Id && (
+              oauth2Id !== MemberOauth2Id &&
+              !MemberOauth2Id.startsWith('guest') && (
                 <MuiToolTip title="팔로우" placement="right">
                   <IconButton onClick={handleFollow}>
                     <PersonAdd />
