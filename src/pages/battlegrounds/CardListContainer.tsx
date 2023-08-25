@@ -7,7 +7,7 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 
 import { RootState } from 'store';
-import { getCurrentGame } from 'functions/commons';
+import { getCurrentGame, isInParty } from 'functions/commons';
 import { GAME_ID } from 'types/games';
 import Card from './Card';
 
@@ -15,11 +15,10 @@ const CardListContainer = () => {
   const currentGame: GAME_ID = getCurrentGame();
 
   const { pubgCards } = useSelector((state: RootState) => state.card);
-  const { pubg: registeredPubgNickname } = useSelector(
-    (state: RootState) => state.user.games,
-  );
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
 
   let cardLength = 0;
+
   if (pubgCards) {
     cardLength = pubgCards.length;
   }
@@ -37,7 +36,7 @@ const CardListContainer = () => {
               key={aCard.id}
               to={
                 aCard.finished === 'true' &&
-                aCard.memberList.includes(registeredPubgNickname)
+                isInParty(aCard.memberList, oauth2Id)
                   ? `${aCard.id}/review`
                   : `${aCard.id}`
               }
@@ -72,7 +71,7 @@ const CardsWrapper = styled(MuiBox)(() => ({
   justifyContent: 'center',
   alignItems: 'flex-start',
   flexWrap: 'wrap',
-  padding: '60px 0 20px 0 ',
+  padding: '10px 0 20px 0',
   overflowY: 'auto',
 })) as typeof MuiBox;
 

@@ -5,8 +5,11 @@ interface IState {
   pubgCards: [];
   overwatchCards: [];
   valorantCards: [];
+  followCards: [];
   currentPage: number;
   totalPage: number;
+  followCurrentPage: number;
+  followTotalPage: number;
   currentCard: any;
   isReviewed: boolean | undefined;
 }
@@ -16,8 +19,11 @@ const initialState: IState = {
   pubgCards: [],
   overwatchCards: [],
   valorantCards: [],
+  followCards: [],
   currentPage: 0,
   totalPage: 0,
+  followCurrentPage: 0,
+  followTotalPage: 0,
   currentCard: null,
   isReviewed: true,
 };
@@ -45,11 +51,20 @@ const cardSlice = createSlice({
           break;
       }
     },
+    SET_FOLLOW_CARDS: (state, action) => {
+      state.followCards = action.payload;
+    },
     SET_CURRENT_PAGE: (state, action) => {
       state.currentPage = action.payload;
     },
     SET_TOTAL_PAGE: (state, action) => {
       state.totalPage = action.payload;
+    },
+    SET_F_CURRENT_PAGE: (state, action) => {
+      state.followCurrentPage = action.payload;
+    },
+    SET_F_TOTAL_PAGE: (state, action) => {
+      state.followTotalPage = action.payload;
     },
     SET_CURRENT_CARD: (state, action) => {
       state.currentCard = action.payload;

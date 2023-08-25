@@ -14,16 +14,18 @@ import MuiButton from '@mui/material/Button';
 import ErrorIcon from '@mui/icons-material/Error';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import Layout from 'components/Layout';
 import Circular from 'components/loading/Circular';
 import { cardActions } from 'store/card-slice';
 import { RootState } from 'store';
+import FollowersCard from 'components/followersCard/FollowersCard';
 import CardFilter from './CardFilter';
 import CardListFetcher from '../../components/CardListFetcher';
 import CardListContainer from './CardListContainer';
 
 const Main = () => {
   const dispatch = useDispatch();
+
+  const { isLogin } = useSelector((state: RootState) => state.user);
 
   const [platform, setPlatform] = React.useState('ALL');
   const [type, setType] = React.useState('ALL');
@@ -73,7 +75,11 @@ const Main = () => {
   return (
     <>
       <CardFilter filterProps={filterProps} />
-      <ErrorBoundary FallbackComponent={CardListErrorFallback}>
+      {isLogin && <FollowersCard />}
+      <ErrorBoundary
+        resetKeys={gameDeps}
+        FallbackComponent={CardListErrorFallback}
+      >
         <Suspense fallback={<CardListFetcherFallback />}>
           <CardListFetcher game="pubg" params={fetchParams} gameDeps={gameDeps}>
             <CardListContainer />
@@ -146,13 +152,3 @@ const ErrorDetail = styled(MuiTypography)(() => ({
   fontSize: '1rem',
   marginBottom: '1rem',
 })) as typeof MuiTypography;
-
-const ContentWrapper = styled(MuiContainer)(() => ({
-  padding: '120px 0 0 0',
-  minHeight: 'calc(100vh)',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  alignItems: 'center',
-  backgroundColor: '#f3f3f3',
-})) as typeof MuiContainer;

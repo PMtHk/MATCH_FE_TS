@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
-import MuiContainer from '@mui/material/Container';
 import MuiPagination from '@mui/material/Pagination';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
@@ -14,16 +13,18 @@ import MuiButton from '@mui/material/Button';
 import ErrorIcon from '@mui/icons-material/Error';
 import { SelectChangeEvent } from '@mui/material/Select';
 
-import Layout from 'components/Layout';
 import Circular from 'components/loading/Circular';
 import { cardActions } from 'store/card-slice';
 import { RootState } from 'store';
+import FollowersCard from 'components/followersCard/FollowersCard';
 import CardFilter from './CardFilter';
 import CardListFetcher from '../../components/CardListFetcher';
 import CardListContainer from './CardListContainer';
 
 const Main = () => {
   const dispatch = useDispatch();
+
+  const { isLogin } = useSelector((state: RootState) => state.user);
 
   const [queueType, setQueueType] = React.useState('ALL');
   const [tier, setTier] = React.useState('ALL');
@@ -60,13 +61,6 @@ const Main = () => {
     }
   };
 
-  const filterInitializer = () => {
-    setQueueType('ALL');
-    setTier('ALL');
-    setLane('ALL');
-    dispatch(cardActions.SET_CURRENT_PAGE(0));
-  };
-
   const handlePage = (event: React.ChangeEvent<unknown>, value: number) => {
     dispatch(cardActions.SET_CURRENT_PAGE(value - 1));
     window.scrollTo(0, 0);
@@ -92,7 +86,11 @@ const Main = () => {
   return (
     <>
       <CardFilter filterProps={filterProps} />
-      <ErrorBoundary FallbackComponent={CardListErrorFallback}>
+      {isLogin && <FollowersCard />}
+      <ErrorBoundary
+        resetKeys={gameDeps}
+        FallbackComponent={CardListErrorFallback}
+      >
         <Suspense fallback={<CardListFetcherFallback />}>
           <CardListFetcher game="lol" params={fetchParams} gameDeps={gameDeps}>
             <CardListContainer />
@@ -165,13 +163,3 @@ const ErrorDetail = styled(MuiTypography)(() => ({
   fontSize: '1rem',
   marginBottom: '1rem',
 })) as typeof MuiTypography;
-
-const ContentWrapper = styled(MuiContainer)(() => ({
-  padding: '120px 0 0 0',
-  minHeight: 'calc(100vh)',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'flex-start',
-  alignItems: 'center',
-  backgroundColor: '#f3f3f3',
-})) as typeof MuiContainer;

@@ -27,8 +27,9 @@ const CardListFetcher = ({
   gameDeps,
 }: CardListFetcherProps) => {
   const dispatch = useDispatch();
-
-  const { currentPage } = useSelector((state: RootState) => state.card);
+  const { currentPage, followCurrentPage } = useSelector(
+    (state: RootState) => state.card,
+  );
   const { remainingTime } = useSelector((state: RootState) => state.refresh);
 
   const [refresh, setRefresh] = React.useState<number>(0);
@@ -56,7 +57,6 @@ const CardListFetcher = ({
 
   useEffect(() => {
     dispatch(cardActions.SET_TOTAL_PAGE(cardList?.totalPage));
-
     dispatch(cardActions.SET_CARDS({ game, cardList: cardList?.content }));
   }, [cardList, dispatch]);
 
