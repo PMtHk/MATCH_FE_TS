@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-
-import { getUserInfo } from 'apis/api/user';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { mypageActions } from 'store/mypage-slice';
+import { RootState } from 'store';
+
+import { getUserInfo } from 'apis/api/user';
 import { fetchMemberHistory as getSummonerInfo } from 'apis/api/leagueoflegends';
 import {
   fetchMemberHistory as getPubgPlayerInfo,
   getPlatform,
 } from 'apis/api/pubg';
 import { fetchMemberHistory as getOWPlayerInfo } from 'apis/api/overwatch';
-
-import { mypageActions } from 'store/mypage-slice';
-import { RootState } from 'store';
-import Circular from 'components/loading/Circular';
 
 interface UserInfoFetcherProps {
   children: React.ReactNode;
