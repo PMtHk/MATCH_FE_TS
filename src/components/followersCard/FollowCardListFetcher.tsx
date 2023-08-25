@@ -20,7 +20,7 @@ const CardListFetcher = ({ children, game, refresh }: CardListFetcherProps) => {
 
   const followConfing = {
     params: {
-      size: 3,
+      size: 12,
       page: followCurrentPage || 0,
       game,
     },
