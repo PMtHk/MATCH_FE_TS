@@ -19,7 +19,7 @@ import Circular from 'components/loading/Circular';
 import { cardActions } from 'store/card-slice';
 import { RootState } from 'store';
 import CardFilter from './CardFilter';
-import CardListFetcher from './CardListFetcher';
+import CardListFetcher from '../../components/CardListFetcher';
 import CardListContainer from './CardListContainer';
 
 const Main = () => {
@@ -62,18 +62,20 @@ const Main = () => {
     handleTier,
   };
 
-  const fetcherProps = {
+  const fetchParams = {
     platform,
     type,
     tier,
   };
+
+  const gameDeps = [platform, type, tier];
 
   return (
     <>
       <CardFilter filterProps={filterProps} />
       <ErrorBoundary FallbackComponent={CardListErrorFallback}>
         <Suspense fallback={<CardListFetcherFallback />}>
-          <CardListFetcher fetcherProps={fetcherProps}>
+          <CardListFetcher game="pubg" params={fetchParams} gameDeps={gameDeps}>
             <CardListContainer />
           </CardListFetcher>
         </Suspense>

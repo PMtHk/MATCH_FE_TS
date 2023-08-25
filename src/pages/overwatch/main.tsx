@@ -18,7 +18,7 @@ import Circular from 'components/loading/Circular';
 import { cardActions } from 'store/card-slice';
 import { RootState } from 'store';
 import CardFilter from './CardFilter';
-import CardListFetcher from './CardListFetcher';
+import CardListFetcher from '../../components/CardListFetcher';
 import CardListContainer from './CardListContainer';
 
 const Main = () => {
@@ -80,18 +80,24 @@ const Main = () => {
     handlePosition,
   };
 
-  const fetcherProps = {
+  const fetchParams = {
     position,
-    queueType,
+    type: queueType,
     tier,
   };
+
+  const gameDeps = [queueType, tier, position];
 
   return (
     <>
       <CardFilter filterProps={filterProps} />
       <ErrorBoundary FallbackComponent={CardListErrorFallback}>
         <Suspense fallback={<CardListFetcherFallback />}>
-          <CardListFetcher fetcherProps={fetcherProps}>
+          <CardListFetcher
+            game="overwatch"
+            params={fetchParams}
+            gameDeps={gameDeps}
+          >
             <CardListContainer />
           </CardListFetcher>
         </Suspense>

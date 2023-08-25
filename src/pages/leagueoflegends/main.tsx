@@ -19,7 +19,7 @@ import Circular from 'components/loading/Circular';
 import { cardActions } from 'store/card-slice';
 import { RootState } from 'store';
 import CardFilter from './CardFilter';
-import CardListFetcher from './CardListFetcher';
+import CardListFetcher from '../../components/CardListFetcher';
 import CardListContainer from './CardListContainer';
 
 const Main = () => {
@@ -81,18 +81,20 @@ const Main = () => {
     handleLane,
   };
 
-  const fetcherProps = {
-    lane,
-    queueType,
+  const fetchParams = {
+    position: lane,
+    type: queueType,
     tier,
   };
+
+  const gameDeps = [queueType, tier, lane];
 
   return (
     <>
       <CardFilter filterProps={filterProps} />
       <ErrorBoundary FallbackComponent={CardListErrorFallback}>
         <Suspense fallback={<CardListFetcherFallback />}>
-          <CardListFetcher fetcherProps={fetcherProps}>
+          <CardListFetcher game="lol" params={fetchParams} gameDeps={gameDeps}>
             <CardListContainer />
           </CardListFetcher>
         </Suspense>
