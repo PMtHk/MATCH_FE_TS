@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-
-import { getUserInfo } from 'apis/api/user';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { mypageActions } from 'store/mypage-slice';
+import { RootState } from 'store';
+
+import { getUserInfo } from 'apis/api/user';
 import { fetchMemberHistory as getSummonerInfo } from 'apis/api/leagueoflegends';
 import {
   fetchMemberHistory as getPubgPlayerInfo,
   getPlatform,
 } from 'apis/api/pubg';
 import { fetchMemberHistory as getOWPlayerInfo } from 'apis/api/overwatch';
-
-import { mypageActions } from 'store/mypage-slice';
-import { RootState } from 'store';
-import Circular from 'components/loading/Circular';
 
 interface UserInfoFetcherProps {
   children: React.ReactNode;
@@ -29,6 +27,10 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
 
   const { games } = useSelector((state: RootState) => state.user);
 
+  const { refreshLolInfo, refreshPubgInfo, refreshOverwatchInfo } = useSelector(
+    (state: RootState) => state.mypage,
+  );
+
   useEffect(() => {
     const getLolData = async () => {
       const duoRankInfo = await getSummonerInfo(games.lol, 'DUO_RANK');
@@ -39,7 +41,7 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     if (games.lol) {
       getLolData();
     }
-  }, [games.lol]);
+  }, [games.lol, refreshLolInfo]);
 
   useEffect(() => {
     const getPubgData = async () => {
@@ -59,7 +61,7 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     if (games.pubg) {
       getPubgData();
     }
-  }, [games.pubg]);
+  }, [games.pubg, refreshPubgInfo]);
 
   useEffect(() => {
     const getOverwatchData = async () => {
@@ -71,7 +73,7 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     if (games.overwatch) {
       getOverwatchData();
     }
-  }, [games.overwatch]);
+  }, [games.overwatch, refreshOverwatchInfo]);
 
   return <div>{children}</div>;
 };
