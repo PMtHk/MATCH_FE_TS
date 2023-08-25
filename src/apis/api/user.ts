@@ -245,6 +245,8 @@ export const getFollowList = async () => {
 /**
  * (사용자) 팔로우 취소 함수
  */
-export const deleteFollowList = async () => {
-  const response = await authAxios.delete('/api/user/follow/list');
+export const deleteFollowList = async (oauth2Id: string) => {
+  const response = await authAxios.delete(
+    `/api/user/follow?oauth2Id=${oauth2Id}`,
+  );
 };
