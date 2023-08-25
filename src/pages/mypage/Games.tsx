@@ -7,6 +7,7 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import { Button, Divider, Tooltip } from '@mui/material';
 import GradeIcon from '@mui/icons-material/Grade';
+import { mypageActions } from 'store/mypage-slice';
 
 import { changeRepresentative } from 'apis/api/user';
 import { loadHistory as lolLoadHistory } from 'apis/api/leagueoflegends';
@@ -38,28 +39,30 @@ const GameFilterBar = ({
       <GameSelector>
         {gameList.map((aGame) => {
           return (
-            <GameSelectorItem
-              key={aGame.id}
-              onClick={() => setSelectedGame(aGame.id)}
-              selected={selectedGame === aGame.id}
-            >
-              <GameIcon
-                item={aGame.id}
-                id={aGame.id}
-                size={{
-                  width: '24px',
-                  height: '22px',
-                }}
-              />
-              <GameTypo selected={selectedGame === aGame.id}>
-                {aGame.name_kor}
-              </GameTypo>
-              {aGame.id === representative && (
-                <Tooltip title={`현재 대표게임 : ${representative}`}>
-                  <GradeIcon sx={{ color: '#ffc939' }} />
-                </Tooltip>
-              )}
-            </GameSelectorItem>
+            aGame.id !== 'valorant' && (
+              <GameSelectorItem
+                key={aGame.id}
+                onClick={() => setSelectedGame(aGame.id)}
+                selected={selectedGame === aGame.id}
+              >
+                <GameIcon
+                  item={aGame.id}
+                  id={aGame.id}
+                  size={{
+                    width: '24px',
+                    height: '22px',
+                  }}
+                />
+                <GameTypo selected={selectedGame === aGame.id}>
+                  {aGame.name_kor}
+                </GameTypo>
+                {aGame.id === representative && (
+                  <Tooltip title={`현재 대표게임 : ${representative}`}>
+                    <GradeIcon sx={{ color: '#ffc939' }} />
+                  </Tooltip>
+                )}
+              </GameSelectorItem>
+            )
           );
         })}
       </GameSelector>
@@ -78,16 +81,23 @@ const GameDataUpdateButton = ({ game }: any) => {
   const handleUpdate = async () => {
     const nickname = games[game as 'lol' | 'pubg' | 'overwatch'];
     setIsLoading(true);
-    if (game === 'lol') await lolLoadHistory(nickname);
+    // DB에 전적 갱신하기
+    if (game === 'lol') {
+      await lolLoadHistory(nickname);
+      dispatch(mypageActions.TOGGLE_REFRESH_LOL());
+    }
     if (game === 'pubg') {
       const platform = await getPlatform(nickname);
       if (platform) {
         await pubgLoadHistory(nickname, platform);
+        dispatch(mypageActions.TOGGLE_REFRESH_PUBG());
       }
     }
     if (game === 'overwatch') {
       await owLoadHistory(nickname);
+      dispatch(mypageActions.TOGGLE_REFRESH_OVERWATCH());
     }
+
     setIsLoading(false);
     dispatch(
       snackbarActions.OPEN_SNACKBAR({
@@ -159,7 +169,7 @@ const Games = () => {
   } = useSelector((state: RootState) => state.mypage);
 
   return (
-    <Container sx={{ height: '100%' }}>
+    <Container>
       <MenuTitle>연결한 게임</MenuTitle>
       <GameFilterBar
         selectedGame={selectedGame}
@@ -197,6 +207,7 @@ export default Games;
 
 const Container = styled(MuiBox)(() => ({
   height: '100%',
+  paddingRight: '12px',
 })) as typeof MuiBox;
 
 const ButtonSection = styled(MuiBox)(() => ({
@@ -258,4 +269,5 @@ const GameTypo = styled(MuiTypography, {
 const MenuTitle = styled(MuiTypography)(() => ({
   fontSize: '18px',
   fontWeight: 'bold',
+  marginBottom: '20px',
 }));

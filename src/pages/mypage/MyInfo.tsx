@@ -5,9 +5,9 @@ import { useSelector } from 'react-redux';
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
+import { Divider } from '@mui/material';
 
 import { RootState } from 'store';
-import { Divider } from '@mui/material';
 
 const MyInfo = () => {
   const { email, created, likeCount, dislikeCount, matchCount } = useSelector(
@@ -17,19 +17,31 @@ const MyInfo = () => {
   return (
     <Container>
       <MenuTitle>내 정보</MenuTitle>
-      <Divider />
       <Section>
         <SectionTitle>이메일 및 가입 일자</SectionTitle>
-        <SectionContentTypo>이메일 : {email}</SectionContentTypo>
-        <SectionContentTypo>
-          가입일자 : {created.slice(0, 11)}
-        </SectionContentTypo>
+        <FlexRow>
+          <SectionSubTitle>이메일</SectionSubTitle>
+          <SectionContent>{email}</SectionContent>
+        </FlexRow>
+        <FlexRow>
+          <SectionSubTitle>가입 일자</SectionSubTitle>
+          <SectionContent>{created.slice(0, 11)}</SectionContent>
+        </FlexRow>
       </Section>
       <Section>
         <SectionTitle>받은 평가</SectionTitle>
-        <SectionContentTypo>매칭 횟수 : {matchCount}</SectionContentTypo>
-        <SectionContentTypo>받은 좋아요 : {likeCount}</SectionContentTypo>
-        <SectionContentTypo>받은 싫어요 : {dislikeCount}</SectionContentTypo>
+        <FlexRow>
+          <SectionSubTitle>매칭 횟수</SectionSubTitle>
+          <SectionContent>{matchCount}</SectionContent>
+        </FlexRow>
+        <FlexRow>
+          <SectionSubTitle>받은 좋아요</SectionSubTitle>
+          <SectionContent>{likeCount}</SectionContent>
+        </FlexRow>
+        <FlexRow>
+          <SectionSubTitle>받은 싫어요</SectionSubTitle>
+          <SectionContent>{dislikeCount}</SectionContent>
+        </FlexRow>
       </Section>
     </Container>
   );
@@ -44,13 +56,14 @@ const Container = styled(MuiBox)(({ theme }) => ({
   alignItems: 'flex-start',
   justifyContent: 'flex-start',
   gap: '16px',
+  paddingRight: '12px',
 }));
 
 const MenuTitle = styled(MuiTypography)(() => ({
   width: '100%',
   fontSize: '18px',
   fontWeight: '700',
-  padding: '0 0 0 8px',
+  paddingLeft: '8px',
 })) as typeof MuiTypography;
 
 const Section = styled(MuiBox)(({ theme }) => ({
@@ -59,8 +72,11 @@ const Section = styled(MuiBox)(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'flex-start',
   justifyContent: 'center',
-  padding: '8px 0 0 16px',
+  padding: '8px 0 8px 8px',
   gap: '8px',
+  marginTop: '24px',
+  border: '1px solid lightgray',
+  borderRadius: '4px',
 }));
 
 const SectionTitle = styled(MuiTypography)(() => ({
@@ -69,8 +85,19 @@ const SectionTitle = styled(MuiTypography)(() => ({
   marginBottom: '8px',
 }));
 
-const SectionContentTypo = styled(MuiTypography)(() => ({
+const SectionSubTitle = styled(MuiTypography)(() => ({
+  minWidth: '140px',
   fontSize: '16px',
   fontWeight: '500',
-  padding: '0 0 0 16px',
+  paddingLeft: '8px',
 }));
+
+const SectionContent = styled(MuiTypography)(() => ({
+  fontSize: '16px',
+  fontWeight: '400',
+}));
+
+const FlexRow = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'row',
+})) as typeof MuiBox;

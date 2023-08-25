@@ -232,6 +232,7 @@ export const changeRepresentative = async (game: string) => {
 };
 
 /**
+<<<<<<< HEAD
  * (사용자) 타 사용자 팔로우
  *
  * @param {string} oauth2Id 팔로우할 사용자의 oauth2Id
@@ -265,6 +266,18 @@ export const unfollowUser = async (oauth2Id: string) => {
   await authAxios.delete(`/api/user/follow?oauth2Id=${oauth2Id}`);
 
   return null;
+};
+
+/**
+ * (사용자) 팔로우 목록을 가져오는 함수
+ *
+ * @returns 팔로워들의 oauth2Id 및 각 게임별 닉네임 list
+ */
+
+export const getFollowList = async () => {
+  const response = await authAxios.get('/api/user/follow/list');
+
+  return response.data.followers;
 };
 
 /**
