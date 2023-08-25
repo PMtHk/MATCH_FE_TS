@@ -26,8 +26,6 @@ const Games = () => {
       const response = await defaultAxios.post('/api/valorant/user/exist', {
         code: rsoAccessCode as string,
       });
-
-      console.log(response);
     };
 
     if (rsoAccessCode) {

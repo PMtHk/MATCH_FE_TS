@@ -22,7 +22,6 @@ const FollowersCard = ({ game }: { game: GAME_ID }) => {
   useEffect(() => {
     if (remainingTime < 1) {
       setRefresh((prev) => prev + 1);
-      console.log('refreshed');
     }
   }, [remainingTime]);
 
