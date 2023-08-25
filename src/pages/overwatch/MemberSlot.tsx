@@ -354,10 +354,10 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
               cols={3}
               gap={4}
             >
-              {memberInfo?.mostHero.map((aHero: string, _index: number) => {
+              {memberInfo?.mostHero.map((aHero: string, index: number) => {
                 return (
                   <ImageListItem
-                    key={aHero}
+                    key={`most_${index + 1}_${aHero}`}
                     sx={{
                       width: '44px',
                       height: '44px',
