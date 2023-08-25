@@ -39,28 +39,30 @@ const GameFilterBar = ({
       <GameSelector>
         {gameList.map((aGame) => {
           return (
-            <GameSelectorItem
-              key={aGame.id}
-              onClick={() => setSelectedGame(aGame.id)}
-              selected={selectedGame === aGame.id}
-            >
-              <GameIcon
-                item={aGame.id}
-                id={aGame.id}
-                size={{
-                  width: '24px',
-                  height: '22px',
-                }}
-              />
-              <GameTypo selected={selectedGame === aGame.id}>
-                {aGame.name_kor}
-              </GameTypo>
-              {aGame.id === representative && (
-                <Tooltip title={`현재 대표게임 : ${representative}`}>
-                  <GradeIcon sx={{ color: '#ffc939' }} />
-                </Tooltip>
-              )}
-            </GameSelectorItem>
+            aGame.id !== 'valorant' && (
+              <GameSelectorItem
+                key={aGame.id}
+                onClick={() => setSelectedGame(aGame.id)}
+                selected={selectedGame === aGame.id}
+              >
+                <GameIcon
+                  item={aGame.id}
+                  id={aGame.id}
+                  size={{
+                    width: '24px',
+                    height: '22px',
+                  }}
+                />
+                <GameTypo selected={selectedGame === aGame.id}>
+                  {aGame.name_kor}
+                </GameTypo>
+                {aGame.id === representative && (
+                  <Tooltip title={`현재 대표게임 : ${representative}`}>
+                    <GradeIcon sx={{ color: '#ffc939' }} />
+                  </Tooltip>
+                )}
+              </GameSelectorItem>
+            )
           );
         })}
       </GameSelector>
@@ -167,7 +169,7 @@ const Games = () => {
   } = useSelector((state: RootState) => state.mypage);
 
   return (
-    <Container sx={{ height: '100%' }}>
+    <Container>
       <MenuTitle>연결한 게임</MenuTitle>
       <GameFilterBar
         selectedGame={selectedGame}
@@ -205,6 +207,7 @@ export default Games;
 
 const Container = styled(MuiBox)(() => ({
   height: '100%',
+  paddingRight: '12px',
 })) as typeof MuiBox;
 
 const ButtonSection = styled(MuiBox)(() => ({
@@ -266,4 +269,5 @@ const GameTypo = styled(MuiTypography, {
 const MenuTitle = styled(MuiTypography)(() => ({
   fontSize: '18px',
   fontWeight: 'bold',
+  marginBottom: '20px',
 }));
