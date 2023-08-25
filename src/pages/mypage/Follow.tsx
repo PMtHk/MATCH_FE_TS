@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
-import MuiTypography from '@mui/material/Typography';
-
-import { RootState } from 'store';
 import {
   IconButton,
   Table,
@@ -15,12 +12,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from '@mui/material';
-
 import PersonOffIcon from '@mui/icons-material/PersonOff';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+
 import { deleteFollowList, getFollowList } from 'apis/api/user';
+import { snackbarActions } from 'store/snackbar-slice';
+
+import { gameList } from './data';
 
 const Follow = () => {
+  const dispatch = useDispatch();
+
   type Follower = {
     oauth2Id: string;
     lol: string;
@@ -30,42 +34,52 @@ const Follow = () => {
   };
   const [followList, setFollowList] = useState<Follower[]>([]);
 
+  const initFollowList = async () => {
+    const followers = await getFollowList();
+    setFollowList(followers);
+  };
+
   useEffect(() => {
-    const initFollowList = async () => {
-      const followers = await getFollowList();
-      console.log('called');
-      setFollowList(followers);
-    };
     initFollowList();
   }, []);
 
-  const cancelFollow = async () => {
-    // await deleteFollowList();
+  const cancelFollow = async (oauth2Id: string) => {
+    if (window.confirm('해당 유저의 팔로우를 취소하기겠습니까?')) {
+      await deleteFollowList(oauth2Id);
+      dispatch(
+        snackbarActions.OPEN_SNACKBAR({
+          message: '팔로우 취소가 완료되었습니다.',
+          severity: 'info',
+        }),
+      );
+      initFollowList();
+    }
   };
 
-  if (followList.length > 0)
-    return (
-      <Container>
-        <MenuTitle>팔로우 목록</MenuTitle>
+  return (
+    <Container>
+      <MenuTitle>팔로우 목록</MenuTitle>
+      {followList.length > 0 ? (
         <FollowListContainer>
           <TableContainer>
             <Table>
               <TableHead sx={{ display: 'block' }}>
                 <TableRow>
                   <TableIndexCell align="center">{'   '}</TableIndexCell>
-                  <TableNicknameCell align="center">
-                    리그오브레전드
-                  </TableNicknameCell>
-                  <TableNicknameCell align="center">
-                    배틀그라운드
-                  </TableNicknameCell>
-                  <TableNicknameCell align="center">오버워치</TableNicknameCell>
-                  <TableNicknameCell align="center">발로란트</TableNicknameCell>
+                  {gameList.map((game) => (
+                    <TableGameCell align="center" key={game.id}>
+                      {game.label}
+                    </TableGameCell>
+                  ))}
                   <TableCell>{'  '}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody
-                sx={{ display: 'block', overflowY: 'auto', maxHeight: '400px' }}
+                sx={{
+                  display: 'block',
+                  overflowY: 'auto',
+                  maxHeight: '400px',
+                }}
               >
                 {followList?.map((user, idx) => {
                   return (
@@ -78,25 +92,28 @@ const Follow = () => {
                     >
                       <TableIndexCell
                         align="center"
-                        sx={{ color: idx % 2 === 0 ? 'white' : 'gray' }}
+                        sx={{
+                          color: idx % 2 === 0 ? 'white' : 'gray',
+                        }}
                       >{`#${idx + 1}`}</TableIndexCell>
-                      <TableNicknameCell align="center">
-                        {user.lol}
-                      </TableNicknameCell>
-                      <TableNicknameCell align="center">
-                        {user.pubg}
-                      </TableNicknameCell>
-                      <TableNicknameCell align="center">
-                        {user.overwatch}
-                      </TableNicknameCell>
-                      <TableNicknameCell align="center">
-                        {user.valorant}
-                      </TableNicknameCell>
+                      {gameList.map((game) => (
+                        <TableGameCell align="center" key={game.id}>
+                          {
+                            user[
+                              game.value as
+                                | 'lol'
+                                | 'pubg'
+                                | 'overwatch'
+                                | 'valorant'
+                            ]
+                          }
+                        </TableGameCell>
+                      ))}
                       <TableCell
                         align="center"
                         sx={{ padding: '4px', height: '40px' }}
                       >
-                        <IconButton onClick={cancelFollow}>
+                        <IconButton onClick={() => cancelFollow(user.oauth2Id)}>
                           <PersonOffIcon />
                         </IconButton>
                       </TableCell>
@@ -107,9 +124,21 @@ const Follow = () => {
             </Table>
           </TableContainer>
         </FollowListContainer>
-      </Container>
-    );
-  return <p>팔로우 없음</p>;
+      ) : (
+        <NoFollowerSection>
+          <InfoOutlinedIcon
+            sx={{
+              fontSize: '27px',
+              marginRight: '4px',
+              marginBottom: '99px',
+              color: 'gray',
+            }}
+          />
+          <NoFollowerTypo>팔로우중인 사용자가 없습니다.</NoFollowerTypo>
+        </NoFollowerSection>
+      )}
+    </Container>
+  );
 };
 export default Follow;
 
@@ -123,12 +152,13 @@ const Container = styled(MuiBox)(({ theme }) => ({
   gap: '16px',
 }));
 
-const MenuTitle = styled(MuiTypography)(() => ({
+const MenuTitle = styled(Typography)(() => ({
   width: '100%',
   fontSize: '18px',
   fontWeight: '700',
   padding: '0 0 0 8px',
-})) as typeof MuiTypography;
+  marginBottom: '12px',
+})) as typeof Typography;
 
 const FollowListContainer = styled(MuiBox)(() => ({
   marginRight: '12px',
@@ -140,18 +170,26 @@ const TableIndexCell = styled(TableCell)(() => ({
   padding: '0px',
 })) as typeof TableCell;
 
-const TableNicknameCell = styled(TableCell)(() => ({
-  minWidth: '110px',
-  maxWidth: '110px',
+const TableGameCell = styled(TableCell)(() => ({
+  minWidth: '130px',
+  maxWidth: '130px',
   padding: '0px',
-  whiteSpace: 'normal',
+  whiteSpace: 'nowrap',
   fontSize: '15px',
 })) as typeof TableCell;
 
-const TablePubgCell = styled(TableCell)(() => ({
-  minWidth: '120px',
-  maxWidth: '120px',
-  padding: '0px',
-  whiteSpace: 'normal',
-  fontSize: '15px',
-})) as typeof TableCell;
+const NoFollowerSection = styled(MuiBox)(() => ({
+  height: '100%',
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'center',
+  alignItems: 'center',
+}));
+
+const NoFollowerTypo = styled(Typography)(() => ({
+  fontWeight: '600',
+  fontSize: '18px',
+  marginBottom: '100px',
+  color: 'gray',
+})) as typeof Typography;
