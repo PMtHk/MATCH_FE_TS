@@ -86,7 +86,7 @@ const Main = () => {
   return (
     <>
       <CardFilter filterProps={filterProps} />
-      {isLogin && <FollowersCard />}
+      {isLogin && <FollowersCard game="lol" />}
       <ErrorBoundary
         resetKeys={gameDeps}
         FallbackComponent={CardListErrorFallback}

@@ -42,26 +42,26 @@ const FollowCardListContainer = () => {
 
   const { followCards } = useSelector((state: RootState) => state.card);
 
-  let cardLength = 0;
+  let NumOfCards = 0;
 
-  if (followCards) {
-    cardLength = followCards.length;
+  if (followCards[currentGame]) {
+    NumOfCards = followCards[currentGame].length;
   }
 
-  const arrayForDummies = new Array(3 - cardLength)
+  const arrayForDummies = new Array(3 - NumOfCards)
     .fill(0)
     .map((value, i) => `dummies_${i}`);
 
   return (
     <>
-      {followCards && (
+      {followCards[currentGame] && (
         <Header>
           <Title>팔로우한 사용자들의 새 게시글</Title>
         </Header>
       )}
       <CardsWrapper>
-        {followCards &&
-          followCards.map((aCard: any) => {
+        {followCards[currentGame] &&
+          followCards[currentGame].map((aCard: any) => {
             return (
               <Link
                 key={aCard.id}
