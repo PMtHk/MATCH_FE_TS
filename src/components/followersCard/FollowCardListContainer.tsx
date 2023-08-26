@@ -10,6 +10,7 @@ import MuiTypography from '@mui/material/Typography';
 import MuiContainer from '@mui/material/Container';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
+import MuiDivider from '@mui/material/Divider';
 
 import { RootState } from 'store';
 import { getCurrentGame, isInParty } from 'functions/commons';
@@ -154,6 +155,7 @@ const FollowCardListContainer = () => {
               ))}
           </CardsWrapper>
         </MuiBox>
+        {cardList && <MuiDivider sx={{ mt: '20px' }} />}
       </CardCarousel>
     </Container>
   );
