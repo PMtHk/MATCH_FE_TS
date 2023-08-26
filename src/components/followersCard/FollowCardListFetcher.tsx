@@ -20,7 +20,7 @@ const CardListFetcher = ({ children, game, refresh }: CardListFetcherProps) => {
 
   const followConfing = {
     params: {
-      size: 3,
+      size: 12,
       page: followCurrentPage || 0,
       game,
     },
@@ -37,7 +37,12 @@ const CardListFetcher = ({ children, game, refresh }: CardListFetcherProps) => {
 
     useEffect(() => {
       dispatch(cardActions.SET_F_TOTAL_PAGE(followCardList?.totalPage));
-      dispatch(cardActions.SET_FOLLOW_CARDS(followCardList?.content));
+      dispatch(
+        cardActions.SET_FOLLOW_CARDS({
+          game,
+          cardList: followCardList?.content,
+        }),
+      );
     }, [followCardList, dispatch]);
   }
 

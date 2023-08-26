@@ -9,15 +9,11 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
-import MuiImageList from '@mui/material/ImageList';
 import MuiToolTip from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
-import Close from '@mui/icons-material/Close';
-
 import { RootState } from 'store';
-
 import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
@@ -288,7 +284,8 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
               </MuiToolTip>
             )}
             {isInParty(currentCard.memberList, oauth2Id) &&
-              oauth2Id !== MemberOauth2Id && (
+              oauth2Id !== MemberOauth2Id &&
+              !MemberOauth2Id.startsWith('guest') && (
                 <MuiToolTip title="팔로우" placement="right">
                   <IconButton onClick={handleFollow}>
                     <PersonAdd />

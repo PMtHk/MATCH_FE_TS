@@ -1,11 +1,17 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { GAME_ID } from 'types/games';
 
 interface IState {
   lolCards: [];
   pubgCards: [];
   overwatchCards: [];
   valorantCards: [];
-  followCards: [];
+  followCards: {
+    lol: [];
+    pubg: [];
+    overwatch: [];
+    valorant: [];
+  };
   currentPage: number;
   totalPage: number;
   followCurrentPage: number;
@@ -19,7 +25,12 @@ const initialState: IState = {
   pubgCards: [],
   overwatchCards: [],
   valorantCards: [],
-  followCards: [],
+  followCards: {
+    lol: [],
+    pubg: [],
+    overwatch: [],
+    valorant: [],
+  },
   currentPage: 0,
   totalPage: 0,
   followCurrentPage: 0,
@@ -51,8 +62,17 @@ const cardSlice = createSlice({
           break;
       }
     },
-    SET_FOLLOW_CARDS: (state, action) => {
-      state.followCards = action.payload;
+    SET_FOLLOW_CARDS: (
+      state,
+      action: {
+        payload: {
+          game: GAME_ID;
+          cardList: any;
+        };
+      },
+    ) => {
+      const { game, cardList } = action.payload;
+      state.followCards[game] = cardList;
     },
     SET_CURRENT_PAGE: (state, action) => {
       state.currentPage = action.payload;
