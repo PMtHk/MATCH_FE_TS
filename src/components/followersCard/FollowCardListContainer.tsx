@@ -82,9 +82,9 @@ const FollowCardListContainer = () => {
       leftBtnRef.current.getBoundingClientRect().left;
 
     if (listWidth <= slideDistance) {
-      setIsBtnDisabled(true);
-    } else {
       setIsBtnDisabled(false);
+    } else {
+      setIsBtnDisabled(true);
     }
   }, []);
 
