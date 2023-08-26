@@ -155,7 +155,7 @@ const FollowCardListContainer = () => {
               ))}
           </CardsWrapper>
         </MuiBox>
-        {cardList && <MuiDivider sx={{ mt: '20px' }} />}
+        {cardList && <MuiDivider sx={{ mt: '10px' }} />}
       </CardCarousel>
     </Container>
   );
