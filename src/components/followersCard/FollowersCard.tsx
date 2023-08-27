@@ -12,11 +12,9 @@ import { RootState } from 'store';
 import FollowCardListContainer from 'components/followersCard/FollowCardListContainer';
 import FollowCardListFetcher from 'components/followersCard/FollowCardListFetcher';
 import Circular from 'components/loading/Circular';
-import { getCurrentGame } from 'functions/commons';
+import { GAME_ID } from 'types/games';
 
-const FollowersCard = () => {
-  const currentGame = getCurrentGame();
-
+const FollowersCard = ({ game }: { game: GAME_ID }) => {
   const { remainingTime } = useSelector((state: RootState) => state.refresh);
 
   const [refresh, setRefresh] = React.useState<number>(0);
@@ -24,7 +22,6 @@ const FollowersCard = () => {
   useEffect(() => {
     if (remainingTime < 1) {
       setRefresh((prev) => prev + 1);
-      console.log('refreshed');
     }
   }, [remainingTime]);
 
@@ -34,7 +31,7 @@ const FollowersCard = () => {
       FallbackComponent={FollowCardListErrorFallback}
     >
       <Suspense fallback={<CardListFetcherFallback />}>
-        <FollowCardListFetcher game={currentGame} refresh={refresh}>
+        <FollowCardListFetcher game={game} refresh={refresh}>
           <FollowCardListContainer />
         </FollowCardListFetcher>
       </Suspense>

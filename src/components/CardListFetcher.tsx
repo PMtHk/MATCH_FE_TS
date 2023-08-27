@@ -53,12 +53,12 @@ const CardListFetcher = ({
 
   const deps = [...gameDeps, currentPage, refresh];
 
-  const cardList: any = fetchCardList(`/api/${game}/boards`, config, deps);
+  const response: any = fetchCardList(`/api/${game}/boards`, config, deps);
 
   useEffect(() => {
-    dispatch(cardActions.SET_TOTAL_PAGE(cardList?.totalPage));
-    dispatch(cardActions.SET_CARDS({ game, cardList: cardList?.content }));
-  }, [cardList, dispatch]);
+    dispatch(cardActions.SET_TOTAL_PAGE(response?.totalPage));
+    dispatch(cardActions.SET_CARDS({ game, cardList: response?.content }));
+  }, [response, dispatch]);
 
   return <div>{children}</div>;
 };

@@ -14,6 +14,7 @@ import { refreshActions } from 'store/refresh-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { loadHistory, verifyNickname } from 'apis/api/leagueoflegends';
 import { addPartyMemberWithName } from 'apis/api/common';
+import { getIsBanned, isInParty } from 'functions/commons';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -55,7 +56,7 @@ const EmptySlotForAuthor = () => {
 
       // 닉네임 인증
       const exactNickname = await verifyNickname(name.trim());
-      if (currentCard.banList.includes(exactNickname)) {
+      if (getIsBanned(currentCard.banList, `guest${exactNickname}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '파티에서 강제퇴장 당한 사용자입니다.',
@@ -64,7 +65,7 @@ const EmptySlotForAuthor = () => {
         );
         return;
       }
-      if (currentCard.memberList.includes(exactNickname)) {
+      if (isInParty(currentCard.memberList, `guest${exactNickname}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '이미 파티에 참여한 사용자입니다.',

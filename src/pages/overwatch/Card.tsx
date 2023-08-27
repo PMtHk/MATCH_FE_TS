@@ -351,7 +351,7 @@ const Card = ({ item, expired }: CardProps) => {
                 {item.author.mostHero.map((aHero, index) => {
                   return (
                     <ImageListItem
-                      key={aHero}
+                      key={`most_${index + 1}_${aHero}`}
                       sx={{
                         width: '44px',
                         height: '44px',

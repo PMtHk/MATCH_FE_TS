@@ -254,7 +254,7 @@ const Card = ({ item, expired }: CardProps) => {
                 {item.author.mostChampion.map((aChampion, index) => {
                   return (
                     <ImageListItem
-                      key={aChampion}
+                      key={`most_${index + 1}_${aChampion}`}
                       sx={{
                         width: '44px',
                         height: '44px',

@@ -14,6 +14,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { loadHistory, getPlatform } from 'apis/api/pubg';
 import { addPartyMemberWithName } from 'apis/api/common';
+import { getIsBanned, isInParty } from 'functions/commons';
 
 // 방장이 아닌 유저
 const DefaultEmptySlot = () => {
@@ -99,7 +100,7 @@ const EmptySlotForAuthor = ({ platform }: any) => {
       }
       // 전적이 없어서 플랫폼 조회가 불가능한 경우
 
-      if (currentCard.banList.includes(name)) {
+      if (getIsBanned(currentCard.banList, `guest${name}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '파티에서 강제퇴장 당한 사용자입니다.',
@@ -108,7 +109,7 @@ const EmptySlotForAuthor = ({ platform }: any) => {
         );
         return;
       }
-      if (currentCard.memberList.includes(name)) {
+      if (isInParty(currentCard.memberList, `guest${name}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '이미 파티에 참여한 사용자입니다.',

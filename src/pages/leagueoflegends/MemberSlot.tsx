@@ -284,7 +284,7 @@ const MemberSlot = ({
                 {memberInfo &&
                   memberInfo.mostChampion?.map(
                     (aChampion: string, index: number) => (
-                      <ChampImgWrapper key={aChampion + Math.random()}>
+                      <ChampImgWrapper key={`most_${index + 1}_aChampion`}>
                         <img
                           src={
                             aChampion === 'poro'

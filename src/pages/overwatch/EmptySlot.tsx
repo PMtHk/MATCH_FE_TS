@@ -14,6 +14,7 @@ import { refreshActions } from 'store/refresh-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { addPartyMemberWithName } from 'apis/api/common';
 import { loadHistory, verifyNickname } from 'apis/api/overwatch';
+import { getIsBanned, isInParty } from 'functions/commons';
 
 // 방장이 아닌 사용자의 경우
 const DefaultEmptySlot = () => {
@@ -62,7 +63,7 @@ const EmptySlotForAuthor = () => {
 
       // 닉네임 인증
       const isExist = await verifyNickname(name.trim());
-      if (isExist && currentCard.banList.includes(name.trim())) {
+      if (getIsBanned(currentCard.banList, `guest${name.trim()}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '파티에서 강제퇴장 당한 사용자입니다.',
@@ -71,7 +72,7 @@ const EmptySlotForAuthor = () => {
         );
         return;
       }
-      if (currentCard.memberList.includes(name.trim())) {
+      if (isInParty(currentCard.memberList, `guest${name.trim()}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '이미 파티에 참여한 사용자입니다.',
