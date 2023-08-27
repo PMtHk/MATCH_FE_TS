@@ -232,7 +232,6 @@ export const changeRepresentative = async (game: string) => {
 };
 
 /**
-<<<<<<< HEAD
  * (사용자) 타 사용자 팔로우
  *
  * @param {string} oauth2Id 팔로우할 사용자의 oauth2Id
@@ -308,3 +307,17 @@ export function fetchFollowCardList(url: string, config: any, deps: any[]) {
 
   return resource;
 }
+
+/**
+ * 유저의 사이트 이용 정보 (평가 정보) 불러오기
+ * @param oauth2Id  유저의 oauth2Id
+ * @returns 매칭 횟수와 좋아요, 싫어요 개수
+ */
+
+export const getEvaluationInfo = async (oauth2Id: string) => {
+  const response = await authAxios.get(
+    `/api/user/play/info?oauth2Id=${oauth2Id}`,
+  );
+
+  return response.data;
+};
