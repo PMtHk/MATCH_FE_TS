@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 // mui
@@ -10,7 +10,10 @@ import MuiIconButton from '@mui/material/IconButton';
 import MuiDivider from '@mui/material/Divider';
 import ImageList from '@mui/material/ImageList';
 import ImageListItem from '@mui/material/ImageListItem';
-import MuiToolTip from '@mui/material/Tooltip';
+import MuiToolTip, {
+  TooltipProps,
+  tooltipClasses,
+} from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
@@ -22,7 +25,7 @@ import { fetchMemberHistory } from 'apis/api/overwatch';
 import { kickMemberFromParty } from 'apis/api/common';
 import { MEMBER_FROM_SERVER } from 'types/commons';
 import { isInParty } from 'functions/commons';
-import { followUser } from 'apis/api/user';
+import { followUser, getEvaluationInfo } from 'apis/api/user';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -193,6 +196,46 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
     }
   };
 
+  // Tooltip
+  const [tooltipText, setTooltipText] = useState<string>('');
+
+  const calcMatchCount = (count: number) => {
+    if (count < 10) return '10-';
+    if (count < 100) return `${Math.floor(count / 10) * 10}+`;
+    if (count < 1000) return `${Math.floor(count / 100) * 100}+`;
+    return '1000+';
+  };
+
+  const calcLikePercentage = (likeCount: number, dislikeCount: number) => {
+    return Math.round((likeCount / (likeCount + dislikeCount)) * 100);
+  };
+
+  useEffect(() => {
+    const getTooltipData = async () => {
+      if (MemberOauth2Id.includes('guest')) {
+        setTooltipText('MatchGG를 이용하는 유저가 아닙니다.');
+        return;
+      }
+
+      const { matchCount, likeCount, dislikeCount } = await getEvaluationInfo(
+        MemberOauth2Id,
+      );
+
+      if (matchCount === 0) {
+        setTooltipText('이전 매칭 기록이 없는 유저입니다.');
+      } else {
+        setTooltipText(
+          `총 ${calcMatchCount(matchCount)} 번의 매칭에서 ${calcLikePercentage(
+            likeCount,
+            dislikeCount,
+          )}%의 긍정적인 평가를 받은 유저입니다.`,
+        );
+      }
+    };
+
+    getTooltipData();
+  }, []);
+
   return (
     <>
       {isLoading && (
@@ -201,205 +244,209 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
         </Member>
       )}
       {!isLoading && (
-        <Member>
-          <SectionInMember>
-            <SectionTitleInMember>닉네임</SectionTitleInMember>
-            <Nickname>{memberInfo.name.split('#')[0]}</Nickname>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>승률</SectionTitleInMember>
-            {memberInfo.wins + memberInfo.losses === 0 ? (
-              <WinRateSection>
-                <WinRate component="span" sx={{ fontSize: '14px' }}>
-                  정보없음
-                </WinRate>
-              </WinRateSection>
-            ) : (
-              <WinRateSection>
-                <WinRate
-                  component="span"
-                  sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                >
-                  {winRate}%
-                </WinRate>
-                <MatchPlayed>
-                  {memberInfo.wins}승 {memberInfo.losses}패
-                </MatchPlayed>
-              </WinRateSection>
-            )}
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>K/D</SectionTitleInMember>
-            <KDSection>
-              {memberInfo.kills + memberInfo.deaths === 0 ? (
-                <KDTypo sx={{ fontSize: '14px' }}>정보없음</KDTypo>
+        <EvaluationTooltip title={tooltipText} followCursor>
+          <Member>
+            <SectionInMember>
+              <SectionTitleInMember>닉네임</SectionTitleInMember>
+              <Nickname>{memberInfo.name.split('#')[0]}</Nickname>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>승률</SectionTitleInMember>
+              {memberInfo.wins + memberInfo.losses === 0 ? (
+                <WinRateSection>
+                  <WinRate component="span" sx={{ fontSize: '14px' }}>
+                    정보없음
+                  </WinRate>
+                </WinRateSection>
               ) : (
-                <KDTypo sx={{ color: calcKDInfo().color }}>
-                  {authorKDTypo}
-                </KDTypo>
-              )}
-            </KDSection>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>티어</SectionTitleInMember>
-            <TierSection>
-              <PositionRankSection>
-                <PositionEmblemWrapper>
-                  <img
-                    src={positionList[1].imageUrl}
-                    alt={positionList[1]?.value}
-                    width="8px"
-                    height="8px"
-                  />
-                </PositionEmblemWrapper>
-                <RankEmblemWrapper>
-                  <img
-                    src={authorTankTier?.imageUrl}
-                    alt={authorTankTier?.value}
-                    width={
-                      authorTankTier?.value === 'GRANDMASTER' ||
-                      authorTankTier?.value === 'MASTER'
-                        ? '30px'
-                        : '36px'
-                    }
-                    height={
-                      authorTankTier?.value === 'GRANDMASTER' ||
-                      authorTankTier?.value === 'MASTER'
-                        ? '30px'
-                        : '36px'
-                    }
-                  />
-                </RankEmblemWrapper>
-                <Tier sx={{ color: authorTankTier?.color }}>
-                  {authorTankTier?.acronym}
-                  {memberInfo.tank_rank === 'none' ? '' : memberInfo.tank_rank}
-                </Tier>
-              </PositionRankSection>
-              <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-              <PositionRankSection>
-                <PositionEmblemWrapper>
-                  <img
-                    src={positionList[2].imageUrl}
-                    alt={positionList[2]?.value}
-                    width="8px"
-                    height="8px"
-                  />
-                </PositionEmblemWrapper>
-                <RankEmblemWrapper>
-                  <img
-                    src={authorDamageTier?.imageUrl}
-                    alt={authorDamageTier?.value}
-                    width={
-                      authorDamageTier?.value === 'GRANDMASTER' ||
-                      authorDamageTier?.value === 'MASTER'
-                        ? '30px'
-                        : '36px'
-                    }
-                    height={
-                      authorDamageTier?.value === 'GRANDMASTER' ||
-                      authorDamageTier?.value === 'MASTER'
-                        ? '30px'
-                        : '36px'
-                    }
-                  />
-                </RankEmblemWrapper>
-                <Tier sx={{ color: authorDamageTier?.color }}>
-                  {authorDamageTier?.acronym}
-                  {memberInfo.damage_rank === 'none'
-                    ? ''
-                    : memberInfo.damage_rank}
-                </Tier>
-              </PositionRankSection>
-              <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
-              <PositionRankSection>
-                <PositionEmblemWrapper>
-                  <img
-                    src={positionList[3].imageUrl}
-                    alt={positionList[3]?.value}
-                    width="8px"
-                    height="8px"
-                  />
-                </PositionEmblemWrapper>
-                <RankEmblemWrapper>
-                  <img
-                    src={authorSupportTier?.imageUrl}
-                    alt={authorSupportTier?.value}
-                    width={
-                      authorSupportTier?.value === 'GRANDMASTER' ||
-                      authorSupportTier?.value === 'MASTER'
-                        ? '30px'
-                        : '36px'
-                    }
-                    height={
-                      authorSupportTier?.value === 'GRANDMASTER' ||
-                      authorSupportTier?.value === 'MASTER'
-                        ? '30px'
-                        : '36px'
-                    }
-                  />
-                </RankEmblemWrapper>
-                <Tier sx={{ color: authorSupportTier?.color }}>
-                  {authorSupportTier?.acronym}
-                  {memberInfo.support_rank === 'none'
-                    ? ''
-                    : memberInfo.support_rank}
-                </Tier>
-              </PositionRankSection>
-            </TierSection>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>모스트 영웅</SectionTitleInMember>
-            <ImageList
-              sx={{ m: '4px 0 0 0', p: 0, height: '50px' }}
-              cols={3}
-              gap={4}
-            >
-              {memberInfo?.mostHero.map((aHero: string, index: number) => {
-                return (
-                  <ImageListItem
-                    key={`most_${index + 1}_${aHero}`}
-                    sx={{
-                      width: '44px',
-                      height: '44px',
-                      gap: 1,
-                      border: '2px solid black',
-                    }}
+                <WinRateSection>
+                  <WinRate
+                    component="span"
+                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
                   >
+                    {winRate}%
+                  </WinRate>
+                  <MatchPlayed>
+                    {memberInfo.wins}승 {memberInfo.losses}패
+                  </MatchPlayed>
+                </WinRateSection>
+              )}
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>K/D</SectionTitleInMember>
+              <KDSection>
+                {memberInfo.kills + memberInfo.deaths === 0 ? (
+                  <KDTypo sx={{ fontSize: '14px' }}>정보없음</KDTypo>
+                ) : (
+                  <KDTypo sx={{ color: calcKDInfo().color }}>
+                    {authorKDTypo}
+                  </KDTypo>
+                )}
+              </KDSection>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>티어</SectionTitleInMember>
+              <TierSection>
+                <PositionRankSection>
+                  <PositionEmblemWrapper>
                     <img
-                      src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero.toLowerCase()}.png`}
-                      alt={aHero}
-                      loading="lazy"
+                      src={positionList[1].imageUrl}
+                      alt={positionList[1]?.value}
+                      width="8px"
+                      height="8px"
                     />
-                  </ImageListItem>
-                );
-              })}
-            </ImageList>
-          </SectionInMember>
-          <MemberControlPanel>
-            {isAuthor && currentCard?.name !== name && (
-              <MuiToolTip title="강제퇴장" placement="right">
-                <IconButton
-                  onClick={handleKickBtn}
-                  disabled={
-                    currentCard.expired === true ||
-                    currentCard.finished === true
-                  }
-                >
-                  <NotInterestedIcon />
-                </IconButton>
-              </MuiToolTip>
-            )}
-            {isInParty(currentCard.memberList, oauth2Id) &&
-              oauth2Id !== MemberOauth2Id &&
-              !MemberOauth2Id.startsWith('guest') && (
-                <MuiToolTip title="팔로우" placement="right">
-                  <IconButton onClick={handleFollow}>
-                    <PersonAdd />
+                  </PositionEmblemWrapper>
+                  <RankEmblemWrapper>
+                    <img
+                      src={authorTankTier?.imageUrl}
+                      alt={authorTankTier?.value}
+                      width={
+                        authorTankTier?.value === 'GRANDMASTER' ||
+                        authorTankTier?.value === 'MASTER'
+                          ? '30px'
+                          : '36px'
+                      }
+                      height={
+                        authorTankTier?.value === 'GRANDMASTER' ||
+                        authorTankTier?.value === 'MASTER'
+                          ? '30px'
+                          : '36px'
+                      }
+                    />
+                  </RankEmblemWrapper>
+                  <Tier sx={{ color: authorTankTier?.color }}>
+                    {authorTankTier?.acronym}
+                    {memberInfo.tank_rank === 'none'
+                      ? ''
+                      : memberInfo.tank_rank}
+                  </Tier>
+                </PositionRankSection>
+                <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+                <PositionRankSection>
+                  <PositionEmblemWrapper>
+                    <img
+                      src={positionList[2].imageUrl}
+                      alt={positionList[2]?.value}
+                      width="8px"
+                      height="8px"
+                    />
+                  </PositionEmblemWrapper>
+                  <RankEmblemWrapper>
+                    <img
+                      src={authorDamageTier?.imageUrl}
+                      alt={authorDamageTier?.value}
+                      width={
+                        authorDamageTier?.value === 'GRANDMASTER' ||
+                        authorDamageTier?.value === 'MASTER'
+                          ? '30px'
+                          : '36px'
+                      }
+                      height={
+                        authorDamageTier?.value === 'GRANDMASTER' ||
+                        authorDamageTier?.value === 'MASTER'
+                          ? '30px'
+                          : '36px'
+                      }
+                    />
+                  </RankEmblemWrapper>
+                  <Tier sx={{ color: authorDamageTier?.color }}>
+                    {authorDamageTier?.acronym}
+                    {memberInfo.damage_rank === 'none'
+                      ? ''
+                      : memberInfo.damage_rank}
+                  </Tier>
+                </PositionRankSection>
+                <MuiDivider orientation="vertical" flexItem sx={{ mx: 0.5 }} />
+                <PositionRankSection>
+                  <PositionEmblemWrapper>
+                    <img
+                      src={positionList[3].imageUrl}
+                      alt={positionList[3]?.value}
+                      width="8px"
+                      height="8px"
+                    />
+                  </PositionEmblemWrapper>
+                  <RankEmblemWrapper>
+                    <img
+                      src={authorSupportTier?.imageUrl}
+                      alt={authorSupportTier?.value}
+                      width={
+                        authorSupportTier?.value === 'GRANDMASTER' ||
+                        authorSupportTier?.value === 'MASTER'
+                          ? '30px'
+                          : '36px'
+                      }
+                      height={
+                        authorSupportTier?.value === 'GRANDMASTER' ||
+                        authorSupportTier?.value === 'MASTER'
+                          ? '30px'
+                          : '36px'
+                      }
+                    />
+                  </RankEmblemWrapper>
+                  <Tier sx={{ color: authorSupportTier?.color }}>
+                    {authorSupportTier?.acronym}
+                    {memberInfo.support_rank === 'none'
+                      ? ''
+                      : memberInfo.support_rank}
+                  </Tier>
+                </PositionRankSection>
+              </TierSection>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>모스트 영웅</SectionTitleInMember>
+              <ImageList
+                sx={{ m: '4px 0 0 0', p: 0, height: '50px' }}
+                cols={3}
+                gap={4}
+              >
+                {memberInfo?.mostHero.map((aHero: string, index: number) => {
+                  return (
+                    <ImageListItem
+                      key={`most_${index + 1}_${aHero}`}
+                      sx={{
+                        width: '44px',
+                        height: '44px',
+                        gap: 1,
+                        border: '2px solid black',
+                      }}
+                    >
+                      <img
+                        src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero.toLowerCase()}.png`}
+                        alt={aHero}
+                        loading="lazy"
+                      />
+                    </ImageListItem>
+                  );
+                })}
+              </ImageList>
+            </SectionInMember>
+            <MemberControlPanel>
+              {isAuthor && currentCard?.name !== name && (
+                <MuiToolTip title="강제퇴장" placement="right">
+                  <IconButton
+                    onClick={handleKickBtn}
+                    disabled={
+                      currentCard.expired === true ||
+                      currentCard.finished === true
+                    }
+                  >
+                    <NotInterestedIcon />
                   </IconButton>
                 </MuiToolTip>
               )}
-          </MemberControlPanel>
-        </Member>
+              {isInParty(currentCard.memberList, oauth2Id) &&
+                oauth2Id !== MemberOauth2Id &&
+                !MemberOauth2Id.startsWith('guest') && (
+                  <MuiToolTip title="팔로우" placement="right">
+                    <IconButton onClick={handleFollow}>
+                      <PersonAdd />
+                    </IconButton>
+                  </MuiToolTip>
+                )}
+            </MemberControlPanel>
+          </Member>
+        </EvaluationTooltip>
       )}
     </>
   );
@@ -523,3 +570,16 @@ const IconButton = styled(MuiIconButton)(() => ({
     padding: '0',
   },
 }));
+
+const EvaluationTooltip = styled(({ className, ...props }: TooltipProps) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <MuiToolTip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 'none',
+    backgroundColor: '#3d3939',
+    color: 'white',
+    fontWeight: '500',
+    fontSize: '13px',
+  },
+});
