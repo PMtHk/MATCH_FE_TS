@@ -1,5 +1,5 @@
 /* eslint-disable no-restricted-globals */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 // mui
@@ -8,7 +8,10 @@ import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
 import MuiImageList from '@mui/material/ImageList';
-import MuiToolTip from '@mui/material/Tooltip';
+import MuiToolTip, {
+  TooltipProps,
+  tooltipClasses,
+} from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
@@ -19,7 +22,7 @@ import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
 import { fetchMemberHistory } from 'apis/api/leagueoflegends';
 import { isInParty } from 'functions/commons';
-import { followUser } from 'apis/api/user';
+import { followUser, getEvaluationInfo } from 'apis/api/user';
 import { positionList, tierList } from './data';
 
 interface MemberSlotProps {
@@ -45,6 +48,46 @@ const MemberSlot = ({
   );
 
   const tier = tierList.find((aTier) => aTier.value === memberInfo?.tier);
+
+  // Tooltip
+  const [tooltipText, setTooltipText] = useState<string>('');
+
+  const calcMatchCount = (count: number) => {
+    if (count < 10) return '10-';
+    if (count < 100) return `${Math.floor(count / 10) * 10}+`;
+    if (count < 1000) return `${Math.floor(count / 100) * 100}+`;
+    return '1000+';
+  };
+
+  const calcLikePercentage = (likeCount: number, dislikeCount: number) => {
+    return Math.round((likeCount / (likeCount + dislikeCount)) * 100);
+  };
+
+  useEffect(() => {
+    const getTooltipData = async () => {
+      if (MemberOauth2Id.includes('guest')) {
+        setTooltipText('MatchGG를 이용하는 유저가 아닙니다.');
+        return;
+      }
+
+      const { matchCount, likeCount, dislikeCount } = await getEvaluationInfo(
+        MemberOauth2Id,
+      );
+
+      if (matchCount === 0) {
+        setTooltipText('이전 매칭 기록이 없는 유저입니다.');
+      } else {
+        setTooltipText(
+          `총 ${calcMatchCount(matchCount)} 번의 매칭에서 ${calcLikePercentage(
+            likeCount,
+            dislikeCount,
+          )}%의 긍정적인 평가를 받은 유저입니다.`,
+        );
+      }
+    };
+
+    getTooltipData();
+  }, []);
 
   // 아래 구문은 조금 더 찾아보고 수정할 수 있도록 하겠음. - 6/28 나주엽
   // eslint-disable-next-line no-unsafe-optional-chaining
@@ -171,116 +214,118 @@ const MemberSlot = ({
         </Member>
       )}
       {!isLoading && (
-        <Member>
-          <SectionInMember>
-            <SectionTitleInMember>소환사명</SectionTitleInMember>
-            <Nickname>{memberInfo?.summonerName}</Nickname>
-            <MostLaneInfo>
-              {mostLane ? (
-                <>
-                  <img
-                    src={mostLane?.imageUrl}
-                    alt="lane_icon"
-                    loading="lazy"
-                    width="20px"
-                    height="20px"
-                  />
-                  <MostLanteTypo>{mostLane?.label}</MostLanteTypo>
-                </>
-              ) : (
-                <MuiToolTip
-                  title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
-                  placement="bottom-start"
-                >
-                  <MostLanteTypo>포지션: -</MostLanteTypo>
-                </MuiToolTip>
-              )}
-            </MostLaneInfo>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>티어</SectionTitleInMember>
-            <FlexRow>
-              <RankEmblemWrapper>
-                <img
-                  src={tier?.imageUrl}
-                  alt="rank"
-                  width="32px"
-                  height="24px"
-                  loading="lazy"
-                />
-              </RankEmblemWrapper>
-              <TierWinRateWrapper>
-                {!unranked ? (
-                  <TierTypo sx={{ color: tier?.color }}>
-                    {tier?.acronym}
-                    {rankRomanToNum(memberInfo.rank)}-{memberInfo?.leaguePoints}
-                    LP
-                  </TierTypo>
+        <EvaluationTooltip title={tooltipText} followCursor>
+          <Member>
+            <SectionInMember>
+              <SectionTitleInMember>소환사명</SectionTitleInMember>
+              <Nickname>{memberInfo?.summonerName}</Nickname>
+              <MostLaneInfo>
+                {mostLane ? (
+                  <>
+                    <img
+                      src={mostLane?.imageUrl}
+                      alt="lane_icon"
+                      loading="lazy"
+                      width="20px"
+                      height="20px"
+                    />
+                    <MostLanteTypo>{mostLane?.label}</MostLanteTypo>
+                  </>
                 ) : (
-                  <TierTypo>Unranked</TierTypo>
+                  <MuiToolTip
+                    title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
+                    placement="bottom-start"
+                  >
+                    <MostLanteTypo>포지션: -</MostLanteTypo>
+                  </MuiToolTip>
                 )}
-                {!unranked && (
-                  <MatchPlayed>
-                    {memberInfo?.wins}승 {memberInfo?.losses}패
-                    <WinRate
-                      component="span"
-                      sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                    >
-                      ({winRate}%)
-                    </WinRate>
-                  </MatchPlayed>
-                )}
-              </TierWinRateWrapper>
-            </FlexRow>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>모스트 챔피언</SectionTitleInMember>
-            <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
-              {memberInfo &&
-                memberInfo.mostChampion?.map(
-                  (aChampion: string, index: number) => (
-                    <ChampImgWrapper key={`most_${index + 1}_aChampion`}>
-                      <img
-                        src={
-                          aChampion === 'poro'
-                            ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
-                            : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
-                        }
-                        alt={`most${index}_${aChampion}`}
-                        loading="lazy"
-                        width="50px"
-                        height="50px"
-                      />
-                    </ChampImgWrapper>
-                  ),
-                )}
-            </MuiImageList>
-          </SectionInMember>
-          <MemberControlPanel>
-            {isAuthor && currentCard?.name !== summonerName && (
-              <MuiToolTip title="강제퇴장" placement="right">
-                <IconButton
-                  onClick={handleKickBtn}
-                  disabled={
-                    currentCard.expired === true ||
-                    currentCard.finished === true
-                  }
-                >
-                  <NotInterestedIcon />
-                </IconButton>
-              </MuiToolTip>
-            )}
-            {isInParty(currentCard.memberList, oauth2Id) &&
-              oauth2Id !== MemberOauth2Id &&
-              !MemberOauth2Id.startsWith('guest') && (
-                <MuiToolTip title="팔로우" placement="right">
-                  <IconButton onClick={handleFollow}>
-                    <PersonAdd />
+              </MostLaneInfo>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>티어</SectionTitleInMember>
+              <FlexRow>
+                <RankEmblemWrapper>
+                  <img
+                    src={tier?.imageUrl}
+                    alt="rank"
+                    width="32px"
+                    height="24px"
+                    loading="lazy"
+                  />
+                </RankEmblemWrapper>
+                <TierWinRateWrapper>
+                  {!unranked ? (
+                    <TierTypo sx={{ color: tier?.color }}>
+                      {tier?.acronym}
+                      {rankRomanToNum(memberInfo.rank)}-
+                      {memberInfo?.leaguePoints}
+                      LP
+                    </TierTypo>
+                  ) : (
+                    <TierTypo>Unranked</TierTypo>
+                  )}
+                  {!unranked && (
+                    <MatchPlayed>
+                      {memberInfo?.wins}승 {memberInfo?.losses}패
+                      <WinRate
+                        component="span"
+                        sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                      >
+                        ({winRate}%)
+                      </WinRate>
+                    </MatchPlayed>
+                  )}
+                </TierWinRateWrapper>
+              </FlexRow>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>모스트 챔피언</SectionTitleInMember>
+              <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
+                {memberInfo &&
+                  memberInfo.mostChampion?.map(
+                    (aChampion: string, index: number) => (
+                      <ChampImgWrapper key={`most_${index + 1}_aChampion`}>
+                        <img
+                          src={
+                            aChampion === 'poro'
+                              ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
+                              : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
+                          }
+                          alt={`most${index}_${aChampion}`}
+                          loading="lazy"
+                          width="50px"
+                          height="50px"
+                        />
+                      </ChampImgWrapper>
+                    ),
+                  )}
+              </MuiImageList>
+            </SectionInMember>
+            <MemberControlPanel>
+              {isAuthor && currentCard?.name !== summonerName && (
+                <MuiToolTip title="강제퇴장" placement="right">
+                  <IconButton
+                    onClick={handleKickBtn}
+                    disabled={
+                      currentCard.expired === true ||
+                      currentCard.finished === true
+                    }
+                  >
+                    <NotInterestedIcon />
                   </IconButton>
                 </MuiToolTip>
               )}
-          </MemberControlPanel>
-        </Member>
+              {isInParty(currentCard.memberList, oauth2Id) &&
+                oauth2Id !== MemberOauth2Id && (
+                  <MuiToolTip title="팔로우" placement="right">
+                    <IconButton onClick={handleFollow}>
+                      <PersonAdd />
+                    </IconButton>
+                  </MuiToolTip>
+                )}
+            </MemberControlPanel>
+          </Member>
+        </EvaluationTooltip>
       )}
     </>
   );
@@ -397,3 +442,16 @@ const IconButton = styled(MuiIconButton)(() => ({
     padding: '0',
   },
 }));
+
+const EvaluationTooltip = styled(({ className, ...props }: TooltipProps) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <MuiToolTip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 'none',
+    backgroundColor: '#3d3939',
+    color: 'white',
+    fontWeight: '500',
+    fontSize: '13px',
+  },
+});

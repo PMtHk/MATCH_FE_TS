@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -9,7 +9,10 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
 import MuiIconButton from '@mui/material/IconButton';
-import MuiToolTip from '@mui/material/Tooltip';
+import MuiToolTip, {
+  TooltipProps,
+  tooltipClasses,
+} from '@mui/material/Tooltip';
 import PersonAdd from '@mui/icons-material/PersonAdd';
 import NotInterestedIcon from '@mui/icons-material/NotInterested';
 
@@ -19,7 +22,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { kickMemberFromParty } from 'apis/api/common';
 import { isInParty } from 'functions/commons';
-import { followUser } from 'apis/api/user';
+import { followUser, getEvaluationInfo } from 'apis/api/user';
 import { platformList, tierList, rankImage } from './data';
 
 interface MemberSlotProps {
@@ -210,6 +213,46 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
     }
   };
 
+  // Tooltip
+  const [tooltipText, setTooltipText] = useState<string>('');
+
+  const calcMatchCount = (count: number) => {
+    if (count < 10) return '10-';
+    if (count < 100) return `${Math.floor(count / 10) * 10}+`;
+    if (count < 1000) return `${Math.floor(count / 100) * 100}+`;
+    return '1000+';
+  };
+
+  const calcLikePercentage = (likeCount: number, dislikeCount: number) => {
+    return Math.round((likeCount / (likeCount + dislikeCount)) * 100);
+  };
+
+  useEffect(() => {
+    const getTooltipData = async () => {
+      if (MemberOauth2Id.includes('guest')) {
+        setTooltipText('MatchGG를 이용하는 유저가 아닙니다.');
+        return;
+      }
+
+      const { matchCount, likeCount, dislikeCount } = await getEvaluationInfo(
+        MemberOauth2Id,
+      );
+
+      if (matchCount === 0) {
+        setTooltipText('이전 매칭 기록이 없는 유저입니다.');
+      } else {
+        setTooltipText(
+          `총 ${calcMatchCount(matchCount)} 번의 매칭에서 ${calcLikePercentage(
+            likeCount,
+            dislikeCount,
+          )}%의 긍정적인 평가를 받은 유저입니다.`,
+        );
+      }
+    };
+
+    getTooltipData();
+  }, []);
+
   return (
     <>
       {isLoading && (
@@ -218,82 +261,84 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
         </Member>
       )}
       {!isLoading && (
-        <Member>
-          <SectionInMember>
-            <SectionTitleInMember>닉네임</SectionTitleInMember>
-            <Nickname>{memberInfo?.name}</Nickname>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>RP</SectionTitleInMember>
-            <MemberInfoBox>
-              {memberInfo.type !== 'RANKED_SQUAD' ||
-              (memberInfo.type === 'RANKED_SQUAD' &&
-                memberInfo.currentRankPoint === 0) ? (
-                <span style={{ color: 'gray' }}>정보 없음</span>
-              ) : (
-                <>
-                  <RankEmblemWrapper>
-                    <img
-                      src={getRank().imageUrl}
-                      alt={getRank().value}
-                      width="24px"
-                      height="24px"
-                    />
-                  </RankEmblemWrapper>
-                  <SectionContentText
-                    sx={{ color: authorTier?.darkColor, paddingTop: '4px' }}
+        <EvaluationTooltip title={tooltipText} followCursor>
+          <Member>
+            <SectionInMember>
+              <SectionTitleInMember>닉네임</SectionTitleInMember>
+              <Nickname>{memberInfo?.name}</Nickname>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>RP</SectionTitleInMember>
+              <MemberInfoBox>
+                {memberInfo.type !== 'RANKED_SQUAD' ||
+                (memberInfo.type === 'RANKED_SQUAD' &&
+                  memberInfo.currentRankPoint === 0) ? (
+                  <span style={{ color: 'gray' }}>정보 없음</span>
+                ) : (
+                  <>
+                    <RankEmblemWrapper>
+                      <img
+                        src={getRank().imageUrl}
+                        alt={getRank().value}
+                        width="24px"
+                        height="24px"
+                      />
+                    </RankEmblemWrapper>
+                    <SectionContentText
+                      sx={{ color: authorTier?.darkColor, paddingTop: '4px' }}
+                    >
+                      {getRank().value}
+                    </SectionContentText>
+                  </>
+                )}
+              </MemberInfoBox>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>K/D</SectionTitleInMember>
+              <MemberInfoTypo sx={{ color: calcKDInfo().color }}>
+                {calcKDInfo().value}
+              </MemberInfoTypo>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>평균 데미지</SectionTitleInMember>
+              <MemberInfoTypo sx={{ color: calcAvgDmgInfo().color }}>
+                {calcAvgDmgInfo().value}
+              </MemberInfoTypo>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>Top 1</SectionTitleInMember>
+              <MemberInfoTypo>{`${calcTop1Info()}%`}</MemberInfoTypo>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>Top 10</SectionTitleInMember>
+              <MemberInfoTypo>{`${calcTop10Info()}%`}</MemberInfoTypo>
+            </SectionInMember>
+            <MemberControlPanel>
+              {isAuthor && currentCard?.name !== name && (
+                <MuiToolTip title="강제퇴장" placement="right">
+                  <IconButton
+                    onClick={handleKickBtn}
+                    disabled={
+                      currentCard.expired === true ||
+                      currentCard.finished === true
+                    }
                   >
-                    {getRank().value}
-                  </SectionContentText>
-                </>
-              )}
-            </MemberInfoBox>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>K/D</SectionTitleInMember>
-            <MemberInfoTypo sx={{ color: calcKDInfo().color }}>
-              {calcKDInfo().value}
-            </MemberInfoTypo>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>평균 데미지</SectionTitleInMember>
-            <MemberInfoTypo sx={{ color: calcAvgDmgInfo().color }}>
-              {calcAvgDmgInfo().value}
-            </MemberInfoTypo>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>Top 1</SectionTitleInMember>
-            <MemberInfoTypo>{`${calcTop1Info()}%`}</MemberInfoTypo>
-          </SectionInMember>
-          <SectionInMember>
-            <SectionTitleInMember>Top 10</SectionTitleInMember>
-            <MemberInfoTypo>{`${calcTop10Info()}%`}</MemberInfoTypo>
-          </SectionInMember>
-          <MemberControlPanel>
-            {isAuthor && currentCard?.name !== name && (
-              <MuiToolTip title="강제퇴장" placement="right">
-                <IconButton
-                  onClick={handleKickBtn}
-                  disabled={
-                    currentCard.expired === true ||
-                    currentCard.finished === true
-                  }
-                >
-                  <NotInterestedIcon />
-                </IconButton>
-              </MuiToolTip>
-            )}
-            {isInParty(currentCard.memberList, oauth2Id) &&
-              oauth2Id !== MemberOauth2Id &&
-              !MemberOauth2Id.startsWith('guest') && (
-                <MuiToolTip title="팔로우" placement="right">
-                  <IconButton onClick={handleFollow}>
-                    <PersonAdd />
+                    <NotInterestedIcon />
                   </IconButton>
                 </MuiToolTip>
               )}
-          </MemberControlPanel>
-        </Member>
+              {isInParty(currentCard.memberList, oauth2Id) &&
+                oauth2Id !== MemberOauth2Id &&
+                !MemberOauth2Id.startsWith('guest') && (
+                  <MuiToolTip title="팔로우" placement="right">
+                    <IconButton onClick={handleFollow}>
+                      <PersonAdd />
+                    </IconButton>
+                  </MuiToolTip>
+                )}
+            </MemberControlPanel>
+          </Member>
+        </EvaluationTooltip>
       )}
     </>
   );
@@ -381,3 +426,16 @@ const IconButton = styled(MuiIconButton)(() => ({
     padding: '0',
   },
 }));
+
+const EvaluationTooltip = styled(({ className, ...props }: TooltipProps) => (
+  // eslint-disable-next-line react/jsx-props-no-spreading
+  <MuiToolTip {...props} classes={{ popper: className }} />
+))({
+  [`& .${tooltipClasses.tooltip}`]: {
+    maxWidth: 'none',
+    backgroundColor: '#3d3939',
+    color: 'white',
+    fontWeight: '500',
+    fontSize: '13px',
+  },
+});
