@@ -26,6 +26,7 @@ import MyPage from 'pages/mypage';
 const LandingPage = lazy(() => import('pages/landing'));
 
 const LoginPage = lazy(() => import('pages/login'));
+const AdminLoginPage = lazy(() => import('pages/login/AdminLogin'));
 const LoginRedirect = lazy(() => import('pages/login/redirect'));
 
 const Register = lazy(() => import('pages/register/index'));
@@ -68,6 +69,7 @@ const App = () => {
           }
         />
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/login/admin" element={<AdminLoginPage />} />
         <Route path="/kakao/login" element={<LoginRedirect />} />
         <Route path="/kakao/register/*" element={<Register />}>
           <Route path="" element={<Terms />} />
