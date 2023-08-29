@@ -7,7 +7,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 import Circular from 'components/loading/Circular';
 import { rankImage, tierList } from 'pages/battlegrounds/data';
-import Nickname from './Nickname';
 
 const Info = ({ data }: any) => {
   const getTypeLabel = () => {
@@ -152,8 +151,6 @@ const PubgInfo = ({ data }: any) => {
   const { duoInfo, squadInfo, rankedSquadInfo } = data;
   return (
     <Container>
-      {/* 닉네임 인증, 변경 영역 */}
-      <Nickname name={data.duoInfo.name} game="pubg" />
       {/* 듀오 정보 */}
       <Info data={duoInfo} />
       {/* 스쿼드 정보 */}

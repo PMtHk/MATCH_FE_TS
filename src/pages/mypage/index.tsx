@@ -1,8 +1,5 @@
 import React, { Suspense } from 'react';
-import { useSelector } from 'react-redux';
 import { ErrorBoundary } from 'react-error-boundary';
-
-import { RootState } from 'store';
 
 // components
 import ErrorFallback from 'components/errorFallback/ErrorFallback';

@@ -5,9 +5,36 @@ import { useSelector } from 'react-redux';
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
-import { Divider } from '@mui/material';
 
 import { RootState } from 'store';
+
+type ContentProps = {
+  title: string;
+  content: string | number;
+};
+
+const Content = ({ title, content }: ContentProps) => {
+  return (
+    <FlexRow>
+      <SectionSubTitle>{title}</SectionSubTitle>
+      <SectionContent>{content}</SectionContent>
+    </FlexRow>
+  );
+};
+
+type InfoProps = {
+  title: string;
+  children: JSX.Element | JSX.Element[];
+};
+
+const Info = ({ title, children }: InfoProps) => {
+  return (
+    <Section>
+      <SectionTitle>{title}</SectionTitle>
+      {children}
+    </Section>
+  );
+};
 
 const MyInfo = () => {
   const { email, created, likeCount, dislikeCount, matchCount } = useSelector(
@@ -15,40 +42,23 @@ const MyInfo = () => {
   );
 
   return (
-    <Container>
-      <MenuTitle>내 정보</MenuTitle>
-      <Section>
-        <SectionTitle>이메일 및 가입 일자</SectionTitle>
-        <FlexRow>
-          <SectionSubTitle>이메일</SectionSubTitle>
-          <SectionContent>{email}</SectionContent>
-        </FlexRow>
-        <FlexRow>
-          <SectionSubTitle>가입 일자</SectionSubTitle>
-          <SectionContent>{created.slice(0, 11)}</SectionContent>
-        </FlexRow>
-      </Section>
-      <Section>
-        <SectionTitle>받은 평가</SectionTitle>
-        <FlexRow>
-          <SectionSubTitle>매칭 횟수</SectionSubTitle>
-          <SectionContent>{matchCount}</SectionContent>
-        </FlexRow>
-        <FlexRow>
-          <SectionSubTitle>받은 좋아요</SectionSubTitle>
-          <SectionContent>{likeCount}</SectionContent>
-        </FlexRow>
-        <FlexRow>
-          <SectionSubTitle>받은 싫어요</SectionSubTitle>
-          <SectionContent>{dislikeCount}</SectionContent>
-        </FlexRow>
-      </Section>
-    </Container>
+    <>
+      <Info title="이메일 및 가입 일자">
+        <Content title="이메일" content={email} />
+        <Content title="가입 일자" content={created.slice(0, 11)} />
+      </Info>
+
+      <Info title="받은 평가">
+        <Content title="매칭 횟수" content={matchCount} />
+        <Content title="받은 좋아요" content={likeCount} />
+        <Content title="받은 싫어요" content={dislikeCount} />
+      </Info>
+    </>
   );
 };
 export default MyInfo;
 
-const Container = styled(MuiBox)(({ theme }) => ({
+const Container = styled(MuiBox)(() => ({
   width: '100%',
   height: '100%',
   display: 'flex',
@@ -59,14 +69,7 @@ const Container = styled(MuiBox)(({ theme }) => ({
   paddingRight: '12px',
 }));
 
-const MenuTitle = styled(MuiTypography)(() => ({
-  width: '100%',
-  fontSize: '18px',
-  fontWeight: '700',
-  paddingLeft: '8px',
-})) as typeof MuiTypography;
-
-const Section = styled(MuiBox)(({ theme }) => ({
+const Section = styled(MuiBox)(() => ({
   width: '100%',
   display: 'flex',
   flexDirection: 'column',
