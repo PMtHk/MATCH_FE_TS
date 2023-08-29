@@ -26,7 +26,7 @@ const AdminLogin = () => {
         <LogoTitle variant="h1">MatchGG</LogoTitle>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <Typography variant="h6" sx={{ mt: 1, mb: 3 }}>
-            Admin Login
+            관리자 로그인 | Admin SignIn
           </Typography>
           <TextField
             margin="normal"
