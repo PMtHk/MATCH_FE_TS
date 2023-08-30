@@ -42,3 +42,11 @@ export const getIsBanned = (
   }
   return false;
 };
+
+export const isGuest = (memberOauth2Id: string) => {
+  if (memberOauth2Id.includes('guest')) {
+    return true;
+  }
+
+  return false;
+};
