@@ -21,7 +21,7 @@ import { refreshActions } from 'store/refresh-slice';
 import Circular from 'components/loading/Circular';
 import { kickMemberFromParty } from 'apis/api/common';
 import { fetchMemberHistory } from 'apis/api/leagueoflegends';
-import { isInParty } from 'functions/commons';
+import { isGuest, isInParty } from 'functions/commons';
 import { followUser, getEvaluationInfo } from 'apis/api/user';
 import { positionList, tierList } from './data';
 
@@ -65,7 +65,7 @@ const MemberSlot = ({
 
   useEffect(() => {
     const getTooltipData = async () => {
-      if (MemberOauth2Id.includes('guest')) {
+      if (isGuest(MemberOauth2Id)) {
         setTooltipText('MatchGG를 이용하는 유저가 아닙니다.');
         return;
       }
@@ -316,6 +316,7 @@ const MemberSlot = ({
                 </MuiToolTip>
               )}
               {isInParty(currentCard.memberList, oauth2Id) &&
+                !isGuest(MemberOauth2Id) &&
                 oauth2Id !== MemberOauth2Id && (
                   <MuiToolTip title="팔로우" placement="right">
                     <IconButton onClick={handleFollow}>
