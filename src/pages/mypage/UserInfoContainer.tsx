@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
 // mui
@@ -20,11 +20,13 @@ import { menuList } from './data';
 const UserInfoContainer = () => {
   const dispatch = useDispatch();
 
-  const [currentMenu, setCurrentMenu] = React.useState<string>('myInfo');
-
   const { nickname, imageUrl, oauth2Id } = useSelector(
     (state: RootState) => state.mypage,
   );
+
+  const [currentMenu, setCurrentMenu] = useState<string>(menuList[0].value);
+
+  const [title, setTItle] = useState<string>(menuList[0].label);
 
   useEffect(() => {
     return () => {
@@ -65,7 +67,10 @@ const UserInfoContainer = () => {
                   <MenuButton
                     disabled={!menu.available}
                     fullWidth
-                    onClick={() => setCurrentMenu(menu.value)}
+                    onClick={() => {
+                      setCurrentMenu(menu.value);
+                      setTItle(menu.label);
+                    }}
                   >
                     <MenuTypo>{menu.label}</MenuTypo>
                   </MenuButton>
@@ -76,14 +81,17 @@ const UserInfoContainer = () => {
         </UserProfileWrapper>
       </SidebarWrapper>
       <MenuWrapper>
-        {
+        <MenuTitle>{title}</MenuTitle>
+        <MenuContainer>
           {
-            myInfo: <MyInfo />,
-            games: <Games />,
-            follow: <Follow />,
-            withdrawal: <Withdrawal />,
-          }[currentMenu]
-        }
+            {
+              myInfo: <MyInfo />,
+              games: <Games />,
+              follow: <Follow />,
+              withdrawal: <Withdrawal />,
+            }[currentMenu]
+          }
+        </MenuContainer>
       </MenuWrapper>
     </Container>
   );
@@ -178,5 +186,22 @@ const MenuWrapper = styled(MuiBox)(() => ({
   borderLeft: 'none',
   borderTopRightRadius: '8px',
   borderBottomRightRadius: '8px',
-  padding: '32px 0',
+  padding: '32px 0 0 8px',
 })) as typeof MuiBox;
+
+const MenuTitle = styled(MuiTypography)(() => ({
+  fontSize: '18px',
+  fontWeight: '700',
+})) as typeof MuiTypography;
+
+const MenuContainer = styled(MuiBox)(({ theme }) => ({
+  position: 'relative',
+  width: '100%',
+  height: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+  gap: '16px',
+  paddingRight: '12px',
+}));

@@ -8,7 +8,6 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 import Circular from 'components/loading/Circular';
 import { positionList, tierList } from 'pages/overwatch/data';
-import Nickname from './Nickname';
 
 const Info = ({ data }: any) => {
   const getTypeLabel = () => {
@@ -62,158 +61,160 @@ const Info = ({ data }: any) => {
   const damageTier = tierList.find((aTier) => aTier.value === damage);
   const supportTier = tierList.find((aTier) => aTier.value === support);
 
-  if (data.wins === 0 && data.losses === 0) {
-    return (
-      <>
-        <InfoOutlinedIcon
-          sx={{ color: 'gray', fontSize: '18px', marginRight: '8px' }}
-        />
-        <TitleTypo>{`아직 ${getTypeLabel()} 경기에 대한 정보가 없습니다.`}</TitleTypo>
-      </>
-    );
-  }
   return (
     <InfoContainer>
       <EachInfo sx={{ minWidth: '80px' }}>
         <TitleTypo>타입</TitleTypo>
         <SubTitleTypo>{getTypeLabel()}</SubTitleTypo>
       </EachInfo>
-      <EachInfo>
-        <TitleTypo>K/D</TitleTypo>
-        <SubTitleTypo sx={{ color: calcKD().color }}>
-          {calcKD().kd}
-        </SubTitleTypo>
-      </EachInfo>
-      <EachInfo>
-        <TitleTypo>승률</TitleTypo>
-        <SubTitleTypo sx={{ color: calcWinRate().color }}>
-          {`${calcWinRate().winRate} %`}
-        </SubTitleTypo>
-      </EachInfo>
-      <EachInfo>
-        <TitleTypo>모스트 영웅</TitleTypo>
-        <ImageList cols={3} sx={{ margin: '0px', padding: '0px' }}>
-          {data?.mostHero.map((hero: string) => (
-            <ImageListItem
-              key={hero}
-              sx={{
-                width: '48px',
-                height: '48px',
-                border: '2px solid gray',
-                borderRadius: '4px',
-              }}
-            >
-              <img
-                src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${hero.toLowerCase()}.png`}
-                alt={hero}
-              />
-            </ImageListItem>
-          ))}
-        </ImageList>
-      </EachInfo>
-      <EachInfo>
-        <TitleTypo>티어</TitleTypo>
-        <SectionContent>
-          <PositionRankSection>
-            <PositionEmblemWrapper>
-              <img
-                src={positionList[1].imageUrl}
-                alt={positionList[1]?.value}
-                width="12px"
-                height="12px"
-              />
-            </PositionEmblemWrapper>
-            <RankWrapper>
-              <img
-                src={tankTier?.imageUrl}
-                alt={tankTier?.value}
-                width={
-                  tankTier?.value === 'GRANDMASTER' ||
-                  tankTier?.value === 'MASTER'
-                    ? '42px'
-                    : '50px'
-                }
-                height={
-                  tankTier?.value === 'GRANDMASTER' ||
-                  tankTier?.value === 'MASTER'
-                    ? '42px'
-                    : '50px'
-                }
-              />
-            </RankWrapper>
-            <TierTypo sx={{ color: tankTier?.color }}>
-              {tankTier?.acronym}
-              {data.tank_rank === 'none' ? '' : data.tank_rank}
-            </TierTypo>
-          </PositionRankSection>
-          <MuiDivider orientation="vertical" flexItem />
-          <PositionRankSection>
-            <PositionEmblemWrapper>
-              <img
-                src={positionList[2].imageUrl}
-                alt={positionList[2]?.value}
-                width="12px"
-                height="12px"
-              />
-            </PositionEmblemWrapper>
-            <RankWrapper>
-              <img
-                src={damageTier?.imageUrl}
-                alt={damageTier?.value}
-                width={
-                  damageTier?.value === 'GRANDMASTER' ||
-                  damageTier?.value === 'MASTER'
-                    ? '42px'
-                    : '50px'
-                }
-                height={
-                  damageTier?.value === 'GRANDMASTER' ||
-                  damageTier?.value === 'MASTER'
-                    ? '42px'
-                    : '50px'
-                }
-              />
-            </RankWrapper>
-            <TierTypo sx={{ color: damageTier?.color }}>
-              {damageTier?.acronym}
-              {data.damage_rank === 'none' ? '' : data.damage_rank}
-            </TierTypo>
-          </PositionRankSection>
-          <MuiDivider orientation="vertical" flexItem />
-          <PositionRankSection>
-            <PositionEmblemWrapper>
-              <img
-                src={positionList[3].imageUrl}
-                alt={positionList[3]?.value}
-                width="12px"
-                height="12px"
-              />
-            </PositionEmblemWrapper>
-            <RankWrapper>
-              <img
-                src={supportTier?.imageUrl}
-                alt={supportTier?.value}
-                width={
-                  supportTier?.value === 'GRANDMASTER' ||
-                  supportTier?.value === 'MASTER'
-                    ? '42px'
-                    : '50px'
-                }
-                height={
-                  supportTier?.value === 'GRANDMASTER' ||
-                  supportTier?.value === 'MASTER'
-                    ? '42px'
-                    : '50px'
-                }
-              />
-            </RankWrapper>
-            <TierTypo sx={{ color: supportTier?.color }}>
-              {supportTier?.acronym}
-              {data.support_rank === 'none' ? '' : data.support_rank}
-            </TierTypo>
-          </PositionRankSection>
-        </SectionContent>
-      </EachInfo>
+      {data.wins === 0 && data.losses === 0 && (
+        <>
+          <InfoOutlinedIcon
+            sx={{ color: 'gray', fontSize: '18px', marginRight: '8px' }}
+          />
+          <TitleTypo>{`아직 ${getTypeLabel()} 경기에 대한 정보가 없습니다.`}</TitleTypo>
+        </>
+      )}
+      {(data.wins !== 0 || data.losses !== 0) && (
+        <>
+          <EachInfo>
+            <TitleTypo>K/D</TitleTypo>
+            <SubTitleTypo sx={{ color: calcKD().color }}>
+              {calcKD().kd}
+            </SubTitleTypo>
+          </EachInfo>
+          <EachInfo>
+            <TitleTypo>승률</TitleTypo>
+            <SubTitleTypo sx={{ color: calcWinRate().color }}>
+              {`${calcWinRate().winRate} %`}
+            </SubTitleTypo>
+          </EachInfo>
+          <EachInfo>
+            <TitleTypo>모스트 영웅</TitleTypo>
+            <ImageList cols={3} sx={{ margin: '0px', padding: '0px' }}>
+              {data?.mostHero.map((hero: string) => (
+                <ImageListItem
+                  key={hero}
+                  sx={{
+                    width: '48px',
+                    height: '48px',
+                    border: '2px solid gray',
+                    borderRadius: '4px',
+                  }}
+                >
+                  <img
+                    src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${hero.toLowerCase()}.png`}
+                    alt={hero}
+                  />
+                </ImageListItem>
+              ))}
+            </ImageList>
+          </EachInfo>
+          <EachInfo>
+            <TitleTypo>티어</TitleTypo>
+            <SectionContent>
+              <PositionRankSection>
+                <PositionEmblemWrapper>
+                  <img
+                    src={positionList[1].imageUrl}
+                    alt={positionList[1]?.value}
+                    width="12px"
+                    height="12px"
+                  />
+                </PositionEmblemWrapper>
+                <RankWrapper>
+                  <img
+                    src={tankTier?.imageUrl}
+                    alt={tankTier?.value}
+                    width={
+                      tankTier?.value === 'GRANDMASTER' ||
+                      tankTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                    height={
+                      tankTier?.value === 'GRANDMASTER' ||
+                      tankTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                  />
+                </RankWrapper>
+                <TierTypo sx={{ color: tankTier?.color }}>
+                  {tankTier?.acronym}
+                  {data.tank_rank === 'none' ? '' : data.tank_rank}
+                </TierTypo>
+              </PositionRankSection>
+              <MuiDivider orientation="vertical" flexItem />
+              <PositionRankSection>
+                <PositionEmblemWrapper>
+                  <img
+                    src={positionList[2].imageUrl}
+                    alt={positionList[2]?.value}
+                    width="12px"
+                    height="12px"
+                  />
+                </PositionEmblemWrapper>
+                <RankWrapper>
+                  <img
+                    src={damageTier?.imageUrl}
+                    alt={damageTier?.value}
+                    width={
+                      damageTier?.value === 'GRANDMASTER' ||
+                      damageTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                    height={
+                      damageTier?.value === 'GRANDMASTER' ||
+                      damageTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                  />
+                </RankWrapper>
+                <TierTypo sx={{ color: damageTier?.color }}>
+                  {damageTier?.acronym}
+                  {data.damage_rank === 'none' ? '' : data.damage_rank}
+                </TierTypo>
+              </PositionRankSection>
+              <MuiDivider orientation="vertical" flexItem />
+              <PositionRankSection>
+                <PositionEmblemWrapper>
+                  <img
+                    src={positionList[3].imageUrl}
+                    alt={positionList[3]?.value}
+                    width="12px"
+                    height="12px"
+                  />
+                </PositionEmblemWrapper>
+                <RankWrapper>
+                  <img
+                    src={supportTier?.imageUrl}
+                    alt={supportTier?.value}
+                    width={
+                      supportTier?.value === 'GRANDMASTER' ||
+                      supportTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                    height={
+                      supportTier?.value === 'GRANDMASTER' ||
+                      supportTier?.value === 'MASTER'
+                        ? '42px'
+                        : '50px'
+                    }
+                  />
+                </RankWrapper>
+                <TierTypo sx={{ color: supportTier?.color }}>
+                  {supportTier?.acronym}
+                  {data.support_rank === 'none' ? '' : data.support_rank}
+                </TierTypo>
+              </PositionRankSection>
+            </SectionContent>
+          </EachInfo>
+        </>
+      )}
     </InfoContainer>
   );
 };
@@ -224,8 +225,6 @@ const OverwatchInfo = ({ data }: any) => {
   const { rankInfo, normalInfo } = data;
   return (
     <Container>
-      {/* 닉네임 인증, 변경 영역 */}
-      <Nickname name={data.rankInfo.name} game="overwatch" />
       {/* 랭크 정보 */}
       <Info data={rankInfo} />
       {/* 일반 정보 */}

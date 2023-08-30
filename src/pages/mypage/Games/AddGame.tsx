@@ -12,18 +12,13 @@ const AddGame = ({ game }: any) => {
   };
 
   return (
-    <Container>
-      <Nickname name="" game={game} isNew />
-      <InfoSection>
-        <InfoTitleSection>
-          <InfoOutlined />
-          <InfoTItle>연결되어있는 정보가 없습니다.</InfoTItle>
-        </InfoTitleSection>
-        <InfoSubTitle
-          sx={{ color: 'gray', fontSize: '14px' }}
-        >{`정보를 가져오기 위해 상단에 ${getGameLabel()} 을 입력해 주세요.`}</InfoSubTitle>
-      </InfoSection>
-    </Container>
+    <InfoSection>
+      <InfoTitleSection>
+        <InfoOutlined />
+        <InfoTItle>연결되어있는 정보가 없습니다.</InfoTItle>
+      </InfoTitleSection>
+      <InfoSubTitle>{`정보를 가져오기 위해 상단에 ${getGameLabel()} 을 입력해 주세요.`}</InfoSubTitle>
+    </InfoSection>
   );
 };
 
@@ -49,6 +44,7 @@ const InfoSubTitle = styled(Typography)(() => ({
 })) as typeof Typography;
 
 const InfoSection = styled(Box)(() => ({
+  width: '100%',
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',

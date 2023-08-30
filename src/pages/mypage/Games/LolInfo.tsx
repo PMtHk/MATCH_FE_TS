@@ -12,7 +12,24 @@ import Circular from 'components/loading/Circular';
 import { positionList, tierList } from 'pages/leagueoflegends/data';
 import Nickname from './Nickname';
 
-const TierInfo = ({ info, type }: any) => {
+type InfoProps = {
+  leaguePoints: number;
+  losses: number;
+  mostChampion: string[];
+  mostLane: string;
+  queueType: string;
+  rank: string;
+  summonerName: string;
+  tier: string;
+  wins: number;
+};
+
+type TierInfoProps = {
+  info: InfoProps;
+  type: string;
+};
+
+const Info = ({ info, type }: TierInfoProps) => {
   const tierData = tierList.find((tier) => tier.value === info.tier);
 
   return (
@@ -58,13 +75,13 @@ const TierInfo = ({ info, type }: any) => {
 };
 
 const LolInfo = ({ data }: any) => {
-  if (!data || !data.duoRankInfo || !data.freeRankInfo) {
-    return <Circular height="500px" text="게임 정보를 불러오는 중입니다." />;
+  if (!data) {
+    return <Circular height="200px" text="게임 정보를 불러오는 중입니다." />;
   }
   // 솔로랭크 , 자유랭크 정보
   const { duoRankInfo, freeRankInfo } = data;
+
   // 공통 정보
-  const { summonerName } = data.duoRankInfo;
   const commonData = {
     mostLane: duoRankInfo.mostLane ? duoRankInfo.mostLane : '정보 없음',
     mostChampion: duoRankInfo.mostChampion
@@ -75,18 +92,13 @@ const LolInfo = ({ data }: any) => {
   const mostLaneData = positionList.find(
     (position) => position.value === commonData.mostLane,
   );
+
   return (
     <Container>
-      {/* 닉네임 인증, 변경 영역 */}
-      <Nickname name={summonerName} game="lol" />
       {/* 공통 영역 : 주 포지션, 모스트 챔피언 */}
       <CommonDataSection>
         <EachCommonSection>
-          <CommonTitleTypo
-            sx={{ fontSize: '14px', fontWeight: '700', color: 'gray' }}
-          >
-            주 포지션
-          </CommonTitleTypo>
+          <CommonTitleTypo>주 포지션</CommonTitleTypo>
           {commonData.mostLane !== '정보 없음' && (
             <FlexRow
               sx={{
@@ -101,7 +113,7 @@ const LolInfo = ({ data }: any) => {
               <CommonSubTitleTypo>{mostLaneData?.label}</CommonSubTitleTypo>
             </FlexRow>
           )}
-          {commonData.mostLane === '정보없음' && (
+          {commonData.mostLane === '정보 없음' && (
             <NoDataTypo>정보 없음...</NoDataTypo>
           )}
         </EachCommonSection>
@@ -126,7 +138,7 @@ const LolInfo = ({ data }: any) => {
               ))}
             </ImageList>
           )}
-          {commonData.mostChampion === '정보없음' && (
+          {commonData.mostChampion === '정보 없음' && (
             <NoDataTypo>정보 없음...</NoDataTypo>
           )}
         </EachCommonSection>
@@ -134,9 +146,9 @@ const LolInfo = ({ data }: any) => {
       <Divider sx={{ marginTop: '12px' }} />
       <FlexRow>
         {/* 솔로 / 듀오랭크 정보 */}
-        <TierInfo info={duoRankInfo} type="솔로 / 듀오 랭크" />
+        <Info info={duoRankInfo} type="솔로 / 듀오 랭크" />
         {/* 듀오랭크 정보 */}
-        <TierInfo info={freeRankInfo} type="자유 랭크" />
+        <Info info={freeRankInfo} type="자유 랭크" />
       </FlexRow>
     </Container>
   );
