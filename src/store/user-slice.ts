@@ -22,6 +22,7 @@ interface ISet_User {
     oauth2Id: string;
     profileImage: string;
     representative: GAME_ID;
+    isAdmin?: boolean;
   };
 }
 
@@ -74,6 +75,7 @@ const userSlice = createSlice({
       state.profileImage = action.payload.profileImage;
       state.representative = action.payload.representative;
       state.isLogin = true;
+      if (action.payload.isAdmin) state.isAdmin = true;
     },
     SET_REPRESENTATIVE: (state, action: ISet_Representative) => {
       state.representative = action.payload.representative;

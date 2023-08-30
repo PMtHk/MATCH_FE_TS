@@ -1,9 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import { login, getUserGameInfo } from 'apis/api/user';
-import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { userActions } from 'store/user-slice';
 import { tokenActions } from 'store/token-slice';
