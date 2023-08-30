@@ -53,9 +53,14 @@ authAxios.interceptors.response.use(
     if (status === 401) {
       try {
         const originalRequest = config;
-        localStorage.getItem('matchGG_refreshToken');
 
-        const { data } = await authAxios.post('/api/user/refresh');
+        const refrshToken = localStorage.getItem('matchGG_refreshToken');
+
+        const { data } = await authAxios.post('/api/user/refresh', {
+          Headers: {
+            'Refresh-Token': refrshToken,
+          },
+        });
 
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
           data;
@@ -70,7 +75,7 @@ authAxios.interceptors.response.use(
         store.dispatch({ type: 'token/DELETE_TOKEN' });
         store.dispatch({ type: 'user/DELETE_USER' });
         localStorage.removeItem('matchGG_refreshToken');
-        window.location.href = '/login';
+        // window.location.href = '/login';
         return Promise.reject(error);
       }
     }
