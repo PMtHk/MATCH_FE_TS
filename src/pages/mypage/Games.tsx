@@ -18,10 +18,13 @@ import { snackbarActions } from 'store/snackbar-slice';
 import { userActions } from 'store/user-slice';
 import { gameList } from 'assets/Games.data';
 import GameIcon from 'components/GameIcon';
+import { GAME_ID } from 'types/games';
+
 import LolInfo from './Games/LolInfo';
 import PubgInfo from './Games/PubgInfo';
 import OverwatchInfo from './Games/OverwatchInfo';
 import AddGame from './Games/AddGame';
+import Nickname from './Games/Nickname';
 
 interface GameFilterProps {
   selectedGame: string;
@@ -35,39 +38,36 @@ const GameFilterBar = ({
   representative,
 }: GameFilterProps) => {
   return (
-    <>
-      <GameSelector>
-        {gameList.map((aGame) => {
-          return (
-            aGame.id !== 'valorant' && (
-              <GameSelectorItem
-                key={aGame.id}
-                onClick={() => setSelectedGame(aGame.id)}
-                selected={selectedGame === aGame.id}
-              >
-                <GameIcon
-                  item={aGame.id}
-                  id={aGame.id}
-                  size={{
-                    width: '24px',
-                    height: '22px',
-                  }}
-                />
-                <GameTypo selected={selectedGame === aGame.id}>
-                  {aGame.name_kor}
-                </GameTypo>
-                {aGame.id === representative && (
-                  <Tooltip title={`현재 대표게임 : ${representative}`}>
-                    <GradeIcon sx={{ color: '#ffc939' }} />
-                  </Tooltip>
-                )}
-              </GameSelectorItem>
-            )
-          );
-        })}
-      </GameSelector>
-      <Divider />
-    </>
+    <GameSelector>
+      {gameList.map((aGame) => {
+        return (
+          aGame.id !== 'valorant' && (
+            <GameSelectorItem
+              key={aGame.id}
+              onClick={() => setSelectedGame(aGame.id)}
+              selected={selectedGame === aGame.id}
+            >
+              <GameIcon
+                item={aGame.id}
+                id={aGame.id}
+                size={{
+                  width: '24px',
+                  height: '22px',
+                }}
+              />
+              <GameTypo selected={selectedGame === aGame.id}>
+                {aGame.name_kor}
+              </GameTypo>
+              {aGame.id === representative && (
+                <Tooltip title={`현재 대표게임 : ${representative}`}>
+                  <GradeIcon sx={{ color: '#ffc939' }} />
+                </Tooltip>
+              )}
+            </GameSelectorItem>
+          )
+        );
+      })}
+    </GameSelector>
   );
 };
 
@@ -79,13 +79,14 @@ const GameDataUpdateButton = ({ game }: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleUpdate = async () => {
-    const nickname = games[game as 'lol' | 'pubg' | 'overwatch'];
+    const nickname = games[game as GAME_ID];
     setIsLoading(true);
     // DB에 전적 갱신하기
     if (game === 'lol') {
       await lolLoadHistory(nickname);
       dispatch(mypageActions.TOGGLE_REFRESH_LOL());
     }
+
     if (game === 'pubg') {
       const platform = await getPlatform(nickname);
       if (platform) {
@@ -93,6 +94,7 @@ const GameDataUpdateButton = ({ game }: any) => {
         dispatch(mypageActions.TOGGLE_REFRESH_PUBG());
       }
     }
+
     if (game === 'overwatch') {
       await owLoadHistory(nickname);
       dispatch(mypageActions.TOGGLE_REFRESH_OVERWATCH());
@@ -120,7 +122,7 @@ const GameDataUpdateButton = ({ game }: any) => {
   );
 };
 
-const HandleRepresentativeButton = ({ game, representative }: any) => {
+const ChangeRepresentativeButton = ({ game, representative }: any) => {
   const dispatch = useDispatch();
   const handleRepresentative = async () => {
     const response = await changeRepresentative(game);
@@ -157,10 +159,9 @@ const HandleRepresentativeButton = ({ game, representative }: any) => {
 };
 
 const Games = () => {
-  const { representative } = useSelector((state: RootState) => state.user);
-  const [selectedGame, setSelectedGame] = useState<string>(representative);
-
-  const { games } = useSelector((state: RootState) => state.user);
+  const { representative, games } = useSelector(
+    (state: RootState) => state.user,
+  );
 
   const {
     lolInfo: lolData,
@@ -168,49 +169,54 @@ const Games = () => {
     overwatchInfo: overwatchData,
   } = useSelector((state: RootState) => state.mypage);
 
+  const [selectedGame, setSelectedGame] = useState<string>(representative);
+
+  const gameComponents = {
+    lol: <LolInfo data={lolData} />,
+    pubg: <PubgInfo data={pubgData} />,
+    overwatch: <OverwatchInfo data={overwatchData} />,
+    valorant: <div />,
+  };
+
   return (
-    <Container>
-      <MenuTitle>연결한 게임</MenuTitle>
+    <>
+      {/* 게임 필터 바 */}
       <GameFilterBar
         selectedGame={selectedGame}
         setSelectedGame={setSelectedGame}
         representative={representative}
       />
-      {
-        {
-          lol: games.lol ? <LolInfo data={lolData} /> : <AddGame game="lol" />,
-          pubg: games.pubg ? (
-            <PubgInfo data={pubgData} />
-          ) : (
-            <AddGame game="pubg" />
-          ),
-          overwatch: games.overwatch ? (
-            <OverwatchInfo data={overwatchData} />
-          ) : (
-            <AddGame game="overwatch" />
-          ),
-        }[selectedGame]
-      }
-      {games[selectedGame as 'lol' | 'pubg' | 'overwatch'] && (
+      {/* 닉네임 */}
+      <Nickname
+        name={games[selectedGame as GAME_ID]}
+        game={selectedGame}
+        isNew={!games[selectedGame as GAME_ID]}
+      />
+      {/* 각 게임 정보 */}
+      {games[selectedGame as GAME_ID] ? (
+        gameComponents[selectedGame as GAME_ID]
+      ) : (
+        <AddGame game={selectedGame} />
+      )}
+      {/* 전적 갱신, 대표게임 변경 버튼 */}
+      {games[selectedGame as GAME_ID] && (
         <ButtonSection>
           <GameDataUpdateButton game={selectedGame} />
-          <HandleRepresentativeButton
+          <ChangeRepresentativeButton
             game={selectedGame}
             representative={representative}
           />
         </ButtonSection>
       )}
-    </Container>
+    </>
   );
 };
 export default Games;
 
-const Container = styled(MuiBox)(() => ({
-  height: '100%',
-  paddingRight: '12px',
-})) as typeof MuiBox;
-
 const ButtonSection = styled(MuiBox)(() => ({
+  position: 'absolute',
+  bottom: '12px',
+  width: '100%',
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
@@ -221,17 +227,6 @@ const UpdateButton = styled(Button)(() => ({
   whiteSpace: 'nowrap',
   marginRight: '12px',
 })) as typeof Button;
-
-const GameSelector = styled(MuiBox)(({ theme }) => ({
-  width: '100%',
-  display: 'flex',
-  flexDirection: 'row',
-  alignItems: 'center',
-  justifyContent: 'space-around',
-  gap: '6px',
-  padding: '0 4px 0 4px',
-  marginTop: '12px',
-})) as typeof MuiBox;
 
 interface GameSelectorItem {
   selected: boolean;
@@ -266,8 +261,13 @@ const GameTypo = styled(MuiTypography, {
   color: selected ? '' : 'grey',
 }));
 
-const MenuTitle = styled(MuiTypography)(() => ({
-  fontSize: '18px',
-  fontWeight: 'bold',
-  marginBottom: '20px',
-}));
+const GameSelector = styled(MuiBox)(() => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-around',
+  gap: '6px',
+  padding: '0 4px 0 4px',
+  marginTop: '12px',
+})) as typeof MuiBox;

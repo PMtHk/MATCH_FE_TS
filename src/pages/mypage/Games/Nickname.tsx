@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 // mui
@@ -32,6 +32,7 @@ const Nickname = ({ name, game, isNew }: any) => {
   const dispatch = useDispatch();
 
   const [nickname, setNickname] = useState<string>(name);
+
   const handleNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
   };
@@ -41,6 +42,10 @@ const Nickname = ({ name, game, isNew }: any) => {
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
   const [error, setError] = useState<boolean>(false);
+
+  useEffect(() => {
+    setNickname(name);
+  }, [name]);
 
   const toggleEdit = () => {
     setIsEdit(!isEdit);
@@ -143,8 +148,11 @@ const Nickname = ({ name, game, isNew }: any) => {
 
   return (
     <>
+      <Divider sx={{ width: '570px' }} />
+
       <Container>
         <SectionTypo>{getTypo()}</SectionTypo>
+
         <NicknameInput
           error={error}
           value={nickname}
@@ -162,6 +170,7 @@ const Nickname = ({ name, game, isNew }: any) => {
             ))
           }
         />
+
         <EditButton
           onClick={isNew ? requestChangeNickname : toggleEdit}
           sx={{}}
@@ -170,7 +179,8 @@ const Nickname = ({ name, game, isNew }: any) => {
           {getButtonText()}
         </EditButton>
       </Container>
-      <Divider sx={{ marginBottom: '12px' }} />
+
+      <Divider sx={{ width: '570px' }} />
     </>
   );
 };
@@ -183,7 +193,6 @@ const Container = styled(Box)(() => ({
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'flex-start',
-  padding: '12px',
 })) as typeof Box;
 
 const SectionTypo = styled(Typography)(() => ({

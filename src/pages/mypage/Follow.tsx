@@ -57,8 +57,7 @@ const Follow = () => {
   };
 
   return (
-    <Container>
-      <MenuTitle>팔로우 목록</MenuTitle>
+    <>
       {followList.length > 0 ? (
         <FollowListContainer>
           <TableContainer>
@@ -137,7 +136,8 @@ const Follow = () => {
           <NoFollowerTypo>팔로우중인 사용자가 없습니다.</NoFollowerTypo>
         </NoFollowerSection>
       )}
-    </Container>
+      <div />
+    </>
   );
 };
 export default Follow;
@@ -149,7 +149,7 @@ const Container = styled(MuiBox)(({ theme }) => ({
   flexDirection: 'column',
   alignItems: 'flex-start',
   justifyContent: 'flex-start',
-  gap: '16px',
+  // gap: '16px',
 }));
 
 const MenuTitle = styled(Typography)(() => ({
@@ -161,7 +161,7 @@ const MenuTitle = styled(Typography)(() => ({
 })) as typeof Typography;
 
 const FollowListContainer = styled(MuiBox)(() => ({
-  marginRight: '12px',
+  marginTop: '20px',
 })) as typeof MuiBox;
 
 const TableIndexCell = styled(TableCell)(() => ({
