@@ -7,12 +7,12 @@ export const platformList = [
   {
     value: 'STEAM',
     label: '스팀',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/platform/steam.png',
+    imageUrl: 'https://cdn.match-gg.kr/pubg/platform/steam.png',
   },
   {
     value: 'KAKAO',
     label: '카카오',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/platform/kakao.png',
+    imageUrl: 'https://cdn.match-gg.kr/pubg/platform/kakao.png',
   },
 ];
 
@@ -100,42 +100,42 @@ export type rankImageType = {
 };
 
 export const rankImage: rankImageType = {
-  MASTER: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/master.png',
+  MASTER: 'https://cdn.match-gg.kr/pubg/rank_emblem/master.png',
   DIAMOND1:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/diamond1.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond1.png',
   DIAMOND2:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/diamond2.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond2.png',
   DIAMOND3:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/diamond3.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond3.png',
   DIAMOND4:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/diamond4.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond4.png',
   DIAMOND5:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/diamond5.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond5.png',
   PLATINUM1:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/platinum1.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum1.png',
   PLATINUM2:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/platinum2.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum2.png',
   PLATINUM3:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/platinum3.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum3.png',
   PLATINUM4:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/platinum4.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum4.png',
   PLATINUM5:
-    'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/platinum5.png',
-  GOLD1: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/gold1.png',
-  GOLD2: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/gold2.png',
-  GOLD3: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/gold3.png',
-  GOLD4: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/gold4.png',
-  GOLD5: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/gold5.png',
-  SILVER1: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/silver1.png',
-  SILVER2: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/silver2.png',
-  SILVER3: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/silver3.png',
-  SILVER4: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/silver4.png',
-  SILVER5: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/silver5.png',
-  BRONZE1: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/bronze1.png',
-  BRONZE2: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/bronze2.png',
-  BRONZE3: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/bronze3.png',
-  BRONZE4: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/bronze4.png',
-  BRONZE5: 'https://d18ghgbbpc0qi2.cloudfront.net/pubg/rank_emblem/bronze5.png',
+    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum5.png',
+  GOLD1: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold1.png',
+  GOLD2: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold2.png',
+  GOLD3: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold3.png',
+  GOLD4: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold4.png',
+  GOLD5: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold5.png',
+  SILVER1: 'https://cdn.match-gg.kr/pubg/rank_emblem/silver1.png',
+  SILVER2: 'https://cdn.match-gg.kr/pubg/rank_emblem/silver2.png',
+  SILVER3: 'https://cdn.match-gg.kr/pubg/rank_emblem/silver3.png',
+  SILVER4: 'https://cdn.match-gg.kr/pubg/rank_emblem/silver4.png',
+  SILVER5: 'https://cdn.match-gg.kr/pubg/rank_emblem/silver5.png',
+  BRONZE1: 'https://cdn.match-gg.kr/pubg/rank_emblem/bronze1.png',
+  BRONZE2: 'https://cdn.match-gg.kr/pubg/rank_emblem/bronze2.png',
+  BRONZE3: 'https://cdn.match-gg.kr/pubg/rank_emblem/bronze3.png',
+  BRONZE4: 'https://cdn.match-gg.kr/pubg/rank_emblem/bronze4.png',
+  BRONZE5: 'https://cdn.match-gg.kr/pubg/rank_emblem/bronze5.png',
 };
 
 export const expiredTimeList = [

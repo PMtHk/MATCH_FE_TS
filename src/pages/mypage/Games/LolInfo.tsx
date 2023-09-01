@@ -129,7 +129,7 @@ const LolInfo = ({ data }: any) => {
                   <img
                     src={
                       champion === 'poro'
-                        ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
+                        ? 'https://cdn.match-gg.kr/lol/champions/poro.jpg'
                         : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${champion}.png`
                     }
                     alt={champion}

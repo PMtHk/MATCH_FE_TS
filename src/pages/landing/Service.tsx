@@ -24,13 +24,13 @@ const Service = () => {
             </ColumnText>
             <CardUIImageWrapper>
               <img
-                src="https://d18ghgbbpc0qi2.cloudfront.net/assets/landing/CardUI.png"
+                src="https://cdn.match-gg.kr/assets/landing/CardUI.png"
                 alt="card_design"
               />
             </CardUIImageWrapper>
             <UserUIImageWrapper>
               <img
-                src="https://d18ghgbbpc0qi2.cloudfront.net/assets/landing/UserUI.png"
+                src="https://cdn.match-gg.kr/assets/landing/UserUI.png"
                 alt="usercard_design"
               />
             </UserUIImageWrapper>
@@ -47,7 +47,7 @@ const Service = () => {
             </ColumnText>
             <ChatImageWrapper>
               <img
-                src="https://d18ghgbbpc0qi2.cloudfront.net/assets/landing/party-detail.png"
+                src="https://cdn.match-gg.kr/assets/landing/party-detail.png"
                 alt="chat_design"
               />
             </ChatImageWrapper>
@@ -63,7 +63,7 @@ const Service = () => {
             </ColumnText>
             <NotiImageWrapper>
               <img
-                src="https://d18ghgbbpc0qi2.cloudfront.net/assets/landing/foreground-alarm.png"
+                src="https://cdn.match-gg.kr/assets/landing/foreground-alarm.png"
                 alt="noti_design"
               />
             </NotiImageWrapper>

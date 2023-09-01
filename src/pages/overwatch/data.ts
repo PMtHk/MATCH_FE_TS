@@ -14,7 +14,7 @@ export const tierList = [
     color: '#000000',
     acronym: 'ALL',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/unranked.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/unranked.png',
   },
   {
     value: 'GRANDMASTER',
@@ -22,7 +22,7 @@ export const tierList = [
     color: '#92AD9D',
     acronym: 'GM',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/grandmaster.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/grandmaster.png',
   },
   {
     value: 'MASTER',
@@ -30,7 +30,7 @@ export const tierList = [
     color: '#B5A759',
     acronym: 'M',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/master.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/master.png',
   },
   {
     value: 'DIAMOND',
@@ -38,7 +38,7 @@ export const tierList = [
     color: '#879BB0',
     acronym: 'D',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/diamond.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/diamond.png',
   },
   {
     value: 'PLATINUM',
@@ -46,7 +46,7 @@ export const tierList = [
     color: '#95AD9E',
     acronym: 'P',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/platinum.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/platinum.png',
   },
   {
     value: 'GOLD',
@@ -54,7 +54,7 @@ export const tierList = [
     color: '#C9AB47',
     acronym: 'G',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/gold.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/gold.png',
   },
   {
     value: 'SILVER',
@@ -62,7 +62,7 @@ export const tierList = [
     color: '#98999E',
     acronym: 'S',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/silver.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/silver.png',
   },
   {
     value: 'BRONZE',
@@ -70,7 +70,7 @@ export const tierList = [
     color: '#B05A3C',
     acronym: 'B',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/bronze.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/bronze.png',
   },
   {
     value: 'UNRANKED',
@@ -78,7 +78,7 @@ export const tierList = [
     color: '#000000',
     acronym: 'ㅡ',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/unranked.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/unranked.png',
   },
 ];
 
@@ -86,25 +86,25 @@ export const positionList: OVERWATCH_POSITION[] = [
   {
     value: 'ALL',
     label: '전체',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/ALL.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/ALL.png',
   },
   {
     value: 'TANK',
     label: '돌격',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/roles/Tank_icon.png',
+      'https://cdn.match-gg.kr/overwatch/roles/Tank_icon.png',
   },
   {
     value: 'DAMAGE',
     label: '공격',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/roles/Damage_icon.png',
+      'https://cdn.match-gg.kr/overwatch/roles/Damage_icon.png',
   },
   {
     value: 'SUPPORT',
     label: '지원',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/roles/Support_icon.png',
+      'https://cdn.match-gg.kr/overwatch/roles/Support_icon.png',
   },
 ];
 
