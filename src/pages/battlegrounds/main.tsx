@@ -76,6 +76,7 @@ const Main = () => {
     <>
       <CardFilter filterProps={filterProps} />
       {isLogin && <FollowersCard game="pubg" />}
+      {!isLogin && <MuiBox sx={{ height: '30px' }} />}
       <ErrorBoundary
         resetKeys={gameDeps}
         FallbackComponent={CardListErrorFallback}
