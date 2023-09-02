@@ -24,7 +24,7 @@ const Login = () => {
           href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI_LOGIN}&response_type=code`}
         >
           <img
-            src="https://d18ghgbbpc0qi2.cloudfront.net/assets/kakao_login_symbol.png"
+            src="https://cdn.match-gg.kr/assets/kakao_login_symbol.png"
             alt="kakao_login_symbol"
             width="20px"
           />

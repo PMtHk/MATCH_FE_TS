@@ -412,7 +412,7 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
                       }}
                     >
                       <img
-                        src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero.toLowerCase()}.png`}
+                        src={`https://cdn.match-gg.kr/overwatch/heroes/${aHero.toLowerCase()}.png`}
                         alt={aHero}
                         loading="lazy"
                       />
