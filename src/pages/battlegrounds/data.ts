@@ -101,26 +101,16 @@ export type rankImageType = {
 
 export const rankImage: rankImageType = {
   MASTER: 'https://cdn.match-gg.kr/pubg/rank_emblem/master.png',
-  DIAMOND1:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond1.png',
-  DIAMOND2:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond2.png',
-  DIAMOND3:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond3.png',
-  DIAMOND4:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond4.png',
-  DIAMOND5:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/diamond5.png',
-  PLATINUM1:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum1.png',
-  PLATINUM2:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum2.png',
-  PLATINUM3:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum3.png',
-  PLATINUM4:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum4.png',
-  PLATINUM5:
-    'https://cdn.match-gg.kr/pubg/rank_emblem/platinum5.png',
+  DIAMOND1: 'https://cdn.match-gg.kr/pubg/rank_emblem/diamond1.png',
+  DIAMOND2: 'https://cdn.match-gg.kr/pubg/rank_emblem/diamond2.png',
+  DIAMOND3: 'https://cdn.match-gg.kr/pubg/rank_emblem/diamond3.png',
+  DIAMOND4: 'https://cdn.match-gg.kr/pubg/rank_emblem/diamond4.png',
+  DIAMOND5: 'https://cdn.match-gg.kr/pubg/rank_emblem/diamond5.png',
+  PLATINUM1: 'https://cdn.match-gg.kr/pubg/rank_emblem/platinum1.png',
+  PLATINUM2: 'https://cdn.match-gg.kr/pubg/rank_emblem/platinum2.png',
+  PLATINUM3: 'https://cdn.match-gg.kr/pubg/rank_emblem/platinum3.png',
+  PLATINUM4: 'https://cdn.match-gg.kr/pubg/rank_emblem/platinum4.png',
+  PLATINUM5: 'https://cdn.match-gg.kr/pubg/rank_emblem/platinum5.png',
   GOLD1: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold1.png',
   GOLD2: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold2.png',
   GOLD3: 'https://cdn.match-gg.kr/pubg/rank_emblem/gold3.png',

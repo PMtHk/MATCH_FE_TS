@@ -14,96 +14,84 @@ export const tierList = [
     label: '모든 티어',
     color: '#000000',
     acronym: 'ALL',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/unranked.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/unranked.png',
   },
   {
     value: 'CHALLENGER',
     label: '챌린저',
     color: '#F4C875',
     acronym: 'C',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/challenger.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/challenger.png',
   },
   {
     value: 'GRANDMASTER',
     label: '그랜드마스터',
     color: '#CD4545',
     acronym: 'GM',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/grandmaster.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/grandmaster.png',
   },
   {
     value: 'MASTER',
     label: '마스터',
     color: '#9A4E80',
     acronym: 'M',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/master.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/master.png',
   },
   {
     value: 'DIAMOND',
     label: '다이아몬드',
     color: '#576BCE',
     acronym: 'D',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/diamond.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/diamond.png',
   },
   {
     value: 'EMERALD',
     label: '에메랄드',
     color: '#009e54',
     acronym: 'E',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/emerald.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/emerald.png',
   },
   {
     value: 'PLATINUM',
     label: '플래티넘',
     color: '#4E9996',
     acronym: 'P',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/platinum.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/platinum.png',
   },
   {
     value: 'GOLD',
     label: '골드',
     color: '#CD8837',
     acronym: 'G',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/gold.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/gold.png',
   },
   {
     value: 'SILVER',
     label: '실버',
     color: '#80989D',
     acronym: 'S',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/silver.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/silver.png',
   },
   {
     value: 'BRONZE',
     label: '브론즈',
     color: '#8C513A',
     acronym: 'B',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/bronze.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/bronze.png',
   },
   {
     value: 'IRON',
     label: '아이언',
     color: '#51484A',
     acronym: 'I',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/iron.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/iron.png',
   },
   {
     value: 'UNRANKED',
     label: '언랭크드',
     color: '#000000',
     acronym: 'U',
-    imageUrl:
-      'https://cdn.match-gg.kr/lol/ranked_emblems/unranked.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/unranked.png',
   },
 ];
 

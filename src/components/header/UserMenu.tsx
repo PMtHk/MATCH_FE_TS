@@ -79,7 +79,7 @@ const UserMenu = () => {
               <img
                 src={
                   profileImage ||
-                  'https://cdn.match-gg.kr/lol/champions/poro.jpg'
+                  'https://cdn.match-gg.kr/lol/champions/poro.png?w=40&h=40'
                 }
                 alt="profile_image"
                 width="40px"
