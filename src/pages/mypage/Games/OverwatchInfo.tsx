@@ -103,7 +103,7 @@ const Info = ({ data }: any) => {
                   }}
                 >
                   <img
-                    src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${hero.toLowerCase()}.png`}
+                    src={`https://cdn.match-gg.kr/overwatch/heroes/${hero.toLowerCase()}.png`}
                     alt={hero}
                   />
                 </ImageListItem>

@@ -288,8 +288,8 @@ const MemberSlot = ({
                         <img
                           src={
                             aChampion === 'poro'
-                              ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
-                              : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
+                              ? 'https://cdn.match-gg.kr/lol/champions/poro.png?w=44&h=44'
+                              : `https://cdn.match-gg.kr/lol/champions/${aChampion}.png?w=44&h=44`
                           }
                           alt={`most${index}_${aChampion}`}
                           loading="lazy"

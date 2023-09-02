@@ -14,96 +14,84 @@ export const tierList = [
     label: '모든 티어',
     color: '#000000',
     acronym: 'ALL',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/unranked.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/unranked.png',
   },
   {
     value: 'CHALLENGER',
     label: '챌린저',
     color: '#F4C875',
     acronym: 'C',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/challenger.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/challenger.png',
   },
   {
     value: 'GRANDMASTER',
     label: '그랜드마스터',
     color: '#CD4545',
     acronym: 'GM',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/grandmaster.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/grandmaster.png',
   },
   {
     value: 'MASTER',
     label: '마스터',
     color: '#9A4E80',
     acronym: 'M',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/master.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/master.png',
   },
   {
     value: 'DIAMOND',
     label: '다이아몬드',
     color: '#576BCE',
     acronym: 'D',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/diamond.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/diamond.png',
   },
   {
     value: 'EMERALD',
     label: '에메랄드',
     color: '#009e54',
     acronym: 'E',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/emerald.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/emerald.png',
   },
   {
     value: 'PLATINUM',
     label: '플래티넘',
     color: '#4E9996',
     acronym: 'P',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/platinum.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/platinum.png',
   },
   {
     value: 'GOLD',
     label: '골드',
     color: '#CD8837',
     acronym: 'G',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/gold.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/gold.png',
   },
   {
     value: 'SILVER',
     label: '실버',
     color: '#80989D',
     acronym: 'S',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/silver.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/silver.png',
   },
   {
     value: 'BRONZE',
     label: '브론즈',
     color: '#8C513A',
     acronym: 'B',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/bronze.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/bronze.png',
   },
   {
     value: 'IRON',
     label: '아이언',
     color: '#51484A',
     acronym: 'I',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/iron.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/iron.png',
   },
   {
     value: 'UNRANKED',
     label: '언랭크드',
     color: '#000000',
     acronym: 'U',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/lol/ranked_emblems/unranked.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/ranked_emblems/unranked.png',
   },
 ];
 
@@ -111,32 +99,32 @@ export const positionList: LOL_POSITION[] = [
   {
     value: 'ALL',
     label: '전체',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/ALL.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/ALL.png',
   },
   {
     value: 'TOP',
     label: '탑',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/TOP.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/TOP.png',
   },
   {
     value: 'JUNGLE',
     label: '정글',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/JUG.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/JUG.png',
   },
   {
     value: 'MIDDLE',
     label: '미드',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/MID.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/MID.png',
   },
   {
     value: 'BOTTOM',
     label: '원딜',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/ADC.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/ADC.png',
   },
   {
     value: 'UTILITY',
     label: '서포터',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/SUP.png',
+    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/SUP.png',
   },
 ];
 
