@@ -1,14 +1,20 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
+import MuiTypography from '@mui/material/Typography';
 
 import { gameList } from 'assets/Games.data';
 import { GAME } from 'types/games';
+import { RootState } from 'store';
 
 const ValorantSignButton = () => {
+  const { games } = useSelector((state: RootState) => state.register);
+  const vlrtNickname = games.valorant;
+
   const gameResult: GAME | undefined = gameList.find(
     (game) => game.id === 'valorant',
   );
@@ -20,24 +26,44 @@ const ValorantSignButton = () => {
       <ImgWrapper>
         <img src={gameInfo.image_url} alt={gameInfo.name} />
       </ImgWrapper>
-      <ButtonWrapper>
-        <Button
-          href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI_REGISTER}&response_type=code&scope=openid+offline_access`}
-        >
-          <img
-            src="https://cdn.match-gg.kr/assets/riot_games_icon.png"
-            alt="riot_games_symbol"
-            width="24px"
-            height="24px"
-          />
-          <span>라이엇 로그인</span>
-        </Button>
-      </ButtonWrapper>
+      <InnerContainer>
+        <ButtonWrapper>
+          <Button
+            href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI_REGISTER}&response_type=code&scope=openid+offline_access`}
+          >
+            <img
+              src="https://cdn.match-gg.kr/assets/riot_games_icon.png"
+              alt="riot_games_symbol"
+              width="24px"
+              height="24px"
+            />
+            <span>라이엇 로그인</span>
+          </Button>
+        </ButtonWrapper>
+        <LinkedNickname>
+          연결된 닉네임 : {vlrtNickname || '없음'}
+        </LinkedNickname>
+      </InnerContainer>
     </GameWrapper>
   );
 };
 
 export default ValorantSignButton;
+
+const InnerContainer = styled(MuiBox)(() => ({
+  width: '100%',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+})) as typeof MuiBox;
+
+const LinkedNickname = styled(MuiTypography)(() => ({
+  fontSize: '14px',
+  fontWeight: 700,
+  color: '#D64E5Bb5',
+  margin: '0 0 0 20px',
+})) as typeof MuiTypography;
 
 const GameWrapper = styled(MuiBox)(() => ({
   width: '100%',

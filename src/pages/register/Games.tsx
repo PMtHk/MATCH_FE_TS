@@ -21,19 +21,21 @@ const Games = () => {
   const params = new URL(document.URL).searchParams;
   const rsoAccessCode = params.get('code');
 
+  // TODO: valorant 닉네임 받아서 처리하기 필요
   React.useEffect(() => {
-    const sendRsoAcessCode = async () => {
+    const sendRsoAccessCode = async () => {
       const response = await defaultAxios.post('/api/valorant/user/exist', {
         code: rsoAccessCode as string,
       });
     };
 
     if (rsoAccessCode) {
-      sendRsoAcessCode();
+      sendRsoAccessCode();
     }
   }, [rsoAccessCode]);
 
   const { games } = useSelector((state: RootState) => state.register);
+
   const atLeastOne =
     Object.values(games).filter((item) => item !== '').length > 0;
 
