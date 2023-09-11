@@ -51,7 +51,7 @@ const Games = () => {
         <InputLol />
         <InputPubg />
         <InputOverwatch />
-        {/* <InputValorant /> */}
+        <InputValorant />
       </Wrapper>
       <NextButton disabled={!atLeastOne} onClick={handleNextBtn}>
         다음
