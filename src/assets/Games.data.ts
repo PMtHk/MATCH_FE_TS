@@ -37,6 +37,6 @@ export const gameList: GAME[] = [
     image_url: 'https://cdn.match-gg.kr/game_icons/valorant.png?h=100&f=webp',
     labelText: '발로란트 닉네임을 입력하세요.',
     helperText: '등록되지 않은 닉네임 입니다.',
-    available: false,
+    available: true,
   },
 ];
