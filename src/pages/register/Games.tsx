@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,6 +10,8 @@ import MuiTypography from '@mui/material/Typography';
 
 import { RootState } from 'store';
 import { defaultAxios } from 'apis/utils';
+import { registerActions } from 'store/register-slice';
+import { GAME_ID } from 'types/games';
 import InputLol from './InputLol';
 import InputPubg from './InputPubg';
 import InputOverwatch from './InputOverwatch';
@@ -17,6 +19,7 @@ import InputValorant from './InputValorant';
 
 const Games = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const params = new URL(document.URL).searchParams;
   const rsoAccessCode = params.get('code');
@@ -27,6 +30,17 @@ const Games = () => {
       const response = await defaultAxios.post('/api/valorant/user/exist', {
         code: rsoAccessCode as string,
       });
+
+      if (response.data) {
+        const { gameName, tagLine } = response.data;
+
+        dispatch(
+          registerActions.SET_GAMES_WITH_ID({
+            id: 'valorant' as GAME_ID,
+            value: `${gameName}#${tagLine}`,
+          }),
+        );
+      }
     };
 
     if (rsoAccessCode) {
