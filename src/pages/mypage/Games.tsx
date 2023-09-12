@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiTypography from '@mui/material/Typography';
-import { Button, Divider, Tooltip } from '@mui/material';
+import { Button, Tooltip } from '@mui/material';
 import GradeIcon from '@mui/icons-material/Grade';
 import { mypageActions } from 'store/mypage-slice';
 
@@ -41,30 +41,28 @@ const GameFilterBar = ({
     <GameSelector>
       {gameList.map((aGame) => {
         return (
-          aGame.id !== 'valorant' && (
-            <GameSelectorItem
-              key={aGame.id}
-              onClick={() => setSelectedGame(aGame.id)}
-              selected={selectedGame === aGame.id}
-            >
-              <GameIcon
-                item={aGame.id}
-                id={aGame.id}
-                size={{
-                  width: '24px',
-                  height: '22px',
-                }}
-              />
-              <GameTypo selected={selectedGame === aGame.id}>
-                {aGame.name_kor}
-              </GameTypo>
-              {aGame.id === representative && (
-                <Tooltip title={`현재 대표게임 : ${representative}`}>
-                  <GradeIcon sx={{ color: '#ffc939' }} />
-                </Tooltip>
-              )}
-            </GameSelectorItem>
-          )
+          <GameSelectorItem
+            key={aGame.id}
+            onClick={() => setSelectedGame(aGame.id)}
+            selected={selectedGame === aGame.id}
+          >
+            <GameIcon
+              item={aGame.id}
+              id={aGame.id}
+              size={{
+                width: '24px',
+                height: '22px',
+              }}
+            />
+            <GameTypo selected={selectedGame === aGame.id}>
+              {aGame.name_kor}
+            </GameTypo>
+            {aGame.id === representative && (
+              <Tooltip title={`현재 대표게임 : ${representative}`}>
+                <GradeIcon sx={{ color: '#ffc939' }} />
+              </Tooltip>
+            )}
+          </GameSelectorItem>
         );
       })}
     </GameSelector>
