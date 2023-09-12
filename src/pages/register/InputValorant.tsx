@@ -55,7 +55,7 @@ const ValorantSignButton = () => {
             control={
               <CustomCheckbox checked={checked} onChange={handleCheck} />
             }
-            label="로그인하면 MatchGG 에 내 프로필이 공개되는 것을 동의합니다."
+            label="MatchGG 에 나의 발로란트 프로필이 공개되는 것을 동의합니다."
           />
         )}
         {vlrtNickname && (

@@ -40,6 +40,12 @@ const Games = () => {
             value: `${gameName}#${tagLine}`,
           }),
         );
+
+        // TODO: 전적 채우기 동작 (임시)
+        const goodResponse = await defaultAxios.get(
+          `/api/valorant/user/${gameName}%23${tagLine}`,
+        );
+        console.log(goodResponse);
       }
     };
 
