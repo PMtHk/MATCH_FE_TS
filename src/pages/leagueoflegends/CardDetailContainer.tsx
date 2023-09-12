@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,6 +14,7 @@ import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import Timer from 'components/CountDownTimer';
 import Circular from 'components/loading/Circular';
+import { Button } from '@mui/material';
 
 import { MEMBER_FROM_SERVER } from 'types/commons';
 import CardControlPanel from 'components/card-actions/CardControlPanel';
@@ -30,24 +31,33 @@ const CardDetailContainer = () => {
   const navigate = useNavigate();
 
   // redux
-  const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { currentCard, isReviewed } = useSelector(
     (state: RootState) => state.card,
   );
-  const { joinedChatRoomsId } = useSelector(
-    (state: RootState) => state.chatroom,
+
+  const tier = useMemo(
+    () => tierList.find((tier) => tier.value === currentCard?.tier),
+    [currentCard?.tier],
   );
 
-  const tier = tierList.find((tier) => tier.value === currentCard?.tier);
-  const queueType = queueTypeList.find(
-    (queueType) => queueType.value === currentCard?.type,
-  );
-  const position = positionList.find(
-    (lane) => lane.value === currentCard?.position,
+  const queueType = useMemo(
+    () =>
+      queueTypeList.find((queueType) => queueType.value === currentCard?.type),
+    [currentCard?.type],
   );
 
-  const totalMember = queueType?.maxMember || 5;
-  const currentMember = currentCard?.memberList?.length || 0;
+  const position = useMemo(
+    () =>
+      positionList.find((position) => position.value === currentCard?.position),
+    [currentCard?.position],
+  );
+
+  const totalMember = useMemo(() => queueType?.maxMember || 5, [queueType]);
+  const currentMember = useMemo(
+    () => currentCard?.memberList?.length || 1,
+    [currentCard?.memberList],
+  );
 
   const arrayForEmptySlot = new Array(totalMember - currentMember)
     .fill(0)
