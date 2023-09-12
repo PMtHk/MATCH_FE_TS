@@ -20,6 +20,7 @@ import Layout from 'components/Layout';
 import LeagueOfLegends from 'pages/leagueoflegends';
 import Battlegrounds from 'pages/battlegrounds';
 import Overwatch from 'pages/overwatch';
+import Valorant from 'pages/valorant';
 import MyPage from 'pages/mypage';
 
 // lazy loading
@@ -79,6 +80,7 @@ const App = () => {
           <Route path="lol/*" element={<LeagueOfLegends />} />
           <Route path="pubg/*" element={<Battlegrounds />} />
           <Route path="overwatch/*" element={<Overwatch />} />
+          <Route path="valorant/*" element={<Valorant />} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
