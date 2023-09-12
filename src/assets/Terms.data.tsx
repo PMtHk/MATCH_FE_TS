@@ -7,14 +7,14 @@ export const termOfUse = (
     <Typography>제 1 조 (목적)</Typography>
     <Typography>
       본 약관은 매치지지(이하 &quot;회사&quot;라고 함)이 운영하는 매치지지
-      서비스(https://matchgg.vercel.app)의 이용과 관련하여 회사와 회원 간의
-      권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
+      서비스(https://match-gg.kr)의 이용과 관련하여 회사와 회원 간의 권리, 의무
+      및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.
     </Typography>
     <br />
     <Typography>제 2 조 (정의)</Typography>
     <Typography>
       1. &quot;서비스&quot;란 게임별 듀오 파트너를 찾을 수 있는 매치지지 웹
-      사이트(https://matchgg.vercel.app)를 의미합니다.
+      사이트(https://match-gg.kr)를 의미합니다.
       <br /> 2. &quot;회원&quot;이란 이용약관에 동의하고 회사와 이용계약을
       체결한 자를 말합니다.
     </Typography>

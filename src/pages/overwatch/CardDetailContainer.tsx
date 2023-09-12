@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,24 +28,38 @@ const CardDetailContainer = () => {
   const navigate = useNavigate();
 
   // redux
-  const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
-  const { currentCard } = useSelector((state: RootState) => state.card);
-  const { joinedChatRoomsId } = useSelector(
-    (state: RootState) => state.chatroom,
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
+  const { currentCard, isReviewed } = useSelector(
+    (state: RootState) => state.card,
   );
 
-  const authorNickname = currentCard?.author.name.split('#')[0];
-
-  const tier = tierList.find((tier) => tier.value === currentCard?.tier);
-  const queueType = queueTypeList.find(
-    (queueType) => queueType.value === currentCard?.type,
-  );
-  const position = positionList.find(
-    (lane) => lane.value === currentCard?.position,
+  const authorNickname = useMemo(
+    () => currentCard?.author.name.split('#')[0],
+    [currentCard?.author.name],
   );
 
-  const totalMember = queueType?.maxMember || 5;
-  const currentMember = currentCard?.memberList?.length || 0;
+  const tier = useMemo(
+    () => tierList.find((tier) => tier.value === currentCard?.tier),
+    [currentCard?.tier],
+  );
+
+  const queueType = useMemo(
+    () =>
+      queueTypeList.find((queueType) => queueType.value === currentCard?.type),
+    [currentCard?.type],
+  );
+
+  const position = useMemo(
+    () =>
+      positionList.find((position) => position.value === currentCard?.position),
+    [currentCard?.position],
+  );
+
+  const totalMember = useMemo(() => queueType?.maxMember || 5, [queueType]);
+  const currentMember = useMemo(
+    () => currentCard?.memberList?.length || 1,
+    [currentCard?.memberList],
+  );
 
   const arrayForEmptySlot = new Array(totalMember - currentMember)
     .fill(0)

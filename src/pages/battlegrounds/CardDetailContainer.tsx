@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import React, { lazy, Suspense } from 'react';
+import React, { lazy, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,7 +13,6 @@ import Close from '@mui/icons-material/Close';
 import { RootState } from 'store';
 import Timer from 'components/CountDownTimer';
 import { cardActions } from 'store/card-slice';
-import Circular from 'components/loading/Circular';
 
 import { MEMBER_FROM_SERVER } from 'types/commons';
 import CardControlPanel from 'components/card-actions/CardControlPanel';
@@ -30,95 +29,118 @@ const CardDetailContainer = () => {
   const navigate = useNavigate();
 
   // redux
-  const { oauth2Id, isLogin } = useSelector((state: RootState) => state.user);
-  const { currentCard } = useSelector((state: RootState) => state.card);
-  const { joinedChatRoomsId } = useSelector(
-    (state: RootState) => state.chatroom,
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
+  const { currentCard, isReviewed } = useSelector(
+    (state: RootState) => state.card,
   );
 
-  const tier = tierList.find((tier) => tier.value === currentCard?.tier);
-  const type = typeList.find((aType) => aType.value === currentCard?.type);
-  const platform = platformList.find(
-    (aPlatform) => aPlatform.value === currentCard?.platform,
+  const tier = useMemo(
+    () => tierList.find((tier) => tier.value === currentCard?.tier),
+    [currentCard?.tier],
   );
 
-  const totalMember = type?.maxMember || 4;
-  const currentMember = currentCard?.memberList?.length || 1;
+  const type = useMemo(
+    () => typeList.find((type) => type.value === currentCard?.type),
+    [currentCard?.type],
+  );
+
+  const platform = useMemo(
+    () =>
+      platformList.find(
+        (aPlatform) => aPlatform.value === currentCard?.platform,
+      ),
+    [currentCard?.platform],
+  );
+
+  const totalMember = useMemo(() => type?.maxMember || 4, [type]);
+  const currentMember = useMemo(
+    () => currentCard?.memberList?.length || 1,
+    [currentCard?.memberList],
+  );
+
+  const arrayForEmptySlot = new Array(totalMember - currentMember)
+    .fill(0)
+    .map((value, i) => `memberSlot_${i}`);
 
   if (currentCard) {
-    return (
-      <>
-        <ModalHeader>
-          <Title>{currentCard?.name} 님의 파티</Title>
-          <MuiIconButton
-            size="small"
-            onClick={() => {
-              dispatch(cardActions.SET_CURRENT_CARD(null));
-              navigate('/pubg');
-            }}
-            sx={{ p: 0, m: 0 }}
-          >
-            <Close />
-          </MuiIconButton>
-        </ModalHeader>
-        <ModalContent>
-          <CardInfo>
-            <InfoWrapper>
-              <SectionWrapper>
-                <SectionName>모집 내용</SectionName>
-                <SectionContent>{currentCard?.content}</SectionContent>
-              </SectionWrapper>
-              <SectionWrapper>
-                <SectionName>마감일시</SectionName>
+    if (
+      currentCard.finished === 'true' &&
+      isInParty(currentCard.memberList, oauth2Id) &&
+      !isReviewed
+    ) {
+      navigate('review');
+    } else {
+      return (
+        <>
+          <ModalHeader>
+            <Title>{currentCard?.name} 님의 파티</Title>
+            <MuiIconButton
+              size="small"
+              onClick={() => {
+                dispatch(cardActions.SET_CURRENT_CARD(null));
+                navigate('/pubg');
+              }}
+              sx={{ p: 0, m: 0 }}
+            >
+              <Close />
+            </MuiIconButton>
+          </ModalHeader>
+          <ModalContent>
+            <CardInfo>
+              <InfoWrapper>
+                <SectionWrapper>
+                  <SectionName>모집 내용</SectionName>
+                  <SectionContent>{currentCard?.content}</SectionContent>
+                </SectionWrapper>
+                <SectionWrapper>
+                  <SectionName>마감일시</SectionName>
 
-                <div>
-                  {currentCard?.expire && currentCard?.created && (
-                    <Timer
-                      expire={currentCard?.expire}
-                      created={currentCard?.created || '2000-01-01 00:00:00'}
-                    />
-                  )}
-                </div>
-              </SectionWrapper>
-            </InfoWrapper>
-            <HashTagWrapper>
-              <HashTag color={tier?.darkColor}>#{tier?.label}</HashTag>
-              <HashTag>#{platform?.label}</HashTag>
-              <HashTag>#{type?.label}구함</HashTag>
-              <HashTag>
-                {currentCard?.voice === 'Y' ? '#음성채팅가능' : ''}
-              </HashTag>
-            </HashTagWrapper>
-            <MemberListWrapper>
-              <MemeberListTitle>
-                참여자 목록 ( {currentMember} / {totalMember} )
-              </MemeberListTitle>
-              <MemberList>
-                {currentCard &&
-                  currentCard?.memberList?.map((member: MEMBER_FROM_SERVER) => {
-                    return (
-                      <MemberSlot
-                        key={member.nickname}
-                        name={member.nickname}
-                        oauth2Id={member.oauth2Id}
+                  <div>
+                    {currentCard?.expire && currentCard?.created && (
+                      <Timer
+                        expire={currentCard?.expire}
+                        created={currentCard?.created || '2000-01-01 00:00:00'}
                       />
-                    );
-                  })}
-                {currentCard.finished === 'false' &&
-                  Array(totalMember - currentMember)
-                    .fill(0)
-                    .map((num, idx) => {
-                      // eslint-disable-next-line react/no-array-index-key
-                      return <EmptySlot key={idx} />;
-                    })}
-              </MemberList>
-            </MemberListWrapper>
-            <CardControlPanel />
-          </CardInfo>
-          <ChatRoomControl />
-        </ModalContent>
-      </>
-    );
+                    )}
+                  </div>
+                </SectionWrapper>
+              </InfoWrapper>
+              <HashTagWrapper>
+                <HashTag color={tier?.darkColor}>#{tier?.label}</HashTag>
+                <HashTag>#{platform?.label}</HashTag>
+                <HashTag>#{type?.label}구함</HashTag>
+                <HashTag>
+                  {currentCard?.voice === 'Y' ? '#음성채팅가능' : ''}
+                </HashTag>
+              </HashTagWrapper>
+              <MemberListWrapper>
+                <MemeberListTitle>
+                  참여자 목록 ( {currentMember} / {totalMember} )
+                </MemeberListTitle>
+                <MemberList>
+                  {currentCard &&
+                    currentCard?.memberList?.map(
+                      (member: MEMBER_FROM_SERVER) => {
+                        return (
+                          <MemberSlot
+                            key={member.nickname}
+                            name={member.nickname}
+                            oauth2Id={member.oauth2Id}
+                          />
+                        );
+                      },
+                    )}
+                  {currentCard.finished === 'false' &&
+                    arrayForEmptySlot.map((value) => <EmptySlot key={value} />)}
+                </MemberList>
+              </MemberListWrapper>
+              <CardControlPanel />
+            </CardInfo>
+            <ChatRoomControl />
+          </ModalContent>
+        </>
+      );
+    }
   }
   return <div />;
 };
