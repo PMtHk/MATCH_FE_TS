@@ -6,6 +6,8 @@ import { styled } from '@mui/system';
 import MuiBox from '@mui/material/Box';
 import MuiButton from '@mui/material/Button';
 import MuiTypography from '@mui/material/Typography';
+import MuiFormControlLabel from '@mui/material/FormControlLabel';
+import MuiCheckbox from '@mui/material/Checkbox';
 
 import { gameList } from 'assets/Games.data';
 import { GAME } from 'types/games';
@@ -13,6 +15,7 @@ import { RootState } from 'store';
 
 const ValorantSignButton = () => {
   const { games } = useSelector((state: RootState) => state.register);
+
   const vlrtNickname = games.valorant;
 
   const gameResult: GAME | undefined = gameList.find(
@@ -20,6 +23,12 @@ const ValorantSignButton = () => {
   );
 
   const gameInfo = gameResult as GAME;
+
+  const [checked, setChecked] = React.useState(false);
+
+  const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked((prev) => !prev);
+  };
 
   return (
     <GameWrapper key={gameInfo.id}>
@@ -29,6 +38,7 @@ const ValorantSignButton = () => {
       <InnerContainer>
         <ButtonWrapper>
           <Button
+            disabled={!checked || Boolean(vlrtNickname)}
             href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI_REGISTER}&response_type=code&scope=openid+offline_access`}
           >
             <img
@@ -40,15 +50,39 @@ const ValorantSignButton = () => {
             <span>라이엇 로그인</span>
           </Button>
         </ButtonWrapper>
-        <LinkedNickname>
-          연결된 닉네임 : {vlrtNickname || '없음'}
-        </LinkedNickname>
+        {!vlrtNickname && (
+          <FormControlLabel
+            control={
+              <CustomCheckbox checked={checked} onChange={handleCheck} />
+            }
+            label="로그인하면 MatchGG 에 내 프로필이 공개되는 것을 동의합니다."
+          />
+        )}
+        {vlrtNickname && (
+          <LinkedNickname>연결완료 - {vlrtNickname}</LinkedNickname>
+        )}
       </InnerContainer>
     </GameWrapper>
   );
 };
 
 export default ValorantSignButton;
+
+const FormControlLabel = styled(MuiFormControlLabel)(() => ({
+  padding: '0 0 0 10px',
+  '& > span': {
+    fontSize: '12px',
+    fontWeight: 700,
+    color: '#D64E5Bb5',
+  },
+})) as typeof MuiFormControlLabel;
+
+const CustomCheckbox = styled(MuiCheckbox)(() => ({
+  color: '#D64E5Bb5',
+  '&.Mui-checked': {
+    color: '#D64E5Bb5',
+  },
+})) as typeof MuiCheckbox;
 
 const InnerContainer = styled(MuiBox)(() => ({
   width: '100%',
@@ -122,5 +156,8 @@ const Button = styled(MuiButton)(() => ({
       filter:
         'invert(45%) sepia(43%) saturate(7074%) hue-rotate(330deg) brightness(95%) contrast(91%)',
     },
+  },
+  '&.Mui-disabled': {
+    backgroundColor: '#D2D4DA',
   },
 })) as typeof MuiButton;
