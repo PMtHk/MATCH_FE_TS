@@ -1,5 +1,5 @@
 /* eslint-disable no-nested-ternary */
-import { lazy, useMemo } from 'react';
+import React, { lazy, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,7 +14,6 @@ import { RootState } from 'store';
 import { cardActions } from 'store/card-slice';
 import Timer from 'components/CountDownTimer';
 import Circular from 'components/loading/Circular';
-import { Button } from '@mui/material';
 
 import { MEMBER_FROM_SERVER } from 'types/commons';
 import CardControlPanel from 'components/card-actions/CardControlPanel';
