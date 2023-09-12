@@ -63,6 +63,8 @@ const SetFavGame = () => {
           }),
         );
 
+        dispatch(registerActions.DELETE_REGISTER());
+
         navigate('/login');
       } catch (error: any) {
         if (

@@ -20,6 +20,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import { unfollowUser, getFollowList } from 'apis/api/user';
 import { snackbarActions } from 'store/snackbar-slice';
 
+import { GAME_ID } from 'types/games';
 import { gameList } from './data';
 
 const Follow = () => {
@@ -97,15 +98,7 @@ const Follow = () => {
                       >{`#${idx + 1}`}</TableIndexCell>
                       {gameList.map((game) => (
                         <TableGameCell align="center" key={game.id}>
-                          {
-                            user[
-                              game.value as
-                                | 'lol'
-                                | 'pubg'
-                                | 'overwatch'
-                                | 'valorant'
-                            ]
-                          }
+                          {user[game.value as GAME_ID]}
                         </TableGameCell>
                       ))}
                       <TableCell
