@@ -41,7 +41,7 @@ const GameFilterBar = ({
     <GameSelector>
       {gameList.map((aGame) => {
         return (
-          aGame.id !== 'valorant' && (
+          aGame.available && (
             <GameSelectorItem
               key={aGame.id}
               onClick={() => setSelectedGame(aGame.id)}
