@@ -15,7 +15,7 @@ const CardContainer = ({ children, expired = false }: CardProps) => {
     <CardLayout>
       <CardContent
         sx={{
-          backgroundColor: expired ? '#e9e8e8c4' : '#ffffff',
+          backgroundColor: expired ? '#cbcbcb90' : '#ffffff',
         }}
       >
         {children}
