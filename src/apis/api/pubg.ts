@@ -36,7 +36,6 @@ export const getPlatform = async (nickname: string) => {
     const accountId: any = await pubgAxios
       .get(`shards/steam/players?filter[playerNames]=${nickname}`)
       .then((res) => res.data.data[0].id);
-    console.log(`accountId : ${accountId}`);
 
     // 스팀 요청
     const steamResponse: any = await pubgAxios
