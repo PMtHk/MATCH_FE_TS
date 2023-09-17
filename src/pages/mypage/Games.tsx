@@ -28,7 +28,7 @@ import Nickname from './Games/Nickname';
 
 interface GameFilterProps {
   selectedGame: string;
-  setSelectedGame: Dispatch<SetStateAction<string>>;
+  setSelectedGame: Dispatch<SetStateAction<GAME_ID>>;
   representative: string;
 }
 
@@ -171,7 +171,7 @@ const Games = () => {
     overwatchInfo: overwatchData,
   } = useSelector((state: RootState) => state.mypage);
 
-  const [selectedGame, setSelectedGame] = useState<string>(representative);
+  const [selectedGame, setSelectedGame] = useState<GAME_ID>(representative);
 
   const gameComponents = {
     lol: <LolInfo data={lolData} />,
