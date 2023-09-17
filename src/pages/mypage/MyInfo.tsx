@@ -22,6 +22,8 @@ const Content = ({ title, content }: ContentProps) => {
   );
 };
 
+const MemoizedContent = React.memo(Content);
+
 type InfoProps = {
   title: string;
   children: JSX.Element | JSX.Element[];
@@ -36,27 +38,38 @@ const Info = ({ title, children }: InfoProps) => {
   );
 };
 
-const MyInfo = () => {
-  const { email, created, likeCount, dislikeCount, matchCount } = useSelector(
-    (state: RootState) => state.mypage,
-  );
-
+const MyInfo = ({
+  email,
+  created,
+  likeCount,
+  dislikeCount,
+  matchCount,
+}: {
+  email: string;
+  created: string;
+  likeCount: number;
+  dislikeCount: number;
+  matchCount: number;
+}) => {
   return (
     <>
       <Info title="이메일 및 가입 일자">
-        <Content title="이메일" content={email} />
-        <Content title="가입 일자" content={created.slice(0, 11)} />
+        <MemoizedContent title="이메일" content={email} />
+        <MemoizedContent title="가입 일자" content={created.slice(0, 11)} />
       </Info>
 
       <Info title="받은 평가">
-        <Content title="매칭 횟수" content={matchCount} />
-        <Content title="받은 좋아요" content={likeCount} />
-        <Content title="받은 싫어요" content={dislikeCount} />
+        <MemoizedContent title="매칭 횟수" content={matchCount} />
+        <MemoizedContent title="받은 좋아요" content={likeCount} />
+        <MemoizedContent title="받은 싫어요" content={dislikeCount} />
       </Info>
     </>
   );
 };
-export default MyInfo;
+
+const MemoizedMyInfo = React.memo(MyInfo);
+
+export default MemoizedMyInfo;
 
 const Container = styled(MuiBox)(() => ({
   width: '100%',

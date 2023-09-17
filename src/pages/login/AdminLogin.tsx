@@ -66,7 +66,6 @@ const AdminLogin = () => {
 
       navigate(`/${representative}`);
     } catch (error: any) {
-      console.log(error.response);
       if (error.response.status === 404) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({

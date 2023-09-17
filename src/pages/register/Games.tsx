@@ -45,7 +45,6 @@ const Games = () => {
         const goodResponse = await defaultAxios.get(
           `/api/valorant/user/${gameName}%23${tagLine}`,
         );
-        console.log(goodResponse);
       }
     };
 

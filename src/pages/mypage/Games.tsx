@@ -71,6 +71,8 @@ const GameFilterBar = ({
   );
 };
 
+const MemoizedGameFilterBar = React.memo(GameFilterBar);
+
 const GameDataUpdateButton = ({ game }: any) => {
   const dispatch = useDispatch();
 
@@ -181,7 +183,7 @@ const Games = () => {
   return (
     <>
       {/* 게임 필터 바 */}
-      <GameFilterBar
+      <MemoizedGameFilterBar
         selectedGame={selectedGame}
         setSelectedGame={setSelectedGame}
         representative={representative}
