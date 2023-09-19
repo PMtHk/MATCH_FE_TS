@@ -368,9 +368,6 @@ const Nickname = styled(MuiTypography)(() => ({
 const MostLaneInfo = styled(MuiBox)(() => ({
   display: 'flex',
   flexDirection: 'row',
-  '& > img': {
-    mixBlendMode: 'exclusion',
-  },
 })) as typeof MuiBox;
 
 const MostLanteTypo = styled(MuiTypography)(() => ({

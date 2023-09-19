@@ -27,7 +27,7 @@ const Games = () => {
   // TODO: valorant 닉네임 받아서 처리하기 필요
   React.useEffect(() => {
     const sendRsoAccessCode = async () => {
-      const response = await defaultAxios.post('/api/valorant/user/exist', {
+      const response = await defaultAxios.post('/api/valorant/user/sign', {
         code: rsoAccessCode as string,
       });
 
