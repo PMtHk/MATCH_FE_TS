@@ -2,12 +2,11 @@ import { VALORANT_POSITION } from 'types/games';
 
 export const queueTypeList = [
   { value: 'ALL', label: '모든 큐', maxMember: 5 },
-  { value: 'NORMAL', label: '일반전', maxMember: 5 },
-  { value: 'RANKED', label: '경쟁전', maxMember: 5 },
-  { value: 'SPIKE', label: '스파이크 돌격', maxMember: 5 },
-  { value: 'SWIFT', label: '신속 플레이', maxMember: 5 },
-  { value: 'DEATH', label: '팀 데스메치', maxMember: 5 },
-  { value: 'ESCALATION', label: '에스컬레이션', maxMember: 5 },
+  { value: 'STANDARD', label: '일반전', maxMember: 5 },
+  { value: 'COMPETITIVE', label: '경쟁전', maxMember: 5 },
+  { value: 'SPIKE_RUSH', label: '스파이크 돌격', maxMember: 5 },
+  { value: 'SWIFTPLAY', label: '신속 플레이', maxMember: 5 },
+  { value: 'TEAM_DEATHMATCH', label: '팀 데스메치', maxMember: 12 },
 ];
 
 export const tierList = [

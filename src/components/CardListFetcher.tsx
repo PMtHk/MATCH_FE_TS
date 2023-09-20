@@ -11,9 +11,10 @@ import { GAME_ID } from 'types/games';
 interface CardListFetcherProps {
   game: GAME_ID;
   params: {
+    gameMode?: string;
     position?: string;
     platform?: string;
-    type: string;
+    type?: string;
     tier: string;
   };
   gameDeps: any[];
