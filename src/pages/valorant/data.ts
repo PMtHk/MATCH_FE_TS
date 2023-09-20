@@ -11,31 +11,31 @@ export const queueTypeList = [
     value: 'STANDARD',
     label: '일반전',
     maxMember: 5,
-    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/Standard.png',
+    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/STANDARD.png',
   },
   {
     value: 'COMPETITIVE',
     label: '경쟁전',
     maxMember: 5,
-    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/Competitive.png',
+    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/COMPETITIVE.png',
   },
   {
     value: 'SPIKE_RUSH',
     label: '스파이크 돌격',
     maxMember: 5,
-    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/Spike_Rush.png',
+    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/SPIKE_RUSH.png',
   },
   {
     value: 'SWIFTPLAY',
     label: '신속 플레이',
     maxMember: 5,
-    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/Spike_Rush.png',
+    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/SWIFTPLAY.png',
   },
   {
     value: 'TEAM_DEATHMATCH',
     label: '팀 데스메치',
     maxMember: 5,
-    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/Team_Deathmatch.png',
+    imageUrl: 'https://cdn.match-gg.kr/valorant/game_modes/TEAM_DEATHMATCH.png',
   },
 ];
 

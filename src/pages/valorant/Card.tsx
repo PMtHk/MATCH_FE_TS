@@ -22,7 +22,7 @@ interface CardProps {
     id: number;
     oauth2Id: string;
     name: string;
-    type: string;
+    gameMode: string;
     tier: string;
     position: VALORANT_POSITIONS_ID;
     voice: 'Y' | 'N';
@@ -32,16 +32,15 @@ interface CardProps {
     created: string;
     finished: string;
     author: {
-      queueType: string;
-      agentName: string;
-      tier: string;
-      rank: string;
+      puuid: string;
+      name: string;
+      tier: number;
       wins: number;
       losses: number;
       kills: number;
       deaths: number;
       avgDmg: number;
-      headShot: number;
+      heads: number;
       totalShot: number;
       mostAgent: string[];
     };
@@ -62,12 +61,11 @@ const Card = ({ item, expired }: CardProps) => {
   const tier = tierList.find((aTier) => aTier.value === item.tier);
 
   const queueType = queueTypeList.find(
-    (aQueueType) => aQueueType.value === item.type,
+    (aQueueType) => aQueueType.value === item.gameMode,
   );
 
   // author info
-  // TODO : 보내주는 변수 명에 따라서 수정하기
-  const authorTier = tierList.find((aTier) => aTier.value === item.author.tier);
+  const authorTier = tierList[0];
 
   const totalPlayed = item.author.wins + item.author.losses;
   const winRate = Math.round((item.author.wins / totalPlayed) * 100);
@@ -120,27 +118,23 @@ const Card = ({ item, expired }: CardProps) => {
   };
 
   const calcHeadShotInfo = (): calcedInfo => {
-    const headShot: number =
-      item.author.headShot === 0 || item.author.totalShot === 0
+    const heads: number =
+      item.author.heads === 0 || item.author.totalShot === 0
         ? 0
-        : Number((item.author.headShot / item.author.totalShot).toFixed(2));
+        : Number((item.author.heads / item.author.totalShot).toFixed(2));
     let color = '#000';
-    if (headShot >= 30) {
+    if (heads >= 30) {
       color = 'red';
-    } else if (headShot >= 20) {
+    } else if (heads >= 20) {
       color = 'orange';
     } else {
       color = '#000';
     }
     return {
-      value: headShot,
+      value: heads,
       color,
     };
   };
-
-  // unranked info
-  const unranked =
-    item.author.tier === 'UNRANKED' && item.author.rank === 'UNRANKED';
 
   return (
     <div
@@ -214,7 +208,7 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>작성자</SectionName>
             <SectionContent>
-              <Author>{item.author.agentName}</Author>
+              <Author>{item.author.name}</Author>
               {item.voice === 'Y' && (
                 <MicIcon
                   fontSize="small"
@@ -246,39 +240,26 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>티어</SectionName>
             <SectionContent>
-              <RankEmblemWrapper
-                sx={{
-                  backgroundColor: expired ? '#ffffff' : '',
-                }}
-              >
-                <img
-                  src={authorTier?.imageUrl}
-                  alt={authorTier?.value}
-                  width="28px"
-                  height="20px"
-                />
-              </RankEmblemWrapper>
+              <img
+                src={authorTier?.imageUrl}
+                alt={authorTier?.value}
+                width="36px"
+                height="36px"
+              />
+
               <TierWinRateWrapper>
-                {!unranked && (
-                  <>
-                    <SectionTypo sx={{ color: authorTier?.color }}>
-                      {authorTier?.label}{' '}
-                      {item.author.tier === 'RADIANT' ? '' : item.author.rank}
-                    </SectionTypo>
-                    <MatchPlayed>
-                      {item.author?.wins}승 {item.author?.losses}패
-                      <WinRate
-                        component="span"
-                        sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                      >
-                        ({winRate}%)
-                      </WinRate>
-                    </MatchPlayed>
-                  </>
-                )}
-                {unranked && (
-                  <SectionTypo sx={{ color: '#9e9e9e' }}>Unranked</SectionTypo>
-                )}
+                <SectionTypo sx={{ color: authorTier?.color }}>
+                  {authorTier?.label}
+                </SectionTypo>
+                <MatchPlayed>
+                  {item.author?.wins}승 {item.author?.losses}패
+                  <WinRate
+                    component="span"
+                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                  >
+                    ({winRate}%)
+                  </WinRate>
+                </MatchPlayed>
               </TierWinRateWrapper>
             </SectionContent>
           </AuthorSection>
@@ -297,7 +278,7 @@ const Card = ({ item, expired }: CardProps) => {
                       }}
                     >
                       <img
-                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent.toLowerCase()}.png?w=44&h=44`}
+                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent}.png?w=44&h=44`}
                         alt={aAgent}
                         loading="lazy"
                       />

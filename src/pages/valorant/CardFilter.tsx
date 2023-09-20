@@ -85,17 +85,14 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
         </FormControl>
       </GridItem>
       <GridItem item xs={6} sm={6} md={2} lg={1.5}>
-        <FormControl size="small" disabled={queueType === 'ARAM'}>
+        <FormControl size="small">
           <MuiSelect id="tier-type-select" value={tier} onChange={handleTier}>
             {tierFilterList.map((item, index) => {
-              if (index < tierFilterList.length - 1) {
-                return (
-                  <MuiMenuItem key={item.value} value={item.value}>
-                    {item.label}
-                  </MuiMenuItem>
-                );
-              }
-              return null;
+              return (
+                <MuiMenuItem key={item.value} value={item.value}>
+                  {item.label}
+                </MuiMenuItem>
+              );
             })}
           </MuiSelect>
         </FormControl>
@@ -105,7 +102,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           fullWidth
           value={position}
           onChange={handlePosition}
-          disabled={queueType === 'DEATH' || queueType === 'SPIKE'}
+          disabled={queueType === 'TEAM_DEATHMATCH'}
           exclusive
           sx={{
             '& > *': {
