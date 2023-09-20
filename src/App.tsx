@@ -24,6 +24,7 @@ import Valorant from 'pages/valorant';
 import MyPage from 'pages/mypage';
 
 import AuthHoc from 'hoc/AuthHoc';
+import RsoCallback from 'pages/mypage/RsoCallback';
 /*
  * option: null: 아무나 출입이 가능한 페이지
  * option: true: 로그인한 유저만 출입이 가능한 페이지
@@ -93,6 +94,7 @@ const App = () => {
           <Route path="valorant/*" element={<Valorant />} />
           <Route path="*" element={<NotFound />} />
         </Route>
+        <Route path="/mypage/rso/callback" element={<RsoCallback />} />
       </Routes>
       <Snackbar
         open={SHOW_SNACKBAR}

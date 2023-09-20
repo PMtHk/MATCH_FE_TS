@@ -54,3 +54,15 @@ export const fetchMemberHistory = async (
 
   return fetchedHistory;
 };
+
+// RSO MATCHGG 등록
+
+export const connectRSO = async (rsoAccessCode: string) => {
+  const response = await defaultAxios.post('/api/valorant/user/sign', {
+    code: rsoAccessCode,
+  });
+
+  const { gameName, tagLine } = response.data;
+
+  return { gameName, tagLine };
+};

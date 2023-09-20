@@ -299,14 +299,13 @@ const CreateCard = () => {
                 <HelpOutline
                   sx={{ fontSize: '16px', color: '#4d4d4d', mr: 1 }}
                 />
-                등록된 요원명이 없습니다. 라이엇 로그인 이후 이용하실 수
-                있습니다.
+                발로란트 게시글 작성은 라이엇 계정 연동이 필요합니다.
               </HelpTypo>
             </RiotAuthTitleAndHelp>
             <ButtonWrapper>
               <Button
                 disabled={!checked || Boolean(vlrtNickname)}
-                href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI_REGISTER}&response_type=code&scope=openid+offline_access`}
+                href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI_MYPAGE}&response_type=code&scope=openid+offline_access`}
               >
                 <img
                   src="https://cdn.match-gg.kr/assets/riot_games_icon.png"
@@ -572,7 +571,7 @@ const ButtonWrapper = styled(MuiBox)(() => ({
 
 const Button = styled(MuiButton)(() => ({
   width: '100%',
-  maxWidth: '200px',
+  maxWidth: '320px',
   height: '48px',
   backgroundColor: '#E84057',
   color: '#f4f4f4',
