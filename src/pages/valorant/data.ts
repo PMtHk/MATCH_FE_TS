@@ -48,42 +48,52 @@ export const tierFilterList = [
   {
     value: 0,
     label: '모든 티어',
+    color: '#000000',
   },
   {
     value: 25,
     label: '레디언트',
+    color: '#F4C875',
   },
   {
     value: 22,
     label: '불멸',
+    color: '#7e254b',
   },
   {
     value: 19,
     label: '초월자',
+    color: '#21864f',
   },
   {
     value: 16,
     label: '다이아몬드',
+    color: '#8864b0',
   },
   {
     value: 13,
     label: '플래티넘',
+    color: '#35a3ac',
   },
   {
     value: 10,
     label: '골드',
+    color: '#CD8837',
   },
   {
     value: 7,
     label: '실버',
+    color: '#80989D',
   },
   {
     value: 4,
     label: '브론즈',
+    color: '#8C513A',
   },
   {
     value: 1,
     label: '아이언',
+    color: '#51484A',
   },
 ];
 

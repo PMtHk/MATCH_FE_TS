@@ -19,7 +19,7 @@ import { MEMBER_FROM_SERVER } from 'types/commons';
 import CardControlPanel from 'components/card-actions/CardControlPanel';
 import ChatRoomControl from 'components/chat/ChatRoomControl';
 import { isInParty } from 'functions/commons';
-import { positionList, queueTypeList, tierList } from './data';
+import { positionList, queueTypeList, tierList, tierFilterList } from './data';
 import MemberSlot from './MemberSlot';
 import EmptySlot from './EmptySlot';
 
@@ -38,9 +38,9 @@ const CardDetailContainer = () => {
     (state: RootState) => state.chatroom,
   );
 
-  const tier = tierList[currentCard?.tier];
+  const tier = tierFilterList.find((tier) => tier.value === currentCard?.tier);
   const queueType = queueTypeList.find(
-    (queueType) => queueType.value === currentCard?.type,
+    (queueType) => queueType.value === currentCard?.gameMode,
   );
   const position = positionList.find(
     (lane) => lane.value === currentCard?.position,
@@ -198,6 +198,7 @@ const SectionContent = styled(MuiTypography)(() => ({
   fontWeight: '400',
   wordBreak: 'break-all',
   height: '80px',
+  width: '400px',
 })) as typeof MuiTypography;
 
 const HashTagWrapper = styled(MuiBox)(() => ({

@@ -65,7 +65,7 @@ const Card = ({ item, expired }: CardProps) => {
   );
 
   // author info
-  const authorTier = tierList[0];
+  const authorTier = tierList[item.author.tier];
 
   const totalPlayed = item.author.wins + item.author.losses;
   const winRate = Math.round((item.author.wins / totalPlayed) * 100);
@@ -117,25 +117,6 @@ const Card = ({ item, expired }: CardProps) => {
     };
   };
 
-  const calcHeadShotInfo = (): calcedInfo => {
-    const heads: number =
-      item.author.heads === 0 || item.author.totalShot === 0
-        ? 0
-        : Number((item.author.heads / item.author.totalShot).toFixed(2));
-    let color = '#000';
-    if (heads >= 30) {
-      color = 'red';
-    } else if (heads >= 20) {
-      color = 'orange';
-    } else {
-      color = '#000';
-    }
-    return {
-      value: heads,
-      color,
-    };
-  };
-
   return (
     <div
       onMouseOver={() => {
@@ -148,7 +129,7 @@ const Card = ({ item, expired }: CardProps) => {
     >
       <CardContainer expired={expired}>
         <CardTitleWrapper>
-          <ImgWrapper>
+          <ImgWrapper sx={{ mr: 1 }}>
             <img
               src={queueType?.imageUrl || ''}
               alt="queueType_to_find"

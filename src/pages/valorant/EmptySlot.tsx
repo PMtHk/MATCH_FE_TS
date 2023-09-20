@@ -165,7 +165,7 @@ const EmptySlotWrapper = styled(MuiBox)(() => ({
   justifyContent: 'center',
   alignItems: 'center',
   minHeight: 80,
-  width: 520,
+  width: 650,
   backgroundColor: '#ececec',
   color: '#5C5C5C',
   border: '1px solid #CCCCCC',

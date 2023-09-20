@@ -45,6 +45,65 @@ const MemberSlot = ({
   // author info
   const tier = tierList[memberInfo?.tier];
 
+  type calcedInfo = {
+    value: number;
+    color: string;
+  };
+
+  const calcKDInfo = (): calcedInfo => {
+    const kd: number =
+      memberInfo.kills === 0 || memberInfo.deaths === 0
+        ? 0
+        : Number((memberInfo.kills / memberInfo.deaths).toFixed(2));
+    let color = '#000';
+    if (kd >= 4) {
+      color = 'red';
+    } else if (kd >= 2.5) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: kd,
+      color,
+    };
+  };
+
+  const calcAvgDmgInfo = (): calcedInfo => {
+    const avgDmg = Math.ceil(memberInfo.avgDmg);
+    let color = '#000';
+    if (avgDmg >= 500) {
+      color = 'red';
+    } else if (avgDmg >= 300) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: avgDmg,
+      color,
+    };
+  };
+
+  const calcHeadShotInfo = (): calcedInfo => {
+    const heads: number =
+      memberInfo.heads === 0 || memberInfo.shots === 0
+        ? 0
+        : Number((memberInfo.shots / memberInfo.heads).toFixed(1));
+    let color = '#000';
+    if (heads >= 30) {
+      color = 'red';
+    } else if (heads >= 20) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: heads,
+      color,
+    };
+  };
+
   // Tooltip
   const [tooltipText, setTooltipText] = useState<string>('');
 
@@ -97,7 +156,7 @@ const MemberSlot = ({
       try {
         const fetchedSummonerInfo = await fetchMemberHistory(
           agentName,
-          currentCard.gameMode,
+          currentCard.gameMode.toLowerCase(),
         );
 
         setMemberInfo(fetchedSummonerInfo);
@@ -196,21 +255,20 @@ const MemberSlot = ({
           <Member>
             <SectionInMember>
               <SectionTitleInMember>요원명</SectionTitleInMember>
-              <Nickname>{memberInfo?.agentName}</Nickname>
+              <Nickname>{memberInfo?.name}</Nickname>
             </SectionInMember>
             <SectionInMember>
               <SectionTitleInMember>티어</SectionTitleInMember>
               <FlexRow>
-                <RankEmblemWrapper>
-                  <img
-                    src={tier?.imageUrl}
-                    alt="rank"
-                    width="32px"
-                    height="32px"
-                    loading="lazy"
-                  />
-                </RankEmblemWrapper>
+                <img
+                  src={tier?.imageUrl}
+                  alt="rank"
+                  width="36px"
+                  height="36px"
+                  loading="lazy"
+                />
                 <TierWinRateWrapper>
+                  <TierTypo sx={{ color: tier?.color }}>{tier?.label}</TierTypo>
                   <MatchPlayed>
                     {memberInfo?.wins}승 {memberInfo?.losses}패
                     <WinRate
@@ -224,17 +282,45 @@ const MemberSlot = ({
               </FlexRow>
             </SectionInMember>
             <SectionInMember>
+              <SectionTitleInMember>K/D</SectionTitleInMember>
+              <InfoSection>
+                {memberInfo.kills + memberInfo.deaths === 0 ? (
+                  <InfoTypo sx={{ fontSize: '14px' }}>정보없음</InfoTypo>
+                ) : (
+                  <InfoTypo sx={{ color: calcKDInfo().color }}>
+                    {calcKDInfo().value}
+                  </InfoTypo>
+                )}
+              </InfoSection>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>평균데미지</SectionTitleInMember>
+              <InfoSection>
+                <InfoTypo sx={{ color: calcAvgDmgInfo().color }}>
+                  {calcAvgDmgInfo().value}
+                </InfoTypo>
+              </InfoSection>
+            </SectionInMember>
+            <SectionInMember>
+              <SectionTitleInMember>헤드샷</SectionTitleInMember>
+              <InfoSection>
+                <InfoTypo sx={{ color: calcHeadShotInfo().color }}>
+                  {calcHeadShotInfo().value}%
+                </InfoTypo>
+              </InfoSection>
+            </SectionInMember>
+            <SectionInMember>
               <SectionTitleInMember>모스트 요원</SectionTitleInMember>
               <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
                 {memberInfo &&
                   memberInfo.mostAgent?.map((aAgent: string, index: number) => (
                     <ChampImgWrapper key={`most_${index + 1}_aChampion`}>
                       <img
-                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent}.png?w=50&h=50`}
+                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent}.png?w=48&h=48`}
                         alt={`most${index}_${aAgent}`}
                         loading="lazy"
-                        width="50px"
-                        height="50px"
+                        width="48x"
+                        height="48px"
                       />
                     </ChampImgWrapper>
                   ))}
@@ -277,7 +363,7 @@ const Member = styled(MuiBox)(() => ({
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
-  width: '520px',
+  width: '650px',
   height: '80px',
   border: '1px solid #cccccc',
   borderRadius: '8px',
@@ -300,21 +386,8 @@ const Nickname = styled(MuiTypography)(() => ({
   fontSize: '16px',
   fontWeight: '700',
   minWidth: '120px',
+  lineHeight: '53px',
   textOverflow: 'ellipsis',
-})) as typeof MuiTypography;
-
-const MostLaneInfo = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'row',
-  '& > img': {
-    mixBlendMode: 'exclusion',
-  },
-})) as typeof MuiBox;
-
-const MostLanteTypo = styled(MuiTypography)(() => ({
-  fontSize: '14px',
-  fontWeight: '500',
-  margin: '0 0 0 4px',
 })) as typeof MuiTypography;
 
 const FlexRow = styled(MuiBox)(() => ({
@@ -323,23 +396,13 @@ const FlexRow = styled(MuiBox)(() => ({
   alignItems: 'center',
 })) as typeof MuiBox;
 
-const RankEmblemWrapper = styled(MuiBox)(() => ({
-  backgroundColor: '#e3e0e0',
-  borderRadius: '50%',
-  width: '44px',
-  height: '44px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  margin: '0 4px 0 0',
-})) as typeof MuiBox;
-
 const TierWinRateWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
   justifyContent: 'center',
   padding: '0 0 0 4px',
+  minHeight: '53px',
 })) as typeof MuiBox;
 
 const TierTypo = styled(MuiTypography)(() => ({
@@ -358,6 +421,19 @@ const WinRate = styled(MuiTypography)(() => ({
   fontSize: '12px',
   fontWeight: '600',
   padding: '0 0 0 2px',
+})) as typeof MuiTypography;
+
+const InfoSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  minWidth: '60px',
+  minHeight: '53px',
+})) as typeof MuiBox;
+
+const InfoTypo = styled(MuiTypography)(() => ({
+  fontSize: '16px',
+  fontWeight: '700',
 })) as typeof MuiTypography;
 
 const ChampImgWrapper = styled(MuiBox)(() => ({

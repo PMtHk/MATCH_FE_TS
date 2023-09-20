@@ -256,8 +256,6 @@ const CreateCard = () => {
     }
   };
 
-  console.log(useRegisteredNickname);
-
   return (
     <Modal>
       <Container>
