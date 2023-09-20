@@ -236,13 +236,13 @@ const MemberSlot = ({
               </FlexRow>
             </SectionInMember>
             <SectionInMember>
-              <SectionTitleInMember>모스트 챔피언</SectionTitleInMember>
+              <SectionTitleInMember>모스트 요원</SectionTitleInMember>
               <MuiImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
                 {memberInfo &&
                   memberInfo.mostAgent?.map((aAgent: string, index: number) => (
                     <ChampImgWrapper key={`most_${index + 1}_aChampion`}>
                       <img
-                        src={`https://d18ghgbbpc0qi2.cloudfront.net/valorant/agents/${aAgent.toLowerCase()}.png`}
+                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent.toLowerCase()}.png`}
                         alt={`most${index}_${aAgent}`}
                         loading="lazy"
                         width="50px"

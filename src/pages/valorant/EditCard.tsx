@@ -143,15 +143,15 @@ const CreateCard = () => {
   const closeModal = () => {
     setUserInput({
       name: registeredNickname || '',
-      type: 'DUO_RANK',
+      type: 'RANKED',
       tier: 'IRON',
-      position: 'TOP',
+      position: 'DUELIST',
       expire: 'FIFTEEN_M',
       voice: 'n',
       content: '',
     });
     setIsChanged(false);
-    navigate('/lol', { replace: true });
+    navigate('/valorant', { replace: true });
   };
 
   const confirmBeforeClosingModal = () => {
@@ -174,10 +174,10 @@ const CreateCard = () => {
           '게시글에 수정한 내역이 있습니다.\n수정을 취소하시겠습니까?',
         )
       ) {
-        navigate(`/lol/${cardId}`, { replace: true });
+        navigate(`/valorant/${cardId}`, { replace: true });
       }
     } else {
-      navigate(`/lol/${cardId}`, { replace: true });
+      navigate(`/valorant/${cardId}`, { replace: true });
     }
   };
 
@@ -190,7 +190,7 @@ const CreateCard = () => {
         currentCard.id,
         currentCard.chatRoomId,
         userInput,
-        userInput.type === 'DUO_RANK' ? 2 : 5,
+        5,
       );
 
       dispatch(
@@ -200,7 +200,7 @@ const CreateCard = () => {
         }),
       );
 
-      navigate(`/lol/${currentCard.id}`, { replace: true });
+      navigate(`/valorant/${currentCard.id}`, { replace: true });
     } catch (error) {
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
@@ -219,7 +219,7 @@ const CreateCard = () => {
         <ErrorFallback>
           <ErrorTitle>비정상적인 접근입니다.</ErrorTitle>
           <ErrorContent>해당 게시글에 대한 권한이 없습니다. </ErrorContent>
-          <MuiButton onClick={() => navigate(`/lol/${cardId}`)}>
+          <MuiButton onClick={() => navigate(`/valorant/${cardId}`)}>
             돌아가기
           </MuiButton>
         </ErrorFallback>
@@ -244,7 +244,7 @@ const CreateCard = () => {
         </HeaderWrapper>
         <MuiDivider />
         <NicknameSection>
-          <SectionTitle>플레이할 소환사 명</SectionTitle>
+          <SectionTitle>플레이할 요원명</SectionTitle>
           <NicknameInput
             value={userInput.name}
             disabled
@@ -287,26 +287,12 @@ const CreateCard = () => {
               onChange={handleTier}
             >
               {tierList.map((item) => {
-                if (
-                  !(
-                    item.value === 'UNRANKED' ||
-                    item.value === 'CHALLENGER' ||
-                    item.value === 'GRANDMASTER'
-                  )
-                ) {
+                if (!(item.value === 'UNRANKED')) {
                   return (
                     <ToggleButton
                       key={item.value}
                       value={item.value}
-                      disabled={
-                        isPosting
-                          ? true
-                          : !!(
-                              (item.value === 'MASTER' ||
-                                item.value === 'ALL') &&
-                              userInput.type === 'DUO_RANK'
-                            )
-                      }
+                      disabled={isPosting}
                     >
                       {item.label}
                     </ToggleButton>
@@ -321,7 +307,7 @@ const CreateCard = () => {
           <SectionTitle>원하는 파티원의 포지션</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={isPosting || userInput.type === 'ARAM'}
+            disabled={isPosting || userInput.type === 'DEATH'}
             value={userInput.position}
             onChange={handlePosition}
           >

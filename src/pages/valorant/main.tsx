@@ -91,7 +91,6 @@ const Main = () => {
     <>
       <CardFilter filterProps={filterProps} />
       {isLogin && <FollowersCard game="valorant" />}
-      <CardListContainer />
       <ErrorBoundary
         resetKeys={gameDeps}
         FallbackComponent={CardListErrorFallback}

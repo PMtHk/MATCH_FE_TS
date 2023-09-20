@@ -41,6 +41,8 @@ interface CardProps {
       kills: number;
       deaths: number;
       avgDmg: number;
+      headShot: number;
+      totalShot: number;
       mostAgent: string[];
     };
     chatRoomId: string;
@@ -64,6 +66,7 @@ const Card = ({ item, expired }: CardProps) => {
   );
 
   // author info
+  // TODO : 보내주는 변수 명에 따라서 수정하기
   const authorTier = tierList.find((aTier) => aTier.value === item.author.tier);
 
   const totalPlayed = item.author.wins + item.author.losses;
@@ -116,6 +119,25 @@ const Card = ({ item, expired }: CardProps) => {
     };
   };
 
+  const calcHeadShotInfo = (): calcedInfo => {
+    const headShot: number =
+      item.author.headShot === 0 || item.author.totalShot === 0
+        ? 0
+        : Number((item.author.headShot / item.author.totalShot).toFixed(2));
+    let color = '#000';
+    if (headShot >= 30) {
+      color = 'red';
+    } else if (headShot >= 20) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: headShot,
+      color,
+    };
+  };
+
   // unranked info
   const unranked =
     item.author.tier === 'UNRANKED' && item.author.rank === 'UNRANKED';
@@ -134,9 +156,8 @@ const Card = ({ item, expired }: CardProps) => {
         <CardTitleWrapper>
           <ImgWrapper>
             <img
-              // src={position?.imageUrl || ''}
-              src="https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg"
-              alt="position_to_find"
+              src={queueType?.imageUrl || ''}
+              alt="queueType_to_find"
               loading="lazy"
               height="40px"
               width="40px"
@@ -231,8 +252,7 @@ const Card = ({ item, expired }: CardProps) => {
                 }}
               >
                 <img
-                  // src={authorTier?.imageUrl}
-                  src="https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg"
+                  src={authorTier?.imageUrl}
                   alt={authorTier?.value}
                   width="28px"
                   height="20px"
@@ -277,8 +297,7 @@ const Card = ({ item, expired }: CardProps) => {
                       }}
                     >
                       <img
-                        // src={`https://d18ghgbbpc0qi2.cloudfront.net/valorant/agents/${aAgent.toLowerCase()}.png`}
-                        src="https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg"
+                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent.toLowerCase()}.png?w=44&h=44`}
                         alt={aAgent}
                         loading="lazy"
                       />

@@ -25,7 +25,7 @@ import HelpOutline from '@mui/icons-material/HelpOutline';
 import BackSpace from '@mui/icons-material/Backspace';
 import Edit from '@mui/icons-material/Edit';
 
-import { verifyNickname, loadHistory } from 'apis/api/leagueoflegends';
+import { verifyNickname, loadHistory } from 'apis/api/valorant';
 import { createCard } from 'apis/api/common';
 import { RootState } from 'store';
 import { chatroomActions } from 'store/chatroom-slice';
@@ -35,7 +35,12 @@ import Modal from 'components/Modal';
 import { CustomSwitch } from 'components/Swtich';
 import { getCurrentGame } from 'functions/commons';
 import { GAME_ID } from 'types/games';
-import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
+import {
+  queueTypeList,
+  tierFilterList,
+  positionList,
+  expiredTimeList,
+} from './data';
 
 const CreateCard = () => {
   const dispatch = useDispatch();
@@ -67,7 +72,7 @@ const CreateCard = () => {
   const [userInput, setUserInput] = React.useState({
     name: registeredNickname || '',
     gameMode: 'STANDARD',
-    tier: 'IRON',
+    tier: 1,
     position: 'DUELIST',
     expire: 'FIFTEEN_M',
     voice: 'n',
@@ -97,7 +102,7 @@ const CreateCard = () => {
 
   const handleTier = (
     event: React.MouseEvent<HTMLElement>,
-    newValue: string,
+    newValue: number,
   ) => {
     if (newValue === null) return;
     setUserInput({ ...userInput, tier: newValue });
@@ -179,7 +184,7 @@ const CreateCard = () => {
     setUserInput({
       name: registeredNickname || '',
       gameMode: 'STANDARD',
-      tier: 'IRON',
+      tier: 1,
       position: 'DUELIST',
       expire: 'FIFTEEN_M',
       voice: 'n',
@@ -210,7 +215,7 @@ const CreateCard = () => {
         currentGame,
         userInput,
         oauth2Id,
-        userInput.gameMode === 'TEAM_DEATH' ? 12 : 5,
+        5,
         notiToken,
       );
 
@@ -326,23 +331,20 @@ const CreateCard = () => {
           <TierToggleWrapper>
             <ToggleButtonGroup
               exclusive
-              disabled={isPosting || userInput.gameMode === 'ARAM'}
+              disabled={isPosting}
               value={userInput.tier}
               onChange={handleTier}
             >
-              {tierList.map((item) => {
-                if (!(item.value === 'UNRANKED')) {
-                  return (
-                    <ToggleButton
-                      key={item.value}
-                      value={item.value}
-                      disabled={isPosting}
-                    >
-                      {item.label}
-                    </ToggleButton>
-                  );
-                }
-                return null;
+              {tierFilterList.map((item) => {
+                return (
+                  <ToggleButton
+                    key={item.value}
+                    value={item.value}
+                    disabled={isPosting}
+                  >
+                    {item.label}
+                  </ToggleButton>
+                );
               })}
             </ToggleButtonGroup>
           </TierToggleWrapper>
@@ -351,11 +353,7 @@ const CreateCard = () => {
           <SectionTitle>원하는 파티원의 포지션</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={
-              isPosting ||
-              userInput.gameMode === 'DEATH' ||
-              userInput.gameMode === 'TEAM_DEATH'
-            }
+            disabled={isPosting || userInput.gameMode === 'TEAM_DEATHMATCH'}
             value={userInput.position}
             onChange={handlePosition}
           >

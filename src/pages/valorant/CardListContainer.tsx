@@ -14,9 +14,8 @@ import Card from './Card';
 const CardListContainer = () => {
   const currentGame: GAME_ID = getCurrentGame();
 
-  // const { valorantCards } = useSelector((state: RootState) => state.card);
+  const { valorantCards } = useSelector((state: RootState) => state.card);
   const { oauth2Id } = useSelector((state: RootState) => state.user);
-  const [valorantCards, setValorantCards] = React.useState([]);
 
   let cardLength = 0;
 

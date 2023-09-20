@@ -16,7 +16,7 @@ import MuiTooltip from '@mui/material/Tooltip';
 
 import CreateCardButton from 'components/card-actions/CreateCardBtn';
 import { refreshActions } from 'store/refresh-slice';
-import { positionList, queueTypeList, tierList } from './data';
+import { positionList, queueTypeList, tierFilterList } from './data';
 
 interface CardFilterProps {
   filterProps: {
@@ -87,18 +87,8 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
       <GridItem item xs={6} sm={6} md={2} lg={1.5}>
         <FormControl size="small" disabled={queueType === 'ARAM'}>
           <MuiSelect id="tier-type-select" value={tier} onChange={handleTier}>
-            {tierList.map((item, index) => {
-              if (index < tierList.length - 1) {
-                if (queueType === 'DUO_RANK') {
-                  if (index > 3 || index === 0) {
-                    return (
-                      <MuiMenuItem key={item.value} value={item.value}>
-                        {item.label}
-                      </MuiMenuItem>
-                    );
-                  }
-                  return null;
-                }
+            {tierFilterList.map((item, index) => {
+              if (index < tierFilterList.length - 1) {
                 return (
                   <MuiMenuItem key={item.value} value={item.value}>
                     {item.label}
@@ -115,7 +105,7 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
           fullWidth
           value={position}
           onChange={handlePosition}
-          disabled={queueType === 'ARAM'}
+          disabled={queueType === 'DEATH' || queueType === 'SPIKE'}
           exclusive
           sx={{
             '& > *': {
