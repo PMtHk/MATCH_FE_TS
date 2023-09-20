@@ -66,3 +66,13 @@ export const connectRSO = async (rsoAccessCode: string) => {
 
   return { gameName, tagLine };
 };
+
+export const connectRSOMypage = async (rsoAccessCode: string) => {
+  const response = await defaultAxios.post('/api/valorant/user/mypage/sign', {
+    code: rsoAccessCode,
+  });
+
+  const { gameName, tagLine } = response.data;
+
+  return { gameName, tagLine };
+};
