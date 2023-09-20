@@ -15,7 +15,7 @@ interface CardListFetcherProps {
     position?: string;
     platform?: string;
     type?: string;
-    tier: string;
+    tier: string | number;
   };
   gameDeps: any[];
   children: React.ReactNode;

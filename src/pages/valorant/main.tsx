@@ -27,7 +27,7 @@ const Main = () => {
   const { isLogin } = useSelector((state: RootState) => state.user);
 
   const [queueType, setQueueType] = React.useState('ALL');
-  const [tier, setTier] = React.useState('ALL');
+  const [tier, setTier] = React.useState(0);
   const [position, setPosition] = React.useState<string>('ALL');
 
   const { totalPage, currentPage } = useSelector(
@@ -40,7 +40,7 @@ const Main = () => {
       event.target.value === 'SWIFTPLAY' ||
       event.target.value === 'TEAM_DEATHMATCH'
     ) {
-      setTier('ALL');
+      setTier(0);
       setPosition('ALL');
     }
 
@@ -50,7 +50,7 @@ const Main = () => {
 
   const handleTier = (event: SelectChangeEvent) => {
     dispatch(cardActions.SET_CURRENT_PAGE(0));
-    setTier(event.target.value);
+    setTier(parseInt(event.target.value, 10));
   };
 
   const handlePosition = (

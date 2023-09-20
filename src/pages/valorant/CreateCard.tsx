@@ -15,6 +15,8 @@ import MuiCircularProgress from '@mui/material/CircularProgress';
 import MuiToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import MuiToggleButton from '@mui/material/ToggleButton';
 import MuiFormControl from '@mui/material/FormControl';
+import MuiFormControlLabel from '@mui/material/FormControlLabel';
+import MuiCheckbox from '@mui/material/Checkbox';
 import MuiSelect, { SelectChangeEvent } from '@mui/material/Select';
 import MuiMenuItem from '@mui/material/MenuItem';
 import MuiTextField from '@mui/material/TextField';
@@ -52,9 +54,17 @@ const CreateCard = () => {
     (state: RootState) => state.user.games,
   );
 
+  const { games } = useSelector((state: RootState) => state.register);
   const { oauth2Id } = useSelector((state: RootState) => state.user);
   const { notiToken } = useSelector((state: RootState) => state.notification);
 
+  const vlrtNickname = games.valorant;
+
+  const [checked, setChecked] = React.useState(false);
+
+  const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setChecked((prev) => !prev);
+  };
   // 기존 등록된 registeredNickname 사용 여부 state
   const [useRegisteredNickname, setUseRegisteredNickname] =
     React.useState<boolean>(!!registeredNickname);
@@ -246,6 +256,8 @@ const CreateCard = () => {
     }
   };
 
+  console.log(useRegisteredNickname);
+
   return (
     <Modal>
       <Container>
@@ -278,32 +290,46 @@ const CreateCard = () => {
             등록된 요원명: {registeredNickname || '등록된 요원명 없음'}
           </RegisteredNicknameTypo>
         </SelectRegisteredNickname>
-        <NicknameSection>
-          <SectionTitle>플레이할 요원명</SectionTitle>
-          <NicknameInput
-            value={userInput.name}
-            placeholder="요원명을 입력하세요."
-            disabled={isPosting ? true : useRegisteredNickname}
-            onChange={handleNickname}
-            error={!isNewNicknameCertified}
-            endAdornment={
-              isLoading ? (
-                <MuiCircularProgress size={14} />
-              ) : (
-                <MuiButton
-                  sx={{ whiteSpace: 'nowrap' }}
-                  onClick={certifyNewNickname}
-                  disabled={
-                    (isPosting ? true : useRegisteredNickname) ||
-                    userInput.name.length < 2
+        {/* TODO : 발로란트 닉네임이 없을 때 라이엇 로그인하게 하는 버튼 */}
+        {!useRegisteredNickname && (
+          <RiotAuthSection>
+            <RiotAuthTitleAndHelp>
+              <SectionTitle>라이엇 인증하기</SectionTitle>
+              <HelpTypo>
+                <HelpOutline
+                  sx={{ fontSize: '16px', color: '#4d4d4d', mr: 1 }}
+                />
+                등록된 요원명이 없습니다. 라이엇 로그인 이후 이용하실 수
+                있습니다.
+              </HelpTypo>
+            </RiotAuthTitleAndHelp>
+            <ButtonWrapper>
+              <Button
+                disabled={!checked || Boolean(vlrtNickname)}
+                href={`https://auth.riotgames.com/authorize?client_id=${process.env.REACT_APP_RIOT_CLIENT_ID}&redirect_uri=${process.env.REACT_APP_RIOT_REDIRECT_URI_REGISTER}&response_type=code&scope=openid+offline_access`}
+              >
+                <img
+                  src="https://cdn.match-gg.kr/assets/riot_games_icon.png"
+                  alt="riot_games_symbol"
+                  width="24px"
+                  height="24px"
+                />
+                <span>라이엇 로그인</span>
+              </Button>
+              {!vlrtNickname && (
+                <FormControlLabel
+                  control={
+                    <CustomCheckbox checked={checked} onChange={handleCheck} />
                   }
-                >
-                  {isNewNicknameCertified ? '인증완료' : '인증하기'}
-                </MuiButton>
-              )
-            }
-          />
-        </NicknameSection>
+                  label="MatchGG 에 나의 발로란트 프로필이 공개되는 것을 동의합니다."
+                />
+              )}
+              {vlrtNickname && (
+                <LinkedNickname>연결완료 - {vlrtNickname}</LinkedNickname>
+              )}
+            </ButtonWrapper>
+          </RiotAuthSection>
+        )}
         <QueueTypeSection>
           <SectionTitle>플레이할 큐 타입</SectionTitle>
           <QueueTypeToggleWrapper>
@@ -499,29 +525,86 @@ const SectionTitle = styled(MuiTypography)(() => ({
   color: '#4d4d4d',
 })) as typeof MuiTypography;
 
-const NicknameSection = styled(MuiBox)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-})) as typeof MuiBox;
-
-const NicknameInput = styled(MuiOutlinedInput)(() => ({
-  width: '280px',
-  height: '32px',
-  fontSize: '14px',
-}));
-
-const QueueTypeSection = styled(MuiBox)(() => ({
+const RiotAuthSection = styled(MuiBox)(() => ({
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
 })) as typeof MuiBox;
 
-const QueueTypeToggleWrapper = styled(MuiBox)(() => ({
-  width: '100%',
+const FormControlLabel = styled(MuiFormControlLabel)(() => ({
+  padding: '0 0 0 10px',
+  '& > span': {
+    fontSize: '12px',
+    fontWeight: 700,
+    color: '#D64E5Bb5',
+  },
+})) as typeof MuiFormControlLabel;
+
+const CustomCheckbox = styled(MuiCheckbox)(() => ({
+  color: '#D64E5Bb5',
+  '&.Mui-checked': {
+    color: '#D64E5Bb5',
+  },
+})) as typeof MuiCheckbox;
+
+const LinkedNickname = styled(MuiTypography)(() => ({
+  fontSize: '14px',
+  fontWeight: 700,
+  color: '#D64E5Bb5',
+  margin: '0 0 0 20px',
+})) as typeof MuiTypography;
+
+const RiotAuthTitleAndHelp = styled(MuiBox)(() => ({
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'flex-end',
+  justifyContent: 'space-between',
+  width: '100%',
+})) as typeof MuiBox;
+
+const ButtonWrapper = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  width: '100%',
+  margin: '8px 0 0px',
+})) as typeof MuiBox;
+
+const Button = styled(MuiButton)(() => ({
+  width: '100%',
+  maxWidth: '200px',
+  height: '48px',
+  backgroundColor: '#E84057',
+  color: '#f4f4f4',
+  fontSize: '16px',
+  fontWeight: 700,
+  gap: '8px',
+  '& > img': {
+    filter: 'brightness(0) invert(1)',
+  },
+  '&:hover': {
+    color: '#E84057',
+    border: '1px solid #E84057',
+    '& > img': {
+      filter:
+        'invert(45%) sepia(43%) saturate(7074%) hue-rotate(330deg) brightness(95%) contrast(91%)',
+    },
+  },
+  '&.Mui-disabled': {
+    backgroundColor: '#D2D4DA',
+  },
+})) as typeof MuiButton;
+
+const QueueTypeSection = styled(MuiBox)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+})) as typeof MuiBox;
+
+const QueueTypeToggleWrapper = styled(MuiBox)(() => ({
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
   margin: '8px 0 0px',
 })) as typeof MuiBox;
 

@@ -35,16 +35,21 @@ export const loadHistory = async (agentName: string) => {
 /**
  * (발로란트) 멤버의 전적 가져오기
  *
- * @param {string} agentName 정확한 요원명
- * @param {string} type 전적 종류 (NORMAL | RANKED | SPIKE | SWIFT | DEATH | TEAM_DEATH)
+ * @param {string} agentNameWithRiotTag 정확한 요원명 + Riot Tag
+ * @param {string} type 전적 종류 (STANDARD | COMPETITIVE | SPIKE_RUSH | SWIFTPLAY | TEAM_DEATHMATCH)
  * @returns {any} 해당 멤버의 전적
  *
  * @example
  */
 
-export const fetchMemberHistory = async (agentName: string, type: string) => {
+export const fetchMemberHistory = async (
+  agentNameWithRiotTag: string,
+  type: string,
+) => {
   const fetchedHistory = await defaultAxios
-    .get(`/api/valorant/agent/${agentName}/${type}`)
+    .get(
+      `/api/valorant/agent/${agentNameWithRiotTag.replace('#', '%23')}/${type}`,
+    )
     .then((res) => res.data);
 
   return fetchedHistory;

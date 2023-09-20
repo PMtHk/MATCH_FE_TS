@@ -22,7 +22,7 @@ interface CardFilterProps {
   filterProps: {
     queueType: string;
     handleQueueType: (event: SelectChangeEvent) => void;
-    tier: string;
+    tier: number;
     handleTier: (event: SelectChangeEvent) => void;
     position: string;
     handlePosition: (
@@ -86,7 +86,11 @@ const CardFilter = ({ filterProps }: CardFilterProps) => {
       </GridItem>
       <GridItem item xs={6} sm={6} md={2} lg={1.5}>
         <FormControl size="small">
-          <MuiSelect id="tier-type-select" value={tier} onChange={handleTier}>
+          <MuiSelect
+            id="tier-type-select"
+            value={tier.toString()}
+            onChange={handleTier}
+          >
             {tierFilterList.map((item, index) => {
               return (
                 <MuiMenuItem key={item.value} value={item.value}>

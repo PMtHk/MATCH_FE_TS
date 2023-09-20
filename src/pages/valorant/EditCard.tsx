@@ -32,7 +32,12 @@ import { updateCard } from 'apis/api/common';
 import { snackbarActions } from 'store/snackbar-slice';
 import { getCurrentGame } from 'functions/commons';
 import { GAME_ID } from 'types/games';
-import { queueTypeList, tierList, positionList, expiredTimeList } from './data';
+import {
+  queueTypeList,
+  tierFilterList,
+  positionList,
+  expiredTimeList,
+} from './data';
 
 const CreateCard = () => {
   const dispatch = useDispatch();
@@ -58,7 +63,7 @@ const CreateCard = () => {
   // 사용자의 input state
   const [userInput, setUserInput] = React.useState({
     name: currentCard?.name,
-    type: currentCard?.type,
+    gameMode: currentCard?.type,
     tier: currentCard?.tier,
     position: currentCard?.position,
     expire: currentCard?.expire,
@@ -76,36 +81,13 @@ const CreateCard = () => {
     if (newValue === null) {
       return;
     }
-    if (newValue === 'ARAM') {
-      setUserInput({
-        ...userInput,
-        type: newValue,
-        tier: 'ALL',
-        position: 'ALL',
-      });
-    } else if (userInput.type === 'ARAM' && newValue !== 'ARAM') {
-      setUserInput({
-        ...userInput,
-        type: newValue,
-        tier: 'IRON',
-        position: 'TOP',
-      });
-    } else if (newValue === 'DUO_RANK') {
-      setUserInput({
-        ...userInput,
-        type: newValue,
-        tier: 'IRON',
-        position: 'TOP',
-      });
-    } else {
-      setUserInput({ ...userInput, type: newValue });
-    }
+    setUserInput({ ...userInput, gameMode: newValue });
     setIsChanged(true);
   };
 
   const handleTier = (
     event: React.MouseEvent<HTMLElement>,
-    newValue: string,
+    newValue: number,
   ) => {
     if (newValue === null) return;
     setUserInput({ ...userInput, tier: newValue });
@@ -143,8 +125,8 @@ const CreateCard = () => {
   const closeModal = () => {
     setUserInput({
       name: registeredNickname || '',
-      type: 'RANKED',
-      tier: 'IRON',
+      gameMode: 'STANDARD',
+      tier: 1,
       position: 'DUELIST',
       expire: 'FIFTEEN_M',
       voice: 'n',
@@ -258,7 +240,7 @@ const CreateCard = () => {
           <ToggleButtonGroup
             exclusive
             disabled={isPosting}
-            value={userInput.type}
+            value={userInput.gameMode}
             onChange={handleType}
           >
             {queueTypeList.map((item) => {
@@ -282,23 +264,20 @@ const CreateCard = () => {
           <TierToggleWrapper>
             <ToggleButtonGroup
               exclusive
-              disabled={isPosting || userInput.type === 'ARAM'}
+              disabled={isPosting}
               value={userInput.tier}
               onChange={handleTier}
             >
-              {tierList.map((item) => {
-                if (!(item.value === 'UNRANKED')) {
-                  return (
-                    <ToggleButton
-                      key={item.value}
-                      value={item.value}
-                      disabled={isPosting}
-                    >
-                      {item.label}
-                    </ToggleButton>
-                  );
-                }
-                return null;
+              {tierFilterList.map((item) => {
+                return (
+                  <ToggleButton
+                    key={item.value}
+                    value={item.value}
+                    disabled={isPosting}
+                  >
+                    {item.label}
+                  </ToggleButton>
+                );
               })}
             </ToggleButtonGroup>
           </TierToggleWrapper>
@@ -307,7 +286,7 @@ const CreateCard = () => {
           <SectionTitle>원하는 파티원의 포지션</SectionTitle>
           <ToggleButtonGroup
             exclusive
-            disabled={isPosting || userInput.type === 'DEATH'}
+            disabled={isPosting || userInput.gameMode === 'TEAM_DEATHMATCH'}
             value={userInput.position}
             onChange={handlePosition}
           >

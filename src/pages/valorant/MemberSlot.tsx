@@ -43,7 +43,7 @@ const MemberSlot = ({
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
 
   // author info
-  const tier = tierList.find((aTier) => aTier.value === memberInfo?.tier);
+  const tier = tierList[memberInfo?.tier];
 
   // Tooltip
   const [tooltipText, setTooltipText] = useState<string>('');
@@ -97,7 +97,7 @@ const MemberSlot = ({
       try {
         const fetchedSummonerInfo = await fetchMemberHistory(
           agentName,
-          currentCard.type,
+          currentCard.gameMode,
         );
 
         setMemberInfo(fetchedSummonerInfo);
@@ -152,9 +152,6 @@ const MemberSlot = ({
     }
   };
 
-  const unranked =
-    memberInfo?.tier === 'UNRANKED' && memberInfo?.rank === 'UNRANKED';
-
   const handleFollow = async () => {
     try {
       await followUser(MemberOauth2Id);
@@ -198,7 +195,7 @@ const MemberSlot = ({
         <EvaluationTooltip title={tooltipText} followCursor>
           <Member>
             <SectionInMember>
-              <SectionTitleInMember>소환사명</SectionTitleInMember>
+              <SectionTitleInMember>요원명</SectionTitleInMember>
               <Nickname>{memberInfo?.agentName}</Nickname>
             </SectionInMember>
             <SectionInMember>
@@ -209,29 +206,20 @@ const MemberSlot = ({
                     src={tier?.imageUrl}
                     alt="rank"
                     width="32px"
-                    height="24px"
+                    height="32px"
                     loading="lazy"
                   />
                 </RankEmblemWrapper>
                 <TierWinRateWrapper>
-                  {!unranked ? (
-                    <TierTypo sx={{ color: tier?.color }}>
-                      {tier?.acronym}
-                    </TierTypo>
-                  ) : (
-                    <TierTypo>Unranked</TierTypo>
-                  )}
-                  {!unranked && (
-                    <MatchPlayed>
-                      {memberInfo?.wins}승 {memberInfo?.losses}패
-                      <WinRate
-                        component="span"
-                        sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                      >
-                        ({winRate}%)
-                      </WinRate>
-                    </MatchPlayed>
-                  )}
+                  <MatchPlayed>
+                    {memberInfo?.wins}승 {memberInfo?.losses}패
+                    <WinRate
+                      component="span"
+                      sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                    >
+                      ({winRate}%)
+                    </WinRate>
+                  </MatchPlayed>
                 </TierWinRateWrapper>
               </FlexRow>
             </SectionInMember>
@@ -242,7 +230,7 @@ const MemberSlot = ({
                   memberInfo.mostAgent?.map((aAgent: string, index: number) => (
                     <ChampImgWrapper key={`most_${index + 1}_aChampion`}>
                       <img
-                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent.toLowerCase()}.png`}
+                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent}.png?w=50&h=50`}
                         alt={`most${index}_${aAgent}`}
                         loading="lazy"
                         width="50px"

@@ -38,7 +38,7 @@ const CardDetailContainer = () => {
     (state: RootState) => state.chatroom,
   );
 
-  const tier = tierList.find((tier) => tier.value === currentCard?.tier);
+  const tier = tierList[currentCard?.tier];
   const queueType = queueTypeList.find(
     (queueType) => queueType.value === currentCard?.type,
   );

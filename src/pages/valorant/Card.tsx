@@ -153,8 +153,8 @@ const Card = ({ item, expired }: CardProps) => {
               src={queueType?.imageUrl || ''}
               alt="queueType_to_find"
               loading="lazy"
-              height="40px"
-              width="40px"
+              height="36px"
+              width="36px"
             />
           </ImgWrapper>
           <CardTitle>
