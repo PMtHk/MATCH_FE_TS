@@ -16,37 +16,7 @@ const CardListContainer = () => {
 
   // const { valorantCards } = useSelector((state: RootState) => state.card);
   const { oauth2Id } = useSelector((state: RootState) => state.user);
-  const [valorantCards, setValorantCards] = React.useState([
-    {
-      id: 1,
-      oauth2Id: 'kakao2995658886',
-      name: 'AeronS',
-      type: 'NORMAL',
-      tier: 'PLATINUM',
-      position: 'DUELIST',
-      voice: 'Y',
-      content: '다이아 올라가실분 구합니다 디코ㄱㄱㄱㄱ',
-      expire: 'TWENTY_FOUR_H',
-      expired: 'false',
-      finished: 'false',
-      created: '2023-08-29 21:48:29',
-      author: {
-        queueType: 'NORMAL',
-        agentName: 'AeronS',
-        tier: 'PLATINUM',
-        rank: '2',
-        wins: 22,
-        losses: 21,
-        kills: 71,
-        deaths: 94,
-        avgDmg: 97.0107,
-        mostAgent: ['Jett', 'Phoenix', 'Sova'],
-      },
-      chatRoomId: '-Nd0KdmoNPz0iCc09HwB',
-      memberList: [],
-      banList: [],
-    },
-  ]);
+  const [valorantCards, setValorantCards] = React.useState([]);
 
   let cardLength = 0;
 

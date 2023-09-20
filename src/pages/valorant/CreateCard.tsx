@@ -66,7 +66,7 @@ const CreateCard = () => {
   // 사용자의 input state
   const [userInput, setUserInput] = React.useState({
     name: registeredNickname || '',
-    type: 'NORMAL',
+    gameMode: 'STANDARD',
     tier: 'IRON',
     position: 'DUELIST',
     expire: 'FIFTEEN_M',
@@ -91,30 +91,7 @@ const CreateCard = () => {
     if (newValue === null) {
       return;
     }
-    if (newValue === 'DEATH' || newValue === 'TEAM_DEATH') {
-      setUserInput({
-        ...userInput,
-        type: newValue,
-        tier: 'ALL',
-        position: 'ALL',
-      });
-    } else if (userInput.type === 'DEATH' && newValue !== 'DEATH') {
-      setUserInput({
-        ...userInput,
-        type: newValue,
-        tier: 'IRON',
-        position: 'DUELIST',
-      });
-    } else if (userInput.type === 'TEAM_DEATH' && newValue !== 'TEAM_DEATH') {
-      setUserInput({
-        ...userInput,
-        type: newValue,
-        tier: 'IRON',
-        position: 'DUELIST',
-      });
-    } else {
-      setUserInput({ ...userInput, type: newValue });
-    }
+    setUserInput({ ...userInput, gameMode: newValue });
     setIsChanged(true);
   };
 
@@ -201,7 +178,7 @@ const CreateCard = () => {
   const closeModal = () => {
     setUserInput({
       name: registeredNickname || '',
-      type: 'NORMAL',
+      gameMode: 'STANDARD',
       tier: 'IRON',
       position: 'DUELIST',
       expire: 'FIFTEEN_M',
@@ -233,7 +210,7 @@ const CreateCard = () => {
         currentGame,
         userInput,
         oauth2Id,
-        userInput.type === 'TEAM_DEATH' ? 12 : 5,
+        userInput.gameMode === 'TEAM_DEATH' ? 12 : 5,
         notiToken,
       );
 
@@ -328,7 +305,7 @@ const CreateCard = () => {
             <ToggleButtonGroup
               exclusive
               disabled={isPosting}
-              value={userInput.type}
+              value={userInput.gameMode}
               onChange={handleType}
             >
               {queueTypeList.map((item) => {
@@ -349,7 +326,7 @@ const CreateCard = () => {
           <TierToggleWrapper>
             <ToggleButtonGroup
               exclusive
-              disabled={isPosting || userInput.type === 'ARAM'}
+              disabled={isPosting || userInput.gameMode === 'ARAM'}
               value={userInput.tier}
               onChange={handleTier}
             >
@@ -376,8 +353,8 @@ const CreateCard = () => {
             exclusive
             disabled={
               isPosting ||
-              userInput.type === 'DEATH' ||
-              userInput.type === 'TEAM_DEATH'
+              userInput.gameMode === 'DEATH' ||
+              userInput.gameMode === 'TEAM_DEATH'
             }
             value={userInput.position}
             onChange={handlePosition}

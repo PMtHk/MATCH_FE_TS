@@ -36,10 +36,9 @@ const Main = () => {
 
   const handleQueueType = (event: SelectChangeEvent) => {
     if (
-      event.target.value === 'SPIKE' ||
-      event.target.value === 'SWIFT' ||
-      event.target.value === 'DEATH' ||
-      event.target.value === 'TEAM_DEATH'
+      event.target.value === 'SPIKE_RUSH' ||
+      event.target.value === 'SWIFTPLAY' ||
+      event.target.value === 'TEAM_DEATHMATCH'
     ) {
       setTier('ALL');
       setPosition('ALL');
@@ -82,7 +81,7 @@ const Main = () => {
 
   const fetchParams = {
     position,
-    type: queueType,
+    gameMode: queueType,
     tier,
   };
 
@@ -93,7 +92,7 @@ const Main = () => {
       <CardFilter filterProps={filterProps} />
       {isLogin && <FollowersCard game="valorant" />}
       <CardListContainer />
-      {/* <ErrorBoundary
+      <ErrorBoundary
         resetKeys={gameDeps}
         FallbackComponent={CardListErrorFallback}
       >
@@ -106,7 +105,7 @@ const Main = () => {
             <CardListContainer />
           </CardListFetcher>
         </Suspense>
-      </ErrorBoundary> */}
+      </ErrorBoundary>
       <Pagination
         count={totalPage}
         page={currentPage + 1}
