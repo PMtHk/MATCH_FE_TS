@@ -33,9 +33,8 @@ const JoinedPartyList = ({
 }: JoinedPartyListProps) => {
   const dispatch = useDispatch();
   const { representative } = useSelector((state: RootState) => state.user);
-  const [selectedGame, setSelectedGame] = React.useState<GAME_ID | 'valorant'>(
-    representative,
-  );
+  const [selectedGame, setSelectedGame] =
+    React.useState<GAME_ID>(representative);
 
   const { joinedChatRoomsId } = useSelector(
     (state: RootState) => state.chatroom,
@@ -91,11 +90,6 @@ const JoinedPartyList = ({
             }
             return null;
           })}
-          <GameSelectorItem
-            key="test-valorant"
-            selected={false}
-            sx={{ cursor: 'none' }}
-          />
         </GameSelector>
         <PartyListContainer>
           {joinedChatRoomsId.filter(

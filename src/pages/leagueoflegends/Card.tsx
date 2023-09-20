@@ -110,15 +110,13 @@ const Card = ({ item, expired }: CardProps) => {
     >
       <CardContainer expired={expired}>
         <CardTitleWrapper>
-          <ImgMixBlendMode>
-            <img
-              src={position?.imageUrl || ''}
-              alt="position_to_find"
-              loading="lazy"
-              height="40px"
-              width="40px"
-            />
-          </ImgMixBlendMode>
+          <img
+            src={position?.imageUrl || ''}
+            alt="position_to_find"
+            loading="lazy"
+            height="40px"
+            width="40px"
+          />
           <CardTitle>
             <TopInfo>
               <TopInfoTypo>#{queueType?.label || '모든큐'}</TopInfoTypo>
@@ -188,14 +186,12 @@ const Card = ({ item, expired }: CardProps) => {
             <SectionContent>
               {mostLane ? (
                 <>
-                  <ImgMixBlendMode>
-                    <img
-                      src={mostLane?.imageUrl}
-                      alt={mostLane?.value}
-                      width="24px"
-                      height="24px"
-                    />
-                  </ImgMixBlendMode>
+                  <img
+                    src={mostLane?.imageUrl}
+                    alt={mostLane?.value}
+                    width="24px"
+                    height="24px"
+                  />
                   <SectionTypo>{mostLane?.label}</SectionTypo>
                 </>
               ) : (
@@ -264,8 +260,8 @@ const Card = ({ item, expired }: CardProps) => {
                       <img
                         src={
                           aChampion === 'poro'
-                            ? 'https://d18ghgbbpc0qi2.cloudfront.net/lol/champions/poro.jpg'
-                            : `http://ddragon.leagueoflegends.com/cdn/13.14.1/img/champion/${aChampion}.png`
+                            ? 'https://cdn.match-gg.kr/lol/champions/poro.png?w=44&h=44'
+                            : `https://cdn.match-gg.kr/lol/champions/${aChampion}.png?w=44&h=44`
                         }
                         alt={aChampion}
                         loading="lazy"
@@ -282,7 +278,9 @@ const Card = ({ item, expired }: CardProps) => {
   );
 };
 
-export default Card;
+export default React.memo(Card, (prevProps, nextProps) => {
+  return prevProps.item.id === nextProps.item.id;
+});
 
 const CardTitleWrapper = styled(MuiBox)(() => ({
   width: '100%',
@@ -290,12 +288,6 @@ const CardTitleWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-start',
-})) as typeof MuiBox;
-
-const ImgMixBlendMode = styled(MuiBox)(() => ({
-  '& > img': {
-    mixBlendMode: 'exclusion',
-  },
 })) as typeof MuiBox;
 
 const CardTitle = styled(MuiBox)(() => ({

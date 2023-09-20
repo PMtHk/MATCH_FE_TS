@@ -13,8 +13,7 @@ export const tierList = [
     label: '모든 티어',
     color: '#000000',
     acronym: 'ALL',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/unranked.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/unranked.png',
   },
   {
     value: 'GRANDMASTER',
@@ -22,63 +21,56 @@ export const tierList = [
     color: '#92AD9D',
     acronym: 'GM',
     imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/grandmaster.png',
+      'https://cdn.match-gg.kr/overwatch/ranked_emblems/grandmaster.png',
   },
   {
     value: 'MASTER',
     label: '마스터',
     color: '#B5A759',
     acronym: 'M',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/master.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/master.png',
   },
   {
     value: 'DIAMOND',
     label: '다이아몬드',
     color: '#879BB0',
     acronym: 'D',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/diamond.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/diamond.png',
   },
   {
     value: 'PLATINUM',
     label: '플래티넘',
     color: '#95AD9E',
     acronym: 'P',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/platinum.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/platinum.png',
   },
   {
     value: 'GOLD',
     label: '골드',
     color: '#C9AB47',
     acronym: 'G',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/gold.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/gold.png',
   },
   {
     value: 'SILVER',
     label: '실버',
     color: '#98999E',
     acronym: 'S',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/silver.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/silver.png',
   },
   {
     value: 'BRONZE',
     label: '브론즈',
     color: '#B05A3C',
     acronym: 'B',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/bronze.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/bronze.png',
   },
   {
     value: 'UNRANKED',
     label: '언랭',
     color: '#000000',
     acronym: 'ㅡ',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/ranked_emblems/unranked.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/ranked_emblems/unranked.png',
   },
 ];
 
@@ -86,25 +78,22 @@ export const positionList: OVERWATCH_POSITION[] = [
   {
     value: 'ALL',
     label: '전체',
-    imageUrl: 'https://d18ghgbbpc0qi2.cloudfront.net/lol/lane_icons/ALL.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/roles/ALL.png',
   },
   {
     value: 'TANK',
     label: '돌격',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/roles/Tank_icon.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/roles/Tank_icon.png',
   },
   {
     value: 'DAMAGE',
     label: '공격',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/roles/Damage_icon.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/roles/Damage_icon.png',
   },
   {
     value: 'SUPPORT',
     label: '지원',
-    imageUrl:
-      'https://d18ghgbbpc0qi2.cloudfront.net/overwatch/roles/Support_icon.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/roles/Support_icon.png',
   },
 ];
 

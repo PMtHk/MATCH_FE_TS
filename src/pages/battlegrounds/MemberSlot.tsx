@@ -21,7 +21,7 @@ import Circular from 'components/loading/Circular';
 import { snackbarActions } from 'store/snackbar-slice';
 import { refreshActions } from 'store/refresh-slice';
 import { kickMemberFromParty } from 'apis/api/common';
-import { isInParty } from 'functions/commons';
+import { isGuest, isInParty } from 'functions/commons';
 import { followUser, getEvaluationInfo } from 'apis/api/user';
 import { platformList, tierList, rankImage } from './data';
 
@@ -229,7 +229,7 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
 
   useEffect(() => {
     const getTooltipData = async () => {
-      if (MemberOauth2Id.includes('guest')) {
+      if (isGuest(MemberOauth2Id)) {
         setTooltipText('MatchGG를 이용하는 유저가 아닙니다.');
         return;
       }
@@ -328,6 +328,7 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
                 </MuiToolTip>
               )}
               {isInParty(currentCard.memberList, oauth2Id) &&
+                !isGuest(MemberOauth2Id) &&
                 oauth2Id !== MemberOauth2Id &&
                 !MemberOauth2Id.startsWith('guest') && (
                   <MuiToolTip title="팔로우" placement="right">

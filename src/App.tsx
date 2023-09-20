@@ -23,10 +23,19 @@ import Overwatch from 'pages/overwatch';
 import Valorant from 'pages/valorant';
 import MyPage from 'pages/mypage';
 
+import AuthHoc from 'hoc/AuthHoc';
+/*
+ * option: null: 아무나 출입이 가능한 페이지
+ * option: true: 로그인한 유저만 출입이 가능한 페이지
+ * option: false: 로그인한 유저는 출입이 불가능한 페이지
+ * adminRoute: true: 관리자만 출입이 가능한 페이지
+ */
+
 // lazy loading
 const LandingPage = lazy(() => import('pages/landing'));
 
 const LoginPage = lazy(() => import('pages/login'));
+const AdminLoginPage = lazy(() => import('pages/login/AdminLogin'));
 const LoginRedirect = lazy(() => import('pages/login/redirect'));
 
 const Register = lazy(() => import('pages/register/index'));
@@ -34,10 +43,10 @@ const Terms = lazy(() => import('pages/register/Terms'));
 const Games = lazy(() => import('pages/register/Games'));
 const SetFavoriteGame = lazy(() => import('pages/register/SetFavGame'));
 
-// const MyPage = lazy(() => import('pages/mypage'));
-// const LeagueOfLegends = lazy(() => import('pages/leagueoflegends'));
-// const Battlegrounds = lazy(() => import('pages/battlegrounds'));
-// const Overwatch = lazy(() => import('pages/overwatch'));
+const AuthLoginPage = AuthHoc(LoginPage, false);
+const AuthAdminLoginPage = AuthHoc(AdminLoginPage, null);
+const AuthRegister = AuthHoc(Register, false);
+const AuthMyPage = AuthHoc(MyPage, true);
 
 const App = () => {
   const dispatch = useDispatch();
@@ -68,15 +77,16 @@ const App = () => {
             isLogin ? <Navigate to={`/${representative}`} /> : <LandingPage />
           }
         />
-        <Route path="/login" element={<LoginPage />} />
+        <Route path="/login" element={<AuthLoginPage />} />
+        <Route path="/login/admin" element={<AuthAdminLoginPage />} />
         <Route path="/kakao/login" element={<LoginRedirect />} />
-        <Route path="/kakao/register/*" element={<Register />}>
+        <Route path="/kakao/register/*" element={<AuthRegister />}>
           <Route path="" element={<Terms />} />
           <Route path="games" element={<Games />} />
           <Route path="favgame" element={<SetFavoriteGame />} />
         </Route>
         <Route path="*" element={<Layout />}>
-          <Route path="mypage" element={<MyPage />} />
+          <Route path="mypage" element={<AuthMyPage />} />
           <Route path="lol/*" element={<LeagueOfLegends />} />
           <Route path="pubg/*" element={<Battlegrounds />} />
           <Route path="overwatch/*" element={<Overwatch />} />

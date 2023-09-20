@@ -306,7 +306,9 @@ const Card = ({ item, expired }: CardProps) => {
   );
 };
 
-export default Card;
+export default React.memo(Card, (prevProps, nextProps) => {
+  return prevProps.item.id === nextProps.item.id;
+});
 
 const CardTitleWrapper = styled(MuiBox)(() => ({
   width: '100%',

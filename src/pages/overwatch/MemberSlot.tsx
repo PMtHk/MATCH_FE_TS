@@ -24,7 +24,7 @@ import Circular from 'components/loading/Circular';
 import { fetchMemberHistory } from 'apis/api/overwatch';
 import { kickMemberFromParty } from 'apis/api/common';
 import { MEMBER_FROM_SERVER } from 'types/commons';
-import { isInParty } from 'functions/commons';
+import { isGuest, isInParty } from 'functions/commons';
 import { followUser, getEvaluationInfo } from 'apis/api/user';
 import { positionList, tierList } from './data';
 
@@ -212,7 +212,7 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
 
   useEffect(() => {
     const getTooltipData = async () => {
-      if (MemberOauth2Id.includes('guest')) {
+      if (isGuest(MemberOauth2Id)) {
         setTooltipText('MatchGG를 이용하는 유저가 아닙니다.');
         return;
       }
@@ -412,7 +412,7 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
                       }}
                     >
                       <img
-                        src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero.toLowerCase()}.png`}
+                        src={`https://cdn.match-gg.kr/overwatch/heroes/${aHero.toLowerCase()}.png`}
                         alt={aHero}
                         loading="lazy"
                       />
@@ -436,6 +436,7 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
                 </MuiToolTip>
               )}
               {isInParty(currentCard.memberList, oauth2Id) &&
+                !isGuest(MemberOauth2Id) &&
                 oauth2Id !== MemberOauth2Id &&
                 !MemberOauth2Id.startsWith('guest') && (
                   <MuiToolTip title="팔로우" placement="right">

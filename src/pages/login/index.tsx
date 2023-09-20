@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,6 +11,8 @@ import Typography from '@mui/material/Typography';
 import Divider from 'components/Divider';
 
 const Login = () => {
+  const navigate = useNavigate();
+
   return (
     <Wrapper maxWidth="sm">
       <LogoTitle variant="h1">MatchGG</LogoTitle>
@@ -21,7 +24,7 @@ const Login = () => {
           href={`https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_REDIRECT_URI_LOGIN}&response_type=code`}
         >
           <img
-            src="https://d18ghgbbpc0qi2.cloudfront.net/assets/kakao_login_symbol.png"
+            src="https://cdn.match-gg.kr/assets/kakao_login_symbol.png"
             alt="kakao_login_symbol"
             width="20px"
           />
@@ -36,6 +39,13 @@ const Login = () => {
         >
           <i>MatchGG</i> 회원가입
         </RegisterBtn>
+        <Button
+          onClick={() => {
+            navigate('/login/admin');
+          }}
+        >
+          <LinkTypo textAlign="left">admin login</LinkTypo>
+        </Button>
       </ButtonWrapper>
       <CopyRight>© 2023 MatchGG. All rights reserved.</CopyRight>
     </Wrapper>
@@ -137,4 +147,10 @@ const RegisterBtn = styled(Button)(({ theme }) => ({
 const CopyRight = styled(Typography)(() => ({
   fontSize: '16px',
   fontWeight: 500,
+})) as typeof Typography;
+
+const LinkTypo = styled(Typography)(({ theme }) => ({
+  fontSize: '10px',
+  color: '#000000',
+  fontWeight: '600',
 })) as typeof Typography;

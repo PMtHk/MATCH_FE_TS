@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 // mui
 import { styled } from '@mui/system';
@@ -10,6 +10,8 @@ import MuiTypography from '@mui/material/Typography';
 
 import { RootState } from 'store';
 import { defaultAxios } from 'apis/utils';
+import { registerActions } from 'store/register-slice';
+import { GAME_ID } from 'types/games';
 import InputLol from './InputLol';
 import InputPubg from './InputPubg';
 import InputOverwatch from './InputOverwatch';
@@ -17,23 +19,43 @@ import InputValorant from './InputValorant';
 
 const Games = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const params = new URL(document.URL).searchParams;
   const rsoAccessCode = params.get('code');
 
+  // TODO: valorant 닉네임 받아서 처리하기 필요
   React.useEffect(() => {
-    const sendRsoAcessCode = async () => {
-      const response = await defaultAxios.post('/api/valorant/user/exist', {
+    const sendRsoAccessCode = async () => {
+      const response = await defaultAxios.post('/api/valorant/user/sign', {
         code: rsoAccessCode as string,
       });
+
+      if (response.data) {
+        const { gameName, tagLine } = response.data;
+
+        dispatch(
+          registerActions.SET_GAMES_WITH_ID({
+            id: 'valorant' as GAME_ID,
+            value: `${gameName}#${tagLine}`,
+          }),
+        );
+
+        // TODO: 전적 채우기 동작 (임시)
+        const goodResponse = await defaultAxios.get(
+          `/api/valorant/user/${gameName}%23${tagLine}`,
+        );
+        console.log(goodResponse);
+      }
     };
 
     if (rsoAccessCode) {
-      sendRsoAcessCode();
+      sendRsoAccessCode();
     }
   }, [rsoAccessCode]);
 
   const { games } = useSelector((state: RootState) => state.register);
+
   const atLeastOne =
     Object.values(games).filter((item) => item !== '').length > 0;
 
@@ -51,7 +73,7 @@ const Games = () => {
         <InputLol />
         <InputPubg />
         <InputOverwatch />
-        {/* <InputValorant /> */}
+        <InputValorant />
       </Wrapper>
       <NextButton disabled={!atLeastOne} onClick={handleNextBtn}>
         다음

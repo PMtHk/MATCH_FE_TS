@@ -28,6 +28,7 @@ import { notificationActions } from 'store/notification-slice';
 import { messageActions, Message } from 'store/message-slice';
 import { chatroomActions } from 'store/chatroom-slice';
 import { CHATROOM } from 'types/chats';
+import { refreshActions } from 'store/refresh-slice';
 import NotiAccordion from './NotiAccordion';
 
 interface NotificationProps {
@@ -109,6 +110,9 @@ const Notification = ({
               };
               if (data.message.timestamp > aChatRoom.firstRead) {
                 dispatch(messageActions.SET_MESSAGES(data));
+              }
+              if (data.message.type === 'system') {
+                dispatch(refreshActions.REFRESH_CARD());
               }
             },
           );

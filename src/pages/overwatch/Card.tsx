@@ -360,7 +360,7 @@ const Card = ({ item, expired }: CardProps) => {
                       }}
                     >
                       <img
-                        src={`https://d18ghgbbpc0qi2.cloudfront.net/overwatch/heroes/${aHero.toLowerCase()}.png`}
+                        src={`https://cdn.match-gg.kr/overwatch/heroes/${aHero.toLowerCase()}.png`}
                         alt={aHero}
                         loading="lazy"
                       />
@@ -376,7 +376,9 @@ const Card = ({ item, expired }: CardProps) => {
   );
 };
 
-export default Card;
+export default React.memo(Card, (prevProps, nextProps) => {
+  return prevProps.item.id === nextProps.item.id;
+});
 
 const ImgWrapper = styled(MuiBox)(() => ({
   width: '36px',
