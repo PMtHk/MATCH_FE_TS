@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useNavigate } from 'react-router-dom';
 import { defaultAxios } from 'apis/utils';
 import { connectRSO } from 'apis/api/valorant';
 import { changeNickname } from 'apis/api/user';
@@ -7,6 +7,7 @@ import { snackbarActions } from 'store/snackbar-slice';
 import Linear from 'components/loading/Linear';
 
 const RsoCallback = () => {
+  const navigate = useNavigate();
   const params = new URL(document.URL).searchParams;
   const rsoAccessCode = params.get('code');
 
@@ -25,6 +26,8 @@ const RsoCallback = () => {
             '발로란트 연동에 실패하였습니다. 라이엇 홈페이지에서 로그아웃 후 다시 시도해주세요.',
           severity: 'error',
         });
+      } finally {
+        navigate('/mypage');
       }
     };
     if (rsoAccessCode) {
