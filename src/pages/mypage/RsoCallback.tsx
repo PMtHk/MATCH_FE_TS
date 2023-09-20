@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { defaultAxios } from 'apis/utils';
-import { connectRSO } from 'apis/api/valorant';
+import { connectRSOMypage } from 'apis/api/valorant';
 import { changeNickname } from 'apis/api/user';
 import { snackbarActions } from 'store/snackbar-slice';
 import Linear from 'components/loading/Linear';
@@ -11,10 +11,16 @@ const RsoCallback = () => {
   const params = new URL(document.URL).searchParams;
   const rsoAccessCode = params.get('code');
 
+  if (!rsoAccessCode) {
+    navigate('/mypage');
+  }
+
   React.useEffect(() => {
     const doConnectRSO = async () => {
       try {
-        const { gameName, tagLine } = await connectRSO(rsoAccessCode as string);
+        const { gameName, tagLine } = await connectRSOMypage(
+          rsoAccessCode as string,
+        );
 
         // TODO: load history 로 수정하기
         await defaultAxios.get(`/api/valorant/user/${gameName}%23${tagLine}`);
