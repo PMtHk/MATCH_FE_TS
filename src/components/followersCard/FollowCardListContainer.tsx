@@ -18,6 +18,7 @@ import { GAME_ID } from 'types/games';
 import LolCard from '../../pages/leagueoflegends/Card';
 import PubgCard from '../../pages/battlegrounds/Card';
 import OverwatchCard from '../../pages/overwatch/Card';
+import ValorantCard from '../../pages/valorant/Card';
 
 const Card = ({
   game,
@@ -36,6 +37,9 @@ const Card = ({
   }
   if (game === 'overwatch') {
     return <OverwatchCard item={item} expired={expired} />;
+  }
+  if (game === 'valorant') {
+    return <ValorantCard item={item} expired={expired} />;
   }
   return null;
 };

@@ -42,3 +42,17 @@ export type OVERWATCH_POSITION = {
   label: string;
   imageUrl: string;
 };
+
+// valorant
+export type VALORANT_POSITIONS_ID =
+  | 'ALL'
+  | 'DUELIST'
+  | 'INITIATOR'
+  | 'SENTINEL'
+  | 'CONTROLLER';
+
+export type VALORANT_POSITION = {
+  value: VALORANT_POSITIONS_ID;
+  label: string;
+  imageUrl: string;
+};
