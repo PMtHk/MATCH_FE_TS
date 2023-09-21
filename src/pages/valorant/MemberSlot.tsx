@@ -41,6 +41,7 @@ const MemberSlot = ({
 
   const [memberInfo, setMemberInfo] = React.useState<any>({});
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isFollowed, setIsFollowed] = React.useState<boolean>(false);
 
   // author info
   const tier = tierList[memberInfo?.tier];
@@ -147,7 +148,7 @@ const MemberSlot = ({
   // 아래 구문은 조금 더 찾아보고 수정할 수 있도록 하겠음. - 6/28 나주엽
   // eslint-disable-next-line no-unsafe-optional-chaining
   const totalPlayed = memberInfo?.wins + memberInfo?.losses;
-  const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
+  const winRate = Math.round((memberInfo.wins / totalPlayed) * 100) || 0;
 
   const isAuthor = oauth2Id === currentCard?.oauth2Id;
 
@@ -231,6 +232,7 @@ const MemberSlot = ({
             severity: 'error',
           }),
         );
+        setIsFollowed(true);
       } else {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
@@ -340,7 +342,8 @@ const MemberSlot = ({
                   </IconButton>
                 </MuiToolTip>
               )}
-              {isInParty(currentCard.memberList, oauth2Id) &&
+              {!isFollowed &&
+                isInParty(currentCard.memberList, oauth2Id) &&
                 oauth2Id !== MemberOauth2Id && (
                   <MuiToolTip title="팔로우" placement="right">
                     <IconButton onClick={handleFollow}>

@@ -41,6 +41,7 @@ const MemberSlot = ({
 
   const [memberInfo, setMemberInfo] = React.useState<any>({});
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isFollowed, setIsFollowed] = React.useState<boolean>(false);
 
   // author info
   const mostLane = positionList.find(
@@ -194,6 +195,7 @@ const MemberSlot = ({
             severity: 'error',
           }),
         );
+        setIsFollowed(true);
       } else {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
@@ -315,7 +317,8 @@ const MemberSlot = ({
                   </IconButton>
                 </MuiToolTip>
               )}
-              {isInParty(currentCard.memberList, oauth2Id) &&
+              {!isFollowed &&
+                isInParty(currentCard.memberList, oauth2Id) &&
                 !isGuest(MemberOauth2Id) &&
                 oauth2Id !== MemberOauth2Id && (
                   <MuiToolTip title="팔로우" placement="right">

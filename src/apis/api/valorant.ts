@@ -27,7 +27,7 @@ export const verifyNickname = async (nickname: string) => {
  */
 
 export const loadHistory = async (agentName: string) => {
-  await defaultAxios.get(`/api/valorant/user/${agentName}`);
+  await defaultAxios.get(`/api/valorant/user/${agentName.replace('#', '%23')}`);
 
   return null;
 };

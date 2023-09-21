@@ -27,20 +27,25 @@ import {
 } from 'apis/api/overwatch';
 import { userActions } from 'store/user-slice';
 import { snackbarActions } from 'store/snackbar-slice';
+import { GAME_ID } from 'types/games';
 
-const Nickname = ({ name, game, isNew }: any) => {
+const Nickname = ({
+  name,
+  game,
+  isNew,
+}: {
+  name: string;
+  game: GAME_ID;
+  isNew: boolean;
+}) => {
   const dispatch = useDispatch();
-
   const [nickname, setNickname] = useState<string>(name);
-
   const handleNickname = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNickname(e.target.value);
   };
 
   const [isPosting, setIsPosting] = useState<boolean>(false);
-
   const [isEdit, setIsEdit] = useState<boolean>(false);
-
   const [error, setError] = useState<boolean>(false);
 
   useEffect(() => {
