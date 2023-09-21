@@ -5,9 +5,13 @@ import { connectRSOMypage } from 'apis/api/valorant';
 import { changeNickname } from 'apis/api/user';
 import { snackbarActions } from 'store/snackbar-slice';
 import Linear from 'components/loading/Linear';
+import { useDispatch } from 'react-redux';
+import { userActions } from 'store/user-slice';
 
 const RsoCallback = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const params = new URL(document.URL).searchParams;
   const rsoAccessCode = params.get('code');
 
@@ -26,6 +30,13 @@ const RsoCallback = () => {
         await defaultAxios.get(`/api/valorant/user/${gameName}%23${tagLine}`);
 
         await changeNickname('valorant', `${gameName}#${tagLine}`);
+
+        dispatch(
+          userActions.SET_GAMES_WITH_ID({
+            id: 'valorant',
+            value: `${gameName}#${tagLine}`,
+          }),
+        );
       } catch (error: any) {
         snackbarActions.OPEN_SNACKBAR({
           message:

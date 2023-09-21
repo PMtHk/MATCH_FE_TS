@@ -68,7 +68,7 @@ const Card = ({ item, expired }: CardProps) => {
   const authorTier = tierList[item.author.tier];
 
   const totalPlayed = item.author.wins + item.author.losses;
-  const winRate = Math.round((item.author.wins / totalPlayed) * 100);
+  const winRate = Math.round((item.author.wins / totalPlayed) * 100) || 0;
 
   const maxMember = queueType?.maxMember || 5;
   const currentMember = item.memberList.length;

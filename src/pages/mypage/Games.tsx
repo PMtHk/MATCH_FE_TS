@@ -13,6 +13,7 @@ import { changeRepresentative } from 'apis/api/user';
 import { loadHistory as lolLoadHistory } from 'apis/api/leagueoflegends';
 import { getPlatform, loadHistory as pubgLoadHistory } from 'apis/api/pubg';
 import { loadHistory as owLoadHistory } from 'apis/api/overwatch';
+import { loadHistory as vlrtLoadHistory } from 'apis/api/valorant';
 import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { userActions } from 'store/user-slice';
@@ -28,7 +29,7 @@ import Nickname from './Games/Nickname';
 
 interface GameFilterProps {
   selectedGame: string;
-  setSelectedGame: Dispatch<SetStateAction<string>>;
+  setSelectedGame: Dispatch<SetStateAction<GAME_ID>>;
   representative: string;
 }
 
@@ -71,6 +72,8 @@ const GameFilterBar = ({
   );
 };
 
+const MemoizedGameFilterBar = React.memo(GameFilterBar);
+
 const GameDataUpdateButton = ({ game }: any) => {
   const dispatch = useDispatch();
 
@@ -98,6 +101,11 @@ const GameDataUpdateButton = ({ game }: any) => {
     if (game === 'overwatch') {
       await owLoadHistory(nickname);
       dispatch(mypageActions.TOGGLE_REFRESH_OVERWATCH());
+    }
+
+    if (game === 'valorant') {
+      await vlrtLoadHistory(nickname);
+      dispatch(mypageActions.TOGGLE_REFRESH_VALORANT());
     }
 
     setIsLoading(false);
@@ -146,6 +154,7 @@ const ChangeRepresentativeButton = ({ game, representative }: any) => {
       );
     }
   };
+
   return (
     <UpdateButton
       fullWidth
@@ -169,7 +178,7 @@ const Games = () => {
     overwatchInfo: overwatchData,
   } = useSelector((state: RootState) => state.mypage);
 
-  const [selectedGame, setSelectedGame] = useState<string>(representative);
+  const [selectedGame, setSelectedGame] = useState<GAME_ID>(representative);
 
   const gameComponents = {
     lol: <LolInfo data={lolData} />,
@@ -181,7 +190,7 @@ const Games = () => {
   return (
     <>
       {/* 게임 필터 바 */}
-      <GameFilterBar
+      <MemoizedGameFilterBar
         selectedGame={selectedGame}
         setSelectedGame={setSelectedGame}
         representative={representative}

@@ -24,6 +24,10 @@ const UserInfoContainer = () => {
     (state: RootState) => state.mypage,
   );
 
+  const { email, created, likeCount, dislikeCount, matchCount } = useSelector(
+    (state: RootState) => state.mypage,
+  );
+
   const [currentMenu, setCurrentMenu] = useState<string>(menuList[0].value);
 
   const [title, setTItle] = useState<string>(menuList[0].label);
@@ -85,7 +89,15 @@ const UserInfoContainer = () => {
         <MenuContainer>
           {
             {
-              myInfo: <MyInfo />,
+              myInfo: (
+                <MyInfo
+                  email={email}
+                  created={created}
+                  likeCount={likeCount}
+                  dislikeCount={dislikeCount}
+                  matchCount={matchCount}
+                />
+              ),
               games: <Games />,
               follow: <Follow />,
               withdrawal: <Withdrawal />,

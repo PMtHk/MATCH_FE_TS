@@ -17,9 +17,11 @@ interface IState {
   lolInfo: object | null;
   pubgInfo: object | null;
   overwatchInfo: object | null;
+  valorantInfo: object | null;
   refreshLolInfo: boolean;
   refreshPubgInfo: boolean;
   refreshOverwatchInfo: boolean;
+  refreshValorantInfo: boolean;
 }
 
 const initialState: IState = {
@@ -39,9 +41,11 @@ const initialState: IState = {
   lolInfo: null,
   pubgInfo: null,
   overwatchInfo: null,
+  valorantInfo: null,
   refreshLolInfo: false,
   refreshPubgInfo: false,
   refreshOverwatchInfo: false,
+  refreshValorantInfo: false,
 };
 
 const mypageSlice = createSlice({
@@ -80,6 +84,7 @@ const mypageSlice = createSlice({
       state.lolInfo = null;
       state.pubgInfo = null;
       state.overwatchInfo = null;
+      state.valorantInfo = null;
     },
     SET_LOLINFO: (state, action) => {
       state.lolInfo = action.payload;
@@ -98,6 +103,9 @@ const mypageSlice = createSlice({
     },
     TOGGLE_REFRESH_OVERWATCH: (state) => {
       state.refreshOverwatchInfo = !state.refreshOverwatchInfo;
+    },
+    TOGGLE_REFRESH_VALORANT: (state) => {
+      state.refreshValorantInfo = !state.refreshValorantInfo;
     },
   },
 });

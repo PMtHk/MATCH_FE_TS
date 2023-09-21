@@ -38,12 +38,6 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
       dispatch(mypageActions.SET_LOLINFO({ duoRankInfo, freeRankInfo }));
     };
 
-    if (games.lol) {
-      getLolData();
-    }
-  }, [games.lol, refreshLolInfo]);
-
-  useEffect(() => {
     const getPubgData = async () => {
       const platform = await getPlatform(games.pubg);
       const duoInfo = await getPubgPlayerInfo(games.pubg, platform, 'DUO');
@@ -58,22 +52,24 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
       );
     };
 
-    if (games.pubg) {
-      getPubgData();
-    }
-  }, [games.pubg, refreshPubgInfo]);
-
-  useEffect(() => {
     const getOverwatchData = async () => {
       const rankInfo = await getOWPlayerInfo(games.overwatch, 'RANKED');
       const normalInfo = await getOWPlayerInfo(games.overwatch, 'NORMAL');
       dispatch(mypageActions.SET_OVERWATCHINFO({ rankInfo, normalInfo }));
     };
 
+    if (games.lol) {
+      getLolData();
+    }
+
+    if (games.pubg) {
+      getPubgData();
+    }
+
     if (games.overwatch) {
       getOverwatchData();
     }
-  }, [games.overwatch, refreshOverwatchInfo]);
+  }, [refreshLolInfo, refreshPubgInfo, refreshOverwatchInfo]);
 
   return <div>{children}</div>;
 };
