@@ -176,13 +176,15 @@ const Nickname = ({
           }
         />
 
-        <EditButton
-          onClick={isNew ? requestChangeNickname : toggleEdit}
-          sx={{}}
-          disabled={isPosting}
-        >
-          {getButtonText()}
-        </EditButton>
+        {game !== 'valorant' && (
+          <EditButton
+            onClick={isNew ? requestChangeNickname : toggleEdit}
+            sx={{}}
+            disabled={isPosting}
+          >
+            {getButtonText()}
+          </EditButton>
+        )}
       </Container>
 
       <Divider sx={{ width: '570px' }} />
