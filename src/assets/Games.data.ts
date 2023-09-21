@@ -10,6 +10,7 @@ export const gameList: GAME[] = [
     labelText: '리그오브레전드 소환사명을 입력하세요.',
     helperText: '등록되지 않은 소환사 입니다.',
     available: true,
+    acronym: 'LOL',
   },
   {
     id: 'pubg',
@@ -20,6 +21,7 @@ export const gameList: GAME[] = [
     labelText: '배틀그라운드 닉네임을 입력하세요.',
     helperText: '등록되지 않은 닉네임 입니다.',
     available: true,
+    acronym: 'PUBG',
   },
   {
     id: 'overwatch',
@@ -29,6 +31,7 @@ export const gameList: GAME[] = [
     labelText: '오버워치 닉네임#배틀태그를 입력하세요.',
     helperText: '등록되지 않은 닉네임 입니다.',
     available: true,
+    acronym: 'OW',
   },
   {
     id: 'valorant',
@@ -38,5 +41,6 @@ export const gameList: GAME[] = [
     labelText: '발로란트 닉네임을 입력하세요.',
     helperText: '등록되지 않은 닉네임 입니다.',
     available: true,
+    acronym: 'VLRT',
   },
 ];

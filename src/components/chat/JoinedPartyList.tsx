@@ -83,7 +83,7 @@ const JoinedPartyList = ({
                     }}
                   />
                   <GameTypo selected={selectedGame === aGame.id}>
-                    {aGame.name_kor}
+                    {aGame.acronym}
                   </GameTypo>
                 </GameSelectorItem>
               );
