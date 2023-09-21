@@ -193,6 +193,7 @@ export const finishCard = async (
   chatRoomId: string,
 ) => {
   const chatRoomsRef = ref(getDatabase(), 'chatRooms');
+  const messagesRef = ref(getDatabase(), 'messages');
 
   // 게시글 모집완료 처리 요청 전송
   await authAxios.post(`/api/chat/${game}/${boardId}/finish`);
@@ -200,6 +201,15 @@ export const finishCard = async (
   // FB realtimeDB에 해당 채팅방 isFinished 정보 업데이트
   await update(child(chatRoomsRef, `${chatRoomId}`), {
     isFinished: true,
+  });
+
+  // 시스템 메시지 전송
+  await set(push(child(messagesRef, chatRoomId)), {
+    type: 'system',
+    timestamp: Date.now(),
+    user: { nickname: 'system', oauth2Id: '', notiToken: '' },
+    content:
+      '해당 파티가 모집 완료되었습니다. 새로고침 시 리뷰페이지로 이동하실 수 있습니다.',
   });
 
   return null;
