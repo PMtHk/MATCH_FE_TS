@@ -157,7 +157,7 @@ const Card = ({ item, expired }: CardProps) => {
       onFocus={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      <CardContainer expired={expired}>
+      <CardContainer expired={expired} finished={item.finished === 'true'}>
         <CardTitleWrapper>
           <img
             src={platform?.imageUrl || ''}

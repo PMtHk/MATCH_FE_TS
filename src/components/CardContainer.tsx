@@ -8,14 +8,19 @@ import MuiCardContent from '@mui/material/CardContent';
 interface CardProps {
   children: React.ReactNode;
   expired: boolean;
+  finished: boolean;
 }
 
-const CardContainer = ({ children, expired = false }: CardProps) => {
+const CardContainer = ({
+  children,
+  expired = false,
+  finished = false,
+}: CardProps) => {
   return (
     <CardLayout>
       <CardContent
         sx={{
-          backgroundColor: expired ? '#cbcbcb90' : '#ffffff',
+          backgroundColor: expired || finished ? '#cbcbcb90' : '#ffffff',
         }}
       >
         {children}
