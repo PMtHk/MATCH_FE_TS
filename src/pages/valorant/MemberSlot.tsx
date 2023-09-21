@@ -147,7 +147,7 @@ const MemberSlot = ({
   // 아래 구문은 조금 더 찾아보고 수정할 수 있도록 하겠음. - 6/28 나주엽
   // eslint-disable-next-line no-unsafe-optional-chaining
   const totalPlayed = memberInfo?.wins + memberInfo?.losses;
-  const winRate = Math.round((memberInfo.wins / totalPlayed) * 100);
+  const winRate = Math.round((memberInfo.wins / totalPlayed) * 100) || 0;
 
   const isAuthor = oauth2Id === currentCard?.oauth2Id;
 
