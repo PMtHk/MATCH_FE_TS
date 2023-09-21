@@ -11,10 +11,11 @@ import { GAME_ID } from 'types/games';
 interface CardListFetcherProps {
   game: GAME_ID;
   params: {
+    gameMode?: string;
     position?: string;
     platform?: string;
-    type: string;
-    tier: string;
+    type?: string;
+    tier: string | number;
   };
   gameDeps: any[];
   children: React.ReactNode;

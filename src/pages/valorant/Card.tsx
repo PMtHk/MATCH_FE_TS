@@ -14,7 +14,7 @@ import MicIcon from '@mui/icons-material/Mic';
 import CardContainer from 'components/CardContainer';
 import Timer from 'components/CountDownTimer';
 import { EXPIRE_TIME } from 'types/commons';
-import { LOL_POSITIONS_ID } from 'types/games';
+import { VALORANT_POSITIONS_ID } from 'types/games';
 import { positionList, queueTypeList, tierList } from './data';
 
 interface CardProps {
@@ -22,9 +22,9 @@ interface CardProps {
     id: number;
     oauth2Id: string;
     name: string;
-    type: string;
+    gameMode: string;
     tier: string;
-    position: LOL_POSITIONS_ID;
+    position: VALORANT_POSITIONS_ID;
     voice: 'Y' | 'N';
     content: string;
     expire: EXPIRE_TIME;
@@ -32,15 +32,17 @@ interface CardProps {
     created: string;
     finished: string;
     author: {
-      queueType: string;
-      summonerName: string;
-      tier: string;
-      rank: string;
-      leaguePoints: number;
+      puuid: string;
+      name: string;
+      tier: number;
       wins: number;
       losses: number;
-      mostChampion: string[];
-      mostLane: string;
+      kills: number;
+      deaths: number;
+      avgDmg: number;
+      heads: number;
+      totalShot: number;
+      mostAgent: string[];
     };
     chatRoomId: string;
     memberList: [];
@@ -59,33 +61,14 @@ const Card = ({ item, expired }: CardProps) => {
   const tier = tierList.find((aTier) => aTier.value === item.tier);
 
   const queueType = queueTypeList.find(
-    (aQueueType) => aQueueType.value === item.type,
+    (aQueueType) => aQueueType.value === item.gameMode,
   );
 
   // author info
-  const mostLane = positionList.find(
-    (aPosition) => aPosition.value === item.author.mostLane,
-  );
-
-  const authorTier = tierList.find((aTier) => aTier.value === item.author.tier);
+  const authorTier = tierList[item.author.tier];
 
   const totalPlayed = item.author.wins + item.author.losses;
   const winRate = Math.round((item.author.wins / totalPlayed) * 100);
-
-  const authorRank = (item: { author: { rank: string } }) => {
-    switch (item.author.rank) {
-      case 'I':
-        return 1;
-      case 'II':
-        return 2;
-      case 'III':
-        return 3;
-      case 'IV':
-        return 4;
-      default:
-        return 4;
-    }
-  };
 
   const maxMember = queueType?.maxMember || 5;
   const currentMember = item.memberList.length;
@@ -94,9 +77,45 @@ const Card = ({ item, expired }: CardProps) => {
     .fill(0)
     .map((value, i) => `member_${i}`);
 
-  // unranked info
-  const unranked =
-    item.author.tier === 'UNRANKED' && item.author.rank === 'UNRANKED';
+  type calcedInfo = {
+    value: number;
+    color: string;
+  };
+
+  const calcKDInfo = (): calcedInfo => {
+    const kd: number =
+      item.author.kills === 0 || item.author.deaths === 0
+        ? 0
+        : Number((item.author.kills / item.author.deaths).toFixed(2));
+    let color = '#000';
+    if (kd >= 4) {
+      color = 'red';
+    } else if (kd >= 2.5) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: kd,
+      color,
+    };
+  };
+
+  const calcAvgDmgInfo = (): calcedInfo => {
+    const avgDmg = Math.ceil(item.author.avgDmg);
+    let color = '#000';
+    if (avgDmg >= 500) {
+      color = 'red';
+    } else if (avgDmg >= 300) {
+      color = 'orange';
+    } else {
+      color = '#000';
+    }
+    return {
+      value: avgDmg,
+      color,
+    };
+  };
 
   return (
     <div
@@ -110,13 +129,15 @@ const Card = ({ item, expired }: CardProps) => {
     >
       <CardContainer expired={expired}>
         <CardTitleWrapper>
-          <img
-            src={position?.imageUrl || ''}
-            alt="position_to_find"
-            loading="lazy"
-            height="40px"
-            width="40px"
-          />
+          <ImgWrapper sx={{ mr: 1 }}>
+            <img
+              src={queueType?.imageUrl || ''}
+              alt="queueType_to_find"
+              loading="lazy"
+              height="36px"
+              width="36px"
+            />
+          </ImgWrapper>
           <CardTitle>
             <TopInfo>
               <TopInfoTypo>#{queueType?.label || '모든큐'}</TopInfoTypo>
@@ -168,7 +189,7 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>작성자</SectionName>
             <SectionContent>
-              <Author>{item.author.summonerName}</Author>
+              <Author>{item.author.name}</Author>
               {item.voice === 'Y' && (
                 <MicIcon
                   fontSize="small"
@@ -181,76 +202,56 @@ const Card = ({ item, expired }: CardProps) => {
               )}
             </SectionContent>
           </AuthorSection>
-          <AuthorSection>
-            <SectionName>주 포지션</SectionName>
+          <ChildAuthorSection>
+            <ChildSectionName>K/D</ChildSectionName>
             <SectionContent>
-              {mostLane ? (
-                <>
-                  <img
-                    src={mostLane?.imageUrl}
-                    alt={mostLane?.value}
-                    width="24px"
-                    height="24px"
-                  />
-                  <SectionTypo>{mostLane?.label}</SectionTypo>
-                </>
-              ) : (
-                <MuiToolTip
-                  title="플레이 수가 부족하여 포지션 정보를 불러올 수 없습니다."
-                  placement="bottom-start"
-                >
-                  <SectionTypo>정보없음</SectionTypo>
-                </MuiToolTip>
-              )}
+              <SectionContentText sx={{ color: calcKDInfo().color }}>
+                {calcKDInfo().value}
+              </SectionContentText>
             </SectionContent>
-          </AuthorSection>
+          </ChildAuthorSection>
+          <ChildAuthorSection>
+            <ChildSectionName>평균 데미지</ChildSectionName>
+            <SectionContent>
+              <SectionContentText sx={{ color: calcAvgDmgInfo().color }}>
+                {calcAvgDmgInfo().value}
+              </SectionContentText>
+            </SectionContent>
+          </ChildAuthorSection>
           <AuthorSection>
             <SectionName>티어</SectionName>
             <SectionContent>
-              <RankEmblemWrapper
-                sx={{
-                  backgroundColor: expired ? '#ffffff' : '',
-                }}
-              >
-                <img
-                  src={authorTier?.imageUrl}
-                  alt={mostLane?.value}
-                  width="28px"
-                  height="20px"
-                />
-              </RankEmblemWrapper>
+              <img
+                src={authorTier?.imageUrl}
+                alt={authorTier?.value}
+                width="36px"
+                height="36px"
+              />
+
               <TierWinRateWrapper>
-                {!unranked && (
-                  <>
-                    <SectionTypo sx={{ color: authorTier?.color }}>
-                      {authorTier?.acronym}
-                      {authorRank(item)}-{item.author.leaguePoints}LP
-                    </SectionTypo>
-                    <MatchPlayed>
-                      {item.author?.wins}승 {item.author?.losses}패
-                      <WinRate
-                        component="span"
-                        sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
-                      >
-                        ({winRate}%)
-                      </WinRate>
-                    </MatchPlayed>
-                  </>
-                )}
-                {unranked && (
-                  <SectionTypo sx={{ color: '#9e9e9e' }}>Unranked</SectionTypo>
-                )}
+                <SectionTypo sx={{ color: authorTier?.color }}>
+                  {authorTier?.label}
+                </SectionTypo>
+                <MatchPlayed>
+                  {item.author?.wins}승 {item.author?.losses}패
+                  <WinRate
+                    component="span"
+                    sx={{ color: winRate >= 50 ? '#d31f45' : '#5383e8' }}
+                  >
+                    ({winRate}%)
+                  </WinRate>
+                </MatchPlayed>
               </TierWinRateWrapper>
             </SectionContent>
           </AuthorSection>
           <AuthorSection>
-            <SectionName>모스트 챔피언</SectionName>
+            <SectionName>모스트 요원</SectionName>
             <SectionContent>
               <ImageList sx={{ m: 0, p: 0 }} cols={3} gap={1}>
-                {item.author.mostChampion.map((aChampion, index) => {
+                {item.author.mostAgent.map((aAgent, index) => {
                   return (
                     <ImageListItem
-                      key={`most_${index + 1}_${aChampion}`}
+                      key={`most_${index + 1}_${aAgent}`}
                       sx={{
                         width: '44px',
                         height: '44px',
@@ -258,12 +259,8 @@ const Card = ({ item, expired }: CardProps) => {
                       }}
                     >
                       <img
-                        src={
-                          aChampion === 'poro'
-                            ? 'https://cdn.match-gg.kr/lol/champions/poro.png?w=44&h=44'
-                            : `https://cdn.match-gg.kr/lol/champions/${aChampion}.png?w=44&h=44`
-                        }
-                        alt={aChampion}
+                        src={`https://cdn.match-gg.kr/valorant/agents/${aAgent}.png?w=44&h=44`}
+                        alt={aAgent}
                         loading="lazy"
                       />
                     </ImageListItem>
@@ -278,9 +275,7 @@ const Card = ({ item, expired }: CardProps) => {
   );
 };
 
-export default React.memo(Card, (prevProps, nextProps) => {
-  return prevProps.item.id === nextProps.item.id;
-});
+export default Card;
 
 const CardTitleWrapper = styled(MuiBox)(() => ({
   width: '100%',
@@ -288,6 +283,14 @@ const CardTitleWrapper = styled(MuiBox)(() => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'flex-start',
+})) as typeof MuiBox;
+
+const ImgWrapper = styled(MuiBox)(() => ({
+  width: '36px',
+  height: '36px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
 })) as typeof MuiBox;
 
 const CardTitle = styled(MuiBox)(() => ({
@@ -385,8 +388,32 @@ const AuthorSection = styled(MuiBox)(() => ({
   justifyContent: 'flex-start',
 })) as typeof MuiBox;
 
+const ChildAuthorSection = styled(MuiBox)(() => ({
+  maxWidth: '80px',
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+})) as typeof MuiBox;
+
 const SectionName = styled(MuiTypography)(() => ({
   minWidth: '160px',
+  fontSize: '12px',
+  fontWeight: '700',
+  color: '#999999',
+  margin: '0 0 4px 0',
+})) as typeof MuiTypography;
+
+const ChildSectionName = styled(MuiTypography)(() => ({
+  minWidth: '80px',
+  fontSize: '12px',
+  fontWeight: '700',
+  color: '#999999',
+  margin: '0 0 4px 0',
+})) as typeof MuiTypography;
+
+const AuthorSectionName = styled(MuiTypography)(() => ({
+  minWidth: '120px',
   fontSize: '12px',
   fontWeight: '700',
   color: '#999999',
@@ -398,6 +425,14 @@ const SectionContent = styled(MuiBox)(() => ({
   alignItems: 'center',
   justifyContent: 'flex-start',
   gap: '4px',
+})) as typeof MuiBox;
+
+const ChildSectionContent = styled(MuiBox)(() => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'flex-start',
+  justifyContent: 'flex-start',
+  gap: '2px',
 })) as typeof MuiBox;
 
 const Author = styled(MuiTypography)(() => ({
@@ -442,4 +477,13 @@ const WinRate = styled(MuiTypography)(() => ({
   fontSize: '12px',
   fontWeight: '600',
   padding: '0 0 0 2px',
+})) as typeof MuiTypography;
+
+const SectionContentText = styled(MuiTypography)(() => ({
+  minHeight: '32px',
+  fontSize: '16px',
+  fontWeight: '600',
+  color: '#000000',
+  overflow: 'hidden',
+  textOverflow: 'ellipsis',
 })) as typeof MuiTypography;

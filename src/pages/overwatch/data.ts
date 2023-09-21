@@ -78,7 +78,7 @@ export const positionList: OVERWATCH_POSITION[] = [
   {
     value: 'ALL',
     label: '전체',
-    imageUrl: 'https://cdn.match-gg.kr/lol/lane_icons/ALL.png',
+    imageUrl: 'https://cdn.match-gg.kr/overwatch/roles/ALL.png',
   },
   {
     value: 'TANK',

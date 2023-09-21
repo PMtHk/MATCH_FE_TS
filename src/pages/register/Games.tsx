@@ -12,6 +12,7 @@ import { RootState } from 'store';
 import { defaultAxios } from 'apis/utils';
 import { registerActions } from 'store/register-slice';
 import { GAME_ID } from 'types/games';
+import { connectRSO } from 'apis/api/valorant';
 import InputLol from './InputLol';
 import InputPubg from './InputPubg';
 import InputOverwatch from './InputOverwatch';
@@ -27,25 +28,20 @@ const Games = () => {
   // TODO: valorant 닉네임 받아서 처리하기 필요
   React.useEffect(() => {
     const sendRsoAccessCode = async () => {
-      const response = await defaultAxios.post('/api/valorant/user/exist', {
-        code: rsoAccessCode as string,
-      });
+      const { gameName, tagLine } = await connectRSO(rsoAccessCode as string);
 
-      if (response.data) {
-        const { gameName, tagLine } = response.data;
+      dispatch(
+        registerActions.SET_GAMES_WITH_ID({
+          id: 'valorant' as GAME_ID,
+          value: `${gameName}#${tagLine}`,
+        }),
+      );
 
-        dispatch(
-          registerActions.SET_GAMES_WITH_ID({
-            id: 'valorant' as GAME_ID,
-            value: `${gameName}#${tagLine}`,
-          }),
-        );
-
-        // TODO: 전적 채우기 동작 (임시)
-        const goodResponse = await defaultAxios.get(
-          `/api/valorant/user/${gameName}%23${tagLine}`,
-        );
-      }
+      // TODO: 전적 채우기 동작 (임시)
+      const goodResponse = await defaultAxios.get(
+        `/api/valorant/user/${gameName}%23${tagLine}`,
+      );
+      console.log(goodResponse);
     };
 
     if (rsoAccessCode) {
