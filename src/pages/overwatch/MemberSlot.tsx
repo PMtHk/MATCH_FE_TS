@@ -55,6 +55,8 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
     mostHero: [],
   });
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
+  const [isFollowed, setIsFollowed] = React.useState<boolean>(false);
+
   // author info
   const authorNickname = memberInfo.name.split('#')[0];
 
@@ -184,6 +186,7 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
             severity: 'error',
           }),
         );
+        setIsFollowed(true);
       } else {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
@@ -435,7 +438,8 @@ const MemberSlot = ({ name, oauth2Id: MemberOauth2Id }: MemberSlotProps) => {
                   </IconButton>
                 </MuiToolTip>
               )}
-              {isInParty(currentCard.memberList, oauth2Id) &&
+              {!isFollowed &&
+                isInParty(currentCard.memberList, oauth2Id) &&
                 !isGuest(MemberOauth2Id) &&
                 oauth2Id !== MemberOauth2Id &&
                 !MemberOauth2Id.startsWith('guest') && (

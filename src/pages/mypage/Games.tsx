@@ -13,6 +13,7 @@ import { changeRepresentative } from 'apis/api/user';
 import { loadHistory as lolLoadHistory } from 'apis/api/leagueoflegends';
 import { getPlatform, loadHistory as pubgLoadHistory } from 'apis/api/pubg';
 import { loadHistory as owLoadHistory } from 'apis/api/overwatch';
+import { loadHistory as vlrtLoadHistory } from 'apis/api/valorant';
 import { RootState } from 'store';
 import { snackbarActions } from 'store/snackbar-slice';
 import { userActions } from 'store/user-slice';
@@ -102,6 +103,11 @@ const GameDataUpdateButton = ({ game }: any) => {
       dispatch(mypageActions.TOGGLE_REFRESH_OVERWATCH());
     }
 
+    if (game === 'valorant') {
+      await vlrtLoadHistory(nickname);
+      dispatch(mypageActions.TOGGLE_REFRESH_VALORANT());
+    }
+
     setIsLoading(false);
     dispatch(
       snackbarActions.OPEN_SNACKBAR({
@@ -148,6 +154,7 @@ const ChangeRepresentativeButton = ({ game, representative }: any) => {
       );
     }
   };
+
   return (
     <UpdateButton
       fullWidth
