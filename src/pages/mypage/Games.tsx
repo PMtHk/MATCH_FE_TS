@@ -26,6 +26,7 @@ import PubgInfo from './Games/PubgInfo';
 import OverwatchInfo from './Games/OverwatchInfo';
 import AddGame from './Games/AddGame';
 import Nickname from './Games/Nickname';
+import ValorantInfo, { RSOConnectButton } from './Games/ValorantInfo';
 
 interface GameFilterProps {
   selectedGame: string;
@@ -176,6 +177,7 @@ const Games = () => {
     lolInfo: lolData,
     pubgInfo: pubgData,
     overwatchInfo: overwatchData,
+    valorantInfo: valorantData,
   } = useSelector((state: RootState) => state.mypage);
 
   const [selectedGame, setSelectedGame] = useState<GAME_ID>(representative);
@@ -184,7 +186,7 @@ const Games = () => {
     lol: <LolInfo data={lolData} />,
     pubg: <PubgInfo data={pubgData} />,
     overwatch: <OverwatchInfo data={overwatchData} />,
-    valorant: <div />,
+    valorant: <ValorantInfo data={valorantData} />,
   };
 
   return (
@@ -195,18 +197,24 @@ const Games = () => {
         setSelectedGame={setSelectedGame}
         representative={representative}
       />
+
       {/* 닉네임 */}
       <Nickname
         name={games[selectedGame as GAME_ID]}
         game={selectedGame}
         isNew={!games[selectedGame as GAME_ID]}
       />
+      {selectedGame === 'valorant' && !games[selectedGame as GAME_ID] && (
+        <RSOConnectButton />
+      )}
+
       {/* 각 게임 정보 */}
       {games[selectedGame as GAME_ID] ? (
         gameComponents[selectedGame as GAME_ID]
       ) : (
         <AddGame game={selectedGame} />
       )}
+
       {/* 전적 갱신, 대표게임 변경 버튼 */}
       {games[selectedGame as GAME_ID] && (
         <ButtonSection>

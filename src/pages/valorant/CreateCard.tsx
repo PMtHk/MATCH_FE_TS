@@ -106,7 +106,26 @@ const CreateCard = () => {
     if (newValue === null) {
       return;
     }
-    setUserInput({ ...userInput, gameMode: newValue });
+    if (newValue === 'TEAM_DEATHMATCH') {
+      setUserInput({
+        ...userInput,
+        gameMode: newValue,
+        tier: 0,
+        position: 'ALL',
+      });
+    } else if (
+      userInput.gameMode === 'TEAM_DEATHMATCH' &&
+      newValue !== 'TEAM_DEATHMATCH'
+    ) {
+      setUserInput({
+        ...userInput,
+        gameMode: newValue,
+        tier: 0,
+        position: 'ALL',
+      });
+    } else {
+      setUserInput({ ...userInput, gameMode: newValue });
+    }
     setIsChanged(true);
   };
 

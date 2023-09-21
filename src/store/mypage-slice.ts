@@ -10,6 +10,7 @@ interface IState {
   lol: string;
   pubg: string;
   overwatch: string;
+  valorant: string;
   likeCount: number;
   dislikeCount: number;
   matchCount: number;
@@ -34,6 +35,7 @@ const initialState: IState = {
   lol: '',
   pubg: '',
   overwatch: '',
+  valorant: '',
   likeCount: 0,
   dislikeCount: 0,
   matchCount: 0,
@@ -62,6 +64,7 @@ const mypageSlice = createSlice({
       state.lol = action.payload.lol;
       state.pubg = action.payload.pubg;
       state.overwatch = action.payload.overwatch;
+      state.valorant = action.payload.valorant;
       state.likeCount = action.payload.likeCount;
       state.dislikeCount = action.payload.dislikeCount;
       state.matchCount = action.payload.matchCount;
@@ -94,6 +97,9 @@ const mypageSlice = createSlice({
     },
     SET_OVERWATCHINFO: (state, action) => {
       state.overwatchInfo = action.payload;
+    },
+    SET_VALORANTINFO: (state, action) => {
+      state.valorantInfo = action.payload;
     },
     TOGGLE_REFRESH_LOL: (state) => {
       state.refreshLolInfo = !state.refreshLolInfo;

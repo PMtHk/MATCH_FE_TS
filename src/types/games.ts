@@ -8,6 +8,7 @@ export type GAME = {
   labelText: string;
   helperText: string;
   available: boolean;
+  acronym: string;
 };
 
 // lol

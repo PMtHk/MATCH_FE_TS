@@ -66,6 +66,7 @@ const Card = ({ item, expired }: CardProps) => {
 
   // author info
   const authorTier = tierList[item.author.tier];
+  const nickname = item.author.name.split('#')[0];
 
   const totalPlayed = item.author.wins + item.author.losses;
   const winRate = Math.round((item.author.wins / totalPlayed) * 100) || 0;
@@ -127,7 +128,7 @@ const Card = ({ item, expired }: CardProps) => {
       }}
       onMouseLeave={() => setIsHover(false)}
     >
-      <CardContainer expired={expired}>
+      <CardContainer expired={expired} finished={item.finished === 'true'}>
         <CardTitleWrapper>
           <ImgWrapper sx={{ mr: 1 }}>
             <img
@@ -189,7 +190,7 @@ const Card = ({ item, expired }: CardProps) => {
           <AuthorSection>
             <SectionName>작성자</SectionName>
             <SectionContent>
-              <Author>{item.author.name}</Author>
+              <Author>{nickname}</Author>
               {item.voice === 'Y' && (
                 <MicIcon
                   fontSize="small"

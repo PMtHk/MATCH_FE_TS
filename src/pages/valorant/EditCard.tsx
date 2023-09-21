@@ -63,7 +63,7 @@ const CreateCard = () => {
   // 사용자의 input state
   const [userInput, setUserInput] = React.useState({
     name: currentCard?.name,
-    gameMode: currentCard?.type,
+    gameMode: currentCard?.gameMode,
     tier: currentCard?.tier,
     position: currentCard?.position,
     expire: currentCard?.expire,
@@ -81,7 +81,16 @@ const CreateCard = () => {
     if (newValue === null) {
       return;
     }
-    setUserInput({ ...userInput, gameMode: newValue });
+    if (newValue === 'TEAM_DEATHMATCH') {
+      setUserInput({
+        ...userInput,
+        gameMode: newValue,
+        tier: 0,
+        position: 'ALL',
+      });
+    } else {
+      setUserInput({ ...userInput, gameMode: newValue });
+    }
     setIsChanged(true);
   };
 
@@ -174,6 +183,8 @@ const CreateCard = () => {
         userInput,
         5,
       );
+
+      console.log(currentCard, userInput);
 
       dispatch(
         snackbarActions.OPEN_SNACKBAR({

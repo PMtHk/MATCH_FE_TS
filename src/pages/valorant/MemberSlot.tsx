@@ -39,12 +39,27 @@ const MemberSlot = ({
   const { oauth2Id, games } = useSelector((state: RootState) => state.user);
   const { currentCard } = useSelector((state: RootState) => state.card);
 
-  const [memberInfo, setMemberInfo] = React.useState<any>({});
+  const [memberInfo, setMemberInfo] = React.useState<any>({
+    puuid: '',
+    name: '',
+    tier: 0,
+    wins: 0,
+    losses: 0,
+    kills: 0,
+    deaths: 0,
+    avgDmg: 0,
+    heads: 0,
+    shots: 0,
+    mostAgent: [],
+  });
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const [isFollowed, setIsFollowed] = React.useState<boolean>(false);
 
   // author info
   const tier = tierList[memberInfo?.tier];
+  const nickAndTag = memberInfo?.name.split('#');
+  const nickname = nickAndTag[0];
+  const riotTag = nickAndTag[1];
 
   type calcedInfo = {
     value: number;
@@ -257,7 +272,8 @@ const MemberSlot = ({
           <Member>
             <SectionInMember>
               <SectionTitleInMember>요원명</SectionTitleInMember>
-              <Nickname>{memberInfo?.name}</Nickname>
+              <Nickname>{nickname}</Nickname>
+              <RiotTag>#{riotTag}</RiotTag>
             </SectionInMember>
             <SectionInMember>
               <SectionTitleInMember>티어</SectionTitleInMember>
@@ -389,9 +405,15 @@ const Nickname = styled(MuiTypography)(() => ({
   fontSize: '16px',
   fontWeight: '700',
   minWidth: '120px',
-  lineHeight: '53px',
   textOverflow: 'ellipsis',
 })) as typeof MuiTypography;
+
+const RiotTag = styled(MuiTypography)(() => ({
+  fontSize: '14px',
+  fontWeight: '700',
+  minWidth: '120px',
+  textOverflow: 'ellipsis',
+}));
 
 const FlexRow = styled(MuiBox)(() => ({
   display: 'flex',
