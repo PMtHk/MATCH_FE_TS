@@ -3,18 +3,18 @@ import { defaultAxios } from 'apis/utils';
 /**
  * (발로란트) 요원 이름 존재 확인
  *
- * @param {string} nickname 사용자가 입력한 소환사명
- * @returns {string} 닉네임의 정확한 표기 (존재하지 않으면 Error 404)
+ * @param {string} agentName 사용자가 입력한 요원명
+ * @returns 일치하는 닉네임이 있으면 true, 없으면 false
  *
  * @example
  */
 
-export const verifyNickname = async (nickname: string) => {
-  const exactNickname = await defaultAxios
-    .get(`/api/valorant/user/exist/${nickname}`)
+export const verifyNickname = async (agentName: string) => {
+  const isExist = await defaultAxios
+    .get(`/api/valorant/user/exist/${agentName.replace('#', '%23')}`)
     .then((res) => res.data);
 
-  return exactNickname;
+  return isExist;
 };
 
 /**
