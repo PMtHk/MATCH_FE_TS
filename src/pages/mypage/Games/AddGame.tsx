@@ -24,14 +24,6 @@ const AddGame = ({ game }: any) => {
 
 export default AddGame;
 
-const Container = styled(Box)(() => ({
-  height: '100%',
-  minHeight: '300px',
-  maxHeight: '300px',
-  display: 'flex',
-  flexDirection: 'column',
-})) as typeof Box;
-
 const InfoTItle = styled(Typography)(() => ({
   fontSize: '18px',
   fontWeight: '700',

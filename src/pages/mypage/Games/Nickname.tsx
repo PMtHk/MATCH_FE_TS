@@ -151,6 +151,8 @@ const Nickname = ({
     }
   };
 
+  if (game === 'valorant' && !nickname) return <div />;
+
   return (
     <>
       <Divider sx={{ width: '570px' }} />
@@ -221,5 +223,6 @@ const ChangeButton = styled(Button)(() => ({
 })) as typeof Button;
 
 const EditButton = styled(Button)(() => ({
+  padding: 0,
   marginLeft: '8px',
 })) as typeof Button;

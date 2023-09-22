@@ -26,7 +26,6 @@ export const RSOConnectButton = () => {
     setChecked((prev) => !prev);
   };
 
-  // if (!vlrtNickname)
   return (
     <InnerContainer>
       <ButtonWrapper>
@@ -54,7 +53,6 @@ export const RSOConnectButton = () => {
       )}
     </InnerContainer>
   );
-  return <div />;
 };
 
 const Info = ({ data, type }: any) => {
@@ -201,34 +199,13 @@ const Info = ({ data, type }: any) => {
 };
 
 const ValorantInfo = ({ data }: any) => {
-  const { games } = useSelector((state: RootState) => state.register);
-
   const { rankInfo, normalInfo } = data;
-
-  const vlrtNickname = games.valorant;
-
-  const tempData = {
-    puuid:
-      'z_XFQCy_2K5cn4suY8UB8WYrusO15FW2IvRizfkOmnyycHRImdHNX8TepeamoRdBNGe9m1UCEjkkYQ',
-    name: '심슨홀리#5900',
-    tier: 9,
-    wins: 2,
-    losses: 0,
-    kills: 26,
-    deaths: 26,
-    avgDmg: 202,
-    heads: 11,
-    shots: 109,
-    mostAgent: ['SOVA', 'KILLJOY', 'OMEN'],
-  };
 
   // 발로란트 연결이 되어있는 경우
   return (
     <Container>
-      {/* <Info data={rankInfo} type="COMPETITIVE" />
-      <Info data={normalInfo} type="STANDARD" /> */}
-      <Info data={tempData} type="STANDARD" />
-      <Info data={tempData} type="COMPETITIVE" />
+      <Info data={rankInfo} type="COMPETITIVE" />
+      <Info data={normalInfo} type="STANDARD" />
     </Container>
   );
 };
@@ -335,44 +312,6 @@ const EachInfo = styled(FlexCol)(() => ({
   minHeight: '92px',
   maxHeight: '92px',
 }));
-
-const SectionContent = styled(MuiBox)(() => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-start',
-  gap: '4px',
-})) as typeof MuiBox;
-
-const PositionRankSection = styled(MuiBox)(() => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'flex-start',
-  justifyContent: 'flex-start',
-})) as typeof MuiBox;
-
-const RankWrapper = styled(MuiBox)(() => ({
-  width: '40px',
-  height: '30px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  padding: 0,
-})) as typeof MuiBox;
-
-const PositionEmblemWrapper = styled(MuiBox)(() => ({
-  width: '20px',
-  height: '20px',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-})) as typeof MuiBox;
-
-const TierTypo = styled(MuiBox)(() => ({
-  width: '100%',
-  fontSize: '12px',
-  fontWeight: '600',
-  textAlign: 'center',
-})) as typeof MuiBox;
 
 const InfoContainer = styled(MuiBox)(() => ({
   maxHeight: '120px',
