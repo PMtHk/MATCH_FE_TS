@@ -28,11 +28,11 @@ const Review = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { oauth2Id } = useSelector((state: RootState) => state.user);
+  const [currentCard, setCurrentCard] = useState<any>(null);
+
   const currentGame: GAME_ID = getCurrentGame();
   const roomId: string = window.location.pathname.split('/')[2];
-
-  const { currentCard } = useSelector((state: RootState) => state.card);
-  const { oauth2Id } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const getRoomInfo = async () => {
@@ -40,11 +40,15 @@ const Review = () => {
       const response = await defaultAxios.get(
         `/api/${currentGame}/boards/${roomId}`,
       );
+
+      setCurrentCard(response.data);
+
       // 파이어베이스에서 isReviewed를 가져옴
       const isReviewed = await asyncGetIsReviewed(
         oauth2Id,
         response.data.chatRoomId,
       );
+
       // isReviewed가 true이면 카드 상세보기 모달로 이동
       if (isReviewed === true) {
         dispatch(
@@ -55,15 +59,16 @@ const Review = () => {
           }),
         );
         navigate(`/${currentGame}/${response.data.id}`);
-      } else {
-        dispatch(cardActions.SET_CURRENT_CARD(response.data));
       }
     };
+
     getRoomInfo();
   }, []);
 
   const [reviewMap, setReviewMap] = React.useState(new Map());
   const [hasReview, setHasReview] = React.useState<boolean>(false);
+
+  console.log(reviewMap);
 
   const modifyReview = (member: string, review: 'like' | 'dislike') => {
     setReviewMap((prevState) => new Map(prevState).set(member, review));
@@ -84,10 +89,12 @@ const Review = () => {
       reviewContent.push(value);
     });
 
+    console.log(reviewedMember);
+
     // 서버에 전송
     const temp = await Promise.all(
       reviewedMember.map(async (member, idx) => {
-        const data: any = { game: currentGame, nickname: member };
+        const data: any = { oauth2Id: member };
         if (reviewContent[idx] === 'like') {
           const res: any = await authAxios.post('/api/user/like', data);
           return res;
@@ -108,19 +115,8 @@ const Review = () => {
 
     navigate(`/${currentGame}/${roomId}`);
   };
-  const [filteredMemberList, setFilteredMemberList] = useState<string[] | null>(
-    null,
-  );
 
   if (currentCard) {
-    const getFilteredMemberList = async () => {
-      const result = await getMemberListForReview(
-        currentCard.chatRoomId,
-        oauth2Id,
-      );
-      setFilteredMemberList(result);
-    };
-    getFilteredMemberList();
     return (
       <Modal>
         <ReviewModalContainer>
@@ -132,88 +128,93 @@ const Review = () => {
             <SubTitle>평가내용은 상대방이 알 수 없어요.</SubTitle>
           </ModalHeader>
           <ModalContent>
-            {filteredMemberList &&
-              filteredMemberList.map((member: string) => {
-                return (
-                  <MemberWrapper key={member}>
-                    <MemberName>{member}</MemberName>
-                    <ButtonListWrapper>
-                      <ButtonWrapper>
-                        <MuiButton
-                          onClick={() => {
-                            modifyReview(member, 'like');
-                          }}
-                          sx={{
-                            padding: '8px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            marginRight: '40px',
-                            border: '1px solid transparent',
-                            backgroundColor:
-                              reviewMap.get(member) === 'like'
-                                ? '#4CAF50'
-                                : 'none',
-                            color:
-                              reviewMap.get(member) === 'like'
-                                ? 'white'
-                                : 'black',
-                            '&:hover': {
-                              border: '1px solid green',
-                              color: 'black',
-                            },
-                          }}
-                        >
-                          <LikeIcon
-                            sx={{
-                              fontSize: '32px',
-                              color:
-                                reviewMap.get(member) === 'like'
-                                  ? 'white'
-                                  : '#4CAF50',
+            {currentCard &&
+              currentCard.memberList.map(
+                (member: { nickname: string; oauth2Id: string }) => {
+                  if (member.oauth2Id === oauth2Id) {
+                    return null;
+                  }
+                  return (
+                    <MemberWrapper key={member.nickname}>
+                      <MemberName>{member.nickname}</MemberName>
+                      <ButtonListWrapper>
+                        <ButtonWrapper>
+                          <MuiButton
+                            onClick={() => {
+                              modifyReview(member.oauth2Id, 'like');
                             }}
-                          />
-                          최고에요
-                        </MuiButton>
-                        <MuiButton
-                          onClick={() => {
-                            modifyReview(member, 'dislike');
-                          }}
-                          sx={{
-                            padding: '8px',
-                            boxSizing: 'border-box',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            border: '1px solid transparent',
-                            backgroundColor:
-                              reviewMap.get(member) === 'dislike'
-                                ? 'orange'
-                                : 'none',
-                            color:
-                              reviewMap.get(member) === 'dislike'
-                                ? 'white'
-                                : 'black',
-                            '&:hover': {
-                              border: '1px solid orange',
-                              color: 'black',
-                            },
-                          }}
-                        >
-                          <DislikeIcon
                             sx={{
-                              fontSize: '32px',
+                              padding: '8px',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              marginRight: '40px',
+                              border: '1px solid transparent',
+                              backgroundColor:
+                                reviewMap.get(member.oauth2Id) === 'like'
+                                  ? '#4CAF50'
+                                  : 'none',
                               color:
-                                reviewMap.get(member) === 'dislike'
+                                reviewMap.get(member.oauth2Id) === 'like'
                                   ? 'white'
-                                  : '#FF9F1C',
+                                  : 'black',
+                              '&:hover': {
+                                border: '1px solid green',
+                                color: 'black',
+                              },
                             }}
-                          />
-                          별로예요
-                        </MuiButton>
-                      </ButtonWrapper>
-                    </ButtonListWrapper>
-                  </MemberWrapper>
-                );
-              })}
+                          >
+                            <LikeIcon
+                              sx={{
+                                fontSize: '32px',
+                                color:
+                                  reviewMap.get(member.oauth2Id) === 'like'
+                                    ? 'white'
+                                    : '#4CAF50',
+                              }}
+                            />
+                            최고에요
+                          </MuiButton>
+                          <MuiButton
+                            onClick={() => {
+                              modifyReview(member.oauth2Id, 'dislike');
+                            }}
+                            sx={{
+                              padding: '8px',
+                              boxSizing: 'border-box',
+                              display: 'flex',
+                              flexDirection: 'column',
+                              border: '1px solid transparent',
+                              backgroundColor:
+                                reviewMap.get(member.oauth2Id) === 'dislike'
+                                  ? 'orange'
+                                  : 'none',
+                              color:
+                                reviewMap.get(member.oauth2Id) === 'dislike'
+                                  ? 'white'
+                                  : 'black',
+                              '&:hover': {
+                                border: '1px solid orange',
+                                color: 'black',
+                              },
+                            }}
+                          >
+                            <DislikeIcon
+                              sx={{
+                                fontSize: '32px',
+                                color:
+                                  reviewMap.get(member.oauth2Id) === 'dislike'
+                                    ? 'white'
+                                    : '#FF9F1C',
+                              }}
+                            />
+                            별로예요
+                          </MuiButton>
+                        </ButtonWrapper>
+                      </ButtonListWrapper>
+                    </MemberWrapper>
+                  );
+                },
+              )}
             <HelpTypoSection>
               <HelpTypo>
                 <HelpOutline
