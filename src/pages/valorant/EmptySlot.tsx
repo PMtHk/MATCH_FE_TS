@@ -45,6 +45,12 @@ const EmptySlotForAuthor = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const hanldeAddPartyMember = async () => {
+    const newMember = {
+      nickname: name,
+      oauth2Id: '',
+      notiToken: '',
+      isReviewed: false,
+    };
     try {
       setIsLoading(true);
       dispatch(
@@ -55,8 +61,8 @@ const EmptySlotForAuthor = () => {
       );
 
       // 닉네임 인증
-      const exactNickname = await verifyNickname(name.trim());
-      if (getIsBanned(currentCard.banList, `guest${exactNickname}`)) {
+      const isExist = await verifyNickname(name.trim());
+      if (getIsBanned(currentCard.banList, `guest${name.trim()}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '파티에서 강제퇴장 당한 사용자입니다.',
@@ -65,7 +71,7 @@ const EmptySlotForAuthor = () => {
         );
         return;
       }
-      if (isInParty(currentCard.memberList, `guest${exactNickname}`)) {
+      if (isInParty(currentCard.memberList, `guest${name.trim()}`)) {
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '이미 파티에 참여한 사용자입니다.',
@@ -75,20 +81,22 @@ const EmptySlotForAuthor = () => {
         return;
       }
       // 전적 받아오기 -> DB
-      await loadHistory(exactNickname);
+      if (isExist) {
+        await loadHistory(name.trim());
+      }
       // 파티에 해당 멤버 추가
       await addPartyMemberWithName(
         'valorant',
         currentCard?.id,
         currentCard?.chatRoomId,
-        exactNickname,
+        name.trim(),
       );
 
       dispatch(refreshActions.REFRESH_CARD());
 
       dispatch(
         snackbarActions.OPEN_SNACKBAR({
-          message: `파티에 "${exactNickname}" 님을 추가했습니다.`,
+          message: `파티에 "${name.trim()}" 님을 추가했습니다.`,
           severity: 'success',
         }),
       );
