@@ -147,7 +147,7 @@ const Info = ({ data }: any) => {
 
 const PubgInfo = ({ data }: any) => {
   if (!data)
-    return <Circular height="500px" text="게임 정보를 불러오는 중입니다." />;
+    return <Circular height="300px" text="게임 정보를 불러오는 중입니다." />;
   const { duoInfo, squadInfo, rankedSquadInfo } = data;
   return (
     <Container>

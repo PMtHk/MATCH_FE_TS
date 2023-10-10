@@ -30,7 +30,7 @@ type TierInfoProps = {
 };
 
 const Info = ({ info, type }: TierInfoProps) => {
-  const tierData = tierList.find((tier) => tier.value === info.tier);
+  const tierData = tierList.find((tier) => tier?.value === info?.tier);
 
   return (
     <TierInfoContainer>
@@ -48,22 +48,22 @@ const Info = ({ info, type }: TierInfoProps) => {
             <TypeTypo>{type}</TypeTypo>
             <FlexRowTypoSection>
               <RankTypo sx={{ color: tierData?.color }}>
-                {info.rank !== 'UNRANKED'
+                {info?.rank !== 'UNRANKED'
                   ? `${tierData?.label}  ${info?.rank}`
                   : '언랭크드'}
               </RankTypo>
               {info?.rank !== 'UNRANKED' && (
-                <LPTypo>{`${info.leaguePoints} LP`}</LPTypo>
+                <LPTypo>{`${info?.leaguePoints} LP`}</LPTypo>
               )}
             </FlexRowTypoSection>
             <FlexRowTypoSection>
-              {info.rank !== 'UNRANKED' && (
+              {info?.rank !== 'UNRANKED' && (
                 <>
                   <WinRateTypo>{`승률 ${(
                     (info.wins / (info.wins + info.losses)) *
                     100
                   ).toFixed(1)}%`}</WinRateTypo>
-                  <WinLossesTypo>{`(${info.wins}승 ${info.losses}패)`}</WinLossesTypo>
+                  <WinLossesTypo>{`(${info?.wins}승 ${info?.losses}패)`}</WinLossesTypo>
                 </>
               )}
             </FlexRowTypoSection>
@@ -83,8 +83,8 @@ const LolInfo = ({ data }: any) => {
 
   // 공통 정보
   const commonData = {
-    mostLane: duoRankInfo.mostLane ? duoRankInfo.mostLane : '정보 없음',
-    mostChampion: duoRankInfo.mostChampion
+    mostLane: duoRankInfo?.mostLane ? duoRankInfo.mostLane : '정보 없음',
+    mostChampion: duoRankInfo?.mostChampion
       ? duoRankInfo.mostChampion
       : '정보 없음',
   };

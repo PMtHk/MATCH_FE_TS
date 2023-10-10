@@ -35,6 +35,7 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     refreshValorantInfo,
   } = useSelector((state: RootState) => state.mypage);
 
+  // lol update
   useEffect(() => {
     const getLolData = async () => {
       const duoRankInfo = await getSummonerInfo(games.lol, 'DUO_RANK');
@@ -42,6 +43,13 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
       dispatch(mypageActions.SET_LOLINFO({ duoRankInfo, freeRankInfo }));
     };
 
+    if (games.lol) {
+      getLolData();
+    }
+  }, [games.lol, refreshLolInfo]);
+
+  // pubg update
+  useEffect(() => {
     const getPubgData = async () => {
       const platform = await getPlatform(games.pubg);
       const duoInfo = await getPubgPlayerInfo(games.pubg, platform, 'DUO');
@@ -56,12 +64,26 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
       );
     };
 
+    if (games.pubg) {
+      getPubgData();
+    }
+  }, [games.pubg, refreshPubgInfo]);
+
+  // overwatch update
+  useEffect(() => {
     const getOverwatchData = async () => {
       const rankInfo = await getOWPlayerInfo(games.overwatch, 'RANKED');
       const normalInfo = await getOWPlayerInfo(games.overwatch, 'NORMAL');
       dispatch(mypageActions.SET_OVERWATCHINFO({ rankInfo, normalInfo }));
     };
 
+    if (games.overwatch) {
+      getOverwatchData();
+    }
+  }, [games.overwatch, refreshOverwatchInfo]);
+
+  // valorant update
+  useEffect(() => {
     const getValorantData = async () => {
       const rankInfo = await fetchMemberHistory(games.valorant, 'COMPETITIVE');
       const normalInfo = await fetchMemberHistory(games.valorant, 'STANDARD');
@@ -69,26 +91,9 @@ const UserInfoFetcher = ({ children }: UserInfoFetcherProps) => {
     };
 
     if (games.lol) {
-      getLolData();
-    }
-
-    if (games.pubg) {
-      getPubgData();
-    }
-
-    if (games.overwatch) {
-      getOverwatchData();
-    }
-
-    if (games.valorant) {
       getValorantData();
     }
-  }, [
-    refreshLolInfo,
-    refreshPubgInfo,
-    refreshOverwatchInfo,
-    refreshValorantInfo,
-  ]);
+  }, [games.valorant, refreshValorantInfo]);
 
   return <div>{children}</div>;
 };
