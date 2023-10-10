@@ -28,6 +28,7 @@ import {
 import { userActions } from 'store/user-slice';
 import { snackbarActions } from 'store/snackbar-slice';
 import { GAME_ID } from 'types/games';
+import { mypageActions } from 'store/mypage-slice';
 
 const Nickname = ({
   name,
@@ -127,6 +128,19 @@ const Nickname = ({
         dispatch(
           userActions.SET_GAMES_WITH_ID({ id: game, value: certifiedNickname }),
         );
+        switch (game) {
+          case 'lol':
+            dispatch(mypageActions.TOGGLE_REFRESH_LOL());
+            break;
+          case 'pubg':
+            dispatch(mypageActions.TOGGLE_REFRESH_PUBG());
+            break;
+          case 'overwatch':
+            dispatch(mypageActions.TOGGLE_REFRESH_OVERWATCH());
+            break;
+          default:
+            break;
+        }
         dispatch(
           snackbarActions.OPEN_SNACKBAR({
             message: '변경이 완료되었습니다.',
