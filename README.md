@@ -1,46 +1,58 @@
-# Getting Started with Create React App
+> 매치지지 서비스는 2024-02-29일 이후로 비활성화하였습니다.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 매치지지 - 게이머 매칭 플랫폼
 
-## Available Scripts
+**기존 줄글 및 게시판 형태의 매칭 서비스의 불편함을 해결하기 위한 프로젝트, 매치지지**
 
-In the project directory, you can run:
+## 프로젝트 구조
 
-### `npm start`
+![](./matchgg_structure_diagram.png)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 주요 기능
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+- 소셜 로그인 및 회원가입
+- 회원정보 수정
+- 게시글 작성 / 수정 / 삭제 / 조희
+- 리그오브레전드 / 배틀그라운드 / 발로란트 / 오버워치2 에 대한 사용자 전적 요약
+- 매칭 이후 사용자 상호 평가
+- 실시간 채팅
+- 인 앱 및 웹 푸시 알림
 
-### `npm test`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 프로젝트 진행하며 고민한 것들
 
-### `npm run build`
+* 이미지 렌더링 사이즈보다 너무 큰 원본사이즈를 가져오는 문제
+	* AWS Lambda@Edge 를 활용한 이미지 리사이징이 가능한 CDN 도입
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+* axios에 React.Suspense가 적용되지 않는 문제
+	* 왜 Suspense와 ErrorBoundary를 적용하게 되었는가?
+		* [React의 Error Boundary를 이용하여 효과적으로 에러 처리하기](https://fe-developers.kakaoent.com/2022/221110-error-boundary/)
+		* [Suspense와 선언적으로 Data fetching처리](https://fe-developers.kakaoent.com/2021/211127-211209-suspense/)
+	* [`PromiseWrapper` 를 활용하기](https://blog.logrocket.com/data-fetching-react-suspense/)
+  * `react-query` 나 `swr` 을 사용해서도 해결가능
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
-### `npm run eject`
+* 채팅을 Firebase RealtimeDB를 활용해 구현하며 발생한 문제
+  * `onChildAdded` 리스너가 중복으로 설정되는 문제
+    * 원인 : 페이지 전환 간 동일한 경로에 대한 `onChildAdded`를 다시 설정하며 발생
+  * 동일한 사용자에 대한 정보를 두 개의 다른 DB 에 중복하여 저장해야 하는 문제
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## 사용 기술
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### FE 
+- React 18
+- Redux-toolkit
+- Axios
+- Firebase Hosting
 
-## Learn More
+### Chat & Notification
+- Firebase JavaScript SDK
+- Firebase RealtimeDB
+- Firebase Cloud Functions
+- Firebase Cloud Messaging
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+##  시연 영상
+https://www.youtube.com/watch?v=LWVoYQ6rnAw
