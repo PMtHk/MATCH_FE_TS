@@ -21,6 +21,9 @@
 
 ## 프로젝트 진행하며 고민한 것들
 
+* 기존 줄글 및 게시판 형태 매칭 서비스 개선하기
+	* [카드형 디자인 도입](https://zooby.notion.site/MatchGG-6853a40d89cc4dd0aa2208c8a7623225?pvs=74)
+
 * 이미지 렌더링 사이즈보다 너무 큰 원본사이즈를 가져오는 문제
 	* AWS Lambda@Edge 를 활용한 이미지 리사이징이 가능한 CDN 도입
 
@@ -29,8 +32,8 @@
 	* 왜 Suspense와 ErrorBoundary를 적용하게 되었는가?
 		* [React의 Error Boundary를 이용하여 효과적으로 에러 처리하기](https://fe-developers.kakaoent.com/2022/221110-error-boundary/)
 		* [Suspense와 선언적으로 Data fetching처리](https://fe-developers.kakaoent.com/2021/211127-211209-suspense/)
-	* [`PromiseWrapper` 를 활용하기](https://blog.logrocket.com/data-fetching-react-suspense/)
   * `react-query` 나 `swr` 을 사용해서도 해결가능
+	* [`PromiseWrapper` 를 활용하기](https://zooby.notion.site/Suspense-ErrorBoundary-83e3eb38b6a9430da1376ea2cd0865fa?pvs=74)
 
 
 * 채팅을 Firebase RealtimeDB를 활용해 구현하며 발생한 문제
