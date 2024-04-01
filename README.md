@@ -25,7 +25,7 @@
 	* [카드형 디자인 도입](https://zooby.notion.site/MatchGG-6853a40d89cc4dd0aa2208c8a7623225?pvs=74)
 
 * 이미지 렌더링 사이즈보다 너무 큰 원본사이즈를 가져오는 문제
-	* AWS Lambda@Edge 를 활용한 이미지 리사이징이 가능한 CDN 도입
+	* [AWS Lambda@Edge 를 활용한 이미지 리사이징이 가능한 CDN 도입](https://github.com/matchggkr/matchgg_image_resize)
 
 
 * axios에 React.Suspense가 적용되지 않는 문제
